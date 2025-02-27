@@ -1,0 +1,291 @@
+/*
+ * PROTEO ERP
+ * Desarrollador: © EROS RANGEL
+ */
+
+/*VARIABLES*/
+/* :root{
+    --background-fondo: white;
+    --principal-color: #0084C5;
+    --principal-color-hover: #0076ad;
+    --menu-color: #053354;
+    --menu-color-seconday: #2684ff;
+    --text-color: black;
+    --text-color2: #3EA816;
+    --text-claro: #7c7979;
+    --fondo-footer: #B3B3B3;
+    --resaltador: #FEC100;
+} */
+
+@use '../../../styles/variables.scss' as vars;
+/*ESTILOS GENERALES*/
+/*ESTILOS DEL LOADER*/
+.loader {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); 
+    z-index: 5; 
+}
+
+.loader-icon {
+    width: 50px;
+    height: 50px;
+    border: 5px solid vars.$background-fondo; 
+    border-top: 5px solid vars.$menu-color; 
+    border-radius: 50%;
+    animation: spin 1s linear infinite; 
+    margin-bottom: 20px; 
+}
+
+/* Animación de giro */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estilo del texto del loader */
+.loader-text {
+    font-size: 1.2em;
+    color: #333;
+    text-align: center;
+}
+/*FIN DEL LOADER*/
+
+.portal {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: vars.$background-fondo;
+}
+
+.portal__login,
+.portal__registro {
+    flex: 1;
+    padding: 8rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: space-between;  Distribuye los elementos en tres secciones */
+    align-items: center;
+    background-color: vars.$background-fondo;
+}
+
+.portal__logo {
+    width: 30%;
+    margin-bottom: 1rem;
+}
+
+.portal__title {
+    font-size: 1.8rem;
+    color: vars.$menu-color;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.portal__form {
+    width: 70%;
+    max-width: 80%;
+    margin-top: 20%;
+    margin-bottom: auto;
+}
+
+.portal__input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.portal__input-icon {
+    margin-right: 0.5rem;
+}
+
+.portal__footer {
+    margin-top: 1rem;
+    text-align: center;
+    color: vars.$menu-color;
+    font-size: 2.5rem;
+    font-weight: 1;
+}
+
+.portal__image {
+    flex: 2;
+    position: relative;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    overflow: hidden; 
+}
+
+.login__background{
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.portal__person {
+    width: 53%;
+    max-width: 60%;
+    height: auto;
+    position: relative;
+    z-index: 2;
+    margin-bottom: -10rem;
+}
+
+.portal__person {
+    transform: translateY(10%);
+}
+/* Contenedor principal de inputs */
+.container_input_custom {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Estilo para el grupo de inputs */
+.input_group {
+    display: flex;
+    gap: 20px;
+}
+
+/* Estilo para el wrapper de los inputs */
+.input_wrapper {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+}
+
+/* Estilo de los inputs */
+.input_field {
+    width: 100%;
+    padding-right: 10px; 
+    padding-left: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: vars.$background-fondo;
+    background-color: vars.$background-fondo;
+    transition: all 0.3s;
+}
+
+/* Espaciado adicional para inputs con errores */
+.input_field + .error-message {
+    margin-top: 5px;
+}
+
+/* Para evitar el solapamiento entre el error y el label */
+.input_field:focus + .input_label,
+.input_field:not(:placeholder-shown) + .input_label,
+.input-error + .input_label {
+    top: -10px;
+    font-size: 10px;
+}
+
+/* Estilo de las etiquetas */
+.input_label {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    font-size: 12px;
+    color: #777;
+    transition: all 0.3s;
+}
+
+/* Cuando el input tiene foco o ya tiene contenido, mover el label */
+.input_field:focus + .input_label,
+.input_field:not(:placeholder-shown) + .input_label {
+    top: -5px;
+    left: 10px;
+    font-size: 10px;
+    color: vars.$principal-color;
+}
+
+/* Para que el placeholder se oculte cuando el input tiene contenido o foco */
+.input_field:focus::placeholder,
+.input_field:not(:placeholder-shown)::placeholder {
+    visibility: hidden;
+    opacity: 0; 
+}
+
+/* Estilo de los select inputs */
+.input_dropdown select {
+    width: 100%;
+    min-width: 7rem;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: vars.$background-fondo;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.modelo2 {
+    width: 74vh;
+}
+.input_button{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+.input_button button {
+    width: 100%;
+    padding: 1rem;
+    background-color: vars.$text-color2;
+    border: none;
+    border-radius: 1rem;
+    color: vars.$background-fondo;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.input_button button:hover {
+    background-color: vars.$menu-color;
+    color: vars.$background-fondo;
+}
+.register_link{
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+}
+
+.register_link_item {
+    margin: 1.3rem 0;
+    text-decoration: none;
+    color: vars.$menu-color;
+    font-size: 1.5rem;
+}
+    /*ESTILOS REGISTRO DE CLIENTES*/
+    .registrate__boton_custom {
+        color: vars.$resaltador; /* Color estético para resaltar */
+        font-weight: bold; /* Texto en negrita */
+    }
+
+    .registrate__boton {
+        color: vars.$resaltador; 
+        font-weight: bold; 
+        cursor: pointer; 
+        transition: transform 0.3s ease-in-out;
+    }

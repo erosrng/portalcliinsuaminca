@@ -1,1 +1,144 @@
-<p>home-page works!</p>
+<div class="principal__pantalla menu-active">
+    <div class="layout__principal">
+        <app-nav-bar></app-nav-bar>
+
+        <!---Pantalla de carga----->
+        <div id="loader" class="loader" style="display: none;">
+            <div class="loader-icon"></div>
+            <div class="loader-text">Procesando su solicitud, un momento por favor...</div>
+        </div>
+
+            <!----- <div class="overlay" id="overlay"></div> ---->
+                
+            <div class="background-arc-top"></div>
+
+            <div class="content__general">
+                <main class="main__general">
+
+                    <div class="caja c1">
+                        <div class="header">
+                            <div class="carousel" id="carousel">
+                                <img src="./assets/images/banner2.png" alt="Imagen 2">
+                                <img src="assets/images/banner3.png" alt="Imagen 2">
+                            </div>
+                            <div class="carousel-buttons">
+                            <button id="prevBtn">&#10094;</button>
+                            <button id="nextBtn">&#10095;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="caja c2">
+                        <div class="ofertas__carrusel">
+                            <div class="ofertas__layout">
+                                <!-- ';
+                                    // Iterar sobre los resultados de la consulta y generar el HTML dinámicamente
+                                    foreach ($vnd->result() as $invvd) {
+                                        $imagePath = FCPATH . 'uploads/inventario/Image/' . $invvd->codigo . '_.png';
+                                        $imageUrl = file_exists($imagePath) ? site_url('uploads/inventario/Image/' . $invvd->codigo . '_.png') 
+                                                    : site_url('assets/images/elemento-44.png');
+
+                                        $body .= ' -->
+                                            <div class="product-card-v2">
+                                                <div class="image-product__container-v2">
+                                                    <img onclick="mostrarFichaProducto(\'' . $invvd->codigo . '\')" class="img__product-principal-v2" src="' . $imageUrl . '" alt="">
+                                                </div>
+
+                                                <div class="product-details">
+                                                    <div style="display:none">' . $invvd->codigo . '</div>
+                                                    <div style="display:none">' . $invvd->barras . '</div>
+                                                    <div style="display:none">' . $invvd->marca . '</div>
+                                                    <div style="display:none">' . $invvd->prov1 . '</div>
+                                                    <div class="title__product-v2">' . $invvd->descrip . '</div>
+                                                    <div class="price__product-v2">
+                                                        <span class="original-price-v2"><b>Bs.</b> ' . number_format($invvd->precio1, 2, ',', '.') . '</span>
+                                                        <span class="discounted-price-v2">Ref. ' . number_format($invvd->preciod1, 2, ',', '.') . '</span>
+                                                        <span class="existen__text-v2">Disponibles: ' . number_format($invvd->existen, 0, ',', '.') . '</span>
+                                                    </div>
+                                                    <div class="cana__container-v2">
+                                                        <input class="cana__input-v2" type="text" id="cana_' . $invvd->codigo . '" onkeypress="eventcant(\'' . $invvd->codigo . '\', $(\'#cana_' . $invvd->codigo . '\').val(), event)" name="cana" value="">
+                                                        <button class="send__button-v2" title="Carrito" id="aggpedido_' . $invvd->codigo . '" onclick="agg_pedido(\'' . $invvd->codigo . '\',$(\'#cana_' . $invvd->codigo . '\').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        <!-- ';
+                                    } 
+                    
+                                $body .= ' -->
+                            </div>
+
+                            <button class="carrusel-prev">&#10094;</button>
+                            <button class="carrusel-next">&#10095;</button>
+                        </div>
+
+                        <div class="publicidad__container">
+                            <img src="./assets/images/pub1.jpg" alt="Publicidad Calox" />
+                            <img src="./assets/images/pub2.jpg" alt="Publicidad Arco Iris" />
+                            <img src="./assets/images/pub3.jpg" alt="Publicidad Siegfried" />
+                        </div>
+
+
+                        <div class="carousel-prv-container">
+                            <div class="carousel-prv">
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Aless.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Calox.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Dollder.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Elmor.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Farma.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Meyer.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Cofasa.png" alt="">
+                                    </div>
+                                </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Vargas.png" alt="">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <button class="button-prv button-prv-left">&#10094;</button>
+                            <button class="button-prv button-prv-right">&#10095;</button>
+                        </div>
+                    </div>
+
+                    <!-- ';
+
+                    $body .=' -->
+                </main>
+            </div>
+
+        
+    </div>
+</div>
+
+<!-- <p>home-page works!</p> -->
+
+<app-footer></app-footer>
