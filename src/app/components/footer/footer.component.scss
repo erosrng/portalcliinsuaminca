@@ -13,22 +13,11 @@
     align-items: center;
 }
 .footer {
-    background-color: vars.$menu-color;
-    color: white;
+    background-color: vars.$principal-color;
+    color: vars.$background-fondo;
     padding-top: 8rem;
     position: relative;
     overflow: hidden;
-}
-
-/* Línea azul curveada en la parte superior */
-.footer-top-curve {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 15rem;
-    background: vars.$principal-color;
-    clip-path: ellipse(80% 109.57% at 31.58% -49.57%);
 }
 
 /* Contenido del footer */
@@ -51,7 +40,7 @@
 .footer-section h3 {
     margin-bottom: 15px;
     font-size: 18px;
-    color: white;
+    color: vars.$background-fondo;
 }
 
 .footer-section ul {
@@ -64,7 +53,7 @@
 }
 
 .footer-section ul li a {
-    color: white;
+    color: vars.$background-fondo;
     text-decoration: none;
     transition: color 0.3s ease-out;
 }

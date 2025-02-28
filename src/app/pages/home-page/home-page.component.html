@@ -1,6 +1,53 @@
+<app-nav-bar></app-nav-bar>
+
 <div class="principal__pantalla menu-active">
+    
+    <section class="menu__general openmenu" id="menu">
+        <div class="menu__content">
+            <ul class="nav flex-column menu__nav">
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#catalogosDropdown" aria-expanded="false">
+                        <i class="fas fa-book"></i> Catálogos  <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+                    </a>
+                    <div class="collapse menu__dropdown-content" id="catalogosDropdown">
+                        </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pedidosDropdown" aria-expanded="false">
+                        <i class="fas fa-shopping-cart"></i> Pedidos <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+                    </a>
+                    <div class="collapse menu__dropdown-content" id="pedidosDropdown">
+                        </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#">
+                        <i class="fas fa-history"></i> Historial
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#">
+                        <i class="fas fa-user"></i> Perfil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu__link" href="#">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                    </a>
+                </li>
+            </ul>
+            <div class="menu__footer">
+                Insuaminca, + cerca de ti
+            </div>
+        </div>
+    </section>
+    
+
     <div class="layout__principal">
-        <app-nav-bar></app-nav-bar>
 
         <!---Pantalla de carga----->
         <div id="loader" class="loader" style="display: none;">
@@ -10,76 +57,462 @@
 
             <!----- <div class="overlay" id="overlay"></div> ---->
                 
-            <div class="background-arc-top"></div>
+            <!-- <div class="background-arc-top"></div> -->
 
             <div class="content__general">
                 <main class="main__general">
-
                     <div class="caja c1">
-                        <div class="header">
-                            <div class="carousel" id="carousel">
-                                <img src="./assets/images/banner2.png" alt="Imagen 2">
-                                <img src="assets/images/banner3.png" alt="Imagen 2">
+                        <div class="container ficha__content">
+
+                            <div class="card card__info">
+                                <div class="card-body">
+                                    <h3 class="card-title text-primary">Información</h3>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <span class="title__limit">LÍMITE DE CRÉDITO</span>
+                                            <span class="float-end cardinfo__text">Bs. 1.000.000,00</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 text-center">
+                                            <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                            <span class="cardinfo__text">US$ 10.000</span><br>
+                                            <span class="text-danger">VENCIDO</span>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                            <span class="cardinfo__text">US$ 10000</span><br>
+                                            <span>POR VENCER</span>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                            <span class="cardinfo__text">US$ 10.000</span><br>
+                                            <span>EN TRÁNSITO</span>
+                                        </div>
+                                    </div>
+                                    <div class="row text-white p-2 rounded saldo__content">
+                                        <div class="col-md-12">
+                                            <span class="fw-bold">SALDO DISPONIBLE</span>
+                                            <span class="float-end">Bs. 1.000.000,00<br>US$ 10.000</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="carousel-buttons">
-                            <button id="prevBtn">&#10094;</button>
-                            <button id="nextBtn">&#10095;</button>
+                        
+                            <div class="card mt-4 card__info">
+                                <div class="card-body ">
+                                    <h3 class="card-title text-primary">Asesor Comercial</h3>
+                                    <p class="card-text">
+                                        <span class="cardinfo__text">NOMBRE: <b>NOMBRE EJEMPLO</b></span><br>
+                                        <span class="cardinfo__text">TELÉFONO: <b>123456789</b></span><br>
+                                        <span class="cardinfo__text">CORREO: <span class="title__limit">correoorreo.com</span>                                    </span>
+                                    </p>
+                                    <div class="text-center">
+                                        <a href="#" class="btn btn__showpeds">Ver mis pedidos</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="carrusel1__container">
+                            <h3 class="text-primary">¡Bienvenido a Insuanet!</h3>
+
+                            <div id="carouselExampleIndicators" class="carousel slide">
+
+                                <div class="carousel-indicators">
+                                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                </div>
+    
+                                <div class="carousel-inner">
+    
+                                  <!-- <div class="carousel-item active">
+                                    <img src="./assets/images/banner2.png" class="d-block w-100" alt="...">
+                                  </div>
+                                  <div class="carousel-item">
+                                    <img src="assets/images/banner3.png" class="d-block w-100" alt="...">
+                                  </div> -->
+                                </div>
+    
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+
+                        </div>
+
+
                     </div>
 
+
                     <div class="caja c2">
+
                         <div class="ofertas__carrusel">
+                            <h3 class="ofertas-title text-primary">DESTACADOS</h3>
+
                             <div class="ofertas__layout">
-                                <!-- ';
-                                    // Iterar sobre los resultados de la consulta y generar el HTML dinámicamente
-                                    foreach ($vnd->result() as $invvd) {
-                                        $imagePath = FCPATH . 'uploads/inventario/Image/' . $invvd->codigo . '_.png';
-                                        $imageUrl = file_exists($imagePath) ? site_url('uploads/inventario/Image/' . $invvd->codigo . '_.png') 
-                                                    : site_url('assets/images/elemento-44.png');
 
-                                        $body .= ' -->
-                                            <div class="product-card-v2">
-                                                <div class="image-product__container-v2">
-                                                    <img onclick="mostrarFichaProducto(\'' . $invvd->codigo . '\')" class="img__product-principal-v2" src="' . $imageUrl . '" alt="">
-                                                </div>
+                                
+                                <div id="promotionCarousel" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#promotionCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                    </div>
+                                    <!-- <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="./assets/images/banner2.png" class="d-block w-100" alt="Oferta 1">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="./assets/images/banner3.png" class="d-block w-100" alt="Nuevos Productos">
+                                        </div>
 
-                                                <div class="product-details">
-                                                    <div style="display:none">' . $invvd->codigo . '</div>
-                                                    <div style="display:none">' . $invvd->barras . '</div>
-                                                    <div style="display:none">' . $invvd->marca . '</div>
-                                                    <div style="display:none">' . $invvd->prov1 . '</div>
-                                                    <div class="title__product-v2">' . $invvd->descrip . '</div>
-                                                    <div class="price__product-v2">
-                                                        <span class="original-price-v2"><b>Bs.</b> ' . number_format($invvd->precio1, 2, ',', '.') . '</span>
-                                                        <span class="discounted-price-v2">Ref. ' . number_format($invvd->preciod1, 2, ',', '.') . '</span>
-                                                        <span class="existen__text-v2">Disponibles: ' . number_format($invvd->existen, 0, ',', '.') . '</span>
-                                                    </div>
-                                                    <div class="cana__container-v2">
-                                                        <input class="cana__input-v2" type="text" id="cana_' . $invvd->codigo . '" onkeypress="eventcant(\'' . $invvd->codigo . '\', $(\'#cana_' . $invvd->codigo . '\').val(), event)" name="cana" value="">
-                                                        <button class="send__button-v2" title="Carrito" id="aggpedido_' . $invvd->codigo . '" onclick="agg_pedido(\'' . $invvd->codigo . '\',$(\'#cana_' . $invvd->codigo . '\').val())"><i class="fa-solid fa-cart-plus"></i></button>
-                                                    </div>
-                                                </div>
-                                                
+                                    </div> -->
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
                                             </div>
-                                        <!-- ';
-                                    } 
-                    
-                                $body .= ' -->
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botones de desplaze -->
+                                <div class="ofertas__layout">
+                                    <div class="carousel-cards">
+                                        </div>
+                                
+                                    <div class="carousel-arrow-buttons">
+                                        <button class="arrow-button arrow-left">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </button>
+                                        <button class="arrow-button arrow-right">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
                             </div>
 
-                            <button class="carrusel-prev">&#10094;</button>
-                            <button class="carrusel-next">&#10095;</button>
                         </div>
 
-                        <div class="publicidad__container">
-                            <img src="./assets/images/pub1.jpg" alt="Publicidad Calox" />
-                            <img src="./assets/images/pub2.jpg" alt="Publicidad Arco Iris" />
-                            <img src="./assets/images/pub3.jpg" alt="Publicidad Siegfried" />
+                        <!-- Carrusel de dos  -->
+                        <div class="ofertas__carrusel-low">
+                            <div id="promotionCarousel3" class="carousel slide-lown" data-bs-ride="carousel">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#promotionCarousel3" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#promotionCarousel3" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#promotionCarousel3" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
+                                <!-- <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="./assets/images/banner2.png" class="d-block w-100" alt="Oferta 1">
+                                    </div>
+                                    <div class="carousel-item">
+                                        <img src="./assets/images/banner3.png" class="d-block w-100" alt="Nuevos Productos">
+                                    </div>
+
+                                </div> -->
+                                <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel3" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel3" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+
+                            <div id="promotionCarousel4" class="carousel slide-lown" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                    </div>
+                                    <!-- <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="./assets/images/banner2.png" class="d-block w-100" alt="Oferta 1">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="./assets/images/banner3.png" class="d-block w-100" alt="Nuevos Productos">
+                                        </div>
+
+                                    </div> -->
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
                         </div>
+    
 
+                        <!-- Ofertas recomendadas -->
+                        <div class="ofertas__carrusel">
+                            <h3 class="ofertas-title text-primary">TE RECOMENDAMOS</h3>
 
+                            <div class="ofertas__layout">
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="carousel-cards">
+                                    <div class="card product-card">
+                                        <div class="discount-badge">20%</div>
+                                        <div class="product-price">US$ 3,66</div>
+                                        
+                                        <div class="image-product__container-v2">
+                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
+                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                        </div>
+                                
+                                        <span class="exis__text">Disponibles: 284</span>
+                                        <div class="product-actions">
+                                            <div class="product-info">
+                                                <span class="desca__product">
+                                                    PANTOPRAZOL 40MG
+                                                    10 TAB LA SANTE
+                                                </span>
+                                            </div>
+                                            <div class="cana__container-v2">
+                                                <input class="cana__input-v2" type="text" id="cana_00372" onkeypress="eventcant('00372', $('#cana_00372').val(), event)" name="cana" value="">
+                                                <button class="send__button-v2" title="Carrito" id="aggpedido_00372" onclick="agg_pedido('00372',$('#cana_00372').val())"><i class="fa-solid fa-cart-plus"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="carousel-cards">
+                                    <div class="carousel-arrow-buttons">
+                                        <button class="arrow-button arrow-left">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </button>
+                                        <button class="arrow-button arrow-right">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                        
+                                <div id="promotionCarousel2" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-indicators">
+                                        <button type="button" data-bs-target="#promotionCarousel2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel2" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#promotionCarousel2" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                    </div>
+                                    <!-- <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="./assets/images/banner2.png" class="d-block w-100" alt="Oferta 1">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img src="./assets/images/banner3.png" class="d-block w-100" alt="Nuevos Productos">
+                                        </div>
+
+                                    </div> -->
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel2" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel2" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+    
+                        <!-- Carrusel de proveedores -->
                         <div class="carousel-prv-container">
+
                             <div class="carousel-prv">
                                 <div class="circle-prv">
                                     <div class="carousel-proveedor">
@@ -121,13 +554,24 @@
                                         <img src="./assets/images/logoprv/Vargas.png" alt="">
                                     </div>
                                 </div>
+                                <div class="circle-prv">
+                                    <div class="carousel-proveedor">
+                                        <img src="./assets/images/logoprv/Megalabs.png" alt="">
+                                    </div>
+                                </div>
                                 
                             </div>
-                            
-                            <button class="button-prv button-prv-left">&#10094;</button>
-                            <button class="button-prv button-prv-right">&#10095;</button>
+
                         </div>
+
                     </div>
+
+                    <div class="pre__footer">
+
+                    </div>
+
+
+
 
                     <!-- ';
 

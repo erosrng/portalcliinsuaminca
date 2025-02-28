@@ -1,107 +1,18 @@
-
-<section class="menu__general openmenu" id="menu">
-    <div class="navbar__content menu__content">
-        
-        <div class="menu__shape">
-            <img src="./assets/images/IMAGOTIPO-BLANCO.png" alt="Logo empresa">
-            <span class="menu__close" id="closeMenu">&times;</span>
-        </div>
-        <!-- <a id="c1" href="">
-            <i class="fas fa-home"></i>
-            Inicio
-        </a> -->
-        <div class="dropdown">
-            <a href="#" class="dropdown__toggle">
-                <i class="fas fa-cart-arrow-down"></i>
-                Pedidos <span class="dropdown__icon">&#9660;</span>
-            </a>
-            <div class="dropdown__content">
-                <a id="c2" href="#">
-                    <i class="fas fa-clipboard-list"></i>
-                    Toma de pedido
-                </a>
-                <a id="c9" href="#">
-                    <i class="fas fa-file-upload"></i>
-                    Toma de pedido por archivo
-                </a>
-            </div>
-        </div>
-
-        <a id="c3" href="">
-            <i class="fas fa-history"></i>
-            HISTORIAL
-            <span class="menu__subtext">Pedidos procesados</span>	
-        </a> 
-        <!--';
-
-        if($tipous=='C'){
-            $body .='<a id="c4" href="">
-                        <i class="fas fa-user"></i>
-                        Perfil
-                        <span class="menu__subtext">Datos como cliente</span>	
-                    </a>
-                    ';
-        }
-
-        $body .=' -->
-
-        <a id="c5" href="#">
-            <i class="fas fa-sign-out-alt"></i>
-            Cerrar Sesion
-        </a>
-    </div>
-</section>
-
-<div class="cont-input-search adjust">
-    <div class="cont-select-deparment">
-        <p id="dcategoria">Todas 
-            <i class="fas fa-chevron-down icon-arrow"></i>
-        </p>
-        <div class="cont-select-list">
-            <ul>
-                <li class="category-option" data-value="">Todas</li><!-- ';
-    
-            // Itera sobre el arreglo $lgrup para agregar las opciones dinámicamente
-            foreach ($lgrup as $gru) {
-                $body .= '<li class="category-option" data-value="'.trim($gru->grupo).'">
-                    '.trim(utf8_encode($gru->nom_grup)).'
-                </li>';
-            }
-        
-            $body .= ' --></ul>
-        </div>
-    </div>
-
-    
-    
-    <label class="label">
-        <input type="text" id="busca-articulo" placeholder="Busca aquí tu producto" autocomplete="off">
-    </label>
-
-    <i class="fas fa-search icon-search"></i>
-    
-    <button class="btn-clear-text">
-        <span class="text-close">X</span>
-    </button>
-</div>
-
 <!---Pantalla principal---->
 <section class="navbar__general">
-    <!---Primera barra de navegacion carrito,nombre,salir... ---->
+    
     <nav class="navbar__content navbar__primary">
 
         <div class="navbar__hamburger">
             <img src="./assets/images/chiquitoblanco.png" alt="">
-            
             <i id="hamburger" class="hamburguer__icon fa-solid fa-bars"></i>
-        </div>
+        </div> 
 
-        <!-- Buscador con boostrap -->
-        <!-- <div class="container">
-            <div class="d-flex">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        Categoría
+        <div class="container content__buscadorprincipal">
+            <div class="d-flex align-items-center">
+                <div class="">
+                    <button class="btn dropdown__toggle rounded-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; padding: 8px 10px; font-size: 14px;">
+                        Todos 
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#">Opción 1</a></li>
@@ -109,73 +20,60 @@
                         <li><a class="dropdown-item" href="#">Opción 3</a></li>
                     </ul>
                 </div>
-                <input class="form-control" type="search" placeholder="Buscar..." aria-label="Buscar productos, marcas y más.." style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                <input type="text" class="form-control rounded-0" placeholder="Buscar productos, marcas y más..." aria-label="Buscar productos, marcas y más..." style="padding: 8px 10px; font-size: 1.4rem; border: none;border-right: 1px solid #a3a3a3;">
+                <div class="input-group-append">
+                    <button class="btn btn-light rounded-0" type="button" style="border: none; padding: 2px 9px; background-color: transparent;font-size: 22px;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
             </div>
-        </div> -->
+        </div>
 
         <div class="navbar__links">
-            <!------  Detalles del cliente  ------->
-                <div class="welcome-container">
-                   <!--  ';
-                    if($tipous == 'U'  || $cmatriz<>"") { 
-                        $bdcli = $this->db->query("SELECT a.cliente, a.nombre, a.rifci FROM scli AS a WHERE a.cmatriz=".$this->db->escape(trim($cmatriz))."")->result();
-
-                        $body .= '
-                        <select id="idcli" class="selected__cliente"
-                        onchange="carshopcli();$(\'#table_inventario\').DataTable().ajax.reload();"';
-        
-                            foreach ($bdcli as $cl) {
-                                $body .= '<option value="' . trim($cl->cliente) . '" data-nombre="' . trim(utf8_encode($cl->nombre)) . '">(' . trim($cl->cliente) . ') ' . trim(utf8_encode($cl->nombre)) . ' RIF: ' . trim($cl->rifci) . '</option>';
-                            }
-                            $body .= '
-                        </select>
-                        <div id="cliente_seleccionado" style="display:none;"></div>';
-                    }else{
-                        $body.='
-                        <div class="details">
-                            <span class="name__label">' . $us_nombre . '</span>
-                        </div>';
-                    }
-
-                    $body.=' -->
-                    <div class="details">
-                        <div class="details__detail">
-                            <span class="label__welcome">BCV:</span>
-                            <span class="value">'.$this->datasis->tasafecha().'</span>
+            <div class="container-fluid container__details">
+                <div class="d-flex justify-content-end">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown__toggle" type="button" id="idcli" data-bs-toggle="dropdown" aria-expanded="false">
+                            (00297) FARMACIA SNET, C.A. <i class="fas fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="idcli">
+                            <li><a class="dropdown-item" href="#" data-value="1">(00297) FARMACIA SNET, C.A.</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="2">(00297) FARMACIA SNET, C.A.</a></li>
+                            <li><a class="dropdown-item" href="#" data-value="3">(00297) FARMACIA SNET, C.A.</a></li>
+                        </ul>
+                    </div>
+                </div>
+            
+                <div class="container text-center">
+                    <div class="row flex-nowrap">
+                        <div class="col details__cli">
+                            BCV<br>
+                            2215
                         </div>
-                        <div class="details__detail">
-                            <span class="label__welcome">ALMACÉN: </span>
-                            <span id="almacli" data-almacen="" class="value"></span>
+                        <div class="col details__cli">
+                            ALMACEN<br>
+                            MATURIN
                         </div>
-
-                        <div class="details__detail">
-                            <span class="label__welcome">SEGMENTO</span>
-                            <span id="condicli" class="value"></span>
+                        <div class="col details__cli">
+                            SEGMENTO<br>
+                            CONDICION 17%
                         </div>
-                        <div class="details__detail">
-                            <span class="label__welcome">DESCUENTO VOLUMEN</span>
-                            <span id="segmecli" class="value"></span>
-                        </div>            
-                        
-                        <div class="navbar__carshop">
-                            <i onclick="opencar('yes')"  class="carshop-log__icon fa-solid fa-cart-shopping"></i>
-                            <span class="cart-count" id="cart-count">0</span>
+                        <div class="col details__cli">
+                            DCT.VOLUMEN<br>
+                            17
                         </div>
-                        <!--';
-
-                         if($cmatriz<>''){
-                            $body.='
-                                <div class="details__detail">
-                                    <span class="label">GRUPO</span>
-                                    <span class="value">'.$cmatriz.'</span>
-                                </div>
-                            ';
-                        } 
-
-                        $body.='-->
+                        <div class="col details__cli">
+                            GRUPO<br>
+                            TAKI
+                        </div>
+                        <div class="col details__cli">
+                            <i class="fas fa-shopping-cart cart-icon"></i>
+                        </div>
                     </div>
                 </div>
 
+            </div>
         </div>
+        
     </nav>
 </section>
