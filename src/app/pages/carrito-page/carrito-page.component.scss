@@ -1,0 +1,197 @@
+@use '../../../styles/variables.scss' as vars;
+@import './../home-page/home-page.component.scss';
+@import '../../components/nav-bar/nav-bar.component.scss';
+
+.carrito {
+    padding: 2rem;
+    margin-top: 5rem;
+
+    &__header {
+      margin-bottom: 2rem;
+    }
+  
+    &__title {
+      font-size: 3rem;
+      color: vars.$menu-color;
+    }
+  
+    
+  &__search-bar {
+    display: flex;
+    align-items: center;
+    width: 25rem;
+  }
+  .buscador__lista{
+    border: 1px solid vars.$bordes-claros; 
+    border-radius: 1rem;
+  }
+/* Estilos generales de la tabla */
+.carrito__table {
+    width: 100%;
+    margin-bottom: 2rem;
+    border: none;
+    border-radius: 1rem;
+}
+
+/* Estilos para las celdas de encabezado */
+.carrito__table th {
+    background-color: vars.$background-fondo;
+    color: vars.$menu-color;
+    font-weight: bold;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: none;
+    vertical-align: middle; 
+}
+
+/* Estilos para las celdas de datos */
+.carrito__table td {
+    color: vars.$menu-color;
+    padding: 0.5rem;
+    border: 1px solid vars.$bordes-claros;
+    vertical-align: middle;
+}
+
+/* Estilos para la imagen del producto */
+.carrito__product-image {
+    width: 60px;
+    height: 60px; 
+    object-fit: contain;
+}
+
+/* Estilos para el nombre del producto */
+.carrito__product-name {
+    font-size: 1.4rem;
+    text-align: left;
+}
+
+/* Estilos para los precios */
+.carrito__product-price,
+.carrito__product-iva,
+.carrito__product-usd,
+.carrito__product-iva-usd,
+.carrito__product-total,
+.carrito__product-total-usd {
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+/* Estilos para la cantidad */
+.carrito__quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 1.5rem;
+}
+
+.carrito__quantity-button {
+    background-color: vars.$text-color2;
+    color: vars.$background-fondo;
+    font-size: 2rem;
+    border: none;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 1.3rem; 
+}
+.carrito__quantity-button:hover {
+    background-color: vars.$text-color2-hover;
+}
+.carrito__quantity-input {
+    color: vars.$menu-color;
+    width: 80px;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid vars.$bordes-claros;
+    border-radius: 1rem; 
+}
+
+/* Estilos para el botón de eliminar */
+.carrito__remove-button {
+    background-color: red;
+    color: vars.$background-fondo;
+    font-size: 2rem;
+    border: none;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 1.3rem; 
+}
+
+.carrito__remove-button:hover {
+    background-color: #d30404;
+}
+
+/* Estilos para el hover de las filas */
+.carrito__table tbody tr:hover {
+    cursor: pointer;
+    background-color: #ebebeb;
+}
+.carrito__totals{
+  width: 50%;
+  position: relative;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.carrito__totals-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+}
+.carrito__totals-container::before {
+  content: "";
+  position: absolute;
+  top: 25%; 
+  bottom: 25%; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background-color: #ccc;
+}
+.carrito__totals-info{
+  color: vars.$menu-color;
+  display: flex; 
+  justify-content: space-between; 
+}
+  &__product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  &__totals-item {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__totals-title {
+    width: 21%;
+    background-color: vars.$text-color2;
+    color: vars.$background-fondo;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+
+  &__footer {
+    text-align: center;
+  }
+
+  &__checkout-button {
+    width: 80%;
+    padding: 10px 20px;
+    border: none;
+    background-color: vars.$text-color2;
+    color: vars.$background-fondo;
+    border-radius: 1rem;
+  }
+  &__checkout-button:hover {
+    background-color: vars.$text-color2-hover;
+  }
+}

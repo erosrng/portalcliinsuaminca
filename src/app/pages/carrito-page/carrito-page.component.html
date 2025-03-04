@@ -1,0 +1,100 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="carrito">
+    <header class="carrito__header">
+      <h1 class="ofertas-title carrito__title">Carrito de compra</h1>
+    </header>
+  
+    <section class="carrito__products">
+      <h2 class="text-primary">Mis productos</h2>
+  
+      <div class="carrito__search-bar buscador__lista">
+        <div class="d-flex align-items-center">
+            <input type="text" class="form-control rounded-0" placeholder="Buscar en mi lista..." aria-label="Buscar en mi lista..." style="padding: 8px 10px; font-size: 1.4rem; border: none;border-right: 1px solid #a3a3a3;">
+            <div class="input-group-append">
+                <button class="btn btn-light rounded-0" type="button" style="border: none; padding: 2px 9px; background-color: transparent;font-size: 22px;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+      </div>
+  
+      <table id="productsTable" class="carrito__table">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col">Bs.</th>
+            <th scope="col">IVA Bs.</th>
+            <th scope="col">US$</th>
+            <th scope="col">IVA US$</th>
+            <th scope="col">Total Bs.</th>
+            <th scope="col">Total US$</th>
+            <th scope="col">Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img src="./../../../assets/images/02268_.png" alt="Producto 1" class="carrito__product-image"></td>
+            <td class="carrito__product-name">ATAMEL FORTE 650MG X 10 TAB ACETAMINOFEN PFIZER</td>
+            <td class="carrito__product-price">113.30</td>
+            <td class="carrito__product-iva">0,00%</td>
+            <td class="carrito__product-usd">1,94</td>
+            <td class="carrito__product-iva-usd">0,00%</td>
+            <td class="carrito__product-total">2.834.25</td>
+            <td class="carrito__product-total-usd">48,5</td>
+            <td>
+              <div class="carrito__quantity">
+                <button class="carrito__quantity-button"><i class="fa-solid fa-minus"></i></button>
+                <input type="number" value="25" class="carrito__quantity-input">
+                <button class="carrito__quantity-button"><i class="fa-solid fa-plus"></i></button>
+              </div>
+            </td>
+            <td style="text-align: center;"><button class="carrito__remove-button"><i class="fa-solid fa-x"></i></button></td>
+          </tr>
+          <tr>
+            <td><img src="./../../../assets/images/02268_.png" alt="Producto 2" class="carrito__product-image"></td>
+            <td class="carrito__product-name">ATAMEL FORTE 650MG X 10 TAB ACETAMINOFEN PFIZER</td>
+            <td class="carrito__product-price">113.30</td>
+            <td class="carrito__product-iva">0,00%</td>
+            <td class="carrito__product-usd">1,94</td>
+            <td class="carrito__product-iva-usd">0,00%</td>
+            <td class="carrito__product-total">2.834.25</td>
+            <td class="carrito__product-total-usd">48,5</td>
+            <td>
+              <div class="carrito__quantity">
+                <button class="carrito__quantity-button"><i class="fa-solid fa-minus"></i></button>
+                <input type="number" value="25" class="carrito__quantity-input">
+                <button class="carrito__quantity-button"><i class="fa-solid fa-plus"></i></button>
+              </div>
+            </td>
+            <td style="text-align: center;"><button class="carrito__remove-button"><i class="fa-solid fa-x"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </section>
+  
+    <section class="carrito__totals">
+      <div class="carrito__totals-container">
+        <div class="carrito__totals-item">
+          <h3 class="carrito__totals-title">US$</h3>
+          <p class="carrito__totals-info">Subtotal US$: <span>2.834,25</span></p>
+          <p class="carrito__totals-info">IVA US$: <span>2.834,25</span></p>
+          <p class="carrito__totals-info">Total US$: <span>2.834,25</span></p>
+        </div>
+        <div class="carrito__totals-item">
+          <h3 class="carrito__totals-title">Bs.</h3>
+          <p class="carrito__totals-info">Subtotal Bs: <span>2.834,25</span></p>
+          <p class="carrito__totals-info">IVA Bs: <span>2.834,25</span></p>
+          <p class="carrito__totals-info">Total Bs: <span>2.834,25</span></p>
+        </div>
+      </div>    
+      
+      <footer class="carrito__footer">
+        <button class="carrito__checkout-button">Finalizar compra</button>
+      </footer>
+    </section>
+  
+
+  </div>

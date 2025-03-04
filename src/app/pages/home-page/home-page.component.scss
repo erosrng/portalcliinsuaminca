@@ -29,6 +29,31 @@
 .menu__link i {
     margin-right: 10px;
 }
+.menu__dropdown-content {
+    background-color: #f8f9fa; /* Color de fondo ligero para el desplegable */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-left: 10px; /* Margen para separar del menú principal */
+    padding: 5px; /* Espaciado interno */
+}
+
+.menu__dropdown-link {
+    padding: 8px 15px; /* Espaciado interno del enlace desplegable */
+    color: #333; /* Color del texto */
+    text-decoration: none; /* Quitar subrayado */
+    display: block; /* Asegurar que ocupe todo el ancho */
+}
+
+.menu__dropdown-link:hover {
+    background-color: #e9ecef; /* Color de fondo al pasar el ratón */
+}
+
+.menu__dropdown-icon{
+    transition: transform 0.3s ease-in-out;
+}
+
+.menu__link[aria-expanded="true"] .menu__dropdown-icon{
+    transform: rotate(180deg);
+}
 
 .menu__dropdown-icon {
     margin-left: auto;
