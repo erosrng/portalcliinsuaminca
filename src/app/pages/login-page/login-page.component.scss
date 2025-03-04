@@ -156,7 +156,9 @@
     flex-direction: column;
     gap: 20px;
 }
-
+.login__container{
+    width: 50%;
+}
 /* Estilo para el grupo de inputs */
 .input_group {
     display: flex;
@@ -169,7 +171,11 @@
     flex-grow: 1;
     width: 100%;
 }
-
+.custom-input {
+    height: 6rem;
+    font-size: 1.5rem;
+    padding: 1rem 0.75rem;
+}
 /* Estilo de los inputs */
 .input_field {
     width: 100%;
@@ -288,4 +294,41 @@
         font-weight: bold; 
         cursor: pointer; 
         transition: transform 0.3s ease-in-out;
+    }
+
+    @media (max-width: 600px) {
+        /* .portal{
+            flex-direction: column-reverse;
+        }
+        .portal__login{
+            height: 80%;
+            padding: 1rem;
+            margin: 0;
+        } */
+        .portal {
+            flex-direction: column-reverse;
+        }
+        .portal__title{
+            margin-bottom: 0;
+        }
+        .portal__registro {
+            flex: unset;
+            height: 92%;
+        }
+        .portal__image {
+            display: none;
+        }
+        .portal__logo {
+            width: 20%;
+            margin-top: 1rem;
+        }
+        .portal__form {
+            margin-top: 1%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .portal__footer {
+            margin-bottom: 10rem;
+        }
     }

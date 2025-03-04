@@ -3,7 +3,7 @@
         <img src="./assets/images/InsuamincaLogo.png" alt="Logo Insuanet" class="portal__logo">					
             <h1 class="portal__title">¡Bienvenido a Insuanet!</h1>
             <!-- <h1 style="color:red;margin: 0;font-size:1.5rem;text-align: center;">$this->session->flashdata('mensaje')</h1> -->
-            <section class="container_input_custom">
+            <!-- <section class="container_input_custom">
                 <form (ngSubmit)="onSubmit()">
                     <div class="input_group">
                         <div class="input_wrapper full-width">
@@ -19,6 +19,28 @@
                         </div>
                     </div>
 
+                    <div class="input_button">
+                        <button type="usr_submit" class="btn_primary">Ingresar</button>
+                    </div>
+                </form>
+            </section> -->
+
+            <section class="login__container">
+                <form (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="text" id="user" name="user" class="form-control custom-input" placeholder="Usuario" required>
+                            <label for="user">Usuario</label>
+                        </div>
+                    </div>
+            
+                    <div class="mb-3">
+                        <div class="form-floating">
+                            <input type="password" id="pws" name="pws" class="form-control custom-input" placeholder="Contraseña" required>
+                            <label for="pws">Contraseña</label>
+                        </div>
+                    </div>
+                    
                     <div class="input_button">
                         <button type="usr_submit" class="btn_primary">Ingresar</button>
                     </div>

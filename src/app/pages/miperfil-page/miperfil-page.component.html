@@ -1,0 +1,134 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="mi-perfil">
+    <header class="mi-perfil__header">
+      <h1 class="ofertas-title mi-perfil__title">Mi perfil</h1>
+    </header>
+  
+    <div class="mi-perfil__content">
+      <aside class="mi-perfil__sidebar">
+        <section class="mi-perfil__datos">
+        <h3 class="card-title text-primary">Datos</h3>
+          <p>Cliente: FARMAPAZ LAS COCUIZAS C.A.</p>
+          <p>RIF: J-29502437-1</p>
+          <p>Días de crédito: 14</p>
+          <p>Código SICM: 38658</p>
+          <p>Código SADA: 865036</p>
+          <p>Correo Electrónico: farmapazcitygmail.com</p>
+          <p>Usuario: 01013</p>
+          <p>Teléfono: 0414-123 4567</p>
+          <div class="text-center">
+            <a href="#" class="btn btn__showpeds">Actualizar datos</a>
+        </div>
+        </section>
+      </aside>
+  
+      <main class="mi-perfil__main">
+        <div class="mi-perfil__left">
+
+                <div class="card card__info">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Información</h3>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <span class="title__limit">LÍMITE DE CRÉDITO</span>
+                                <span class="float-end cardinfo__text">Bs. 1.000.000,00</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-center">
+                                <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                <span class="cardinfo__text">US$ 10.000</span><br>
+                                <span class="text-danger">VENCIDO</span>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                <span class="cardinfo__text">US$ 10000</span><br>
+                                <span>POR VENCER</span>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <span class="cardinfo__text">Bs. 100.000,00</span><br>
+                                <span class="cardinfo__text">US$ 10.000</span><br>
+                                <span>EN TRÁNSITO</span>
+                            </div>
+                        </div>
+                        <div class="row text-white p-2 rounded saldo__content">
+                            <div class="col-md-12">
+                                <span class="fw-bold">SALDO DISPONIBLE</span>
+                                <span class="float-end">Bs. 1.000.000,00<br>US$ 10.000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="card mt-4 card__info">
+                    <div class="card-body ">
+                        <h3 class="card-title text-primary">Asesor Comercial</h3>
+                        <p class="card-text">
+                            <span class="cardinfo__text">NOMBRE: <b>NOMBRE EJEMPLO</b></span><br>
+                            <span class="cardinfo__text">TELÉFONO: <b>123456789</b></span><br>
+                            <span class="cardinfo__text">CORREO: <span class="title__limit">correoorreo.com</span>                                    </span>
+                        </p>
+                    </div>
+                </div>
+        </div>
+
+        <div class="mi-perfil__right">
+            <section class="mi-perfil__historial">
+                <h3 class="card-title text-primary">Historial de pedidos</h3>
+
+                <table class="mi-perfil__historial-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nro. Pedido</th>
+                      <th scope="col">Origen</th>
+                      <th scope="col">Estatus</th>
+                      <th scope="col">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>400045</td>
+                      <td>MATURIN</td>
+                      <td class="status__com">COMPLETADO</td>
+                      <td>14/02/2025 3:42 P.M.</td>
+                    </tr>
+                    <tr>
+                      <td>400045</td>
+                      <td>MATURIN</td>
+                      <td>EN TRÁNSITO</td>
+                      <td>14/02/2025 3:42 P.M.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+        
+              <section class="mi-perfil__filtros">
+                <h3 class="card-title text-primary" style="text-align: center;">Filtrar por fecha</h3>
+
+                <div class="mi-perfil__filtros-inputs">
+                    <label for="">Desde:</label>
+                  <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                  <label for="">Hasta:</label>
+                  <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                  <button class="busca__pedido">Buscar pedidos</button>
+                </div>
+                <a class="limpafiltro">Limpiar filtros</a>
+              </section>
+        
+              <section class="mi-perfil__pedidos">
+                <button class="carrito__checkout-button">Ver todos mis pedidos</button>
+              </section>
+        </div>
+
+  
+
+      </main>
+    </div>
+
+    <div class="pre__footer"></div>
+
+  </div>
+
+
+<app-footer></app-footer>
