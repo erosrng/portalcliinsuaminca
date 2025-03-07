@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
+import { AuthService } from './../../auth.service';
 
 @Component({
   selector: 'app-home-page',
@@ -14,5 +15,12 @@ import { FooterComponent } from "../../components/footer/footer.component";
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
+  userData: any;
+  apiKey: string = '';
 
+  constructor(private authService: AuthService) {} 
+
+  ngOnInit() { // Implementa ngOnInit
+    const token = this.authService.getToken();
+  }
 }

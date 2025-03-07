@@ -1,4 +1,112 @@
 @use '../../../styles/variables.scss' as vars;
+ 
+.fichaproduct__container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.product-header {
+    background-color: vars.$text-color2; /* Color verde */
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-radius: 2rem 2rem 0 0rem;
+}
+
+.logo {
+    width: 100px; /* Ajusta el tamaño del logo */
+    margin-right: 20px;
+}
+
+.slogan {
+    font-style: italic;
+    font-size: 14px;
+}
+
+.product-content {
+    display: flex;
+}
+
+.product-image {
+    width: 60%;
+    padding: 20px;
+}
+
+.product-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.product-details {
+    width: 40%;
+    border: 1px solid vars.$bordes-claros;
+    border-radius: 2rem;
+}
+
+.product-title {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.more-products {
+    color: vars.$menu-color-seconday;
+    text-decoration: none;
+    font-size: 1.4rem;
+    display: block;
+    text-align: center;
+}
+
+.price {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0rem;
+    padding: 2rem;
+}
+
+.usd {
+    font-size: 2.2em;
+    color: vars.$menu-color;
+}
+
+.bs {
+    font-size: 1.5em;
+    color: vars.$menu-color;
+}
+
+.product-data {
+    list-style: none;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+.product-data li {
+    font-size: 1.3rem;
+    color: vars.$menu-color;
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0rem 2rem 0rem 2rem;
+}
+
+.quantity-input {
+    width: 12rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+}
+
+.stock {
+    font-size: 1.4rem;
+    color: vars.$menu-color;
+}
+
+
+/***********************/
 .menu__general {
     width: 200px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
@@ -223,7 +331,7 @@
     background-color: vars.$text-color2;
 }
 .title__limit{
-    color: #45cbda;
+    color: vars.$menu-color-seconday;
 }
 .col-md-4 {
     border-right: 1px solid vars.$lineas-separetor; 
@@ -466,6 +574,16 @@
 .img__product-principal-v2 {
     max-width: 80%;
 
+}
+.carrito__checkout-button{
+    width: 80%;
+    padding: 10px 20px;
+    border: none;
+    background-color: vars.$text-color2;
+    color: white;
+    border-radius: 1rem;
+    margin: 1rem auto;
+    display: block;
 }
 
 .cana__container-v2 {

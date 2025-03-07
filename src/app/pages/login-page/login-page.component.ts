@@ -1,55 +1,61 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // Para manejar formularios
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { AuthService } from './../../auth.service';
 
 @Component({
   selector: 'app-login-page',
-  standalone: true, // Indica que es un componente independiente
-  imports: [
-    CommonModule,
-    FormsModule // Importar FormsModule para usar ngModel
-  ],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.scss']
+  styleUrls: ['./login-page.component.scss'],
 })
+
 export class LoginPageComponent {
-  // Objeto para almacenar los datos del formulario
   userData = {
     user: '',
-    password: ''
+    password: '',
   };
+    errorMessage: string = '';
+    loading: boolean = false;
 
-  // Inyectar HttpClient para hacer solicitudes HTTP
-  constructor(private route: Router) {}
+  constructor(private route: Router, private http: HttpClient, private authService: AuthService) {}
 
-  // Función que se ejecuta al enviar el formulario
   onSubmit() {
-    this.route.navigateByUrl('home')
-    // // URL de la API (ajusta la ruta según tu backend)
-    // const apiUrl = 'https://tudominio.com/api/logincli';
+    this.errorMessage = '';
+    this.loading = true;
 
-    // // Realizar la solicitud POST a la API
-    // this.http.post(apiUrl, this.userData).subscribe(
-    //   (response: any) => {
-    //     // Manejar la respuesta exitosa
-    //     if (response.status) {
-    //       console.log('Login exitoso:', response.userdata);
-    //       // Guardar el token en el almacenamiento local
-    //       localStorage.setItem('token', response.api_key);
-    //       // Redirigir al usuario a otra página
-    //       // this.router.navigate(['/dashboard']);
-    //     } else {
-    //       console.error('Error:', response.message);
-    //       alert(response.message); // Mostrar mensaje de error
-    //     }
-    //   },
-    //   (error) => {
-    //     // Manejar errores de la solicitud
-    //     console.error('Error en la solicitud:', error);
-    //     alert('Error en la conexión con el servidor'); // Mostrar mensaje de error
-    //   }
-    // );
+    if (!this.userData.user || !this.userData.password) {
+      this.errorMessage = 'Por favor, complete todos los campos.';
+      this.loading = false;
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('user', this.userData.user);
+    formData.append('password', this.userData.password);
+
+    // Aquí iría la petición HTTP al servidor para la autenticación
+    this.http.post('http://10.0.100.2/proteoerp/api/logincli/logincli', formData).subscribe({
+      next: (response: any) => {
+        if(response.status==false){
+          this.errorMessage = response.message;
+          this.loading = false;
+        }else{
+          // Manejar la respuesta del servidor (token, etc.)
+          const token = this.authService.getToken();
+          this.authService.setToken(response.api_key); // Guarda el token aquí
+          this.route.navigate(['/home']); 
+          this.loading = false;
+        }
+      },
+      error: (error) => {
+        // Manejar errores de autenticación
+        this.errorMessage = 'Usuario o contraseña incorrectos.';
+        this.loading = false;
+      },
+    });
   }
 }

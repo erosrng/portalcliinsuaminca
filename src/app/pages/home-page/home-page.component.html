@@ -2,6 +2,54 @@
 
 <div class="principal__pantalla menu-active">
     
+    <div class="modal fade" id="tuModalID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              <!-- <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div> -->
+              <div class="modal-body">
+                <div class="fichaproduct__container">
+                    <div class="product-content">
+                        <div class="product-image">
+                            <img src="./assets/images/02268_.png" alt="Diclofenac Potásico 50mg 10 Tabletas">
+                        </div>
+                        <div class="product-details">
+                            <div class="product-header">
+                                <h1>DICLOFLENAC POSTASICO 50MG 10 TABLETAS</h1>
+                            </div>                            
+                            <a href="#" class="more-products">Ver más productos LA SANTÉ</a>
+                            <div class="price">
+                                <p class="usd">US$ 0,29</p>
+                                <p class="bs">Bs. 16,57</p>
+
+                                <ul class="product-data">
+                                    <li>Tipo: Artículo</li>
+                                    <li>Origen: Nacional</li>
+                                    <li>Marca: LA SANTÉ</li>
+                                    <li>Principio Activo:</li>
+                                    <li>Cod. Barra: 7592454002639</li>
+                                </ul>
+
+                            </div>
+
+                            <div class="quantity">
+                                <input type="text" placeholder="Cant..." class="quantity-input">
+                                <p class="stock">Cantidad<br>Existencia: 14125</p>
+                            </div>
+                            <button class="carrito__checkout-button">¡Agregar al carrito!</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     <section class="menu__general openmenu" id="menu">
         <div class="menu__content">
             <ul class="nav flex-column menu__nav">
@@ -64,6 +112,7 @@
             </div>
         </div>
     </section>
+    
     <div class="layout__principal">
 
         <!---Pantalla de carga----->
@@ -166,6 +215,9 @@
                     </div>
 
 
+                        
+
+
                     <div class="caja c2">
 
                         <div class="ofertas__carrusel">
@@ -205,8 +257,7 @@
                                         <div class="product-price">US$ 3,66</div>
                                         
                                         <div class="image-product__container-v2">
-                                            <img onclick="mostrarFichaProducto('00372')" class="" src="/insuaminca/uploads/inventario/Image/00372_.png" alt="">
-                                            <img src="./assets/images/02268_.png" class="img__product-principal-v2" alt="Pantoprazol 1">
+                                            <img src="./assets/images/02268_.png" data-bs-toggle="modal" data-bs-target="#tuModalID" class="img__product-principal-v2" alt="Pantoprazol 1">
                                         </div>
                                 
                                         <span class="exis__text">Disponibles: 284</span>
