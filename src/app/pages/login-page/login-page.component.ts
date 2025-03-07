@@ -45,8 +45,9 @@ export class LoginPageComponent {
           this.loading = false;
         }else{
           // Manejar la respuesta del servidor (token, etc.)
-          const token = this.authService.getToken();
-          this.authService.setToken(response.api_key); // Guarda el token aquí
+          this.authService.setUserData(response.userdata);
+          this.authService.setToken(response.api_key);
+
           this.route.navigate(['/home']); 
           this.loading = false;
         }

@@ -1,0 +1,145 @@
+
+<app-nav-bar></app-nav-bar>
+<div class="container-fluid mt-6">
+    <div class="row">
+        <div class="col-3">
+          <div class="row">
+            <div class="col-12">
+              <div class="card pt-5">
+                <div class="row">
+                  <div class="col-12 text-center">
+                    <h4>Carrito de compra</h4>
+                   
+                  </div>
+                  <div class="col-12 text-center">
+                    <a class="show-text-car">Ver carrito de compra</a>
+                  </div>
+                  <div class="col-12 unid-col mt-5">
+                    <span>Und.</span>
+                    <span>10 000</span>
+                  </div>
+    
+                  <div class="col-12 unid-col mt-4">
+                    <span>Und.</span>
+                    <div class="">
+                      <span>Bs. 10 000</span>
+                      <br>
+                      <span>US$ 200</span>
+                    </div>
+                    
+                  </div>
+    
+                  <div class="col-12 p-0 mt-5">
+                    <button class="btn-end"> Finalizar compra</button>
+                  </div>
+                  <div class="col-12 mt-3 text-center">
+                    <a class="clear-car"> Vaciar carrito</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+
+          <div class="row mt-5">
+            <div class="col-12">
+              <button class="row-clear-filter "> Limpiar Filtros</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-9 p-5">
+            <div class="row p-0">
+                <div class="col-8">
+                    <div id="carouselExample" class="carousel slide">
+                        <div class="carousel-inner">
+                          <div class="carousel-item active">
+                            <div class="box-carusel-img"></div>
+                            
+                          </div>
+                          <div class="carousel-item">
+                            <div class="box-carusel-img"></div>
+                          </div>
+                          <div class="carousel-item">
+                            <div class="box-carusel-img"></div>
+                          </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                      </div>
+                </div>
+                <div class="col-4">
+                    <div class="d-block w-100  box-banner-individual"></div>
+                    <div class="d-block w-100  box-banner-individual"></div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Toma de pedidos</h4>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <div class="container-fluid w-100">
+                      <div class="row row-header">
+                        <div class="col-1 header-table border-left-top">Ver</div>
+                        <div class="col-3 header-table">Descripción</div>
+                        <div class="col-1 header-table">Proveedor</div>
+                        <div class="col-1 header-table">Lote</div>
+                        <div class="col-1 header-table">Vence</div>
+                        <div class="col-1 header-table">Bs.</div>
+                        <div class="col-1 header-table">US$</div>
+                        <div class="col-1 header-table">Inventario</div>
+                        <div class="col-1 header-table">Cantidad</div>
+                        <div class="col-1 header-table border-right-top">Agregar</div>
+                                 
+                    </div>
+                    <div class="container-fluid p-0 m-0 w-100 container-products">
+                      <div class="row row-products p-0" 
+                      *ngFor="let product of products; let i = index" 
+                      [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                        <div class="col-1 cel-product p-0"><img [src]="product.img" class="img-product"></div>
+                        <div class="col-3 cel-product p-0">{{product.descripcion}}</div>
+                        <div class="col-1 cel-product p-0">{{product.proveedor}}</div>
+                        <div class="col-1 cel-product p-0">{{product.Lote}}</div>
+                        <div class="col-1 cel-product p-0">{{product.vence}}</div>
+                        <div class="col-1 cel-product p-0">{{product.bs}}</div>
+                        <div class="col-1 cel-product p-0">{{product.usd}}$</div>
+                        <div class="col-1 cel-product p-0">{{product.cantidad}} </div>
+                        <div class="col-1 cel-product-noborder-left p-0"><input type="number" min="0" placeholder="Cantidad" class="w-100 input-cant"> </div>
+                        <div class="col-1 cel-product-noborder-right p-0">
+                          <button 
+                            class="btn-add"
+                            [ngClass]="{'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0}"
+                            >
+                            <img src="../../../assets/icons/Iconos Portal-07.svg" class="icon-add">
+                            <img src="../../../assets/icons/Iconos Portal-07 - white.svg" class="icon-add-hover">
+                          </button>
+                      </div>
+                        
+                    </div>
+                    </div>
+                    
+                  </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+              <div class="col-6">
+                <div class="d-block w-100  box-banner-individual-footer"></div>
+              </div>
+              <div class="col-6">
+                <div class="d-block w-100 box-banner-individual-footer"></div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>

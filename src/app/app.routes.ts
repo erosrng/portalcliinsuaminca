@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
-import { HomePageComponent } from './pages/home-page/home-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
-import { AuthGuard } from './auth.guard';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+import { CarritoPageComponent } from './pages/carrito-page/carrito-page.component';
+import { MiperfilPageComponent } from './pages/miperfil-page/miperfil-page.component';
+import { PedidosPageComponent } from './pages/pedidos-page/pedidos-page.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomePageComponent, canActivate: [AuthGuard] }, // Ruta protegida
-  { path: 'login', component: LoginPageComponent }, // Ruta pública
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' },
+    {path: '', component: LoginPageComponent},
+    {path: 'home', component: HomePageComponent},
+    {path: 'carrito', component: CarritoPageComponent},
+    {path: 'miperfil', component: MiperfilPageComponent},
+    {path: 'pedidos', component: PedidosPageComponent}
 ];

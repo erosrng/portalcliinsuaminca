@@ -1,47 +1,50 @@
 import { Injectable } from '@angular/core';
-import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private token: string | null = null;
-  private userData: any | null = null;
-
+  private userData: any;
+  private token: string | null = null;  
+  
   setToken(token: string) {
     this.token = token;
     localStorage.setItem('token', token);
-    this.decodeToken(); // Decodifica el token al guardarlo
   }
 
   getToken(): string | null {
     if (!this.token) {
       this.token = localStorage.getItem('token');
-      this.decodeToken(); // Decodifica el token al recuperarlo
     }
     return this.token;
   }
 
   removeToken() {
     this.token = null;
-    this.userData = null;
     localStorage.removeItem('token');
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+
+  setUserData(data: any) {
+    this.userData = data;
+    localStorage.setItem('userData', JSON.stringify(data)); // Almacena en localStorage
   }
 
-  getUserData(): any | null {
+  getUserData() {
+    if (!this.userData) {
+      this.userData = JSON.parse(localStorage.getItem('userData') || '{}'); // Recupera de localStorage
+    }
     return this.userData;
   }
 
-  private decodeToken() {
-    const token = this.getToken();
-    if (token) {
-      this.userData = jwtDecode(token);
-    } else {
-      this.userData = null;
-    }
+  isLoggedIn(): boolean {
+    return !!this.getUserData() && this.getUserData().logged_in;
+  }
+
+  logout() {
+    this.userData = null;
+    this.token = '';
+    localStorage.removeItem('userData'); // Elimina de localStorage
+    localStorage.removeItem('apiKey'); // Elimina de localStorage
   }
 }

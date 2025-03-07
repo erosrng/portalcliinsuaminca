@@ -1,0 +1,252 @@
+*{
+    transition: all ease 0.25s;
+}
+
+.box-banner-individual {
+    height: 15vh;
+    width: 100%;
+    background-color: #000;
+    margin-top: 1.2vh;
+    border-radius: 1rem;
+}
+
+.box-banner-individual-footer {
+    height: 15vh;
+    width: 100%;
+    background-color: #000;
+    margin-top: 1.2vh;
+    border-radius: 1rem;
+}
+
+.box-carusel-img {
+    height: calc(30vh + 1rem);
+    width: 100%;
+    background-color: #000;
+    margin-top: 1vh;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.header-table {
+    font-size: 13px;
+    background: #0377bf;
+    color: #fff;
+    font-weight: 700;
+    padding: 1rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.border-left-top {
+    border-top-left-radius: 1rem;
+}
+
+.border-right-top {
+    border-top-right-radius: 1rem;
+}
+
+.cel-product {
+    padding: 0.25rem !important;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #cccccc6e;
+    font-size: 12px;
+    color: #002b52 !important;
+    font-weight: 500;
+}
+
+.cel-product-noborder-left {
+    padding: 0.25rem !important;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #cccccc6e;
+    font-size: 12px;
+    color: #002b52 !important;
+    font-weight: 500;
+}
+
+.cel-product-noborder-right {
+    padding: 0.25rem !important;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #cccccc6e;
+    font-size: 12px;
+    color: #002b52 !important;
+    font-weight: 500;
+}
+
+.img-product {
+    width: 50px !important;
+}
+
+.even-row {
+    background: #FFF !important;
+    cursor: pointer;
+}
+
+.odd-row {
+    background: #ededed !important;
+    cursor: pointer;
+}
+
+.discount-row {
+    width: 99% !important;
+    border-right: 10px solid #38c702;
+    border-left: 10px solid #38c702;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.row-products {
+    width: calc(98% - 10px);
+    margin: auto;
+    height: 9vh;
+}
+
+.row-products:hover{
+    background: #4848483b !important;
+}
+
+.input-cant {
+    border: 1px solid #CCC;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin: 0 1rem;
+}
+
+.container-products {
+    max-height: 50vh;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.row-header {
+    width: 99% !important;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.icon-add {
+    width: 2vh;
+    display: block;
+    margin: auto;
+}
+
+.icon-add-hover {
+    width: 2vh;
+    display: none;
+    margin: auto;
+}
+
+.btn-add {
+    width: 100%;
+    padding: 1rem;
+    margin: 0 1rem;
+    border: none;
+    border-radius: 1rem;
+}
+
+.btn-add:hover {
+    background: #0377bf !important;
+    .icon-add {
+        display: none;
+    }
+
+    .icon-add-hover {
+        display: block;
+    }
+}
+
+.pt-5 {
+    margin-top: 4rem !important;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.unid-col {
+    width: 100%;
+    height: 8vh;
+    display: flex;
+    justify-content: space-between;
+    background: #ededed;
+    align-items: center;
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+.btn-end {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 7vh;
+    border-radius: 1rem;
+    border: none;
+    color: #FFF;
+    background: #0377bf;
+    font-size: 2rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.clear-car {
+    text-align: center;
+    color: #ff2f2f;
+    font-size: 1.5rem;
+    margin: auto;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+h4 {
+    font-size: 2.5rem;
+}
+
+.show-text-car {
+    color: #0377bf;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1.5rem;
+}
+
+.mt-6 {
+    margin-top: 6rem;
+}
+
+.row-clear-filter {
+    background: #ededed;
+    height: 5vh;
+    font-size: 1.5rem;
+    color: #000;
+    cursor: pointer;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: none;
+}
+
+.row-clear-filter:hover {
+    background: #0377bf !important;
+    height: 5vh;
+    font-size: 1.5rem;
+    color: #FFF;
+    cursor: pointer;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: none;
+}
