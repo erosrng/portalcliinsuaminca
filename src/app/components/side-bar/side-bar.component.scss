@@ -1,0 +1,71 @@
+@use '../../../styles/variables.scss' as vars;
+
+.menu__general {
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    margin-top: 6rem;
+    position: static;
+    border-right: 1px solid vars.$lineas-separetor;
+    transition: width 0.3s ease; /* Transición para el ancho */
+    width: 250px; /* Ancho del menú abierto (ajusta según tus necesidades) */
+    height: 100%;
+}
+
+.menu__general.closedmenu {
+    width: 3.4rem; /* Ancho del menú cerrado (ajusta según tus necesidades) */
+}
+
+.menu__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.menu__link {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: #333;
+    border-bottom: 1px solid #dee2e6;
+    width: 80%;
+}
+
+.menu__link i {
+    margin-right: 10px;
+}
+
+.menu__dropdown-content {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 5px;
+}
+
+.menu__dropdown-link {
+    padding: 8px 15px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.menu__dropdown-link:hover {
+    background-color: #e9ecef;
+}
+
+.menu__dropdown-icon {
+    transition: transform 0.3s ease-in-out;
+    margin-left: auto;
+}
+
+.menu__link[aria-expanded="true"] .menu__dropdown-icon {
+    transform: rotate(180deg);
+}
+
+.menu__dropdown-content {
+    padding-left: 2rem;
+}
+
+.menu__footer {
+    margin-top: 45rem;
+    color: vars.$menu-color;
+    text-align: center;
+}

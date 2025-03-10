@@ -5,8 +5,9 @@
 
         <div class="navbar__hamburger">
             <img src="./assets/images/chiquitoblanco.png" alt="">
-            <i id="hamburger" class="hamburguer__icon fa-solid fa-bars"></i>
-        </div> 
+            <i id="hamburger" class="hamburguer__icon fa-solid fa-bars" (click)="toggleMenu()"></i>
+        </div>
+          
 
         <div class="container content__buscadorprincipal">
             <div class="d-flex align-items-center">
@@ -52,7 +53,7 @@
                         </div>
                         <div class="col details__cli">
                             ALMACEN<br>
-                            MATURIN
+                            {{ userData.almacen }}
                         </div>
                         <div class="col details__cli">
                             SEGMENTO<br>
@@ -64,10 +65,10 @@
                         </div>
                         <div class="col details__cli">
                             GRUPO<br>
-                            TAKI
+                            {{ userData.cmatriz }}
                         </div>
                         <div class="col details__cli">
-                            <i class="fas fa-shopping-cart cart-icon"></i>
+                            <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
                         </div>
                     </div>
                 </div>

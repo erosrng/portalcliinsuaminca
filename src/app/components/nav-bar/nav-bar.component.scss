@@ -52,6 +52,17 @@
 .cont-input-search {
     transition: left 0.5s ease, width 0.5s ease;
 }
+.menu__close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+}
 /*ESTILOS DE BUSCADOR GENERAL*/
 .content__buscadorprincipal{
     width: 30%;
@@ -110,6 +121,14 @@
     /* height: 100%; */
 
 } 
+.cart-icon {
+cursor: pointer;
+transition: transform 0.2s ease-in-out; 
+}
+
+.cart-icon:hover {
+transform: scale(1.1); 
+}
 
 .cart-count{
     background-color: vars.$menu-color;

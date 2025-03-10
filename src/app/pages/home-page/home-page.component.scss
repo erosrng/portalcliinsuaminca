@@ -107,74 +107,8 @@
 
 
 /***********************/
-.menu__general {
-    width: 200px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    margin-top: 6rem;
-    position: static;
-    border-right: 1px solid vars.$lineas-separetor;
-}
 
-.menu__content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
-/* .menu__nav {
-    flex-grow: 1;
-} */
-
-.menu__link {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    color: #333;
-    border-bottom: 1px solid #dee2e6;
-    
-}
-
-.menu__link i {
-    margin-right: 10px;
-}
-.menu__dropdown-content {
-    background-color: #f8f9fa; /* Color de fondo ligero para el desplegable */
-    border-radius: 5px; /* Bordes redondeados */
-    margin-left: 10px; /* Margen para separar del menú principal */
-    padding: 5px; /* Espaciado interno */
-}
-
-.menu__dropdown-link {
-    padding: 8px 15px; /* Espaciado interno del enlace desplegable */
-    color: #333; /* Color del texto */
-    text-decoration: none; /* Quitar subrayado */
-    display: block; /* Asegurar que ocupe todo el ancho */
-}
-
-.menu__dropdown-link:hover {
-    background-color: #e9ecef; /* Color de fondo al pasar el ratón */
-}
-
-.menu__dropdown-icon{
-    transition: transform 0.3s ease-in-out;
-}
-
-.menu__link[aria-expanded="true"] .menu__dropdown-icon{
-    transform: rotate(180deg);
-}
-
-.menu__dropdown-icon {
-    margin-left: auto;
-}
-
-.menu__dropdown-content {
-    padding-left: 2rem;
-}
-.menu__footer{
-    margin-top: 45rem;
-    color: vars.$menu-color;
-    text-align: center;
-}
 /**//************MAIN CONTENT BIENVENIDO AL PORTAL*********************/
 .content__general {
     width: 100%;
@@ -234,9 +168,9 @@
     display: flex;
     transition: all 0.5s ease;
 }
-.principal__pantalla.menu-active .menu__general {
+/* .principal__pantalla.menu-active .menu__general {
     width: 250px;
-}
+} */
 
 .principal__pantalla.menu-active .layout__principal {
     width: calc(100% - 250px);
