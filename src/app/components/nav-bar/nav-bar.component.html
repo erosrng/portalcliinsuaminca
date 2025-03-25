@@ -11,16 +11,24 @@
 
         <div class="container content__buscadorprincipal">
             <div class="d-flex align-items-center">
-                <div class="">
-                    <button class="btn dropdown__toggle rounded-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; padding: 8px 10px; font-size: 14px;">
-                        Todos 
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="#">Opción 1</a></li>
-                        <li><a class="dropdown-item" href="#">Opción 2</a></li>
-                        <li><a class="dropdown-item" href="#">Opción 3</a></li>
-                    </ul>
-                </div>
+                    <div class="">
+                        <button class="d-flex align-items-center btn dropdown__toggle rounded-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; padding: 8px 10px; font-size: 14px;">
+                        {{ categoriaSeleccionada ? categoriaSeleccionada.nom_grup : 'Categorias' }}
+                        <i *ngIf="grup" class="fas fa-solid fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" aria-labelledby="categoria" *ngIf="grup">
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" [attr.data-value]="" (click)="onCategoriaSeleccionada()">
+                                    Todos
+                                </a>
+                            </li>
+                            <li *ngFor="let lgrup of grup">
+                                <a class="dropdown-item" href="javascript:void(0)" [attr.data-value]="lgrup.grupo" (click)="onCategoriaSeleccionada(lgrup)">
+                                {{ lgrup.nom_grup }}
+                                </a>
+                            </li>
+                        </ul>
+                  </div>
                 <input type="text" class="form-control rounded-0" placeholder="Buscar productos, marcas y más..." aria-label="Buscar productos, marcas y más..." style="padding: 8px 10px; font-size: 1.4rem; border: none;border-right: 1px solid #a3a3a3;">
                 <div class="input-group-append">
                     <button class="btn btn-light rounded-0" type="button" style="border: none; padding: 2px 9px; background-color: transparent;font-size: 22px;">
@@ -35,40 +43,43 @@
                 <div class="d-flex justify-content-end">
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown__toggle" type="button" id="idcli" data-bs-toggle="dropdown" aria-expanded="false">
-                            ({{ userData.usuario }}) {{ userData.nombre }} <i class="fas fa-solid fa-angle-down"></i>
+                          {{ getNombreClienteSeleccionado() }} <i *ngIf="clientes" class="fas fa-solid fa-angle-down"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="idcli">
-                            <li><a class="dropdown-item" href="#" data-value="1">(00297) FARMACIA SNET, C.A.</a></li>
-                            <li><a class="dropdown-item" href="#" data-value="2">(00298) FARMACIA SNET, C.A.</a></li>
-                            <li><a class="dropdown-item" href="#" data-value="3">(00299) FARMACIA SNET, C.A.</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="idcli" *ngIf="clientes">
+                          <li *ngFor="let cliente of clientes">
+                            <a class="dropdown-item" href="javascript:void(0)" [attr.data-value]="cliente.cliente" (click)="onClienteSeleccionado(cliente)">
+                              ({{ cliente.cliente }}) {{ cliente.nombre }}
+                            </a>
+                          </li>
                         </ul>
-                    </div>
+                      </div>
                 </div>
             
                 <div class="container text-center">
                     <div class="row flex-nowrap">
                         <div class="col details__cli">
                             BCV<br>
-                            2215
+                            {{ authService.getTasa() }}
                         </div>
                         <div class="col details__cli">
                             ALMACEN<br>
-                            {{ userData.almacen }}
+                            {{ (portalcliLogicaService.clienteData$ | async)?.ubides }}
                         </div>
                         <div class="col details__cli">
                             SEGMENTO<br>
-                            CONDICION 17%
+                            {{ (portalcliLogicaService.clienteData$ | async)?.descripseg }}
                         </div>
                         <div class="col details__cli">
                             DCT.VOLUMEN<br>
-                            17
+                            {{ (portalcliLogicaService.clienteData$ | async)?.descvol }}
                         </div>
                         <div class="col details__cli">
                             GRUPO<br>
-                            {{ userData.cmatriz }}
+                            {{ authService.getCmatriz() }}
                         </div>
                         <div class="col details__cli">
                             <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
+                            <span class="fs-4"> {{productosEnCarritoNumber}}</span>
                         </div>
                     </div>
                 </div>

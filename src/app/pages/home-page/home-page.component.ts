@@ -3,10 +3,11 @@ import { Component } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
+import { ClicardComponent } from "../../components/clicard/clicard.component";
 
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -14,7 +15,8 @@ import { Router } from '@angular/router';
     CommonModule,
     NavBarComponent,
     FooterComponent,
-    SideBarComponent
+    SideBarComponent,
+    ClicardComponent
 ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
@@ -43,7 +45,7 @@ export class HomePageComponent {
     ngOnInit() {
       // Obtener el token y los datos del usuario
       const token = this.authService.getToken();
-      this.userData = this.authService.getUserData(); // Obtener los datos del usuario
+      //this.userData = this.authService.getUserData(); // Obtener los datos del usuario
   
       // Suscribirse al estado del menú desde el servicio
       this.portalcliLogicaService.isMenuOpen$.subscribe((isOpen: boolean) => {

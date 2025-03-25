@@ -1,0 +1,29 @@
+@use '../../../styles/variables.scss' as vars;
+
+.card-title {
+    border-bottom: 1px solid vars.$lineas-separetor; 
+    padding-bottom: 10px;
+  }
+.text-primary{
+    color: vars.$menu-color !important;
+}
+.title__limit{
+    color: vars.$menu-color-seconday;
+}
+.cardinfo__text{
+    color: vars.$menu-color;
+}
+.saldo__content {
+    border-radius: 1rem !important;
+}
+.rounded {
+    background-color: vars.$text-color2;
+}
+
+.col-md-4 {
+    border-right: 1px solid vars.$lineas-separetor; 
+}
+
+.col-md-4:last-child {
+    border-right: none;
+}

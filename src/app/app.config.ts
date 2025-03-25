@@ -2,13 +2,15 @@ import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } fr
 import { provideRouter } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
-
+import { AuthService } from './auth.service'; 
+import { NgxSpinnerModule } from 'ngx-spinner';
 export const API_URL = 'http://10.0.100.2/proteoerp/api/';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    importProvidersFrom(HttpClientModule) // Correcto: importProvidersFrom(HttpClientModule)
+    importProvidersFrom(HttpClientModule),
+    importProvidersFrom(NgxSpinnerModule),
   ]
 };

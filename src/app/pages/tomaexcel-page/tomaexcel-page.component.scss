@@ -1,0 +1,59 @@
+@use '../../../styles/variables.scss' as vars;
+@import './../miperfil-page/miperfil-page.component.scss';
+.mi-perfil{
+    width: 100%;
+}
+.mi-perfil__main {
+    width: 94%;
+}
+
+.row-clear-filter {
+    background: #ededed;
+    height: 5vh;
+    font-size: 1.5rem;
+    color: #000;
+    cursor: pointer;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: none;
+}
+
+.row-clear-filter:hover {
+    background: vars.$text-color2 !important;
+    height: 5vh;
+    font-size: 1.5rem;
+    color: #FFF;
+    cursor: pointer;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border: none;
+}
+
+.upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .upload-label {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 1rem;
+  }
+  
+  .upload-input {
+    display: none; /* Oculta el input de archivo original */
+  }
+  

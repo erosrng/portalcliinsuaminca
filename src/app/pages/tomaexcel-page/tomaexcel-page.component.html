@@ -1,0 +1,110 @@
+<app-nav-bar></app-nav-bar>
+
+<div style="display: flex; flex-direction: row;">
+  <app-side-bar></app-side-bar>
+
+  <div class="mi-perfil">
+      <header class="mi-perfil__header">
+        <h1 class="ofertas-title mi-perfil__title">Cargar pedido por listado (Excel)</h1>
+      </header>
+    
+      <div class="mi-perfil__content">
+        <main class="mi-perfil__main">
+          <div class="mi-perfil__left">
+
+                          
+            <div class="card mt-4 card__info">
+                <div class="card-body ">
+                    <h3 class="card-title text-primary">Listado</h3>
+                    <p class="card-text">
+                        <span class="cardinfo__text">NOMBRE: <b>NOMBRE EJEMPLO</b></span><br>
+                        <span class="cardinfo__text">TELÉFONO: <b>123456789</b></span><br>
+                        <span class="cardinfo__text">CORREO: <span class="title__limit">correoorreo.com</span>                                    </span>
+                    </p>
+
+                    <div class="row mt-5">    
+                      
+                        <div class="col-12 mb-3">
+                            <button class="row-clear-filter" (click)="bajaexcel()">Bajar listado</button>
+                        </div>
+                        
+                        <div class="col-12 upload-container">
+                            <label for="excelUpload" class="upload-label">
+                              <i class="fas fa-file-upload"></i>
+                              <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
+                              <span *ngIf="fileName">{{ fileName }}</span>
+                              <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
+                            </label>
+                            <button class="busca__pedido" (click)="cargarArchivo();">Cargar archivo</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+  
+            <div class="card card__info  mt-5">
+                <app-clicard></app-clicard>
+            </div>
+
+          </div>
+  
+          <div class="mi-perfil__right">
+              <section class="mi-perfil__historial">
+                  <h3 class="card-title text-primary">Historial de pedidos</h3>
+  
+                  <table class="mi-perfil__historial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nro. Pedido</th>
+                        <th scope="col">Origen</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col">Fecha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>400045</td>
+                        <td>MATURIN</td>
+                        <td class="status__com">COMPLETADO</td>
+                        <td>14/02/2025 3:42 P.M.</td>
+                      </tr>
+                      <tr>
+                        <td>400045</td>
+                        <td>MATURIN</td>
+                        <td>EN TRÁNSITO</td>
+                        <td>14/02/2025 3:42 P.M.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+          
+                <section class="mi-perfil__filtros">
+                  <h3 class="card-title text-primary" style="text-align: center;">Filtrar por fecha</h3>
+  
+                  <div class="mi-perfil__filtros-inputs">
+                      <label for="">Desde:</label>
+                    <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                    <label for="">Hasta:</label>
+                    <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                    <button class="busca__pedido">Buscar pedidos</button>
+                  </div>
+                  <a class="limpafiltro">Limpiar filtros</a>
+                </section>
+          
+                <section class="mi-perfil__pedidos">
+                  <button class="carrito__checkout-button">Ver todos mis pedidos</button>
+                </section>
+
+
+          </div>
+  
+        </main>
+      </div>
+  
+      <div class="pre__footer"></div>
+  
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -16,7 +16,7 @@ export class SideBarComponent {
   isMenuOpen: boolean = true;
 
   constructor(
-    private authService: AuthService, 
+    public authService: AuthService, 
     public portalcliLogicaService: PortalcliLogicaService,
     private router: Router
   ) {} 
@@ -24,7 +24,7 @@ export class SideBarComponent {
   ngOnInit() {
     // Obtener el token y los datos del usuario
     const token = this.authService.getToken();
-    this.userData = this.authService.getUserData(); // Obtener los datos del usuario
+    //this.userData = this.authService.getUserData(); // Obtener los datos del usuario
 
     // Suscribirse al estado del menú desde el servicio
     this.portalcliLogicaService.isMenuOpen$.subscribe((isOpen: boolean) => {
@@ -34,6 +34,11 @@ export class SideBarComponent {
 
   navigateTo(route: string) {
     this.portalcliLogicaService.navigateTo(route);
+  }
+
+    logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
 

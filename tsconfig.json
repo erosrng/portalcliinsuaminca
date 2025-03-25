@@ -15,6 +15,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
+    "types": ["jquery"],
     "target": "ES2022",
     "module": "ES2022"
   },

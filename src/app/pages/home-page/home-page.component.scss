@@ -36,6 +36,11 @@
 .product-image img {
     max-width: 100%;
     height: auto;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .product-details {
@@ -513,13 +518,22 @@
     width: 80%;
     padding: 10px 20px;
     border: none;
+    background-color: vars.$menu-color;
+    color: white;
+    border-radius: 1rem;
+    margin: 1rem auto;
+    display: block;
+}
+.carrito__checkout-button-agg{
+    width: 80%;
+    padding: 10px 20px;
+    border: none;
     background-color: vars.$text-color2;
     color: white;
     border-radius: 1rem;
     margin: 1rem auto;
     display: block;
 }
-
 .cana__container-v2 {
     width: 100%;
     display: flex;

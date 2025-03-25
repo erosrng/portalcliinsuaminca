@@ -3,9 +3,61 @@
 
 <div style="display: flex; flex-direction: row;">
 
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="fichaproduct__container">
+                    <div class="product-content">
+                        <div class="product-image">
+                            <img [src]="imageficha" alt="{{ selectedProduct?.descrip }}">
+                        </div>
+                        <div class="product-details">
+                            <div class="product-header">
+                                <h1>{{ selectedProduct?.descrip }}</h1>
+                            </div>
+                            <!-- <a href="#" class="more-products">Ver más productos de {{ selectedProduct?.nomprv }}</a> -->
+                            <div class="price">
+                              <p class="usd">US$ {{ portalcliLogicaService.formatCurrency(selectedProduct?.preciod1) }}</p>
+                              <p class="bs">Bs. {{ portalcliLogicaService.formatCurrency(selectedProduct?.precio1) }}</p>
+                                <ul class="product-data">
+                                    <li>Modelo: {{ selectedProduct?.modelo ?? ''}}</li>
+                                    <li>Origen: {{ selectedProduct?.origen ?? ''}}</li>
+                                    <li>Marca: {{ selectedProduct?.marca ?? ''}}</li>
+                                    <li>Principio Activo:{{ selectedProduct?.pactivo ?? ''}}</li>
+                                    <li>Cod. Barra: {{ selectedProduct?.barras }}</li>
+                                </ul>
+                            </div>
+                            <div class="quantity">
+                                <input type="text" id="cana2_{{selectedProduct?.codigo}}" value="{{ selectedProduct?.encar }}" placeholder="Cant..." class="quantity-input">
+                                <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>
+                            </div>
+                            <!-- <button class="carrito__checkout-button">¡Agregar al carrito!</button> -->
+
+                            <button 
+                              [ngClass]="{ 
+                                'carrito__checkout-button': !productosEnCarritoCodigos.includes(selectedProduct?.codigo), 
+                                'carrito__checkout-button-agg': productosEnCarritoCodigos.includes(selectedProduct?.codigo)
+                              }" 
+                              (click)="agg_pedido(selectedProduct)"
+                            >
+                              <span *ngIf="!productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Agregar al carrito</span>
+                              <span *ngIf="productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Producto agregado</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
   <app-side-bar></app-side-bar>
 
-<div class="container-fluid mt-6 row">
+<div class="container-fluid mt-6 row inventario__container">
 
     <div class="row">
         <div class="col-3">
@@ -15,10 +67,9 @@
                 <div class="row">
                   <div class="col-12 text-center">
                     <h4>Carrito de compra</h4>
-                   
                   </div>
                   <div class="col-12 text-center">
-                    <a class="show-text-car">Ver carrito de compra</a>
+                    <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
                   </div>
                   <div class="col-12 unid-col mt-5">
                     <span>Unidades: {{ unidades }}</span>
@@ -29,9 +80,9 @@
                   <div class="col-12 unid-col mt-4">
                     <span>Totales:</span>
                     <div class="">
-                      <span>Bs. {{ totalBs }}</span>
+                      <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
                       <br>
-                      <span>US$ {{ totalUsd }}</span>
+                      <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
                     </div>
                     
                   </div>
@@ -40,25 +91,23 @@
                     <button class="btn-end"> Finalizar compra</button>
                   </div>
                   <div class="col-12 mt-3 text-center">
-                    <a class="clear-car"> Vaciar carrito</a>
+                    <a (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-         
 
-          <div class="row mt-5">
-            <div class="col-12">
-              <button class="row-clear-filter "> Limpiar Filtros</button>
-            </div>
+          <div class="card card__info row mt-5">
+              <app-clicard></app-clicard>
           </div>
+
         </div>
 
         <div class="col-9 p-5">
             <div class="row p-0">
                 <div class="col-8">
-                    <div id="carouselExample" class="carousel slide">
+                    <div id="carouselExample" class="carousel"> <!-- slide -->
                         <div class="carousel-inner">
                           <div class="carousel-item active">
                             <div class="box-carusel-img"></div>
@@ -94,20 +143,35 @@
 
                 <div class="col-12 mt-4">
 
-                  <div *ngIf="loading" class="d-flex justify-content-center align-items-center">
-                    <div class="spinner-border" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                  <div class="login-container">
+                    <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
+                      <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                      </div>
                     </div>
                   </div>
+                
                   
-                  <div *ngIf="!loading">
+                  <!-- <div *ngIf="!loading">
                     <div *ngFor="let product of products">
                       </div>
-                  </div>
-                  
+                  </div> -->
 
-                    <div class="container-fluid w-100">
-                      <div class="row row-header">
+                  <!-- FIN DE FUNCIONAL CON PURO -->
+                  <div class="container-fluid w-100">
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-3">
+                            <mat-form-field>
+                                <input matInput type="text" placeholder="Buscar..." [(ngModel)]="filterDescrip" (input)="applyFilters()">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                
+                    <div class="row row-header">
+                      <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ categoria ? 'Buscando por Categoria: '+categorianombre : '' }}</span>
+
                         <div class="col-1 header-table border-left-top">Ver</div>
                         <div class="col-3 header-table">Descripción</div>
                         <div class="col-1 header-table">Proveedor</div>
@@ -118,40 +182,42 @@
                         <div class="col-1 header-table">Inventario</div>
                         <div class="col-1 header-table">Cantidad</div>
                         <div class="col-1 header-table border-right-top">Agregar</div>
-                                 
                     </div>
+                
                     <div class="container-fluid p-0 m-0 w-100 container-products">
-                      <div class="row row-products p-0" 
-                        *ngFor="let product of products; let i = index" 
-                        [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
-                          <div class="col-1 cel-product p-0"><img [src]="product.img" class="img-product"></div>
-                          <div class="col-3 cel-product p-0">{{product.descrip}}</div>
-                          <div class="col-1 cel-product p-0">{{product.nomprv}}</div>
-                          <div class="col-1 cel-product p-0">{{product.lote}}</div>
-                          <div class="col-1 cel-product p-0">{{product.vence}}</div>
-                          <div class="col-1 cel-product p-0">{{product.oprecio}}</div>
-                          <div class="col-1 cel-product p-0">{{product.opreciod}}$</div>
-                          <div class="col-1 cel-product p-0">{{product.existen}} </div>
-                          <div class="col-1 cel-product-noborder-left p-0">
-
-                            <input type="number" min="0" id="cana_{{product.codigo}}"  placeholder="Cantidad" class="w-100 input-cant"
-                            [value]="product.cantidad" (keyup.enter)="agg_pedido(product)">
-                          </div>
-                          <div class="col-1 cel-product-noborder-right p-0">
-                            <button 
-                              class="btn-add"
-                              [ngClass]="{'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0}"
-                              (click)="agg_pedido(product)"
-                              >
-                              <img src="../../../assets/icons/Iconos Portal-07.svg" class="icon-add">
-                              <img src="../../../assets/icons/Iconos Portal-07 - white.svg" class="icon-add-hover">
-                            </button>
+                          <div class="row row-products p-0" *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                              <div class="col-1 cel-product p-0">
+                                  <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)"></div>
+                            <div class="col-3 cel-product p-0">{{product.descrip}}</div>
+                            <div class="col-1 cel-product p-0">{{product.nomprv}}</div>
+                            <div class="col-1 cel-product p-0">{{product.lote}}</div>
+                            <div class="col-1 cel-product p-0">{{product.vence}}</div>
+                            <div class="col-1 cel-product p-0">{{product.oprecio}}</div>
+                            <div class="col-1 cel-product p-0">{{product.opreciod}}$</div>
+                            <div class="col-1 cel-product p-0">{{product.existen}}</div>
+                            <div class="col-1 cel-product-noborder-left p-0">
+                                <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
+                            </div>
+                            <div class="col-1 cel-product-noborder-right p-0">
+                                <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">
+                                    <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                                    <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                                </button>
+                            </div>
                         </div>
-                          
-                      </div>
                     </div>
-                    
+                
+                    <!-- <mat-paginator [length]="totalPages * itemsPerPage" [pageSize]="itemsPerPage" (page)="pageChanged($event)"></mat-paginator> -->
+                    <mat-paginator
+                    [length]="totalPages * itemsPerPage"
+                    [pageSize]="itemsPerPage"
+                    [pageSizeOptions]="[5, 10, 20]"
+                    showFirstLastButtons
+                    (page)="pageChanged($event)"
+                  ></mat-paginator>
                   </div>
+                  
+
                 </div>
             </div>
 

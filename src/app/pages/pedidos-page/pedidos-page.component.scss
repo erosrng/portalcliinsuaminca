@@ -1,7 +1,12 @@
+@use '../../../styles/variables.scss' as vars;
+@import './../home-page/home-page.component.scss';
+
 *{
     transition: all ease 0.25s;
 }
-
+.inventario__container{
+    background-color: vars.$background-fondo;
+}
 .box-banner-individual {
     height: 15vh;
     width: 100%;
@@ -55,6 +60,9 @@
     font-size: 12px;
     color: #002b52 !important;
     font-weight: 500;
+    /* white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;*/
 }
 
 .cel-product-noborder-left {
@@ -68,7 +76,6 @@
     color: #002b52 !important;
     font-weight: 500;
 }
-
 .cel-product-noborder-right {
     padding: 0.25rem !important;
     text-align: center;
@@ -147,7 +154,8 @@
     margin: auto;
 }
 
-.btn-add {
+.btn-add,
+.btn-agg {
     width: 100%;
     padding: 1rem;
     margin: 0 1rem;
@@ -164,6 +172,11 @@
     .icon-add-hover {
         display: block;
     }
+}
+
+.btn-agg {
+    background: vars.$text-color2 !important;
+    color: vars.$background-fondo !important;
 }
 
 .pt-5 {
@@ -238,7 +251,8 @@ h4 {
 }
 
 .row-clear-filter:hover {
-    background: #0377bf !important;
+    /* background: #0377bf !important; */
+    background: vars.$text-color2 !important;
     height: 5vh;
     font-size: 1.5rem;
     color: #FFF;
@@ -250,3 +264,36 @@ h4 {
     width: 100%;
     border: none;
 }
+
+nav[aria-label="Page navigation example"] {
+    margin-top: 2rem; /* Ajusta el margen superior según tus necesidades */
+  
+    ul.pagination {
+      .page-item {
+        .page-link {
+          background-color: #f0f0f0; /* Cambia el color de fondo */
+          color: vars.$menu-color; /* Cambia el color del texto */
+          border: 1px solid #ddd; /* Añade un borde para mayor claridad */
+  
+          &:hover {
+            background-color: #e0e0e0; /* Cambia el color al pasar el ratón */
+          }
+        }
+  
+        &.active .page-link {
+          background-color: vars.$menu-color; /* Color para la página activa */
+          color: white;
+          border-color: vars.$menu-color;
+        }
+  
+        &.disabled .page-link {
+          color: #aaa; /* Color para los elementos deshabilitados */
+          background-color: #f8f8f8;
+          border-color: #ddd;
+        }
+      }
+    }
+  }
+  .pagination-info {
+    color: vars.$menu-color;
+  }

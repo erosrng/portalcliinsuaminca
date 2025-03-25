@@ -4,11 +4,15 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { CarritoPageComponent } from './pages/carrito-page/carrito-page.component';
 import { MiperfilPageComponent } from './pages/miperfil-page/miperfil-page.component';
 import { PedidosPageComponent } from './pages/pedidos-page/pedidos-page.component';
+import { TomaexcelPageComponent } from './pages/tomaexcel-page/tomaexcel-page.component';
+
+import { authGuard } from './auth.guard'; // Importa authGuard (con "A" mayúscula)
 
 export const routes: Routes = [
-    {path: '', component: LoginPageComponent},
-    {path: 'home', component: HomePageComponent},
-    {path: 'carrito', component: CarritoPageComponent},
-    {path: 'miperfil', component: MiperfilPageComponent},
-    {path: 'pedidos', component: PedidosPageComponent}
+    { path: 'login', component: LoginPageComponent }, 
+    { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
+    { path: 'carrito', component: CarritoPageComponent, canActivate: [authGuard] },
+    { path: 'miperfil', component: MiperfilPageComponent, canActivate: [authGuard] },
+    { path: 'pedidos', component: PedidosPageComponent, canActivate: [authGuard] },
+    { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] }
 ];
