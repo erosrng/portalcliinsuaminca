@@ -1,0 +1,117 @@
+
+        <main class="historialped__main">  
+            <div class="login-container">
+                <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
+                  <div class="spinner-border text-success" role="status">
+                  </div>
+                </div>
+              </div>
+              
+              <section class="historialped__historial">
+                  <h3 class="card-title text-primary">Ultimos 10 pedidos enviados</h3>
+
+<!--                   <table class="historialped__historial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nro. Pedido</th>
+                        <th scope="col">Origen</th>
+                        <th scope="col">Unidades</th>
+                        <th scope="col">Factura</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col">Ver</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let pedido of historialPedidos">
+                        <td>{{ pedido.pedido }}</td>
+                        <td>{{ pedido.origen }}</td>
+                        <td>{{ pedido.cantidad }}</td>
+                        <td>{{ pedido.factura }}</td>
+                        <td>{{ pedido.fecha }}</td>
+                        <td>{{ pedido.factura ? 'FACTURADO' : 'PENDIENTE' }}</td>
+                        <td style="text-align:center" (click)="showdetail(pedido.pedido)"><i class="show__detail fa-solid fa-eye" title="Mostrar detalle"></i></td>
+                      </tr>
+                    </tbody>
+                  </table> -->
+                  
+                  <table class="historialped__historial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Nro. Pedido</th>
+                        <th scope="col">Origen</th>
+                        <th scope="col">Unidades</th>
+                        <th scope="col">Factura</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col">Ver</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container *ngFor="let pedido of historialPedidos">
+                        <tr>
+                          <td>{{ pedido.pedido }}</td>
+                          <td>{{ pedido.origen }}</td>
+                          <td>{{ pedido.cantidad }}</td>
+                          <td>{{ pedido.factura }}</td>
+                          <td>{{ pedido.fecha }}</td>
+                          <td>{{ pedido.factura ? 'FACTURADO' : 'PENDIENTE' }}</td>
+                          <td style="text-align: center; cursor: pointer;" (click)="showdetail(pedido)">
+                            <i [ngClass]="{'fa-eye': !pedido.detallesMostrados, 'fa-eye-slash': pedido.detallesMostrados}" class="show__detail fa-solid" title="Mostrar detalle"></i>
+                          </td>
+                        </tr>
+                        <tr *ngIf="pedido.detallesMostrados">
+                          <td colspan="7">
+                            <table class="detalle__table">
+                              <thead>
+                                <tr>
+                                  <th>Producto</th>
+                                  <th>Cantidad</th>
+                                  <th>Lote</th>
+                                  <th style="width: 10rem;">Vence</th>
+                                  <!-- <th>Seg</th> -->
+                                  <th>Esc.Producto</th>
+                                  <th>Esc.Proveedor</th>
+                                  <th>Precio Unitario</th>
+                                  <th>Importe</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let detalle of pedido.detalles">
+                                  <td>{{ detalle.desca || 'N/A' }}</td>
+                                  <td>{{ detalle.cana || 0 }}</td>
+                                  <td>{{ detalle.lote || 'N/A' }}</td>
+                                  <td  style="width: 10rem;">{{ detalle.vence || 'N/A' }}</td>
+                                  <!-- <td>{{ detalle.descu1 || 0 }}</td> -->
+                                  <td>{{ detalle.descu2 || 0 }}</td>
+                                  <td>{{ detalle.descu3 || 0 }}</td>
+                                  <td>{{ detalle.preca || 0 }}</td>
+                                  <td>{{ detalle.tota || 0 }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+
+                </section>
+          
+                <!-- <section class="historialped__filtros">
+                  <h3 class="card-title text-primary" style="text-align: center;">Filtrar por fecha</h3>
+  
+                  <div class="historialped__filtros-inputs">
+                      <label for="">Desde:</label>
+                    <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                    <label for="">Hasta:</label>
+                    <input type="text" placeholder="dd/mm/aaaa" class="form-control" />
+                    <button class="busca__pedido">Buscar pedidos</button>
+                  </div>
+                  <a class="limpafiltro">Limpiar filtros</a>
+                </section> -->
+          
+                <section class="historialped__pedidos">
+                  <button class="historialped__checkout-button">Bajar historico de pedidos</button>
+                </section>
+        </main>

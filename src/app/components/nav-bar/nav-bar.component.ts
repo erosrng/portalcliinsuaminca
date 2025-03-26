@@ -1,21 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router'; 
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-nav-bar',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './nav-bar.component.html',
-  styleUrl: './nav-bar.component.scss'
+  styleUrl: './nav-bar.component.scss',
 })
-export class NavBarComponent {
-  categoriaSeleccionada: { grupo: string; nom_grup: string; } | null = null;
-  rutaActual: string='';
+export class NavBarComponent implements OnInit {
+  categoriaSeleccionada: { grupo: string; nom_grup: string } | null = null;
+  searchTermNavbar: string = '';
+  rutaActual: string = '';
+  categoriaSeleccionadaNombre: string = ''; // Nueva variable
+  categoriaSeleccionadaGrupo: string = ''; // Nueva variable
+  searchParam: string = ''; // Nueva variable
 
   userData: any;
   apiKey: string = '';
@@ -30,30 +35,36 @@ export class NavBarComponent {
   totalUsd: string = '';
   unidades: string = '';
 
-  private subscriptions: Subscription[] = []; 
+  private subscriptions: Subscription[] = [];
   clientes: { cliente: string; nombre: string; rifci: string }[] | null = null;
-  grup: { grupo: string; nom_grup: string;}[]  | null = null;
+  grup: { grupo: string; nom_grup: string }[] | null = null;
   codCli: string | null = null;
 
   constructor(
     private router: Router,
-    public authService: AuthService, 
+    public authService: AuthService,
     private route: ActivatedRoute,
     private http: HttpClient,
     public portalcliLogicaService: PortalcliLogicaService
-  ) {} 
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-        if(params['categoria']) {
-            this.grup?.forEach((cat)=>{
-                if(cat.grupo == params['categoria']){
-                    this.categoriaSeleccionada = cat;
-                }
-            })
-        } else {
-            this.categoriaSeleccionada = null;
-        }
+    this.route.queryParams.subscribe((params) => {
+      if (params['categoria']) {
+        this.grup?.forEach((cat) => {
+          if (cat.grupo == params['categoria']) {
+            this.categoriaSeleccionada = cat;
+            this.categoriaSeleccionadaNombre = cat.nom_grup; // Actualiza el nombre
+            this.categoriaSeleccionadaGrupo = cat.grupo; // Actualiza el grupo
+          }
+        });
+      } else {
+        this.categoriaSeleccionada = null;
+        this.categoriaSeleccionadaNombre = ''; // Limpia el nombre
+        this.categoriaSeleccionadaGrupo = ''; // Limpia el grupo
+      }
+      this.searchParam = params['search'] || '';
+      this.searchTermNavbar = this.searchParam; // Mantener el valor en el input
     });
     this.rutaActual = this.route.snapshot.url.join('/');
     this.codCli = this.authService.getCodCli();
@@ -71,31 +82,87 @@ export class NavBarComponent {
     this.portalcliLogicaService.navigateTo(route);
   }
 
-
   onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
     this.authService.setCodCli(cliente.cliente);
     this.portalcliLogicaService.buscaalmacen();
-    if(this.rutaActual == 'carrito'){
+    if (this.rutaActual == 'carrito') {
       this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
     }
     this.revisarCarrito();
   }
 
-/*   onCategoriaSeleccionada(lgrup: { grupo: string; nom_grup: string;}): void {
-    console.log(lgrup)
-    this.categoriaSeleccionada = lgrup;
-    this.router.navigate(['/pedidos'], { queryParams: { categoria: lgrup.grupo } }); 
-  }
- */
-  onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string; }): void {
+  /* onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
     if (lgrup) {
-      this.router.navigate(['/pedidos'], { queryParams: { categoria: lgrup.grupo, categorianombre: lgrup.nom_grup } }); 
+      this.categoriaSeleccionadaNombre = lgrup.nom_grup; // Actualiza el nombre
+      this.categoriaSeleccionadaGrupo = lgrup.grupo; // Actualiza el grupo
+      this.router.navigate(['/pedidos'], {
+        queryParams: { categoria: lgrup.grupo, categorianombre: lgrup.nom_grup },
+      });
     } else {
-      this.router.navigate(['/pedidos'], { queryParams: { categoria: "" } }); 
+      this.categoriaSeleccionadaNombre = ''; // Limpia el nombre
+      this.categoriaSeleccionadaGrupo = ''; // Limpia el grupo
+      this.router.navigate(['/pedidos'], { queryParams: { categoria: '' } });
     }
   }
 
-  revisarCarrito() {
+  buscarProductos() {
+    if (this.searchTermNavbar) {
+      this.router.navigate(['/pedidos'], { queryParams: { search: this.searchTermNavbar } });
+    }
+  }
+   */
+
+  onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
+    let currentSearch = '';
+    this.route.queryParams.subscribe((params) => {
+      currentSearch = params['search'] || '';
+    });
+
+    if (lgrup) {
+      this.categoriaSeleccionadaNombre = lgrup.nom_grup;
+      this.categoriaSeleccionadaGrupo = lgrup.grupo;
+      this.router.navigate(['/pedidos'], {
+        queryParams: {
+          search: currentSearch, // Mantén el valor de search
+          categoria: lgrup.grupo,
+          categorianombre: lgrup.nom_grup,
+        },
+      });
+    } else {
+      this.categoriaSeleccionadaNombre = '';
+      this.categoriaSeleccionadaGrupo = '';
+      this.router.navigate(['/pedidos'], {
+        queryParams: {
+          search: currentSearch, // Mantén el valor de search
+          categoria: '',
+        },
+      });
+    }
+  }
+
+  buscarProductos() {
+    let currentCategoria = '';
+    let currentCategoriaNombre = '';
+    this.route.queryParams.subscribe((params) => {
+      currentCategoria = params['categoria'] || '';
+      currentCategoriaNombre = params['categorianombre'] || '';
+    });
+
+      this.router.navigate(['/pedidos'], {
+        queryParams: {
+          search: this.searchTermNavbar || '',
+          categoria: currentCategoria,
+          categorianombre: currentCategoriaNombre, 
+        },
+      });
+  }
+
+  limpiarBuscar() {
+    this.searchTermNavbar = '';
+    this.buscarProductos(); // Refresca la búsqueda
+  }
+
+/*   revisarCarrito() {
     this.portalcliLogicaService.revisarCarrito();
     this.subscriptions.push(
       this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
@@ -135,9 +202,55 @@ export class NavBarComponent {
         }
       })
     );
-  }
+  } */
 
-
+    revisarCarrito() {
+      this.portalcliLogicaService.revisarCarrito();
+      this.subscriptions.push(
+        this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
+          // Verifica si productos es un array y tiene al menos un elemento
+          if (Array.isArray(productos) && productos.length > 0) {
+            if (productos[0].value > 0) {
+              this.productosEnCarritoNumber = productos[0].value;
+            } else {
+              this.productosEnCarritoNumber = '0';
+            }
+          } else {
+            // Maneja el caso en que productos es vacío o no es un array
+            this.productosEnCarritoNumber = '0'; // O cualquier valor predeterminado
+          }
+    
+          if (this.rutaActual == 'pedidos') {
+            this.productosEnCarrito = productos;
+          }
+        }),
+        this.portalcliLogicaService.unidades$.subscribe((unidades) => {
+          if (this.rutaActual == 'pedidos') {
+            this.unidades = unidades;
+          }
+        }),
+        this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
+          if (this.rutaActual == 'pedidos') {
+            this.totalBs = totalBs;
+          }
+        }),
+        this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
+          if (this.rutaActual == 'pedidos') {
+            this.totalUsd = totalUsd;
+          }
+        }),
+        this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
+          if (this.rutaActual == 'pedidos') {
+            this.encarprod = encarprod;
+          }
+        }),
+        this.portalcliLogicaService.productosEnCarritoCodigos$.subscribe((codigos) => {
+          if (this.rutaActual == 'pedidos') {
+            this.productosEnCarritoCodigos = codigos;
+          }
+        })
+      );
+    }
   getNombreClienteSeleccionado(): string {
     const codCli = this.authService.getCodCli();
     if (!this.clientes) {

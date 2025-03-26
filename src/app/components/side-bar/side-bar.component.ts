@@ -14,6 +14,9 @@ export class SideBarComponent {
   userData: any;
   apiKey: string = '';
   isMenuOpen: boolean = true;
+  showPedidosDropdown: boolean = false;
+  showReportesDropdown: boolean = false;
+  transitionClass: string = 'menu__transition'; // Clase para la transición
 
   constructor(
     public authService: AuthService, 
@@ -22,11 +25,8 @@ export class SideBarComponent {
   ) {} 
 
   ngOnInit() {
-    // Obtener el token y los datos del usuario
     const token = this.authService.getToken();
-    //this.userData = this.authService.getUserData(); // Obtener los datos del usuario
 
-    // Suscribirse al estado del menú desde el servicio
     this.portalcliLogicaService.isMenuOpen$.subscribe((isOpen: boolean) => {
       this.isMenuOpen = isOpen;
     });
@@ -36,9 +36,16 @@ export class SideBarComponent {
     this.portalcliLogicaService.navigateTo(route);
   }
 
-    logout() {
+  togglePedidosDropdown() {
+    this.showPedidosDropdown = !this.showPedidosDropdown;
+  }
+
+  toggleReportesDropdown() {
+    this.showReportesDropdown = !this.showReportesDropdown;
+  }
+
+  logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 }
-

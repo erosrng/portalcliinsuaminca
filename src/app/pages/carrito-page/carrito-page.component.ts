@@ -68,6 +68,10 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  totalBs: string = '';
+  totalUsd: string = '';
+  unidades: string = '';
+
   constructor(
     private route: Router, 
     private http: HttpClient, 
@@ -103,6 +107,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
 
     this.http.post(apiUrl,formData, { headers: headers }).subscribe({
       next: (response: any) => {
+        this.revisarCarrito();
         this.productscar = response; 
         this.dataSource.data = this.productscar; // Asigna productscar al dataSource
         this.dataSource.paginator = this.paginator; // Asigna el paginador
@@ -162,17 +167,14 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
 
       //Envia pedidos al servidor
   enviaped(){
-      /* const codCli = localStorage.getItem(`idcli_${usuario}`);
-
-      var postData = {
-          codCli: codCli
-      }; */
+    this.isLoading = true; 
+    const codCli = this.authService.getCodCli();
 
       const formData = new FormData();
       const token = this.authService.getToken();
 
-      //formData.append('nuevos', '0');
-    
+      formData.append('codCli', codCli ?? '');
+
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });
@@ -196,11 +198,14 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
                 Swal.fire(response.mensaje, '', 'success');
                 this.productscar = [];
                 this.dataSource.data = this.productscar;
+                this.isLoading = false;  
               } else {
                 Swal.fire(response.mensaje, '', 'error');
+                this.isLoading = false;  
               }
             },
             error: (error) => {
+              this.isLoading = false;  
               this.ocultarLoader;
               Swal.fire(error, '', 'error');
               console.error('Error de la API:', error);
@@ -252,6 +257,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
   revisarCarrito() {
     this.portalcliLogicaService.revisarCarrito();
     this.subscriptions.push(
@@ -261,11 +267,18 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
         } else {
           this.productosEnCarritoNumber = '0';
         }
-      })
+      }),
+      this.portalcliLogicaService.unidades$.subscribe((unidades) => {
+        this.unidades = unidades;
+      }),
+      this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
+        this.totalBs = totalBs;
+      }),
+      this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
+        this.totalUsd = totalUsd;
+      }),
     );
   }
-
-  
 
   validateInput(product: any, event: any) {
     product.cant = this.portalcliLogicaService.validateCant(event);

@@ -118,9 +118,11 @@ export class PortalcliLogicaService {
 
   //Vacia carrito
   vaciacar(): Observable<any> {
+    const codCli = this.authService.getCodCli();
     const apiUrl = `${API_URL}portalcli/vaciacar`;
     const formData = new FormData();
     const token = this.authService.getToken();
+    formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
       'Authorization': `${token}`

@@ -11,12 +11,17 @@ import { AuthService } from './../../auth.service';
   styleUrl: './clicard.component.scss'
 })
 export class ClicardComponent {
-  tasa: number;
+  tasa: number=0;
 
   constructor(
     public authService: AuthService, 
     public portalcliLogicaService: PortalcliLogicaService
   ) { 
+    this.tasa = this.authService.getTasa(); 
+  }
+
+
+  ngOnInit() {
     this.tasa = this.authService.getTasa(); 
   }
 

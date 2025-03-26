@@ -5,8 +5,8 @@
     margin-top: 6rem;
     position: relative;
     border-right: 1px solid vars.$lineas-separetor;
-    transition: width 0.3s ease; /* Transición para el ancho */
-    width: 250px; /* Ancho del menú abierto (ajusta según tus necesidades) */
+    transition: width 0.3s ease;
+    width: 250px; 
     height: 100%;
 }
 
@@ -20,6 +20,7 @@
 /* .menu__dropdown-icon{
     display: none;
 } */
+ 
 .menu__content {
     display: flex;
     flex-direction: column;

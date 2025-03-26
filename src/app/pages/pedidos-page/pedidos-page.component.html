@@ -88,7 +88,7 @@
                   </div>
     
                   <div class="col-12 p-0 mt-5">
-                    <button class="btn-end"> Finalizar compra</button>
+                    <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
                   </div>
                   <div class="col-12 mt-3 text-center">
                     <a (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
@@ -160,17 +160,18 @@
                   <!-- FIN DE FUNCIONAL CON PURO -->
                   <div class="container-fluid w-100">
 
-                    <div class="row mb-3">
+                   <!--  <div class="row mb-3">
 
                         <div class="col-md-3">
                             <mat-form-field>
                                 <input matInput type="text" placeholder="Buscar..." [(ngModel)]="filterDescrip" (input)="applyFilters()">
                             </mat-form-field>
                         </div>
-                    </div>
+                    </div> -->
                 
                     <div class="row row-header">
                       <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ categoria ? 'Buscando por Categoria: '+categorianombre : '' }}</span>
+                      <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ search ? 'Buscando por: '+search : '' }}</span>
 
                         <div class="col-1 header-table border-left-top">Ver</div>
                         <div class="col-3 header-table">Descripción</div>
@@ -196,7 +197,8 @@
                             <div class="col-1 cel-product p-0">{{product.opreciod}}$</div>
                             <div class="col-1 cel-product p-0">{{product.existen}}</div>
                             <div class="col-1 cel-product-noborder-left p-0">
-                                <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
+                                <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" 
+                                placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
                             </div>
                             <div class="col-1 cel-product-noborder-right p-0">
                                 <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">

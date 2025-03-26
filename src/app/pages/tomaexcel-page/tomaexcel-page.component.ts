@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
+import { HistorialpedComponent } from "../../components/historialped/historialped.component";
 
 
 @Component({
@@ -23,7 +24,8 @@ import { Subscription } from 'rxjs';
     NavBarComponent,
     FooterComponent,
     SideBarComponent,
-    ClicardComponent
+    ClicardComponent,
+    HistorialpedComponent
 ],
   templateUrl: './tomaexcel-page.component.html',
   styleUrl: './tomaexcel-page.component.scss'

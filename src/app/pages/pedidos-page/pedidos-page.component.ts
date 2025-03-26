@@ -43,6 +43,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   products: any[] = [];
   categoria: string | null = null;
   categorianombre: string | null = null;
+  search: string | null = null;
 
   dataSource = new MatTableDataSource<any>(this.products);
   displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
@@ -85,6 +86,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
+      this.search = params['search'];
       this.categorianombre = params['categorianombre'];
       this.fetchPedidos(); 
     });
@@ -137,12 +139,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     formData.append('length', length.toString());
   
     formData.append('codCli', codCli ?? '');
-    formData.append('search', this.filterDescrip); // Usamos filterDescrip como search
+    //formData.append('search', this.filterDescrip); 
+    formData.append('search', this.search ?? ''); 
+    formData.append('categoria', this.categoria ?? '');
     formData.append('marca', ''); // Puedes agregar un input para la marca si es necesario
     formData.append('proveedor', this.filterProveedor);
     formData.append('lote', this.filterLote);
     formData.append('orderby', '');
-    formData.append('categoria', this.categoria ?? '');
     formData.append('nuevos', '0');
     formData.append('columns', JSON.stringify([
       { data: 'codigo' },
@@ -258,9 +261,106 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.portalcliLogicaService.navigateTo(route);
   }
 
-  vaciacar() {
-    this.portalcliLogicaService.vaciacar();
-  }
+    vaciacar(): void {
+      Swal.fire({
+        title: '¿Desea vaciar el carrito?',
+        text: "Eliminar todos los productos en el mismo.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Vaciar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.portalcliLogicaService.vaciacar().subscribe({
+            next: (response: any) => {
+              if (response.status) {
+                this.productosEnCarrito = [];
+                this.dataSource.data = this.productosEnCarrito;
+    
+                // Actualizar el carrito
+                this.revisarCarrito();
+    
+                Swal.fire({
+                  text: 'Carro vacio',
+                  icon: 'success',
+                  showConfirmButton: false,
+                  timer: 3000,
+                  toast: true,
+                  position: 'bottom-end',
+                });
+              } else {
+                this.alertaerror();
+              }
+            },
+            error: (error) => {
+              this.alertaerror();
+            },
+          });
+        }
+      });
+    }
+
+      enviaped(){
+        this.isLoading = true; 
+        const codCli = this.authService.getCodCli();
+    
+          const formData = new FormData();
+          const token = this.authService.getToken();
+    
+          formData.append('codCli', codCli ?? '');
+    
+          const headers = new HttpHeaders({
+            'Authorization': `${token}`
+          });
+          const apiUrl = `${API_URL}portalcli/enviaped`;
+        
+          Swal.fire({
+            
+          title: '¿Desea enviar el pedido?',
+          text: "Esta acción no se puede deshacer.",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Enviar',
+          cancelButtonText: 'Cancelar'
+          }).then((result) => {
+          if (result.isConfirmed) {
+              this.mostrarLoader;
+              this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+                next: (response: any) => {
+                  if (response.status) {
+                    this.ocultarLoader;
+                    this.revisarCarrito();
+                    Swal.fire(response.mensaje, '', 'success');
+                    this.productosEnCarrito = [];
+                    this.dataSource.data = this.productosEnCarrito;
+                    this.isLoading = false;  
+                  } else {
+                    Swal.fire(response.mensaje, '', 'error');
+                    this.isLoading = false;  
+                  }
+                },
+                error: (error) => {
+                  this.isLoading = false;  
+                  this.ocultarLoader;
+                  Swal.fire(error, '', 'error');
+                  console.error('Error de la API:', error);
+                },
+              });
+          }
+          });
+      }
+
+    alertaerror(){
+      this.portalcliLogicaService.alertaerror();
+    }
+
+    mostrarLoader(){
+      this.portalcliLogicaService.mostrarLoader();
+    }
+  
+    ocultarLoader(){
+      this.portalcliLogicaService.ocultarLoader();
+    }
 
 imageficha: any;
 
