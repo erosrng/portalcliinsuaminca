@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { AuthService } from './auth.service'; 
 import { NgxSpinnerModule } from 'ngx-spinner';
-export const API_URL = 'http://10.0.100.2/proteoerp/api/';
+export const API_URL = 'http://10.0.100.2/practica/api/';
 
 export const appConfig: ApplicationConfig = {
   providers: [

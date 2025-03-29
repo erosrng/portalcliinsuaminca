@@ -5,8 +5,10 @@ import { CarritoPageComponent } from './pages/carrito-page/carrito-page.componen
 import { MiperfilPageComponent } from './pages/miperfil-page/miperfil-page.component';
 import { PedidosPageComponent } from './pages/pedidos-page/pedidos-page.component';
 import { TomaexcelPageComponent } from './pages/tomaexcel-page/tomaexcel-page.component';
+import { PagosPageComponent } from './pages/pagos-page/pagos-page.component';
 
-import { authGuard } from './auth.guard'; // Importa authGuard (con "A" mayúscula)
+
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
     { path: 'login', component: LoginPageComponent }, 
@@ -14,5 +16,6 @@ export const routes: Routes = [
     { path: 'carrito', component: CarritoPageComponent, canActivate: [authGuard] },
     { path: 'miperfil', component: MiperfilPageComponent, canActivate: [authGuard] },
     { path: 'pedidos', component: PedidosPageComponent, canActivate: [authGuard] },
-    { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] }
+    { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] },
+    { path: 'pagos', component: PagosPageComponent, canActivate: [authGuard] }
 ];

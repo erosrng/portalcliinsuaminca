@@ -1,0 +1,141 @@
+@use '../../../styles/variables.scss' as vars;
+
+.card-body{
+  color: vars.$menu-color !important;
+}
+.card-title {
+  border-bottom: 1px solid vars.$lineas-separetor; 
+  padding-bottom: 10px;
+}
+/* Efecto difuminado del carrusel de publicidad principal*/
+.text-primary{
+  color: vars.$menu-color !important;
+}
+.ofertas-title {
+    border-bottom: 3px solid vars.$text-color2;
+    padding-bottom: 5px;
+    display: inline-block;
+    width: fit-content;
+}
+.pagos-content {
+    width: 100%;
+    margin-top: 8rem;
+    margin-left: 1.5rem;
+    background-color: vars.$background-fondo;
+    z-index: 1;
+}
+.pagos-form-col{
+    width: 35%;
+}
+.pagos-form-card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pagos-form-title {
+    color: #343a40;
+}
+
+.copiar-btn{
+    margin-left: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.pagos-cuenta-logo {
+    width: 11rem;
+    margin-right: 3rem;
+  }
+
+  .pagos-metodo-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .pagos-metodo-tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: vars.$background-fondo;
+    border: 2px solid vars.$principal-color;
+    color: vars.$principal-color;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .pagos-metodo-container:hover .pagos-metodo-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .pagos-metodo-btn-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    border: 2px solid vars.$principal-color;
+    background-color: vars.$background-fondo;
+    color: vars.$principal-color;
+  }
+  
+  .pagos-metodo-icon-lg {
+    font-size: 3rem;
+  }
+  
+  .pagos-metodo-btn-lg:hover {
+    background-color: vars.$principal-color;
+    color: vars.$background-fondo;
+  }
+  
+  .pagos-metodo-btn-lg.selected {
+    background-color: vars.$principal-color;
+    color: vars.$background-fondo;
+  }
+  
+.pagos-label {
+    font-weight: 500;
+}
+
+.pagos-input, .pagos-select, .pagos-textarea {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+.pagos-submit-btn {
+    width: 100%;
+    padding: 10px 15px;
+    font-weight: 600;
+}
+
+.pagos-table-responsive {
+    border-radius: 8px;
+    overflow: auto;
+}
+
+.pagos-table {
+    width: 99%;
+}
+
+.pagos-th, .pagos-td {
+    text-align: left;
+    padding: 8px;
+}
+
+.pagos-th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+.doc-cell {
+    white-space: nowrap;
+}

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
@@ -9,6 +10,9 @@ import { HistorialpedComponent } from "../../components/historialped/historialpe
 
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_URL } from './../../app.config';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-miperfil-page',
@@ -18,20 +22,168 @@ import { AuthService } from './../../auth.service';
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    HistorialpedComponent
-],
+    HistorialpedComponent,
+    FormsModule,
+  ],
   templateUrl: './miperfil-page.component.html',
   styleUrl: './miperfil-page.component.scss'
 })
-export class MiperfilPageComponent {
-  
+export class MiperfilPageComponent implements OnInit {
+  fichaData: any = {};
+  nuevaContrasena = '';
+  confirmarContrasena = '';
+  prefijoTelefono = '0414';
+  contrasenaActual = '';
+  contrasenaValida = false;
+  contrasenaInvalida = false;
+  isLoading = false;
+
   ngOnInit() {
     const token = this.authService.getToken();
+
+    this.cargarDatosCliente();
   }
 
   constructor(
-    private authService: AuthService,
+    private http: HttpClient,
+    public authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
-  
-  ) {}
+  ) { }
+
+  cargarDatosCliente() {
+    this.portalcliLogicaService.clienteData$.subscribe(data => {
+      if (data) {
+        let telefono = data.telefono || '';
+        telefono = telefono.replace(/\D/g, '');
+        this.fichaData = {
+          cliente: data.cliente,
+          nombre: data.nombre,
+          correoElectronico: data.email,
+          telefono: telefono.substring(4),
+          contacto: data.contacto,
+          direccion: data.direccion,
+        };
+        this.prefijoTelefono = telefono.substring(0, 4) || '0414';
+      }
+    });
+  }
+
+  verificarContrasena() {
+    const old_pws = this.contrasenaActual;
+    const token = this.authService.getToken();
+
+    const formData = new FormData();
+    formData.append('old_pws', old_pws);
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    this.http.post(`${API_URL}portalcli/buscaopws`, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.status==false) {
+          this.contrasenaInvalida = true;
+          this.contrasenaValida = false;
+        } else {
+          this.contrasenaValida = true;
+          this.contrasenaInvalida = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error al verificar contraseña:', error);
+        this.contrasenaInvalida = true;
+        this.contrasenaValida = false;
+      },
+    });
+  }
+
+
+  actualizarDatos(formData: any) {
+    if (this.nuevaContrasena !== this.confirmarContrasena) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Las contraseñas no coinciden.',
+      });
+      return;
+    }
+
+    const data = new FormData();
+    data.append('correoElectronico', formData.correoElectronico);
+    data.append('telefono', this.prefijoTelefono + formData.telefono);
+    data.append('contacto', formData.contacto);
+    data.append('direccion', formData.direccion);
+    if (this.nuevaContrasena) {
+      data.append('nuevaContrasena', this.nuevaContrasena);
+      data.append('contrasenaActual', this.contrasenaActual);
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `${this.authService.getToken()}`,
+    });
+    const apiUrl = `${API_URL}portalcli/actualizar_perfil`;
+
+    Swal.fire({
+      title: '¿Desea actualizar su ficha?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Actualizar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.post(apiUrl, data, { headers: headers }).subscribe({
+          next: (response: any) => {
+            console.log('Datos actualizados:', response);
+            Swal.fire({
+              icon: 'success',
+              title: 'Actualizado',
+              text: 'Su ficha ha sido actualizada.',
+            }).then(() => { 
+              window.location.reload();
+            });;
+            const modal = document.getElementById('actualizarDatosModal');
+            if (modal) {
+              modal.classList.remove('show');
+              modal.setAttribute('aria-hidden', 'true');
+              modal.style.display = 'none';
+              document.body.classList.remove('modal-open');
+              document.body.style.paddingRight = '';
+              const modalBackdrop = document.querySelector('.modal-backdrop');
+              if (modalBackdrop) {
+                modalBackdrop.remove();
+              }
+              this.contrasenaActual = '';
+              this.nuevaContrasena = '';
+              this.confirmarContrasena = '';
+            }
+          },
+          error: (error) => {
+            console.error('Error al actualizar datos:', error);
+            let errorMessage = 'Error al actualizar datos.';
+            if (error.error && error.error.message) {
+              errorMessage = error.error.message;
+            }
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMessage,
+            });
+          },
+        });
+      }
+    });
+  }
+
+  alertaerror() {
+    this.portalcliLogicaService.alertaerror();
+  }
+
+  mostrarLoader() {
+    this.portalcliLogicaService.mostrarLoader();
+  }
+
+  ocultarLoader() {
+    this.portalcliLogicaService.ocultarLoader();
+  }
 }

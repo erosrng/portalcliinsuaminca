@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './../../auth.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { API_URL } from './../../app.config';
 
 @Component({
   selector: 'app-login-page',
@@ -47,7 +48,9 @@ export class LoginPageComponent implements AfterViewInit { // Implementa AfterVi
     formData.append('user', this.userData.user);
     formData.append('password', this.userData.password);
 
-    this.http.post('http://10.0.100.2/proteoerp/api/logincli/logincli', formData).subscribe({
+    const apiUrl = `${API_URL}logincli/logincli`;
+
+    this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {
         if (response.status === false) {
           this.errorMessage = response.message;

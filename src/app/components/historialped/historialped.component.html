@@ -51,7 +51,7 @@
                       <ng-container *ngFor="let pedido of historialPedidos">
                         <tr>
                           <td>{{ pedido.pedido }}</td>
-                          <td>{{ pedido.origen }}</td>
+                          <td>{{ pedido.origen ? pedido.origen : 'Asesor Ventas' }}</td>
                           <td>{{ pedido.cantidad }}</td>
                           <td>{{ pedido.factura }}</td>
                           <td>{{ pedido.fecha }}</td>
