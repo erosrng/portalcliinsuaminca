@@ -16,6 +16,7 @@ import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import Swal from 'sweetalert2';
+import { ClicardComponent } from "../../components/clicard/clicard.component";
 
 @Component({
   selector: 'app-pagos-page',
@@ -30,8 +31,9 @@ import Swal from 'sweetalert2';
     MatPaginatorModule,
     MatInputModule,
     MatSelectModule,
-    MatFormFieldModule
-  ],
+    MatFormFieldModule,
+    ClicardComponent
+],
   templateUrl: './pagos-page.component.html',
   styleUrl: './pagos-page.component.scss'
 })
@@ -46,7 +48,8 @@ export class PagosPageComponent implements OnInit {
   selectedCount = 0;
   allPagos: any[] = [];
   showSelectedOnly = false;
-  facturasACancelar: string = ''; // Nueva propiedad para el campo de texto
+  facturasACancelar: string = '';
+  montoACancelar: number = 0;
 
   @ViewChild(MatSort) sort: MatSort = new MatSort();
 
@@ -61,7 +64,7 @@ export class PagosPageComponent implements OnInit {
   }
 
   metodoPagoSeleccionado: string = '';
-  tiposPago: string[] = [];
+  tiposPago: string[] = []; 
   mostrarSelectorCuenta: boolean = false;
   cuentaSeleccionada: any = null;
   cuentas: any[] = []; // Datos de cuentas desde la API
@@ -269,6 +272,7 @@ export class PagosPageComponent implements OnInit {
     }));
     this.filterSelectedRows();
     this.actualizarFacturasACancelar(); // Actualizar el campo de texto aquí
+    this.actualizarMonto();
   }
 
   getRowId(row: any): string {
@@ -314,7 +318,7 @@ export class PagosPageComponent implements OnInit {
       }));
     }
     this.updateSelectedCount();
-    this.actualizarFacturasACancelar(); // Actualizar el campo de texto aquí
+    this.actualizarFacturasACancelar(); 
   }
 
   toggleShowSelectedOnly(event: MatCheckboxChange) {
@@ -324,10 +328,21 @@ export class PagosPageComponent implements OnInit {
     this.isLoading = false;
   }
 
+  // Actualizar el campo de texto aquí
   actualizarFacturasACancelar() {
     const facturas = Object.keys(this.selectedRowsMap)
       .filter(key => this.selectedRowsMap[key])
       .map(key => key.replace('-', ''));
     this.facturasACancelar = 'PAGA: ' + facturas.join(', ');
+  }
+
+  actualizarMonto() {
+    let totalMonto = 0;
+    this.pagedPagos.forEach(row => {
+      if (this.selectedRowsMap[this.getRowId(row)]) {
+        totalMonto += parseFloat(row.monto);
+      }
+    });
+    this.montoACancelar = totalMonto;
   }
 }

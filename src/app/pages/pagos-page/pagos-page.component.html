@@ -9,56 +9,6 @@
                 <h1 class="ofertas-title pagos__title">Pagos</h1>
               </header>
             <div class="row">
-                <!-- <div class="pagos-form-col">
-                    <div class="card pagos-form-card">
-                        <div class="card-body">
-                            <h3 class="card-title pagos-form-title mb-4">Cancelar facturas</h3>
-                            <form class="pagos-form" method="POST" enctype="multipart/form-data">
-                                <div class="mb-3 form-group">
-                                    <label for="forma_pago" class="form-label pagos-label">Forma de pago</label>
-                                    <select name="forma_pago" id="forma_pago" class="form-select pagos-select" required>
-                                        <option value="">Seleccione una forma de pago</option>
-                                    </select>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="codbanc" class="form-label pagos-label">Banco</label>
-                                    <select name="codbanc" id="codbanc" class="form-select pagos-select" required>
-                                        <option value="">Seleccione un banco</option>
-                                    </select>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="monto" class="form-label pagos-label">Monto Bs</label>
-                                    <input type="number" name="monto" id="monto" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required disabled>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="montod" class="form-label pagos-label">Monto $</label>
-                                    <input type="number" name="montod" id="montod" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required disabled>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="total_transferencia" class="form-label pagos-label">Pagado</label>
-                                    <input type="number" name="total_transferencia" id="total_transferencia" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="numref" class="form-label pagos-label">Número de referencia</label>
-                                    <input type="text" name="numref" id="numref" placeholder="Ingrese el número de referencia" class="form-control pagos-input" required>
-                                </div>
-        
-                                <div class="mb-3 form-group">
-                                    <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
-                                    <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar"></textarea>
-                                </div>
-        
-                                <button class="btn btn-primary pagos-submit-btn">Registrar pago</button>
-                            </form>
-                        </div>
-                    </div>
-                </div> -->
-
                 <div class="pagos-form-col">
                     <div class="card pagos-form-card">
 
@@ -133,6 +83,16 @@
                                 </div>
 
                               </div>
+
+                              <div class="mb-3 form-group">
+                                <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
+                                <input type="number" name="monto" id="monto" [(ngModel)]="montoACancelar" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required [disabled]="!selectedRowsMap" readonly>
+                              </div>
+
+                              <div class="mb-3 form-group">
+                                  <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
+                                  <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly></textarea>
+                              </div>
                           
                               <div class="row mb-3">
                                 <div class="col-md-6">
@@ -150,21 +110,17 @@
                                 <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
                               </div>
                           
-                              <div class="mb-3 form-group">
-                                <label for="monto" class="form-label pagos-label">Monto</label>
-                                <input type="number" name="monto" id="monto" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
-                              </div>
 
-                              <div class="mb-3 form-group">
-                                  <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
-                                  <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly></textarea>
-                              </div>
     
                           
                               <button class="btn btn-primary pagos-submit-btn" [disabled]="!monto">Anexar pago</button>
                             </form>
                           </div>
                       
+                    </div>
+
+                    <div class="card card__info">
+                      <app-clicard></app-clicard>
                     </div>
                   </div>
         
@@ -260,11 +216,11 @@
                               <td class="align-middle">{{ row.entregado ? row.entregado : 'No entregado' }}</td>
                               <td class="align-middle">{{ row.vence }}</td>
                               <td class="align-middle text-center">{{ row.dias }}</td>
-                              <td class="align-middle">{{ row.monto }}</td>
-                              <td class="align-middle">{{ row.impuesto }}</td>
-                              <td class="align-middle">{{ row.reteiva }}</td>
-                              <td class="align-middle" [ngStyle]="{'color': row.dias != 0 ? 'red' : 'green'}">{{ row.saldo }}</td>                              <td class="align-middle">{{ row.ppago ? row.ppago : 0 }}</td>
-                              <td class="align-middle">{{ row.difc }}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.monto))}}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.impuesto)) }}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.reteiva )) }}</td>
+                              <td class="align-middle" [ngStyle]="{'color': row.dias != 0 ? 'red' : 'green'}">{{ portalcliLogicaService.formatCurrency((row.saldo))  }}</td>                              <td class="align-middle">{{ row.ppago ? row.ppago : 0 }}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.difc )) }}</td>
                               <td class="align-middle text-center">{{ portalcliLogicaService.formatCurrency(row.cdolar) }}</td>
                               <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.monto / row.cdolar)) }}</td>
                               <td class="align-middle">{{ portalcliLogicaService.formatCurrency(((row.saldo - row.preabono) / row.cdolar)) }}</td>
