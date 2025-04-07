@@ -86,15 +86,8 @@
                 <div class="d-flex justify-content-end">
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown__toggle" type="button" id="idcli" data-bs-toggle="dropdown" aria-expanded="false">
-                          {{ getNombreClienteSeleccionado() }} <i *ngIf="clientes" class="fas fa-solid fa-angle-down"></i>
+                          {{ getNombreUsuarioSeleccionado() }}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="idcli" *ngIf="clientes">
-                          <li *ngFor="let cliente of clientes">
-                            <a class="dropdown-item" href="javascript:void(0)" [attr.data-value]="cliente.cliente" (click)="onClienteSeleccionado(cliente)">
-                              ({{ cliente.cliente }}) {{ cliente.nombre }}
-                            </a>
-                          </li>
-                        </ul>
                       </div>
                 </div>
             
@@ -105,20 +98,8 @@
                             {{ authService.getTasa() }}
                         </div>
                         <div class="col details__cli">
-                            ALMACEN<br>
+                            PROVEEDOR<br>
                             {{ (portalcliLogicaService.clienteData$ | async)?.ubides }}
-                        </div>
-                        <div class="col details__cli">
-                            SEGMENTO<br>
-                            {{ (portalcliLogicaService.clienteData$ | async)?.descripseg }}
-                        </div>
-                        <div class="col details__cli">
-                            DCT.VOLUMEN<br>
-                            {{ (portalcliLogicaService.clienteData$ | async)?.descvol }}
-                        </div>
-                        <div class="col details__cli">
-                            GRUPO<br>
-                            {{ authService.getCmatriz() }}
                         </div>
                         <div class="col details__cli">
                             <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>

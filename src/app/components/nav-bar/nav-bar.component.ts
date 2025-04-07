@@ -99,26 +99,6 @@ export class NavBarComponent implements OnInit {
     this.revisarCarrito();
   }
 
-  /* onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
-    if (lgrup) {
-      this.categoriaSeleccionadaNombre = lgrup.nom_grup; // Actualiza el nombre
-      this.categoriaSeleccionadaGrupo = lgrup.grupo; // Actualiza el grupo
-      this.router.navigate(['/pedidos'], {
-        queryParams: { categoria: lgrup.grupo, categorianombre: lgrup.nom_grup },
-      });
-    } else {
-      this.categoriaSeleccionadaNombre = ''; // Limpia el nombre
-      this.categoriaSeleccionadaGrupo = ''; // Limpia el grupo
-      this.router.navigate(['/pedidos'], { queryParams: { categoria: '' } });
-    }
-  }
-
-  buscarProductos() {
-    if (this.searchTermNavbar) {
-      this.router.navigate(['/pedidos'], { queryParams: { search: this.searchTermNavbar } });
-    }
-  }
-   */
 
   onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
     let currentSearch = '';
@@ -170,48 +150,6 @@ export class NavBarComponent implements OnInit {
     this.buscarProductos(); // Refresca la búsqueda
   }
 
-/*   revisarCarrito() {
-    this.portalcliLogicaService.revisarCarrito();
-    this.subscriptions.push(
-      this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
-        if (productos[0].value > 0) {
-          this.productosEnCarritoNumber = productos[0].value;
-        } else {
-          this.productosEnCarritoNumber = '0';
-        }
-
-        if (this.rutaActual == 'pedidos') {
-          this.productosEnCarrito = productos;
-        }
-      }),
-      this.portalcliLogicaService.unidades$.subscribe((unidades) => {
-        if (this.rutaActual == 'pedidos') {
-          this.unidades = unidades;
-        }
-      }),
-      this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
-        if (this.rutaActual == 'pedidos') {
-          this.totalBs = totalBs;
-        }
-      }),
-      this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
-        if (this.rutaActual == 'pedidos') {
-          this.totalUsd = totalUsd;
-        }
-      }),
-      this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
-        if (this.rutaActual == 'pedidos') {
-          this.encarprod = encarprod;
-        }
-      }),
-      this.portalcliLogicaService.productosEnCarritoCodigos$.subscribe((codigos) => {
-        if (this.rutaActual == 'pedidos') {
-          this.productosEnCarritoCodigos = codigos;
-        }
-      })
-    );
-  } */
-
     revisarCarrito() {
       this.portalcliLogicaService.revisarCarrito();
       this.subscriptions.push(
@@ -259,7 +197,7 @@ export class NavBarComponent implements OnInit {
         })
       );
     }
-  getNombreClienteSeleccionado(): string {
+    getNombreUsuarioSeleccionado(): string {
     const codCli = this.authService.getCodCli();
     if (!this.clientes) {
       return `(${codCli}) ${this.authService.getNombre()}`;
@@ -270,25 +208,4 @@ export class NavBarComponent implements OnInit {
       : `(${codCli}) ${this.authService.getNombre()}`;
 
   }
-
-  /* buscaalmacen(){
-    const formData = new FormData();
-    const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-    const apiUrl = `${API_URL}portalcli/buscaalmacen`;
-
-    formData.append('codCli', this.codCli ?? '');
-
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-          this.clienteData = response.datcli;
-      },
-      error: (error) => {
-        console.error('Error de la API:', error);
-      },
-    });
-  } */
 }
