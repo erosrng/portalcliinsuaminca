@@ -5,8 +5,27 @@
     transition: all ease 0.25s;
 }
 .inventario__container{
+    width: 100%;
+    margin-left: 0.1rem;
     background-color: vars.$background-fondo;
+    position: relative;
+    z-index: 1;
 }
+
+.order-container {
+    display: flex; 
+  }
+  
+  .order-container mat-form-field {
+    flex: 1; 
+  }
+  
+  .order-container mat-icon {
+    margin-top: 1.5rem;
+    cursor: pointer;
+    padding-left: 0.4rem;
+}
+  
 .box-banner-individual {
     height: 15vh;
     width: 100%;

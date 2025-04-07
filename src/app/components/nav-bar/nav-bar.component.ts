@@ -78,6 +78,14 @@ export class NavBarComponent implements OnInit {
     this.portalcliLogicaService.toggleMenu();
   }
 
+  openMenuOnHover() {
+    this.portalcliLogicaService.openMenu();
+  }
+
+  closeMenuOnLeave() {
+    this.portalcliLogicaService.closeMenu();
+  }
+
   navigateTo(route: string) {
     this.portalcliLogicaService.navigateTo(route);
   }
@@ -85,7 +93,7 @@ export class NavBarComponent implements OnInit {
   onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
     this.authService.setCodCli(cliente.cliente);
     this.portalcliLogicaService.buscaalmacen();
-    if (this.rutaActual == 'carrito') {
+    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos') {
       this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
     }
     this.revisarCarrito();

@@ -35,7 +35,7 @@
                               <span *ngIf="fileName">{{ fileName }}</span>
                               <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
                             </label>
-                            <button class="busca__pedido" (click)="cargarArchivo();">Cargar archivo</button>
+                            <button class="busca__pedido" [disabled]="!habilitarCargar" (click)="cargarArchivo();">Cargar archivo</button>
                         </div>
 
                     </div>

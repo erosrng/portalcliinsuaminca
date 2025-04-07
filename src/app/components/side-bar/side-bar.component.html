@@ -1,93 +1,78 @@
 <section class="menu__general" [class.openmenu]="isMenuOpen" [class.closedmenu]="!isMenuOpen" id="menu">
     <div class="menu__content">
 
-        <ul class="nav flex-column menu__nav">
-            <li class="nav-item">
-                    <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/home')">
-                    <i class="fas fa-home"></i><span *ngIf="isMenuOpen"> Inicio</span>
+      <ul class="nav flex-column menu__nav">
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/home')">
+            <i class="fas fa-home"></i><span *ngIf="isMenuOpen"> Inicio</span>
+          </a>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pedidosDropdown" aria-expanded="false">
+            <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Toma de pedidos</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+          </a>
+          <div class="collapse menu__dropdown-content" id="pedidosDropdown">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
+                  <i class="fas fa-boxes"></i><span *ngIf="isMenuOpen"> Inventario</span>
                 </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pedidosDropdown" aria-expanded="false">
-                    <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Toma de pedidos</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
+                  <i class="fas fa-file-excel"></i><span *ngIf="isMenuOpen"> Por Excel</span>
                 </a>
-                <div class="collapse menu__dropdown-content" id="pedidosDropdown">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                              <i class="fas fa-boxes"></i><span *ngIf="isMenuOpen"> Inventario</span>
-                            </a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
-                              <i class="fas fa-file-excel"></i><span *ngIf="isMenuOpen"> Por Excel</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
-                  <i class="fas fa-money-bill-wave"></i><span *ngIf="isMenuOpen"> Pagos</span>
+              </li>
+            </ul>
+          </div>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
+            <i class="fas fa-money-bill-wave"></i><span *ngIf="isMenuOpen"> Pagos</span>
+          </a>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
+            <i class="fas fa-user"></i><span *ngIf="isMenuOpen"> Perfil</span>
+          </a>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
+            <i class="fas fa-chart-line"></i><span *ngIf="isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+          </a>
+          <div class="collapse menu__dropdown-content" id="reportesDropdown">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
+                  <i class="fas fa-history"></i><span *ngIf="isMenuOpen"> Historial de pedidos</span>
                 </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
-                    <i class="fas fa-user"></i><span *ngIf="isMenuOpen"> Perfil</span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
+                  <i class="fas fa-file-invoice-dollar"></i><span *ngIf="isMenuOpen"> Exportar estado de cuenta</span>
                 </a>
-            </li>
-
-                        
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
-                    <i class="fas fa-chart-line"></i><span *ngIf="isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
-                </a>
-                <div class="collapse menu__dropdown-content" id="reportesDropdown">
-                    <!-- <ul class="nav flex-column">
-                        <li class="nav-item">
-                          <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                            <i class="fas fa-history"></i><span *ngIf="isMenuOpen"> Historial de pedidos</span>
-                          </a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
-                            <i class="fas fa-file-invoice-dollar"></i><span *ngIf="isMenuOpen"> Estado de cuenta</span>
-                          </a>
-                        </li>
-                      </ul> -->
-
-                      <ul class="nav flex-column">
-                        <li class="nav-item">
-                          <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                            <i class="fas fa-history"></i><span *ngIf="isMenuOpen"> Historial de pedidos</span>
-                          </a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
-                            <i class="fas fa-file-invoice-dollar"></i><span *ngIf="isMenuOpen"> Exportar estado de cuenta</span>
-                          </a>
-                        </li>
-                      </ul>
-
-                </div>
-            </li>
-
-
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/estado-cuenta')">
-                  <i class="fas fa-file-invoice-dollar"></i><span *ngIf="isMenuOpen"> Estado de Cuenta</span>
-                </a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="javascript:void(0)" (click)="logout()">
-                    <i class="fas fa-sign-out-alt"></i><span *ngIf="isMenuOpen"> Cerrar sesión</span>
-                </a>
-            </li>
-        </ul>
+              </li>
+            </ul>
+          </div>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/estado-cuenta')">
+            <i class="fas fa-file-invoice-dollar"></i><span *ngIf="isMenuOpen"> Estado de Cuenta</span>
+          </a>
+        </li>
+  
+        <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i><span *ngIf="isMenuOpen"> Cerrar sesión</span>
+          </a>
+        </li>
+      </ul>
+  
 
         <div class="menu__footer" *ngIf="isMenuOpen">
             Insuaminca, + cerca de ti

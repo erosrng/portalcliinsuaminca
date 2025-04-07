@@ -12,7 +12,7 @@ import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
 import Swal from 'sweetalert2';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil, Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -20,6 +20,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-pedidos-page',
@@ -34,7 +35,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatPaginatorModule,
     MatInputModule,
     MatSelectModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatIconModule
   ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
@@ -45,10 +47,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   categorianombre: string | null = null;
   search: string | null = null;
 
+  private destroy$ = new Subject<void>();
+
   dataSource = new MatTableDataSource<any>(this.products);
   displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   private subscriptions: Subscription[] = [];
+  private clienteCambiadoSubscription: Subscription | undefined;
 
   filteredProducts: any[] = [];
   pagedProducts: any[] = [];
@@ -64,7 +69,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   encarprod: string = '';
   productosEnCarritoCodigos: string[] = [];
   selectedProduct: any = null;
-
+  sortField: string = 'descrip';
+  marcas: any[] = [];
   isLoading = false;
 
   pageInput: string = '';
@@ -72,9 +78,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   recordsFiltered: number = 0;
 
   filterDescrip = '';
-  filterProveedor = '';
-  filterLote = '';
   filterPrecio = '';
+  clienteData: any;
+  private clienteDataSubscription: Subscription | undefined;
+  filterMarca: string = '';
+  filterLote: string = '';
+  orderBy: string = 'descrip'; // Valor por defecto
+  orderDirection: string = 'asc';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -90,6 +100,21 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.categorianombre = params['categorianombre'];
       this.fetchPedidos(); 
     });
+
+    /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
+      this.clienteDataSubscription = this.portalcliLogicaService.clienteData$.subscribe(data => {
+        this.clienteData = data;
+        //console.log(this.clienteData)
+      });
+      this.fetchPedidos();
+
+    }); */
+
+    this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      //this.clienteData = this.portalcliLogicaService.clienteData$.getValue(); // Obtén el valor actual
+      this.fetchPedidos();
+    });
+
     this.fetchPedidos();
     this.revisarCarrito();
   }
@@ -104,6 +129,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       if (this.paginator) {
         this.paginator.firstPage();
       }
+  }
+
+  sortData(sortField: string) {
+    if (this.orderBy === sortField) {
+      this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.orderBy = sortField;
+      this.orderDirection = 'asc';
+    }
+    this.applyFilters();
   }
 
     checkPriceRange(price: number, range: string): boolean {
@@ -142,10 +177,14 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     //formData.append('search', this.filterDescrip); 
     formData.append('search', this.search ?? ''); 
     formData.append('categoria', this.categoria ?? '');
-    formData.append('marca', ''); // Puedes agregar un input para la marca si es necesario
-    formData.append('proveedor', this.filterProveedor);
+    formData.append('marca', '');
+    if (this.clienteData && this.clienteData.ubica) {
+      formData.append('almacen', this.clienteData.ubica);
+    }
+    formData.append('proveedor', this.filterMarca);
     formData.append('lote', this.filterLote);
-    formData.append('orderby', '');
+    formData.append('orderby', this.orderBy);
+    formData.append('orderDirection', this.orderDirection);
     formData.append('nuevos', '0');
     formData.append('columns', JSON.stringify([
       { data: 'codigo' },
@@ -172,6 +211,37 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+  /* traeMarcas() {
+    this.isLoading = true;
+    const formData = new FormData();
+    const token = this.authService.getToken();
+
+    const apiUrl = `${API_URL}portalcli/buscamarcas`;
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.status) {
+          this.marcas = response.data;
+        } else {
+          console.error('Error al cargar marcas:', response);
+          this.marcas = [];
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Error de la API:', error);
+        this.marcas = [];
+      },
+    });
+  } */
+
+  
 
   goToFirstPage() {
     this.currentPage = 1;
@@ -300,55 +370,55 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       });
     }
 
-      enviaped(){
-        this.isLoading = true; 
-        const codCli = this.authService.getCodCli();
-    
-          const formData = new FormData();
-          const token = this.authService.getToken();
-    
-          formData.append('codCli', codCli ?? '');
-    
-          const headers = new HttpHeaders({
-            'Authorization': `${token}`
-          });
-          const apiUrl = `${API_URL}portalcli/enviaped`;
-        
-          Swal.fire({
-            
-          title: '¿Desea enviar el pedido?',
-          text: "Esta acción no se puede deshacer.",
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Enviar',
-          cancelButtonText: 'Cancelar'
-          }).then((result) => {
-          if (result.isConfirmed) {
-              this.mostrarLoader;
-              this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-                next: (response: any) => {
-                  if (response.status) {
-                    this.ocultarLoader;
-                    this.revisarCarrito();
-                    Swal.fire(response.mensaje, '', 'success');
-                    this.productosEnCarrito = [];
-                    this.dataSource.data = this.productosEnCarrito;
-                    this.isLoading = false;  
-                  } else {
-                    Swal.fire(response.mensaje, '', 'error');
-                    this.isLoading = false;  
-                  }
-                },
-                error: (error) => {
-                  this.isLoading = false;  
+    enviaped(){
+      this.isLoading = true; 
+      const codCli = this.authService.getCodCli();
+  
+        const formData = new FormData();
+        const token = this.authService.getToken();
+  
+        formData.append('codCli', codCli ?? '');
+  
+        const headers = new HttpHeaders({
+          'Authorization': `${token}`
+        });
+        const apiUrl = `${API_URL}portalcli/enviaped`;
+      
+        Swal.fire({
+          
+        title: '¿Desea enviar el pedido?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            this.mostrarLoader;
+            this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+              next: (response: any) => {
+                if (response.status) {
                   this.ocultarLoader;
-                  Swal.fire(error, '', 'error');
-                  console.error('Error de la API:', error);
-                },
-              });
-          }
-          });
-      }
+                  this.revisarCarrito();
+                  Swal.fire(response.mensaje, '', 'success');
+                  this.productosEnCarrito = [];
+                  this.dataSource.data = this.productosEnCarrito;
+                  this.isLoading = false;  
+                } else {
+                  Swal.fire(response.mensaje, '', 'error');
+                  this.isLoading = false;  
+                }
+              },
+              error: (error) => {
+                this.isLoading = false;  
+                this.ocultarLoader;
+                Swal.fire(error, '', 'error');
+                console.error('Error de la API:', error);
+              },
+            });
+        }
+        });
+    }
 
     alertaerror(){
       this.portalcliLogicaService.alertaerror();

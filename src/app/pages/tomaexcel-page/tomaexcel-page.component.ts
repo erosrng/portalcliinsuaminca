@@ -42,6 +42,7 @@ export class TomaexcelPageComponent {
 
   jsonData: any;
   fileName: string = '';
+  habilitarCargar: boolean = false; 
   private subscriptions: Subscription[] = []; 
   
 
@@ -69,7 +70,7 @@ export class TomaexcelPageComponent {
             timer: 9000,
             toast: true,
             position: 'bottom-end',
-        });
+          });
         };
 
         reader.readAsBinaryString(file);
@@ -87,6 +88,14 @@ export class TomaexcelPageComponent {
         this.jsonData = null;
       }
     } else {
+      Swal.fire({
+        text: 'Por favor, seleccione un archivo .xlsx',
+        icon: 'error',
+        showConfirmButton: false,
+        timer: 3000,
+        toast: true,
+        position: 'bottom-end',
+    });
       this.fileName = '';
       this.jsonData = null;
     }
@@ -100,7 +109,7 @@ export class TomaexcelPageComponent {
     const filasFiltradas: any[][] = [];
     const codigosvacios: any[][] = [];
   
-    if (this.jsonData) {
+    if (this.jsonData  && this.jsonData.length > 0) {
       const promises: Promise<any>[] = this.jsonData.map((fila: any) => {
         const celdas = Object.values(fila);
         const canaexcel: number = Number(celdas[11]);
@@ -124,6 +133,8 @@ export class TomaexcelPageComponent {
             .catch((error) => {
               console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, error);
             });
+        }else{
+          console.error('No hay datos para cargar');
         }
         return Promise.resolve(celdas);
       });

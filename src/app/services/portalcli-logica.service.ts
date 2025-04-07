@@ -33,6 +33,7 @@ export class PortalcliLogicaService {
 
   private isMenuOpenSubject = new BehaviorSubject<boolean>(true);
   isMenuOpen$ = this.isMenuOpenSubject.asObservable();
+  public isButtonOpen = false; 
 
     constructor(
       private authService: AuthService, 
@@ -40,9 +41,28 @@ export class PortalcliLogicaService {
       private router: Router
     ) {} 
 
-  toggleMenu() {
+    toggleMenu() {
+      this.isButtonOpen = !this.isButtonOpen;
+      this.isMenuOpenSubject.next(this.isButtonOpen);
+    }
+  
+    openMenu() {
+      if (!this.isButtonOpen) {
+        this.isMenuOpenSubject.next(true);
+      }
+    }
+  
+    closeMenu() {
+      if (!this.isButtonOpen) {
+        this.isMenuOpenSubject.next(false);
+      }
+    }
+    
+  /* toggleMenu() {
     this.isMenuOpenSubject.next(!this.isMenuOpenSubject.value);
-  }
+  } */
+
+
   navigateTo(route: string) {
     this.router.navigate([route]);
   }

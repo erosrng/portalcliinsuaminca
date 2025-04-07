@@ -86,17 +86,19 @@
 
                               <div class="mb-3 form-group">
                                 <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
-                                <input type="number" name="monto" id="monto" [(ngModel)]="montoACancelar" step="0.01" min="0" placeholder="0.00" class="form-control pagos-input" required [disabled]="!selectedRowsMap" readonly>
+                                <input type="text" name="monto" id="monto" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly>
                               </div>
+                              
 
                               <div class="mb-3 form-group">
                                   <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
-                                  <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly></textarea>
+                                  <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" 
+                                  class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly></textarea>
                               </div>
                           
                               <div class="row mb-3">
                                 <div class="col-md-6">
-                                  <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia bancaria</label>
+                                  <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia</label>
                                   <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
                                 </div>
                                 <div class="col-md-6">

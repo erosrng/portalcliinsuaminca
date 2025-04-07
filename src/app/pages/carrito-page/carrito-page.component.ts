@@ -62,7 +62,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   private clienteCambiadoSubscription: Subscription | undefined;
 
   productosEnCarritoNumber: string = '';
-  productscar: Product[] = []; // Asegúrate de que productscar sea de tipo Product[]
+  productscar: Product[] = [];
   dataSource = new MatTableDataSource<Product>(this.productscar);
   displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -86,9 +86,9 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-        ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
 
-      }
+  }
     
   openCar() {
     const codCli = this.authService.getCodCli();
@@ -165,7 +165,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       });
   }
 
-      //Envia pedidos al servidor
+  //Envia pedidos al servidor
   enviaped(){
     this.isLoading = true; 
     const codCli = this.authService.getCodCli();

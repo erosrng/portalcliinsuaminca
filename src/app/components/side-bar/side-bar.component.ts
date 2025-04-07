@@ -36,6 +36,18 @@ export class SideBarComponent {
     this.portalcliLogicaService.navigateTo(route);
   }
 
+  openMenuOnItemHover() {
+    if (!this.isMenuOpen) {
+      this.portalcliLogicaService.openMenu();
+    }
+  }
+
+  closeMenuOnItemLeave() {
+    if (!this.portalcliLogicaService.isButtonOpen) {
+      this.portalcliLogicaService.closeMenu();
+    }
+  }
+  
   togglePedidosDropdown() {
     this.showPedidosDropdown = !this.showPedidosDropdown;
   }
@@ -48,4 +60,17 @@ export class SideBarComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  toggleMenu() {
+    this.portalcliLogicaService.toggleMenu();
+  }
+
+  openMenuOnHover() {
+    this.portalcliLogicaService.openMenu();
+  }
+
+  closeMenuOnLeave() {
+    this.portalcliLogicaService.closeMenu();
+  }
+
 }

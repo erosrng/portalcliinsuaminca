@@ -12,11 +12,12 @@ import { API_URL } from './../../app.config';
 })
 export class HistorialpedComponent {
   isLoading = false;
+  historialPedidos: any[] = [];
+  detallesPedido: any[] = [];
+  pedidoSeleccionado: any;
 
   constructor(private authService: AuthService, private http: HttpClient) {}
 
-  historialPedidos: any[] = []; // Propiedad para almacenar los datos
-  //detallesPedido: any[] = [];
   ngOnInit() {
     this.traeHistorial();
   }
@@ -38,7 +39,6 @@ export class HistorialpedComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response && response.data) {
-          // Asigna los datos del historial a la propiedad
           this.historialPedidos = response.data;
         } else {
           console.error('Respuesta de la API sin datos:', response);
@@ -51,35 +51,38 @@ export class HistorialpedComponent {
     });
   }
 
-
-
   showdetail(pedido: any) {
-    if (pedido.detallesMostrados) {
-      // Si la tabla ya está abierta, solo ciérrala
-      pedido.detallesMostrados = false;
-    } else {
-      // Si la tabla está cerrada, haz la solicitud POST
-      this.isLoading = true;
-      const headers = new HttpHeaders({
-        Authorization: `${this.authService.getToken()}`,
-      });
-      const apiUrl = `${API_URL}portalcli/detalle_pedido/${pedido.pedido}`;
+    this.isLoading = true;
+    this.pedidoSeleccionado = pedido; // Guardar el pedido seleccionado
 
-      this.http.post(apiUrl, {}, { headers: headers }).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          if (response && response.data && response.data.detalleped) {
-            pedido.detalles = response.data.detalleped;
-            pedido.detallesMostrados = true;
-          } else {
-            console.error('Respuesta de la API sin datos de detalleped:', response);
-          }
-        },
-        error: (error) => {
-          console.error('Error al obtener detalles del pedido:', error);
-          this.isLoading = false;
-        },
-      });
-    }
+    const headers = new HttpHeaders({
+      Authorization: `${this.authService.getToken()}`,
+    });
+    const apiUrl = `${API_URL}portalcli/detalle_pedido/${pedido.pedido}`;
+
+    this.http.post(apiUrl, {}, { headers: headers }).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response && response.data && response.data.detalleped) {
+          this.detallesPedido = response.data.detalleped;
+          this.openDetailsModal();
+        } else {
+          console.error('Respuesta de la API sin datos de detalleped:', response);
+          this.detallesPedido = []; // Asegura que detallesPedido esté vacío en caso de error
+          this.openDetailsModal(); // Abre el modal incluso si no hay datos
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener detalles del pedido:', error);
+        this.isLoading = false;
+        this.detallesPedido = []; // Asegura que detallesPedido esté vacío en caso de error
+        this.openDetailsModal(); // Abre el modal incluso si hay error
+      },
+    });
+  }
+
+  openDetailsModal() {
+    const myModal = new (window as any).bootstrap.Modal(document.getElementById('detallesPedidoModal'));
+    myModal.show();
   }
 }
