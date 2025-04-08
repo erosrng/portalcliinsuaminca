@@ -67,8 +67,8 @@ export class NavBarComponent implements OnInit {
       this.searchTermNavbar = this.searchParam; // Mantener el valor en el input
     });
     this.rutaActual = this.route.snapshot.url.join('/');
-    this.codCli = this.authService.getCodCli();
-    this.clientes = this.authService.getClientes();
+    //this.codCli = this.authService.getCodCli();
+    //this.clientes = this.authService.getClientes();
     this.grup = this.authService.getLgrup();
     this.portalcliLogicaService.buscaalmacen();
     this.revisarCarrito();
@@ -89,16 +89,6 @@ export class NavBarComponent implements OnInit {
   navigateTo(route: string) {
     this.portalcliLogicaService.navigateTo(route);
   }
-
-  onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
-    this.authService.setCodCli(cliente.cliente);
-    this.portalcliLogicaService.buscaalmacen();
-    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos') {
-      this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
-    }
-    this.revisarCarrito();
-  }
-
 
   onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
     let currentSearch = '';

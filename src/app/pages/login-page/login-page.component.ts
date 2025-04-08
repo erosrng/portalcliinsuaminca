@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './../../auth.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
-import { API_URL } from './../../app.config';
+import { API_URL, API_URL2 } from './../../app.config';
 
 @Component({
   selector: 'app-login-page',
@@ -48,7 +48,7 @@ export class LoginPageComponent implements AfterViewInit { // Implementa AfterVi
     formData.append('user', this.userData.user);
     formData.append('password', this.userData.password);
 
-    const apiUrl = `${API_URL}logincli/logincli`;
+    const apiUrl = `${API_URL2}logincli/logincli`;
 
     this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {

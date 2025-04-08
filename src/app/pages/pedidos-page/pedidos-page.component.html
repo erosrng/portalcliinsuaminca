@@ -149,47 +149,31 @@
                       </div>
                     </div>
                 
-                  
-                  <!-- <div *ngIf="!loading">
-                    <div *ngFor="let product of products">
-                      </div>
-                  </div> -->
-
                   <!-- FIN DE FUNCIONAL CON PURO -->
                   <div class="container-fluid w-100">
 
                     <div class="row mb-3">
-                      <!-- 
-                      <div class="col-md-3">
+                      
+                      <!-- <div class="col-md-3">
                         <mat-form-field appearance="outline" style="width: 100%;">
                           <mat-label>Buscar</mat-label>
                           <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
                         </mat-form-field>
-                      </div>
+                      </div> -->
+                      
                       <div class="col-md-3">
-                        <mat-form-field appearance="outline" style="width: 100%;">
-                          <mat-label>Proveedor</mat-label>
-                          <mat-select [(ngModel)]="filterMarca" (selectionChange)="applyFilters()">
-                            <mat-option value="">Todos</mat-option>
-                            <mat-option *ngFor="let proveedor of marcas" [value]="proveedor.proveed">
-                              {{ proveedor.nombre }}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
+                        <input type="text" id="idcli" list="buscascli" placeholder="Buscar cliente..." 
+                        value="" class="buscascli__input" (input)="onClienteInputChange($event)" />
+                        <datalist id="buscascli" class="options__clientes">';
+                          <option *ngFor="let cliente of clientes" [value]="cliente.cliente" [ngValue]="cliente" 
+                          data-nombre="cliente.nombre">
+                            ({{cliente.cliente}}) {{cliente.nombre}} RIF: {{cliente.rifci}}
+                          </option>
+                        </datalist>
+                        <div id="cliente_seleccionado" class="cli__select"></div>
                       </div>
+                      
                       <div class="col-md-3">
-                        <mat-form-field appearance="outline" style="width: 100%;">
-                          <mat-label>Lote</mat-label>
-                          <mat-select [(ngModel)]="filterLote" (selectionChange)="applyFilters()">
-                            <mat-option value="">Todos</mat-option>
-                            <mat-option *ngFor="let lote of lotes" [value]="lote">
-                              {{ lote }}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div> 
-                      ---->
-                      <div class="col-md-3 order-container">
                         <mat-form-field appearance="outline" style="width: calc(100% - 32px);">
                           <mat-label>Ordenar por</mat-label>
                           <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">

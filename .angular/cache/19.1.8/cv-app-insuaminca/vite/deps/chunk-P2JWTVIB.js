@@ -1,7 +1,7 @@
 import {
   _CdkPrivateStyleLoader,
   _VisuallyHiddenLoader
-} from "./chunk-BENYZ5F5.js";
+} from "./chunk-2D2TU2GC.js";
 import {
   Platform,
   _bindEventWithOptions,
@@ -12,13 +12,13 @@ import {
   coerceElement,
   coerceNumberProperty,
   normalizePassiveListenerOptions
-} from "./chunk-BQ7UOWDK.js";
+} from "./chunk-KOY4U5HW.js";
 import {
   BidiModule
-} from "./chunk-ZRJD4M6F.js";
+} from "./chunk-Y3GYHMC2.js";
 import {
   DOCUMENT
-} from "./chunk-HRMWXWEU.js";
+} from "./chunk-ZBDMAHY2.js";
 import {
   ANIMATION_MODULE_TYPE,
   APP_ID,
@@ -75,7 +75,10 @@ import {
   ɵɵtext,
   ɵɵtextInterpolate1,
   ɵɵviewQuery
-} from "./chunk-ZXNQQMV3.js";
+} from "./chunk-H7BHMV3M.js";
+import {
+  isObservable
+} from "./chunk-KH4MDUVN.js";
 import {
   BehaviorSubject,
   Observable,
@@ -86,7 +89,6 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
-  isObservable,
   map,
   of,
   skip,
@@ -94,13 +96,13 @@ import {
   take,
   takeUntil,
   tap
-} from "./chunk-P6U2JBMQ.js";
+} from "./chunk-GQGAQNC4.js";
 import {
   __spreadProps,
   __spreadValues
-} from "./chunk-WDMUDEB6.js";
+} from "./chunk-3OV72XIM.js";
 
-// node_modules/@angular/cdk/fesm2022/keycodes.mjs
+// ../node_modules/@angular/cdk/fesm2022/keycodes.mjs
 var TAB = 9;
 var ENTER = 13;
 var SHIFT = 16;
@@ -129,7 +131,7 @@ function hasModifierKey(event, ...modifiers) {
   return event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
 }
 
-// node_modules/@angular/cdk/fesm2022/layout.mjs
+// ../node_modules/@angular/cdk/fesm2022/layout.mjs
 var LayoutModule = class _LayoutModule {
   static ɵfac = function LayoutModule_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _LayoutModule)();
@@ -316,7 +318,7 @@ function splitQueries(queries) {
   return queries.map((query) => query.split(",")).reduce((a1, a2) => a1.concat(a2)).map((query) => query.trim());
 }
 
-// node_modules/@angular/cdk/fesm2022/coercion/private.mjs
+// ../node_modules/@angular/cdk/fesm2022/coercion/private.mjs
 function coerceObservable(data) {
   if (!isObservable(data)) {
     return of(data);
@@ -324,7 +326,7 @@ function coerceObservable(data) {
   return data;
 }
 
-// node_modules/@angular/cdk/fesm2022/observers.mjs
+// ../node_modules/@angular/cdk/fesm2022/observers.mjs
 function shouldIgnoreRecord(record) {
   if (record.type === "characterData" && record.target instanceof Comment) {
     return true;
@@ -569,7 +571,7 @@ var ObserversModule = class _ObserversModule {
   }], null, null);
 })();
 
-// node_modules/@angular/cdk/fesm2022/a11y.mjs
+// ../node_modules/@angular/cdk/fesm2022/a11y.mjs
 var ID_DELIMITER = " ";
 function addAriaReferencedId(el, attr, id) {
   const ids = getAriaReferenceIds(el, attr);
@@ -1182,6 +1184,23 @@ var ActiveDescendantKeyManager = class extends ListKeyManager {
     super.setActiveItem(index);
     if (this.activeItem) {
       this.activeItem.setActiveStyles();
+    }
+  }
+};
+var FocusKeyManager = class extends ListKeyManager {
+  _origin = "program";
+  /**
+   * Sets the focus origin that will be passed in to the items for any subsequent `focus` calls.
+   * @param origin Focus origin to be used when focusing items.
+   */
+  setFocusOrigin(origin) {
+    this._origin = origin;
+    return this;
+  }
+  setActiveItem(item) {
+    super.setActiveItem(item);
+    if (this.activeItem) {
+      this.activeItem.focus(this._origin);
     }
   }
 };
@@ -3023,7 +3042,7 @@ var _IdGenerator = class __IdGenerator {
   }], null, null);
 })();
 
-// node_modules/@angular/material/fesm2022/core.mjs
+// ../node_modules/@angular/material/fesm2022/core.mjs
 var _c0 = ["*", [["mat-option"], ["ng-container"]]];
 var _c1 = ["*", "mat-option, ng-container"];
 var _c2 = ["text"];
@@ -5174,11 +5193,13 @@ export {
   DOWN_ARROW,
   A,
   hasModifierKey,
+  CdkObserveContent,
   ObserversModule,
   addAriaReferencedId,
   removeAriaReferencedId,
   AriaDescriber,
   ActiveDescendantKeyManager,
+  FocusKeyManager,
   LiveAnnouncer,
   FocusMonitor,
   A11yModule,
@@ -5224,4 +5245,4 @@ export {
   MatRippleLoader,
   _MatInternalFormField
 };
-//# sourceMappingURL=chunk-WTDHYKYI.js.map
+//# sourceMappingURL=chunk-P2JWTVIB.js.map

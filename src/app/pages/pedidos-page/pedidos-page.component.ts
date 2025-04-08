@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
-
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -46,6 +45,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   categoria: string | null = null;
   categorianombre: string | null = null;
   search: string | null = null;
+  isLoading = false;
 
   private destroy$ = new Subject<void>();
 
@@ -62,7 +62,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   totalPages = 1;
   pages: number[] = [];
   productosEnCarrito: any[] = [];
-  //loading: boolean = false;
+
   unidades: string = '';
   totalBs: string = '';
   totalUsd: string = '';
@@ -71,7 +71,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   selectedProduct: any = null;
   sortField: string = 'descrip';
   marcas: any[] = [];
-  isLoading = false;
 
   pageInput: string = '';
   minResults: number = 0;
@@ -86,36 +85,98 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   orderBy: string = 'descrip'; // Valor por defecto
   orderDirection: string = 'asc';
 
+  codCli: string | null = null;
+  clientes: any[] = []; 
+  rutaActual: string = '';
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
-  ) { }
+  ){
+
+  }
 
   ngOnInit() {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.codCli = this.authService.getCodCli();
+    if(this.codCli){
+      this.subscribeToClienteData();
+      //this.fetchPedidos();
+      //this.revisarCarrito();
+    }
+    /* this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
       this.search = params['search'];
       this.categorianombre = params['categorianombre'];
       this.fetchPedidos(); 
-    });
+    }); */
+    this.obtenerClientes();
+    this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
-    /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
-      this.clienteDataSubscription = this.portalcliLogicaService.clienteData$.subscribe(data => {
-        this.clienteData = data;
-        //console.log(this.clienteData)
-      });
+    /* this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.fetchPedidos();
-
     }); */
 
-    this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      //this.clienteData = this.portalcliLogicaService.clienteData$.getValue(); // Obtén el valor actual
-      this.fetchPedidos();
+     
+  }
+
+  //Trae los datos del cliente al buscarlo o cambiarlo
+  subscribeToClienteData() {
+    this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.clienteData = data;
+      this.fetchPedidos(); 
+    });
+  }
+
+  obtenerClientes(): void {
+    this.isLoading = true;
+    const formData = new FormData();
+    const token = this.authService.getToken();
+
+    const apiUrl = `${API_URL}bdscli`;
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
     });
 
-    this.fetchPedidos();
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.result) {
+          this.clientes = response.data;
+        } else {
+          console.error('Error al cargar clientes:', response);
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Error de la API:', error);
+      },
+    });
+  }
+
+  onClienteInputChange(event: any): void {
+    const inputValue = event.target.value;
+    const selectedCliente = this.clientes.find(
+      (cliente) =>
+        cliente.cliente === inputValue ||
+        cliente.nombre.toLowerCase().includes(inputValue.toLowerCase()) ||
+        cliente.rifci === inputValue
+    );
+  
+    if (selectedCliente) {
+      this.onClienteSeleccionado(selectedCliente);
+    }
+  }
+  
+
+  onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
+    this.authService.setCodCli(cliente.cliente);
+    this.portalcliLogicaService.buscaalmacen();
+    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos') {
+      this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
+    }
     this.revisarCarrito();
   }
 
@@ -177,11 +238,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     //formData.append('search', this.filterDescrip); 
     formData.append('search', this.search ?? ''); 
     formData.append('categoria', this.categoria ?? '');
-    formData.append('marca', '');
+
     if (this.clienteData && this.clienteData.ubica) {
       formData.append('almacen', this.clienteData.ubica);
     }
-    formData.append('proveedor', this.filterMarca);
     formData.append('lote', this.filterLote);
     formData.append('orderby', this.orderBy);
     formData.append('orderDirection', this.orderDirection);
@@ -197,11 +257,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/data`;
+    const apiUrl = `${API_URL}inventarioprv`;
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
-        this.pagedProducts = response.data; // Usamos pagedProducts directamente
+        this.pagedProducts = response.data;
         this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
         this.isLoading = false; 
       },
@@ -211,37 +271,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       },
     });
   }
-
-  /* traeMarcas() {
-    this.isLoading = true;
-    const formData = new FormData();
-    const token = this.authService.getToken();
-
-    const apiUrl = `${API_URL}portalcli/buscamarcas`;
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        if (response.status) {
-          this.marcas = response.data;
-        } else {
-          console.error('Error al cargar marcas:', response);
-          this.marcas = [];
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error de la API:', error);
-        this.marcas = [];
-      },
-    });
-  } */
-
-  
 
   goToFirstPage() {
     this.currentPage = 1;

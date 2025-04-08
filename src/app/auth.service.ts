@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface DecodedToken {
+  nomprv: string;
   usuario: string;
   nombre: string;
   logged_in: boolean;
@@ -84,8 +85,8 @@ export class AuthService {
     return isNaN(parsedTasa) ? 0 : parsedTasa;
   }
 
-  getCmatriz(): string | null {
-    return this.decodedToken ? this.decodedToken.cmatriz : null;
+  getNomprv(): string | null {
+    return this.decodedToken ? this.decodedToken.nomprv : null;
   }
 
   getApiTime(): number | null {
@@ -114,7 +115,7 @@ export class AuthService {
 
   getClientes(): { cliente: string; nombre: string; rifci: string }[] | null {
     return this.decodedToken ? this.decodedToken.clientes : null;
-  }
+  } 
 
   getLgrup(): { grupo: string; nom_grup: string; }[] | null {
     return this.decodedToken ? this.decodedToken.lgrup : null;

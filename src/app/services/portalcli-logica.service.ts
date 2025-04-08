@@ -232,13 +232,13 @@ export class PortalcliLogicaService {
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });
-      const apiUrl = `${API_URL}portalcli/buscaalmacen`;
+      const apiUrl = `${API_URL}buscaalmacen`;
   
       formData.append('codCli', this.authService.getCodCli() ?? '');
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
-          this.clienteDataSource.next(response.datcli.datcli);
+          this.clienteDataSource.next(response.data.datcli);
         },
         error: (error) => {
           console.error('Error de la API:', error);

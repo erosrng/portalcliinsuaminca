@@ -92,21 +92,21 @@
                 </div>
             
                 <div class="container text-center">
-                    <div class="row flex-nowrap">
-                        <div class="col details__cli">
-                            BCV<br>
-                            {{ authService.getTasa() }}
-                        </div>
-                        <div class="col details__cli">
-                            PROVEEDOR<br>
-                            {{ (portalcliLogicaService.clienteData$ | async)?.ubides }}
-                        </div>
-                        <div class="col details__cli">
-                            <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
-                            <span class="fs-4"> {{productosEnCarritoNumber}}</span>
-                        </div>
-                    </div>
-                </div>
+                  <div class="row flex-nowrap">
+                      <div class="col details__cli" style="flex-grow: 1;">
+                          BCV<br>
+                          {{ authService.getTasa() }}
+                      </div>
+                      <div class="col details__cli" style="flex-grow: 5;">
+                          PROVEEDOR<br>
+                          {{ authService.getNomprv() }}
+                      </div>
+                      <div class="col details__cli">
+                          <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
+                          <span class="fs-4"> {{productosEnCarritoNumber}}</span>
+                      </div>
+                  </div>
+              </div>
 
             </div>
         </div>
