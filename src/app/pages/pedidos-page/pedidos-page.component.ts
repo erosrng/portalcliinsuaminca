@@ -114,9 +114,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.obtenerClientes();
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
-    /* this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.fetchPedidos();
-    }); */
+    });
 
      
   }
