@@ -16,7 +16,7 @@
         <form (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <div class="form-floating">
-              <input
+              <!-- <input
                 type="text"
                 id="user"
                 name="user"
@@ -26,13 +26,26 @@
                 [(ngModel)]="userData.user"
                 #userInput 
               />
-              <label for="user">Usuario</label>
+              <label for="user">Usuario</label> -->
+
+              <mat-form-field style="width: 100%;">
+                <mat-label>Usuario</mat-label>
+                <input matInput #input  placeholder="Usuario" 
+                type="text"
+                id="user"
+                name="user"
+                placeholder="Usuario"
+                required
+                [(ngModel)]="userData.user"
+                #userInput 
+                />
+              </mat-form-field>
             </div>
           </div>
         
           <div class="mb-3">
             <div class="form-floating">
-              <input
+              <!-- <input
                 type="password"
                 id="pws"
                 name="pws"
@@ -41,7 +54,27 @@
                 required
                 [(ngModel)]="userData.password"
               />
-              <label for="pws">Contraseña</label>
+              <label for="pws">Contraseña</label> -->
+              <mat-form-field style="width: 100%;">
+                <mat-label>Ingrese su contraseña</mat-label>
+                <input matInput [type]="hide() ? 'password' : 'text'" 
+                type="password"
+                id="pws"
+                name="pws"
+                placeholder="Contraseña"
+                required
+                [(ngModel)]="userData.password"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="clickEvent($event)"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hide()"
+                >
+                  <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>
             </div>
           </div>
         

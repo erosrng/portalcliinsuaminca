@@ -8,9 +8,13 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatBadgeModule} from '@angular/material/badge';
+
 @Component({
   selector: 'app-nav-bar',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,MatBadgeModule, MatButtonModule, MatIconModule],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss',
 })
@@ -189,13 +193,8 @@ export class NavBarComponent implements OnInit {
     }
     getNombreUsuarioSeleccionado(): string {
     const codCli = this.authService.getCodCli();
-    if (!this.clientes) {
-      return `(${codCli}) ${this.authService.getNombre()}`;
-    }
-    const clienteSeleccionado = this.clientes.find((cliente) => cliente.cliente === codCli);
-    return clienteSeleccionado
-      ? `(${clienteSeleccionado.cliente}) ${clienteSeleccionado.nombre}`
-      : `(${codCli}) ${this.authService.getNombre()}`;
+      return `${this.authService.getNombre()}`;
+
 
   }
 }

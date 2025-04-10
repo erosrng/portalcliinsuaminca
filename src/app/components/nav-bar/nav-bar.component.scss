@@ -51,25 +51,7 @@
 .dropdown-item:hover {
     background-color: #cbcbcb;
 }
-.btn-light{
-    color: #a3a3a3;
-}
 
-/* Ajuste del buscador */
-.cont-input-search {
-    transition: left 0.5s ease, width 0.5s ease;
-}
-.menu__close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    padding: 0.5rem;
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    z-index: 10;
-}
 /*ESTILOS DE BUSCADOR GENERAL*/
 .content__buscadorprincipal{
     width: 37%;

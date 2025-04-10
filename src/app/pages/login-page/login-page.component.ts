@@ -1,4 +1,5 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core'; // Importa AfterViewInit
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core'; 
+import {ChangeDetectionStrategy, signal} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -7,14 +8,33 @@ import { AuthService } from './../../auth.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { API_URL, API_URL2 } from './../../app.config';
 
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxSpinnerModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    NgxSpinnerModule,
+    MatFormFieldModule, 
+    MatInputModule, 
+    MatIconModule,
+    MatButtonModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
 })
-export class LoginPageComponent implements AfterViewInit { // Implementa AfterViewInit
+export class LoginPageComponent implements AfterViewInit { 
+  hide = signal(true);
+  clickEvent(event: MouseEvent) {
+    this.hide.set(!this.hide());
+    event.stopPropagation();
+  }
+
   userData = {
     user: '',
     password: '',

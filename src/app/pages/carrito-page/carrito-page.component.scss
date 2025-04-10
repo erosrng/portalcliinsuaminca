@@ -19,12 +19,12 @@
 
 .sort-container button {
   height: 5.6rem;
-width: 5rem;
-line-height: 6.7rem;
-background-color: #f0f0f0;
-transition: background-color 0.3s ease;
-position: relative;
-top: 0rem;
+  width: 5rem;
+  line-height: 6.7rem;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s ease;
+  position: relative;
+  top: 0rem;
 }
 
 .sort-container button:hover {
@@ -37,6 +37,8 @@ top: 0rem;
 }
 .carrito {
     width: 100%;
+    height: auto;
+    background-color: vars.$background-fondo;
     padding: 2rem;
     margin-top: 5rem;
     position: relative;

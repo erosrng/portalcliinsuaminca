@@ -11,8 +11,8 @@
       <div class="mi-perfil__content">
         <aside class="mi-perfil__sidebar">
           <section class="mi-perfil__datos">
-          <h3 class="card-title text-primary">Datos del cliente</h3>
-            <p>Cliente: {{ (portalcliLogicaService.clienteData$ | async)?.nombre }}</p>
+          <h3 class="card-title text-primary">Datos del usuario</h3>
+            <p>Proveedor: {{ authService.getNomprv() }}</p>
             <p>RIF: {{ (portalcliLogicaService.clienteData$ | async)?.rifci }}</p>
             <p>Días de crédito: {{ (portalcliLogicaService.clienteData$ | async)?.formap }}</p>
             <p>Código SICM: 38658</p>

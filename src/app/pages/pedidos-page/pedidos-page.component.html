@@ -57,91 +57,97 @@
 
   <app-side-bar></app-side-bar>
 
-<div class="container-fluid mt-6 row inventario__container">
+<div class="container-fluid mt-6 row inventario__container"  style="min-height: 70rem;">
 
     <div class="row">
-        <div class="col-3">
-          <div class="row">
-            <div class="col-12">
-              <div class="card pt-5">
-                <div class="row">
-                  <div class="col-12 text-center">
-                    <h4>Carrito de compra</h4>
-                  </div>
-                  <div class="col-12 text-center">
-                    <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
-                  </div>
-                  <div class="col-12 unid-col mt-5">
-                    <span>Unidades: {{ unidades }}</span>
-                    <br>
-                    <span>Productos: {{ encarprod }}</span>
-                  </div>
-    
-                  <div class="col-12 unid-col mt-4">
-                    <span>Totales:</span>
-                    <div class="">
-                      <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
-                      <br>
-                      <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
-                    </div>
-                    
-                  </div>
-    
-                  <div class="col-12 p-0 mt-5">
-                    <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
-                  </div>
-                  <div class="col-12 mt-3 text-center">
-                    <a (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
-                  </div>
-                </div>
+        <!-- Buscador de clientes -->
+        <!-- <div class="col-12">
+          <div class="card pt-5">
+            <h3 class="card-title text-primary">Seleccione un cliente</h3>
+            <form class="example-form" >
+              <mat-form-field class="example-full-width" style="width: 100%;">
+                <mat-label>Cliente</mat-label>
+                <input type="text" matInput [formControl]="clienteControl" id="idcli"
+                  [value]="clienteData?.nombre" (change)="onClienteInputChange($event)"
+                  [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                  @for (cliente of filteredOptions | async; track cliente) {
+                    <mat-option (click)="onClienteSeleccionado(cliente)" [value]="cliente">({{cliente.cliente}}) {{cliente.nombre}}</mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </form>
+          </div>
+        </div> -->
+
+        <!-- Aca empieza el inventario -->
+        <!-- <div class="col-12 d-flex gap-0 column-gap-4">
+
+          <div class="col-7">
+            <div class="card pt-5">
+              <div class="col-12 text-center">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                  <mat-label>Buscar producto</mat-label>
+                  <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
+                </mat-form-field>
+              </div>
+
+              <div class="col-12 unid-col mt-5">
+                <mat-form-field appearance="outline" style="width: calc(100% - 32px);">
+                  <mat-label>Ordenar por</mat-label>
+                  <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                    <mat-option value="descrip">Descripción</mat-option>
+                    <mat-option value="oprecio">Precio</mat-option>
+                    <mat-option value="existen">Existencia</mat-option>
+                    <mat-option value="fecha">Fecha</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)">
+                  {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
               </div>
             </div>
           </div>
 
-          <div class="card card__info row mt-5">
-              <app-clicard></app-clicard>
-          </div>
+          <div class="col-4 ">
+            <div class="card pt-5">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <h4>Carrito de compra</h4>
+                </div>
+                <div class="col-12 text-center">
+                  <a class="show-text-car" (click)="navigateTo('/carrito')" [ngClass]="{'disabled-link': !clienteData.cliente}">Ver carrito de compra</a>
+                </div>
+                <div class="col-12 unid-col mt-5">
+                  <span>Unidades: {{ unidades }}</span>
+                  <br>
+                  <span>Productos: {{ encarprod }}</span>
+                </div>
 
+                <div class="col-12 unid-col mt-4">
+                  <span>Totales:</span>
+                  <div class="">
+                    <span>Bs. {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
+                    <br>
+                    <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
+                  </div>
+                </div>
+
+                <div class="col-12 p-0 mt-5">
+                  <button class="btn-end" (click)="enviaped()" [ngClass]="{'btn-secondary': !clienteData.cliente}"> Finalizar compra</button>
+                </div>
+                <div class="col-12 mt-3 text-center">
+                  <a (click)="vaciacar()" class="clear-car" [ngClass]="{'disabled-link': !clienteData.cliente}"> Vaciar carrito</a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-9 p-5">
-            <div class="row p-0">
-                <div class="col-8">
-                    <div id="carouselExample" class="carousel"> <!-- slide -->
-                        <div class="carousel-inner">
-                          <div class="carousel-item active">
-                            <div class="box-carusel-img"></div>
-                            
-                          </div>
-                          <div class="carousel-item">
-                            <div class="box-carusel-img"></div>
-                          </div>
-                          <div class="carousel-item">
-                            <div class="box-carusel-img"></div>
-                          </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                </div>
-                <div class="col-4">
-                    <div class="d-block w-100  box-banner-individual"></div>
-                    <div class="d-block w-100  box-banner-individual"></div>
-                </div>
-            </div>
+        <div class="col-12">
 
-            <div class="row mt-4">
+            <div class="row">
                 <div class="col-12">
-                    <h4>Toma de pedidos</h4>
-                </div>
-
-                <div class="col-12 mt-4">
 
                     <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
                       <div class="spinner-border text-success" role="status">
@@ -149,53 +155,14 @@
                       </div>
                     </div>
                 
-                  <!-- FIN DE FUNCIONAL CON PURO -->
                   <div class="container-fluid w-100">
 
-                    <div class="row mb-3">
-                      
-                      <!-- <div class="col-md-3">
-                        <mat-form-field appearance="outline" style="width: 100%;">
-                          <mat-label>Buscar</mat-label>
-                          <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
-                        </mat-form-field>
-                      </div> -->
-                      
-                      <div class="col-md-3">
-                        <input type="text" id="idcli" list="buscascli" placeholder="Buscar cliente..." 
-                        value="" class="buscascli__input" (input)="onClienteInputChange($event)" />
-                        <datalist id="buscascli" class="options__clientes">';
-                          <option *ngFor="let cliente of clientes" [value]="cliente.cliente" [ngValue]="cliente" 
-                          data-nombre="cliente.nombre">
-                            ({{cliente.cliente}}) {{cliente.nombre}} RIF: {{cliente.rifci}}
-                          </option>
-                        </datalist>
-                        <div id="cliente_seleccionado" class="cli__select"></div>
-                      </div>
-                      
-                      <div class="col-md-3">
-                        <mat-form-field appearance="outline" style="width: calc(100% - 32px);">
-                          <mat-label>Ordenar por</mat-label>
-                          <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
-                            <mat-option value="descrip">Descripción</mat-option>
-                            <mat-option value="nomprv">Proveedor</mat-option>
-                            <mat-option value="oprecio">Precio</mat-option>
-                            <mat-option value="existen">Existencia</mat-option>
-                            <mat-option value="fecha">Fecha</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)">
-                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                        </mat-icon>
-                      </div>
-                    </div>
-                
                     <div class="row row-header">
                       <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ categoria ? 'Buscando por Categoria: '+categorianombre : '' }}</span>
                       <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ search ? 'Buscando por: '+search : '' }}</span>
 
                         <div class="col-1 header-table border-left-top">Ver</div>
-                        <div class="col-3 header-table">Descripción</div>
+                        <div class="col-2 header-table">Descripción</div>
                         <div class="col-1 header-table">Proveedor</div>
                         <div class="col-1 header-table">Lote</div>
                         <div class="col-1 header-table">Vence</div>
@@ -203,14 +170,21 @@
                         <div class="col-1 header-table">US$</div>
                         <div class="col-1 header-table">Inventario</div>
                         <div class="col-1 header-table">Cantidad</div>
+                        <div class="col-1 header-table">Descuento %</div>
                         <div class="col-1 header-table border-right-top">Agregar</div>
                     </div>
                 
                     <div class="container-fluid p-0 m-0 w-100 container-products">
                           <div class="row row-products p-0" *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
-                              <div class="col-1 cel-product p-0">
-                                  <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)"></div>
-                            <div class="col-3 cel-product p-0">{{product.descrip}}</div>
+                            <div class="col-1 cel-product p-0">
+                                <img
+                                src="{{product.img}}"
+                                  class="img-product" 
+                                  data-bs-toggle="modal" 
+                                  data-bs-target="#productModal"
+                                  (click)="openProductModal(product.codigo)">
+                            </div>
+                            <div class="col-2 cel-product p-0">{{product.descrip}}</div>
                             <div class="col-1 cel-product p-0">{{product.nomprv}}</div>
                             <div class="col-1 cel-product p-0">{{product.lote}}</div>
                             <div class="col-1 cel-product p-0">{{product.vence}}</div>
@@ -221,6 +195,10 @@
                                 <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" 
                                 placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
                             </div>
+                            <div class="col-1 cel-product-noborder-left p-0">
+                              <input type="text" min="0" maxlength="10" [value]="product.descprov ? product.descprov : ''" (input)="validateInput(product, $event)" id="descprov_{{product.codigo}}" 
+                              placeholder="Descuento" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
+                          </div>
                             <div class="col-1 cel-product-noborder-right p-0">
                                 <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">
                                     <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
@@ -230,7 +208,6 @@
                         </div>
                     </div>
                 
-                    <!-- <mat-paginator [length]="totalPages * itemsPerPage" [pageSize]="itemsPerPage" (page)="pageChanged($event)"></mat-paginator> -->
                     <mat-paginator
                     [length]="totalPages * itemsPerPage"
                     [pageSize]="itemsPerPage"
@@ -243,17 +220,155 @@
 
                 </div>
             </div>
+            
+        </div> -->
 
-            <div class="row mt-5">
-              <div class="col-6">
-                <div class="d-block w-100  box-banner-individual-footer"></div>
-              </div>
-              <div class="col-6">
-                <div class="d-block w-100 box-banner-individual-footer"></div>
+        <mat-tab-group mat-stretch-tabs class="demo-tab-group" #tabGroup>
+          <mat-tab label="SELECCIONE CLIENTE">
+            <div class="mt-4">
+                  <div class="card p-4 shadow">
+                   <!--  <h3 class="card-title text-primary text-center mb-4">Seleccione un cliente</h3> -->
+                    <form class="example-form" >
+                      <mat-form-field class="example-full-width" style="width: 100%;">
+                        <mat-label>Cliente</mat-label>
+                        <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto" (change)="onClienteInputChange($event)">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                          @for (cliente of filteredOptions | async; track cliente) {
+                            <mat-option (click)="onClienteSeleccionado(cliente)" [value]="cliente">({{cliente.cliente}}) {{cliente.nombre}}</mat-option>
+                          }
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </form>
+                  </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="CATÁLOGO" [disabled]="!clienteData?.cliente">
+            <div class="container-fluid mt-4">
+              <div class="row">
+
+                <div class="col-12 d-flex gap-0 column-gap-4 mb-3">
+                  <div class="col-4">
+                    <div class="card pt-3">
+                      <div class="row">
+                        <div class="col-12 text-center">
+                          <h4>Carrito de compra</h4>
+                        </div>
+                        <div class="col-12 text-center">
+                          <a class="show-text-car" (click)="navigateTo('/carrito')" [ngClass]="{'disabled-link': !clienteData?.cliente}">Ver carrito de compra</a>
+                        </div>
+                        <div class="col-12 unid-col mt-3">
+                          <span>Unidades: {{ unidades }}</span>
+                          <br>
+                          <span>Productos: {{ encarprod }}</span>
+                        </div>
+                        <div class="col-12 unid-col mt-2">
+                          <span>Totales:</span>
+                          <div class="">
+                            <span>Bs. {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
+                            <br>
+                            <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
+                          </div>
+                        </div>
+                        <div class="col-12 p-0 mt-3">
+                          <button class="btn-end" (click)="enviaped()" [ngClass]="{'btn-secondary': !clienteData?.cliente}"> Finalizar compra</button>
+                        </div>
+                        <div class="col-12 mt-2 text-center">
+                          <a (click)="vaciacar()" class="clear-car" [ngClass]="{'disabled-link': !clienteData?.cliente}"> Vaciar carrito</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="col-12">
+                  <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
+                    <div class="spinner-border text-success" role="status">
+                      <span class="visually-hidden">Cargando...</span>
+                    </div>
+                  </div>
+                  <div class="container-fluid w-100">
+
+                    <div class="col-12">
+                      <div class="d-flex align-items-center gap-3">
+                        <mat-form-field appearance="outline" style="flex-grow: 1;">
+                          <mat-label>Buscar producto</mat-label>
+                          <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
+                        </mat-form-field>
+                    
+                        <mat-form-field appearance="outline" style="width: 200px;">
+                          <mat-label>Ordenar por</mat-label>
+                          <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                            <mat-option value="descrip">Descripción</mat-option>
+                            <mat-option value="oprecio">Precio</mat-option>
+                            <mat-option value="existen">Existencia</mat-option>
+                            <mat-option value="fecha">Fecha</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                    
+                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" style="cursor: pointer;">
+                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </mat-icon>
+                      </div>
+                    </div>
+
+                    <div class="row row-header">
+                      <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ categoria ? 'Buscando por Categoria: '+categorianombre : '' }}</span>
+                      <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ search ? 'Buscando por: '+search : '' }}</span>
+                      <div class="col-1 header-table border-left-top">Ver</div>
+                      <div class="col-2 header-table">Descripción</div>
+                      <div class="col-1 header-table">Proveedor</div>
+                      <div class="col-1 header-table">Lote</div>
+                      <div class="col-1 header-table">Vence</div>
+                      <div class="col-1 header-table">Bs.</div>
+                      <div class="col-1 header-table">US$</div>
+                      <div class="col-1 header-table">Inventario</div>
+                      <div class="col-1 header-table">Cantidad</div>
+                      <div class="col-1 header-table">Descuento %</div>
+                      <div class="col-1 header-table border-right-top">Agregar</div>
+                    </div>
+                    <div class="container-fluid p-0 m-0 w-100 container-products">
+                      <div class="row row-products p-0" *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                        <div class="col-1 cel-product p-0">
+                          <img src="{{product.img}}" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)">
+                        </div>
+                        <div class="col-2 cel-product p-0">{{product.descrip}}</div>
+                        <div class="col-1 cel-product p-0">{{product.nomprv}}</div>
+                        <div class="col-1 cel-product p-0">{{product.lote}}</div>
+                        <div class="col-1 cel-product p-0">{{product.vence}}</div>
+                        <div class="col-1 cel-product p-0">{{product.oprecio}}</div>
+                        <div class="col-1 cel-product p-0">{{product.opreciod}}$</div>
+                        <div class="col-1 cel-product p-0">{{product.existen}}</div>
+                        <div class="col-1 cel-product-noborder-left p-0">
+                          <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
+                        </div>
+                        <div class="col-1 cel-product-noborder-left p-0">
+                          <input type="text" min="0" maxlength="10" [value]="product.descprov ? product.descprov : ''" (input)="validateInput(product, $event)" id="descprov_{{product.codigo}}" placeholder="Descuento" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
+                        </div>
+                        <div class="col-1 cel-product-noborder-right p-0">
+                          <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">
+                            <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                            <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <mat-paginator
+                      [length]="totalPages * itemsPerPage"
+                      [pageSize]="itemsPerPage"
+                      [pageSizeOptions]="[5, 10, 20]"
+                      showFirstLastButtons
+                      (page)="pageChanged($event)"
+                    ></mat-paginator>
+                  </div>
+                </div>
               </div>
             </div>
-        </div>
+          </mat-tab>
+        </mat-tab-group>
     </div>
+
 </div>
 
 </div>

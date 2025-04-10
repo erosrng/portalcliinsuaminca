@@ -67,7 +67,7 @@ export class PortalcliLogicaService {
     this.router.navigate([route]);
   }
 
-  agregarAlCarrito(producto: any, cantidad: number) {
+  agregarAlCarrito(producto: any, cantidad: number, descprov: number, almacen: string) {
     const codCli = this.authService.getCodCli();
     const token = this.authService.getToken();
     const formData = new FormData();
@@ -76,11 +76,14 @@ export class PortalcliLogicaService {
       'Authorization': `${token}`
     });
 
-    formData.append('codigo', producto.codigo); // Asume que el producto tiene una propiedad 'codigo'
+    formData.append('codigo', producto.codigo);
     formData.append('cana', cantidad.toString());
+    formData.append('descprov', descprov.toString());
     formData.append('codCli', codCli ?? '');
 
-    const apiUrl = `${API_URL}agg_pedido/agg_pedido`;
+    formData.append('almacen', almacen);
+
+    const apiUrl = `${API_URL}agg_pedido`;
 
     return this.http.post(apiUrl, formData, { headers: headers });
   }
@@ -96,21 +99,21 @@ export class PortalcliLogicaService {
     });
     formData.append('codCli', codCli ?? '');
 
-    this.http.post(`${API_URL}carrito/revisacar`, formData, { headers: headers } ).subscribe({
+    this.http.post(`${API_URL}revisacar`, formData, { headers: headers } ).subscribe({
       next: (response: any) => {
         this.loading = false;
-        if (response && response.encar) {
-          const productosEnCarrito = Object.entries(response.encar).map(([key, value]) => ({
+        if (response && response.data.encar) {
+          const productosEnCarrito = Object.entries(response.data.encar).map(([key, value]) => ({
             key,
             value,
           }));
 
           this.productosEnCarritoSubject.next(productosEnCarrito);
-          this.unidadesSubject.next(response.encar.cana);
-          this.totalBsSubject.next(response.encar.preciobs);
-          this.totalUsdSubject.next(response.encar.preciod);
-          this.encarprodSubject.next(response.encar.products);
-          this.productosEnCarritoCodigosSubject.next(response.codigos || []);
+          this.unidadesSubject.next(response.data.encar.cana);
+          this.totalBsSubject.next(response.data.encar.preciobs);
+          this.totalUsdSubject.next(response.data.encar.preciod);
+          this.encarprodSubject.next(response.data.encar.products);
+          this.productosEnCarritoCodigosSubject.next(response.data.codigos || []);
         } else {
           this.productosEnCarritoSubject.next([]);
           this.productosEnCarritoCodigosSubject.next([]);
@@ -139,7 +142,7 @@ export class PortalcliLogicaService {
   //Vacia carrito
   vaciacar(): Observable<any> {
     const codCli = this.authService.getCodCli();
-    const apiUrl = `${API_URL}portalcli/vaciacar`;
+    const apiUrl = `${API_URL}vaciacar`;
     const formData = new FormData();
     const token = this.authService.getToken();
     formData.append('codCli', codCli ?? '');
@@ -241,7 +244,7 @@ export class PortalcliLogicaService {
           this.clienteDataSource.next(response.data.datcli);
         },
         error: (error) => {
-          console.error('Error de la API:', error);
+          console.error('Error buscando almacen:', error);
         },
       });
     }

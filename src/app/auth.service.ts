@@ -97,14 +97,11 @@ export class AuthService {
     this.removeToken();
   }
 
-  getCodCli(): string | null {
-    if (!this._codCli) {
+/*   getCodCli(): string | null {
+    //if (!this._codCli) {
       this._codCli = localStorage.getItem('codCli');
-      if (!this._codCli) {
-        this._codCli = this.getUsuario();
         localStorage.setItem('codCli', this._codCli || '');
-      }
-    }
+    //}
     return this._codCli;
   }
 
@@ -112,7 +109,19 @@ export class AuthService {
     this._codCli = codCli;
     localStorage.setItem('codCli', codCli || '');
   }
+ */
+  getCodCli(): string | null {
+    //if (this._codCli === null) {
+      this._codCli = localStorage.getItem('codCli');
+    //}
+    return this._codCli;
+  }
 
+  setCodCli(cliente: string | null): void {
+    this._codCli = cliente;
+    localStorage.setItem('codCli', cliente || '');
+    console.log('en el setcodcli auth service: '+this._codCli)
+  }
   getClientes(): { cliente: string; nombre: string; rifci: string }[] | null {
     return this.decodedToken ? this.decodedToken.clientes : null;
   } 

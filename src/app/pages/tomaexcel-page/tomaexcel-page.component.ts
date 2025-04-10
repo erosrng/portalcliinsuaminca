@@ -120,7 +120,7 @@ export class TomaexcelPageComponent {
   
           filasFiltradas.push(celdas);
   
-          return this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, Number(celdas[11])).toPromise()
+          return this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, Number(celdas[11]),1,'a').toPromise()
             .then((response: any) => {
               if (response.status) {
                 i++;

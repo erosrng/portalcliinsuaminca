@@ -3,7 +3,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil, Subject } from 'rxjs';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
@@ -42,7 +42,7 @@ export interface Product {
     NavBarComponent,
     SideBarComponent,
     MatTableModule,
-    MatFormFieldModule, 
+    MatFormFieldModule,
     MatInputModule,
     MatIconModule,
     MatPaginatorModule,
@@ -53,18 +53,22 @@ export interface Product {
 })
 
 export class CarritoPageComponent implements OnInit, AfterViewInit {
-  isLoading = false; 
+  isLoading = false;
 
   sortField: string = 'descrip'; // Campo de ordenamiento inicial
-  sortDirection: 'desc' | 'asc' = 'desc'; 
-  //productscar: any[] = [];
-  private subscriptions: Subscription[] = []; 
+  sortDirection: 'desc' | 'asc' = 'desc';
+  private subscriptions: Subscription[] = [];
   private clienteCambiadoSubscription: Subscription | undefined;
+
+  private destroy$ = new Subject<void>();
+  clienteData: any;
+  private clienteDataSubscription: Subscription | undefined;
+  codCli: string | null = null;
 
   productosEnCarritoNumber: string = '';
   productscar: Product[] = [];
   dataSource = new MatTableDataSource<Product>(this.productscar);
-  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'actions']; // Ajusta las columnas según tus necesidades
+  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -73,28 +77,39 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   unidades: string = '';
 
   constructor(
-    private route: Router, 
-    private http: HttpClient, 
+    private route: Router,
+    private http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
   ) {}
 
-  ngOnInit() { 
-    this.openCar();
-    this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
+  ngOnInit() {
+    this.codCli = this.authService.getCodCli();
+    if(this.codCli){
+      this.subscribeToClienteData();
+    }
+
+    /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
+      console.log(this.clienteCambiadoSubscription)
       this.openCar();
-    });
+    }); */
   }
 
   ngAfterViewInit(): void {
 
   }
-    
+
+  subscribeToClienteData() {
+    this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.clienteData = data;
+      this.openCar();
+    });
+  }
+
   openCar() {
     const codCli = this.authService.getCodCli();
-    this.sortData(this.sortField as keyof Product);
 
-    this.isLoading = true; 
+    this.isLoading = true;
     const token = this.authService.getToken();
     const formData = new FormData();
 
@@ -102,47 +117,51 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/opencardb`;
+    const apiUrl = `${API_URL}opencardb`;
     formData.append('codCli', codCli ?? '');
-
+   if (this.clienteData && this.clienteData.ubica) {
+      formData.append('almacen', this.clienteData.ubica);
+    }else{
+      formData.append('almacen', '');
+    }
     this.http.post(apiUrl,formData, { headers: headers }).subscribe({
       next: (response: any) => {
         this.revisarCarrito();
-        this.productscar = response; 
-        this.dataSource.data = this.productscar; // Asigna productscar al dataSource
-        this.dataSource.paginator = this.paginator; // Asigna el paginador
+        this.productscar = response.data;
+        this.dataSource.data = this.productscar;
+        this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        this.isLoading = false;  
-
+        this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
+        this.isLoading = false;
       },
       error: (error) => {
         this.isLoading = false;
-        console.error('Error de la API:', error);
+        console.error('Error al cargar carrito de compras:', error);
       },
     });
   }
 
   eliminareg(caller: any, idPedido: any, codigo: any) {
       this.isLoading = true;
-  
-      const apiUrl = `${API_URL}portalcli/eliminareg`;
+
+      const apiUrl = `${API_URL}eliminareg`;
       const formData = new FormData();
       const token = this.authService.getToken();
-  
+
       const headers = new HttpHeaders({
           'Authorization': `${token}`
       });
-  
+
       formData.append('id', idPedido);
       formData.append('codigo', codigo);
-  
+
       this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
       this.dataSource.data = this.productscar;
-        
+
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
           next: (response: any) => {
               this.isLoading = false;
-              if (response.status === true) {
+              if (response.result === true) {
                   // Actualiza productscar
                   this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
                   this.revisarCarrito();
@@ -155,19 +174,19 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
                       position: 'bottom-end',
                   });
               } else {
-                this.alertaerror;
+                this.alertaerror();
               }
           },
           error: (error) => {
               this.isLoading = false;
-              this.alertaerror;
+              this.alertaerror();
           },
       });
   }
 
   //Envia pedidos al servidor
   enviaped(){
-    this.isLoading = true; 
+    this.isLoading = true;
     const codCli = this.authService.getCodCli();
 
       const formData = new FormData();
@@ -179,7 +198,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
         'Authorization': `${token}`
       });
       const apiUrl = `${API_URL}portalcli/enviaped`;
-    
+
       Swal.fire({
       title: '¿Desea enviar el pedido?',
       text: "Esta acción no se puede deshacer.",
@@ -189,24 +208,24 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancelar'
       }).then((result) => {
       if (result.isConfirmed) {
-          this.mostrarLoader;
+          this.mostrarLoader();
           this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
               if (response.status) {
-                this.ocultarLoader;
+                this.ocultarLoader();
                 this.revisarCarrito();
                 Swal.fire(response.mensaje, '', 'success');
                 this.productscar = [];
                 this.dataSource.data = this.productscar;
-                this.isLoading = false;  
+                this.isLoading = false;
               } else {
                 Swal.fire(response.mensaje, '', 'error');
-                this.isLoading = false;  
+                this.isLoading = false;
               }
             },
             error: (error) => {
-              this.isLoading = false;  
-              this.ocultarLoader;
+              this.isLoading = false;
+              this.ocultarLoader();
               Swal.fire(error, '', 'error');
               console.error('Error de la API:', error);
             },
@@ -228,16 +247,16 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       if (result.isConfirmed) {
         this.portalcliLogicaService.vaciacar().subscribe({
           next: (response: any) => {
-            if (response.status) {
+            if (response.result) {
               // Vaciar this.productscar
               this.productscar = [];
-  
+
               // Actualizar this.dataSource.data
               this.dataSource.data = this.productscar;
-  
+
               // Actualizar el carrito
               this.revisarCarrito();
-  
+
               Swal.fire({
                 text: 'Carro vacio',
                 icon: 'success',
@@ -262,7 +281,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     this.portalcliLogicaService.revisarCarrito();
     this.subscriptions.push(
       this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
-        if (productos[0].value > 0) {
+        if (productos && productos.length > 0 && productos[0] && productos[0].value > 0) {
           this.productosEnCarritoNumber = productos[0].value;
         } else {
           this.productosEnCarritoNumber = '0';
@@ -298,25 +317,28 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
 
   sortData(sortField: keyof Product) {
     this.sortField = sortField;
-    this.productscar.sort((a, b) => {
-        let valueA = a[sortField];
-        let valueB = b[sortField];
+    if (this.productscar && Array.isArray(this.productscar)) {
+      this.productscar.sort((a, b) => {
+          let valueA = a[sortField];
+          let valueB = b[sortField];
 
-        if (typeof valueA === 'string' && typeof valueB === 'string') {
-            valueA = valueA.toLowerCase();
-            valueB = valueB.toLowerCase();
-        }
+          if (typeof valueA === 'string' && typeof valueB === 'string') {
+              valueA = valueA.toLowerCase();
+              valueB = valueB.toLowerCase();
+          }
 
-        if (valueA < valueB) {
-            return this.sortDirection === 'asc' ? -1 : 1;
-        } else if (valueA > valueB) {
-            return this.sortDirection === 'asc' ? 1 : -1;
-        } else {
-            return 0;
-        }
-    });
-
-    this.dataSource.data = this.productscar;
+          if (valueA < valueB) {
+              return this.sortDirection === 'asc' ? -1 : 1;
+          } else if (valueA > valueB) {
+              return this.sortDirection === 'asc' ? 1 : -1;
+          } else {
+              return 0;
+          }
+      });
+      this.dataSource.data = this.productscar;
+    } else {
+      console.warn('this.productscar no es un array, no se puede ordenar.');
+    }
   }
   onSortChange(sortField: string) {
     this.sortData(sortField as keyof Product);
@@ -358,14 +380,14 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
 
 
   totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-      const apiUrl = `${API_URL}portalcli/totalizacampo`;
+      const apiUrl = `${API_URL}totalizacampo`;
       const formData = new FormData();
       const token = this.authService.getToken();
-  
+
       const headers = new HttpHeaders({
           'Authorization': `${token}`
       });
-  
+
       formData.append('id', idPedido);
       formData.append('codigo', codigo);
       formData.append('cantidad', cantidad.toString());
@@ -373,7 +395,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
           next: (response: any) => {
               this.isLoading = false;
-              if (response.status == true) {
+              if (response.result == true) {
                   // Actualiza productscar
                   this.revisarCarrito();
                   Swal.fire({
@@ -385,28 +407,15 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
                       position: 'bottom-end',
                   });
               } else {
-                this.alertaerror;
+                this.alertaerror();
               }
           },
           error: (error) => {
               this.isLoading = false;
-              this.alertaerror;
+              this.alertaerror();
           },
       });
-
-    /* $.ajax({
-        url: baseUrl + 'portalcli/totalizacampo', // Ruta al archivo PHP que realizará el update
-        method: 'POST', // Método de la solicitud   
-        data: { idPedido: idPedido, cantidad: value, codigo: codigo}, // Datos que se enviarán al archivo PHP
-        success: function(response) {
-            //opencar();
-        },
-        error: function(xhr, status, error) {
-            console.log(error);
-        }
-    });
-    retotalbs(codigo); */
-}  
+}
 
 
 }
