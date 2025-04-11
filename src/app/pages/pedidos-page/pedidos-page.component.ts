@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef  } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -23,10 +23,14 @@ import { MatTabsModule } from '@angular/material/tabs'; // Importa MatTabsModule
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTabGroup } from '@angular/material/tabs';
-
+import {MatStepper, MatStepperIntl, MatStepperModule} from '@angular/material/stepper';
+import {MatButtonModule} from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
+import { CarshopComponent } from "../../components/carshop/carshop.component";
+import * as XLSX from 'xlsx';
 
 export interface Clienteselect {
   cliente: string; // Ajusta según la estructura de tu API
@@ -51,8 +55,12 @@ export interface Clienteselect {
     MatIconModule,
     ReactiveFormsModule,
     AsyncPipe,
-    MatTabsModule // Agrega MatTabsModule a los imports
-  ],
+    MatTabsModule,
+    MatStepperModule,
+    MatButtonModule,
+    MatDialogModule,
+    CarshopComponent
+],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
 })
@@ -62,6 +70,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   categorianombre: string | null = null;
   search: string | null = null;
   isLoading = false;
+
+  @ViewChild(CarshopComponent) carshopComponent: CarshopComponent | undefined; 
 
   private destroy$ = new Subject<void>();
 
@@ -109,9 +119,12 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   clientes: Clienteselect[] = [];
   filteredOptions: Observable<Clienteselect[]> | undefined;
 
-  @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined;
+  descuentoLineal: number | 0 = 0; 
 
+  /* @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined; */
+  @ViewChild('stepper') stepper: MatStepper | undefined; 
   constructor(
+    public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
     public http: HttpClient,
     private authService: AuthService,
@@ -121,21 +134,28 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.rutaActual = this.activatedRoute.snapshot.url.join('/');
+
     this.codCli = this.authService.getCodCli();
     if (this.codCli) {
       this.subscribeToClienteData(() => { // Pasar un callback a subscribeToClienteData
-        if (this.tabGroup) {
-          this.tabGroup.selectedIndex = 1; // Cambiar a la pestaña del catálogo
+        if (this.stepper) {
+          this.stepper.next(); // Avanza al siguiente paso si ya hay cliente
         }
       });
     }else{
-      Swal.fire({
-        text: 'Seleccione un cliente para continuar',
-        icon: 'info',
-        showConfirmButton: false,
-        timer: 4000,
-        toast: true,
-      });
+      console.log(this.rutaActual)
+
+      if(this.rutaActual=='pedidos'){
+        Swal.fire({
+          text: 'Seleccione un cliente para continuar',
+          icon: 'info',
+          showConfirmButton: false,
+          timer: 4000,
+          toast: true,
+        });
+      }
+
     }
 
     this.obtenerClientes().subscribe(() => {
@@ -149,8 +169,29 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     });
 
 
-    this.rutaActual = this.activatedRoute.snapshot.url.join('/');
   }
+
+  ngAfterViewInit(): void {
+    // Escucha el evento de cambio de paso del stepper
+    if (this.stepper) {
+      this.stepper.selectionChange.pipe(takeUntil(this.destroy$)).subscribe((step) => {
+        // Verifica si el índice del paso actual es 2 (el tercer paso, ya que los índices son 0, 1, 2)
+        if (step.selectedIndex == 2 && this.carshopComponent) {
+          // Llama a la función openCar() del CarshopComponent
+          this.carshopComponent.subscribeToClienteData();
+        }
+      });
+    }
+
+  }
+
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
 
 
   displayFn(cliente: Clienteselect): string {
@@ -181,7 +222,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   }
 
 
-  obtenerClientes(): Observable<void> { // Devuelve un Observable para encadenar
+  obtenerClientes(): Observable<void> {
     this.isLoading = true;
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -226,43 +267,26 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
     if (selectedCliente) {
       this.onClienteSeleccionado(selectedCliente);
+
     }
   }
-
-
-  /* onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
-
-    this.authService.setCodCli(cliente.cliente);
-    this.codCli = this.authService.getCodCli();
-
-    this.portalcliLogicaService.buscaalmacen();
-    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos') {
-      this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
-    }
-    this.subscribeToClienteData();
-  } */
 
   onClienteSeleccionado(cliente: Clienteselect): void {
     this.authService.setCodCli(cliente.cliente);
     this.codCli = this.authService.getCodCli();
-    if(this.codCli){
-      this.subscribeToClienteData();
-    }
+
     this.portalcliLogicaService.buscaalmacen();
     this.clienteData = cliente; // Actualizar clienteData al seleccionar
     this.applyFilters(); // Recargar productos al seleccionar cliente
     this.revisarCarrito();
-  
-    // Cambiar a la pestaña del inventario (índice 1)
-    if (this.tabGroup) {
-      this.tabGroup.selectedIndex = 1;
+    if(this.codCli){
+      this.subscribeToClienteData();
     }
+    // Cambiar a la pestaña del inventario (índice 1)
+    /* if (this.stepper) {
+      this.stepper.next();
+    } */
   }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
   applyFilters() {
       this.currentPage = 1; // Reset to first page when applying filters
       this.fetchPedidos();
@@ -292,6 +316,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.itemsPerPage = event.pageSize;
       this.fetchPedidos();
     }
+  
   
 
   updatePagedProducts() {
@@ -344,6 +369,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           this.pagedProducts = response.data.data;
           this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
+          this.aplicarDescuentoLineal();
           this.isLoading = false; 
         },
         error: (error) => {
@@ -352,16 +378,47 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         },
       });
     }else{
-      Swal.fire({
-        text: 'Seleccione un cliente para continuar',
-        icon: 'info',
-        showConfirmButton: false,
-        timer: 4000,
-        toast: true,
-      });
+      if(this.rutaActual=='pedidos'){
+        Swal.fire({
+          text: 'Seleccione un cliente para continuar',
+          icon: 'info',
+          showConfirmButton: false,
+          timer: 4000,
+          toast: true,
+        });
+      }
     }
 
   }
+
+  // Función para aplicar el descuento lineal
+  aplicarDescuentoLineal(): void {    
+      if (this.descuentoLineal > 100) {
+        Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
+        return;
+    }
+
+    if (this.descuentoLineal !== null) {
+      this.pagedProducts = this.pagedProducts.map(product => {
+        if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
+          product.descprov = this.descuentoLineal;
+        }
+        return product;
+      });
+      this.dataSource.data = this.pagedProducts; // Actualiza la vista de la tabla
+    } else {
+      // Si el descuento lineal es null, puedes resetear los descuentos si lo deseas
+      this.pagedProducts = this.pagedProducts.map(product => {
+        if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
+          product.descprov = null; // O el valor original si lo tienes almacenado
+        }
+        return product;
+      });
+      this.dataSource.data = this.pagedProducts; // Actualiza la vista de la tabla
+    }
+  }
+
+
 
   goToFirstPage() {
     this.currentPage = 1;
@@ -573,5 +630,186 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
             console.error('Error al obtener el producto:', error);
           },
         });
+    }
+
+  /*PARA CARGAR EXCEL Y BAJAR EXCEL*/
+    jsonData: any;
+    fileName: string = '';
+    habilitarCargar: boolean = false; 
+    
+  
+    productosEnCarritoNumber: string = '';
+  
+    onFileChange(event: any): void {
+      const file = event.target.files[0];
+      if (file) {
+        if (file.name.endsWith('.xlsx')) { // Verifica la extensión del archivo
+          this.fileName = file.name;
+          const reader: FileReader = new FileReader();
+  
+          reader.onload = (e: any) => {
+            const binarystr: string = e.target.result;
+            const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+            const wsname: string = wb.SheetNames[0];
+            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+  
+            this.jsonData = XLSX.utils.sheet_to_json(ws);
+            //console.log('Datos procesados:', this.jsonData);
+            Swal.fire({
+              text: 'Presione cargar archivo para procesar pedido',
+              icon: 'info',
+              showConfirmButton: false,
+              timer: 9000,
+              toast: true,
+              position: 'bottom-end',
+            });
+          };
+  
+          reader.readAsBinaryString(file);
+        } else {
+          Swal.fire({
+              text: 'Por favor, seleccione un archivo .xlsx',
+              icon: 'error',
+              showConfirmButton: false,
+              timer: 3000,
+              toast: true,
+              position: 'bottom-end',
+          });
+  
+          this.fileName = '';
+          this.jsonData = null;
+        }
+      } else {
+        Swal.fire({
+          text: 'Por favor, seleccione un archivo .xlsx',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'bottom-end',
+      });
+        this.fileName = '';
+        this.jsonData = null;
       }
+    }
+
+    @ViewChild('cargarArchivoModal') cargarArchivoModal: TemplateRef<any> | undefined;
+
+    openCargarArchivoModal(): void {
+      if (this.cargarArchivoModal) {
+        const dialogRef = this.dialog.open(this.cargarArchivoModal, {
+          width: '600px', // Ajusta el ancho según necesites
+        });
+  
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('El diálogo fue cerrado');
+          this.fileName = ''; // Resetear el nombre del archivo al cerrar el modal
+          this.habilitarCargar = false; // Resetear el estado del botón cargar
+          // Aquí puedes manejar cualquier resultado del modal si es necesario
+        });
+      } else {
+        console.error('cargarArchivoModal is undefined');
+        // Puedes mostrar un mensaje de error al usuario si el template no se cargó correctamente
+      }
+    }
+
+    LeerArchivo(): void {
+      this.isLoading = true;
+    
+      const columnas = Object.keys(this.jsonData[0] || {});
+      let i = 0;
+      const filasFiltradas: any[][] = [];
+      const codigosvacios: any[][] = [];
+    
+      if (this.jsonData  && this.jsonData.length > 0) {
+        const promises: Promise<any>[] = this.jsonData.map((fila: any) => {
+          const celdas = Object.values(fila);
+          const canaexcel: number = Number(celdas[11]);
+    
+          if (!isNaN(canaexcel) && canaexcel > 0) {
+            let codigoProducto: string = String(celdas[0]);
+            codigoProducto = codigoProducto.trim().replace(/[^a-zA-Z0-9]/g, '');
+    
+            filasFiltradas.push(celdas);
+    
+            return this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, Number(celdas[11]),1,'a').toPromise()
+              .then((response: any) => {
+                if (response.status) {
+                  i++;
+                  console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
+                } else {
+                  codigosvacios.push(celdas);
+                  console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, response);
+                }
+              })
+              .catch((error) => {
+                console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, error);
+              });
+          }else{
+            console.error('No hay datos para cargar');
+          }
+          return Promise.resolve(celdas);
+        });
+    
+        Promise.all(promises).then(() => {
+          if (codigosvacios.length > 0) {
+            console.log('Códigos vacíos:', codigosvacios);
+    
+            // Construye el contenido de la alerta
+            let contenidoAlerta = '';
+            codigosvacios.forEach((fila) => {
+              const descripcion = fila[2]; // Asume que la descripción está en el índice 2
+              contenidoAlerta += `- ${descripcion}<br><br>`;
+            });
+    
+            Swal.fire({
+              title: 'No se cargaron los siguientes productos por falta de existencia.',
+              html: contenidoAlerta,
+              icon: 'warning',
+              width: '600px',
+              heightAuto: false,
+              scrollbarPadding: false,
+              customClass: {
+                container: 'swal-container',
+              },
+              allowOutsideClick: false, // Deshabilita el cierre al hacer clic fuera
+              allowEscapeKey: false, // Deshabilita el cierre con la tecla Esc
+            });          
+    
+            this.revisarCarrito();
+          }
+          this.isLoading = false; 
+        });
+      } else {
+        console.error('No hay datos para cargar');
+        this.isLoading = false; 
+      }
+    }
+  
+    bajaexcel() {
+      this.isLoading = true;
+      //const codCli = localStorage.getItem(`idcli_${usuario}`);
+      const formData = new FormData();
+      const token = this.authService.getToken();
+  
+      const headers = new HttpHeaders({
+        'Authorization': `${token}`
+      });
+      const apiUrl = `http://10.0.100.2/proteoerp/ventas/generador/index/21/S`;
+    
+      this.http.post(apiUrl, {}, { }).subscribe({
+        next: (response: any) => {
+          const formattedDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+          const fileName = "/generador/listasprv/LISTADO DE PROVEEDOR_" + this.authService.getProveed() + "_" + formattedDate + ".xlsx";
+
+          window.location.href = `http://10.0.100.2/generador/${fileName}`;
+          this.isLoading = false; 
+        },
+        error: (error) => {
+          this.isLoading = false; 
+          console.error('Error de la API:', error);
+        },
+      });
+  }
+  
 }

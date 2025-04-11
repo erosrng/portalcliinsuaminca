@@ -4,6 +4,9 @@
 *{
     transition: all ease 0.25s;
 }
+.container-fluid.mt-4 {
+    font-family: "Alexandria", Helvetica, sans-serif !important;
+}
 .inventario__container{
     width: 100%;
     margin-left: 0.1rem;
@@ -15,7 +18,10 @@
 .order-container {
     display: flex; 
   }
-  
+  .col-0_75 {
+    flex: 0 0 auto;
+    width: calc(100% * 0.75 / 12); /* Aproximadamente 6.25% */
+  }
   .order-container mat-form-field {
     flex: 1; 
   }
@@ -316,3 +322,25 @@ nav[aria-label="Page navigation example"] {
   .pagination-info {
     color: vars.$menu-color;
   }
+.upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .upload-label {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 1rem;
+  }
+  
+  .upload-input {
+    display: none; /* Oculta el input de archivo original */
+  }
+  

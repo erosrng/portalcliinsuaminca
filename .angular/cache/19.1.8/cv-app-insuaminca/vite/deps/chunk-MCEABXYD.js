@@ -5220,6 +5220,7 @@ export {
   ActiveDescendantKeyManager,
   FocusKeyManager,
   InteractivityChecker,
+  FocusTrapFactory,
   LiveAnnouncer,
   FocusMonitor,
   CdkMonitorFocus,
@@ -5266,4 +5267,4 @@ export {
   MatRippleLoader,
   _MatInternalFormField
 };
-//# sourceMappingURL=chunk-46E4TZP6.js.map
+//# sourceMappingURL=chunk-MCEABXYD.js.map

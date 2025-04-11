@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 interface DecodedToken {
+  proveed: string | null;
+  usuariopadre: string | null;
   nomprv: string;
   usuario: string;
   nombre: string;
@@ -58,6 +60,10 @@ export class AuthService {
 
   getUsuario(): string | null {
     return this.decodedToken ? this.decodedToken.usuario : null;
+  }
+
+  getProveed(): string | null {
+    return this.decodedToken ? this.decodedToken.proveed : null;
   }
 
   getNombre(): string | null {

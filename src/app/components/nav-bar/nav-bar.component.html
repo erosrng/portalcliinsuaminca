@@ -32,7 +32,7 @@
                           <!-- <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
                           <span class="fs-4"> {{productosEnCarritoNumber}}</span> -->
 
-                          <mat-icon matBadge="{{productosEnCarritoNumber}}" style="cursor: pointer;">shopping_cart</mat-icon>
+                          <mat-icon matBadge="{{productosEnCarritoNumber}}" (click)="navigateTo('/carrito')" style="cursor: pointer;">shopping_cart</mat-icon>
                             <!-- Include text description of the icon's meaning for screen-readers -->
                             <span class="cdk-visually-hidden">
                              {{productosEnCarritoNumber}}

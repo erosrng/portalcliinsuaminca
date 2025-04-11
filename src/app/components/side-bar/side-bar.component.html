@@ -9,23 +9,9 @@
         </li>
   
         <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
-          <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pedidosDropdown" aria-expanded="false">
-            <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Toma de pedidos</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
+            <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Catalogo</span>
           </a>
-          <div class="collapse menu__dropdown-content" id="pedidosDropdown">
-            <ul class="nav flex-column">
-              <li class="nav-item">
-                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                  <i class="fas fa-boxes"></i><span *ngIf="isMenuOpen"> Inventario</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
-                  <i class="fas fa-file-excel"></i><span *ngIf="isMenuOpen"> Por Excel</span>
-                </a>
-              </li>
-            </ul>
-          </div>
         </li>
   
         <li class="nav-item" (mouseenter)="openMenuOnItemHover()" (mouseleave)="closeMenuOnItemLeave()">
