@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, ElementRef, ChangeDetectorRef  } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -31,6 +31,8 @@ import { map, startWith } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { CarshopComponent } from "../../components/carshop/carshop.component";
 import * as XLSX from 'xlsx';
+import { DataTableDirective, DataTablesModule } from "angular-datatables";
+import { Config } from 'datatables.net';
 
 export interface Clienteselect {
   cliente: string; // Ajusta según la estructura de tu API
@@ -59,7 +61,8 @@ export interface Clienteselect {
     MatStepperModule,
     MatButtonModule,
     MatDialogModule,
-    CarshopComponent
+    CarshopComponent,
+    DataTablesModule
 ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
@@ -121,19 +124,35 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   descuentoLineal: number | 0 = 0; 
 
+
   /* @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined; */
   @ViewChild('stepper') stepper: MatStepper | undefined; 
+
+  @ViewChild('miTabla', { static: false }) dataTable!: ElementRef;
+
+  @ViewChild(DataTableDirective, {static: false})
+  
+  // @ts-ignore
+  dtElement: DataTableDirective;
+  dtOptions: Config = {};
+  dtTrigger: Subject<any> = new Subject();
+
   constructor(
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
     public http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService,
+    private cdr: ChangeDetectorRef,
     private router: Router // Inyecta el Router si lo necesitas para navegación
   ) { }
 
 
   ngOnInit() {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10
+    };
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
     this.codCli = this.authService.getCodCli();
@@ -182,6 +201,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         }
       });
     }
+    this.dtTrigger.next(null);
+
+    // $(this.datatable.nativeElement).DataTable(this.dtOptions);
 
   }
 
@@ -190,6 +212,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     this.destroy$.next();
     this.destroy$.complete();
+    // this.dtTrigger.unsubscribe();
   }
 
 
@@ -370,13 +393,29 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.pagedProducts = response.data.data;
           this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
           this.aplicarDescuentoLineal();
+          console.log(this.pagedProducts)
           this.isLoading = false; 
+          $(this.dataTable.nativeElement).DataTable(this.dtOptions);
+          // this.dtElement.dtInstance.then(dtInstance => {
+          //   // Destroy the table first
+          //   dtInstance.draw();
+          //   // Call the dtTrigger to rerender again
+          //   this.dtTrigger.next(null);
+            
+            
+          // });
+
+          this.cdr.detectChanges();
+
+          
+          
         },
         error: (error) => {
           this.isLoading = false; 
           console.error('Error al cargar inventario:', error);
         },
       });
+      
     }else{
       if(this.rutaActual=='pedidos'){
         Swal.fire({

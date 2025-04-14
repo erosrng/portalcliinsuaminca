@@ -13,6 +13,7 @@
     background-color: vars.$background-fondo;
     position: relative;
     z-index: 1;
+    min-height: 80vh !important;
 }
 
 .order-container {
@@ -225,11 +226,24 @@
     width: 100%;
     padding: 0;
     margin: 0;
-    height: 7vh;
+    height: 4vh;
     border-radius: 1rem;
     border: none;
     color: #FFF;
     background: #0377bf;
+    font-size: 2rem;
+}
+
+.btn-clear {
+    margin-top: 1vh !important;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 4vh;
+    border-radius: 1rem;
+    border: none;
+    color: #FFF;
+    background: #ff2f2f;
     font-size: 2rem;
 }
 
@@ -343,4 +357,52 @@ nav[aria-label="Page navigation example"] {
   .upload-input {
     display: none; /* Oculta el input de archivo original */
   }
-  
+
+  .box-grey {
+    padding: 1rem 1.5rem;
+    background: #ededed;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    width: 24%;
+  }
+
+  .text-blue {
+    color: #0377bf;
+  }
+
+
+.card-resumen {
+    // height: 15vh;
+    padding: 2vh !important;
+    display: flex;
+    align-items: center;
+}
+
+.upload-btn {
+    width: 50% !important;
+    height: 5vh !important;
+    background: #6cc32c !important;
+    border-radius: 1rem;
+}
+
+.download-btn {
+    width: 50% !important;
+    height: 5vh !important;
+    background: #0084c5 !important;
+    border-radius: 1rem;
+
+}
+
+.h-custom {
+    height: 5vh !important;
+}
+
+.col-custom-6 {
+     width: 49% !important;
+}
+
+td {
+    font-size: 10px;
+}

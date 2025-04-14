@@ -11,6 +11,7 @@ import { PagosPageComponent } from './pages/pagos-page/pagos-page.component';
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
+    { path: '', component: LoginPageComponent},
     { path: 'login', component: LoginPageComponent }, 
     { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
     { path: 'carrito', component: CarritoPageComponent, canActivate: [authGuard] },

@@ -59,6 +59,154 @@
 
 <div class="container-fluid mt-6 row inventario__container"  style="min-height: 70rem;">
     <div class="row">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-12">
+            <div class="card pt-5 card-resumen">
+              <div class="row w-100 mb-5">
+                <div class="col-3">
+                  <h4 class="text-blue">Carrito de compra</h4>
+                  <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
+                  <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
+                </div>
+
+                <div class="col-3 box-grey">
+                  <div class="container-text">
+                    <span>Unidades: {{ unidades }}</span>
+                    <br>
+                    <span>Productos: {{ encarprod }}</span>
+                  </div>
+                </div>
+
+                <div class="col-3 box-grey">
+                  <div class="container-text">
+                    <span>Totales:</span>
+                    <div class="">
+                      <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
+                      <br>
+                      <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
+                    </div>
+                  </div>
+                  
+                </div>
+
+                <div class="col-3">
+                  <div class="">
+                    <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
+                    <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row w-100">
+                <div class="col-6 col-custom-6">
+                 
+                  <form class="example-form">
+                    <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
+                      <mat-label> Seleccione un cliente</mat-label>
+                      <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
+                        (change)="onClienteInputChange($event)">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        @for (cliente of filteredOptions | async; track cliente) {
+                        <mat-option (click)="onClienteSeleccionado(cliente)" stepper-indicator [value]="cliente">({{cliente.cliente}})
+                          {{cliente.nombre}}</mat-option>
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </form>
+                </div>
+
+                <div class="col-3">
+                  <mat-form-field appearance="outline" class="w-100 h-custom">
+                    <mat-label>Aplicar Descuento Lineal (%)</mat-label>
+                    <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
+                  </mat-form-field>
+            
+                </div>
+
+                <div class="col-3">
+                  <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
+                      
+                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">
+                      <i class="fas fa-file-excel mr-1"></i>Cargar
+                    </button>
+                    <button mat-raised-button color="primary" class="download-btn" (click)="bajaexcel()">
+                      <i class="fas fa-file-excel"></i> Bajar listado
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="card p-5">
+              <table #miTabla datatable  [dtOptions]="dtOptions"   class="row-border hover">
+                <thead>
+                  <tr>
+                    <th>Ver</th>
+                    <th>Descripción</th>
+                    <th>Proveedor</th>
+                    <th>Lote</th>
+                    <th>Vence</th>
+                    <th>Bs.</th>
+                    <th>US$</th>
+                    <th>Inventario</th>
+                    <th>Cantidad</th>
+                    <th>Descuento %</th>
+                    <th>Agregar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                    <td> <img src="{{product.img}}" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)"></td>
+                     <td>{{product.descrip}}</td>
+                     <td>{{product.nomprv}}</td>
+                     <td>{{product.lote}}</td>
+                     <td>{{product.vence}}</td>
+                     <td>{{product.oprecio}}</td>
+                     <td>{{product.opreciod}}$</td>
+                     <td>{{product.existen}}</td>
+                     <td>
+                        <input type="text" min="0" maxlength="10" 
+                          [value]="product.encar ? product.encar : ''" 
+                          (input)="validateInput(product, $event)" 
+                          id="cana_{{product.codigo}}" 
+                          placeholder="Cantidad" 
+                          class="w-100 input-cant" 
+                          (keyup.enter)="agg_pedido(product)"
+                        >
+                     </td>
+                     <td>
+                        <input type="text" min="0" maxlength="10" 
+                          [value]="product.descprov ? product.descprov : ''" 
+                          (input)="validateInput(product, $event)" 
+                          id="descprov_{{product.codigo}}" 
+                          placeholder="Descuento" 
+                          class="w-100 input-cant" 
+                          (keyup.enter)="agg_pedido(product)"
+                        >
+                      </td>
+                      <td>
+                        <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">
+                          <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                          <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                        </button>
+                      </td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row">
       <mat-stepper class="demo-stepper" #stepper linear>
     
         <mat-step [stepControl]="clienteControl" errorMessage="Seleccione un cliente">
@@ -68,19 +216,7 @@
           </ng-template>
           <div class="mt-4">
             <div class="card p-4 shadow">
-              <form class="example-form">
-                <mat-form-field class="example-full-width" style="width: 100%;" appearance="outline">
-                  <mat-label>Cliente</mat-label>
-                  <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
-                    (change)="onClienteInputChange($event)">
-                  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                    @for (cliente of filteredOptions | async; track cliente) {
-                    <mat-option (click)="onClienteSeleccionado(cliente)" stepper-indicator [value]="cliente">({{cliente.cliente}})
-                      {{cliente.nombre}}</mat-option>
-                    }
-                  </mat-autocomplete>
-                </mat-form-field>
-              </form>
+              
             </div>
           </div>
           <div class="stepper-navigation">
@@ -126,23 +262,7 @@
                   </div>
 
                   <div class="col-12">
-                    <div class="d-flex justify-content-between">
-                      <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
-
-                      <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
-                        <mat-form-field appearance="outline" style="width: 240px;">
-                          <mat-label>Descuento Lineal (%)</mat-label>
-                          <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
-                        </mat-form-field>
-                        <button mat-raised-button color="primary" (click)="openCargarArchivoModal()">
-                          <i class="fas fa-file-excel"></i>Cargar
-                        </button>
-                        <button mat-raised-button color="primary" (click)="bajaexcel()">
-                          <i class="fas fa-file-excel"></i> Bajar listado
-                        </button>
-                      </div>
-
-                    </div>
+                   
 
                   </div>
     
@@ -205,45 +325,7 @@
                   ></mat-paginator>
                 </div>
     
-                <div class="col-2">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="card pt-5">
-                        <div class="row">
-                          <div class="col-12 text-center">
-                            <h4>Carrito de compra</h4>
-                          </div>
-                            <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
-                          <div class="col-12 text-center">
-                            <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
-                          </div>
-                          <div class="col-12 unid-col mt-5">
-                            <span>Unidades: {{ unidades }}</span>
-                            <br>
-                            <span>Productos: {{ encarprod }}</span>
-                          </div>
-    
-                          <div class="col-12 unid-col mt-4">
-                            <span>Totales:</span>
-                            <div class="">
-                              <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
-                              <br>
-                              <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
-                            </div>
-    
-                          </div>
-    
-                          <div class="col-12 p-0 mt-5">
-                            <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
-                          </div>
-                          <div class="col-12 mt-3 text-center">
-                            <a (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+               
               </div>
             </div>
           </div>
@@ -263,12 +345,12 @@
           </div>
           <div class="stepper-navigation">
             <button mat-button matStepperPrevious>Atrás</button>
-            <!-- <button mat-button color="primary">Procesar Pedido</button> -->
+            <!-- <button mat-button color="primary">Procesar Pedido</button> 
           </div>
         </mat-step>
     
       </mat-stepper>
-    </div>
+    </div> -->
 
     
 </div>

@@ -162,11 +162,13 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-top: 6rem;
+    margin-top: 0rem;
     overflow-x: hidden;
     overflow-y: auto;
     position: relative;
     transition: width 0.5s ease;
+    margin-top: 5vh;
+    min-height: calc(100vh - 17vh - 5vh);
 }
 
 .principal__pantalla {
@@ -768,4 +770,16 @@
     .principal__pantalla.menu-active .menu__general{
         width: 29rem;
     }
+}
+
+.icon-center {
+    width: 50%;
+    margin: auto;
+}
+
+.text-center {
+    display: flex;
+    margin: auto;
+    font-size: 3rem;
+    color: #0176c6;
 }

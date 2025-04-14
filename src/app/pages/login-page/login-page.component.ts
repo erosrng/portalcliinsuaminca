@@ -80,7 +80,7 @@ export class LoginPageComponent implements AfterViewInit {
           this.userInput.nativeElement.focus(); // Enfoca el input de usuario
         } else {
           this.authService.setToken(response.api_key);
-          this.route.navigate(['/home']);
+          this.route.navigate(['/pedidos']);
           this.isLoading = false;
         }
       },

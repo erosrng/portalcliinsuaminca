@@ -15,9 +15,10 @@
 .footer {
     background-color: vars.$principal-color;
     color: vars.$background-fondo;
-    padding-top: 8rem;
+    padding-top: 2rem;
     position: relative;
     overflow: hidden;
+    height: 17vh !important;
 }
 
 /* Contenido del footer */
@@ -93,7 +94,7 @@
 /* Estilos para los iconos de redes sociales */
 .social-icons {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     gap: 2rem;
     margin-top: 2rem;
 }
@@ -143,4 +144,8 @@
 .social_logo{
     font-size: 3rem;
     color: #303030;
+}
+
+.text-end {
+    text-align: end !important;
 }
