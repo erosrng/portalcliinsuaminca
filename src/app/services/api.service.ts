@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
 
-  urlBase = 'http://10.0.100.2/proteoerp/api'
+  // urlBase = 'http://186.167.69.10:50080/proteoerp/api'
+  urlBase = 'http://insuaminca.proteoerp.org:50080/practica/'
 
   constructor(private httpClient: HttpClient) { }
 
