@@ -144,7 +144,104 @@
         <div class="row mt-5">
           <div class="col-12">
             <div class="card p-5">
-              <table #miTabla datatable  [dtOptions]="dtOptions"   class="row-border hover">
+              <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource">
+              
+                  <!-- Position Column -->
+                  <ng-container matColumnDef="img">
+                    <th mat-header-cell *matHeaderCellDef> Ver </th>
+                    <td mat-cell *matCellDef="let element"> 
+                       <img src="{{element.img}}" 
+                        class="img-product" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#productModal" 
+                        (click)="openProductModal(element.codigo)">
+                    </td>
+                  </ng-container>
+              
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="descrip">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let element"> {{element.descrip}} </td>
+                  </ng-container>
+              
+                  <!-- Weight Column -->
+                  <ng-container matColumnDef="nomprv">
+                    <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nomprv}} </td>
+                  </ng-container>
+              
+                  <!-- Symbol Column -->
+                  <ng-container matColumnDef="lote">
+                    <th mat-header-cell *matHeaderCellDef> Lote </th>
+                    <td mat-cell *matCellDef="let element"> {{element.lote}} </td>
+                  </ng-container>
+              
+                   <!-- Symbol Column -->
+                   <ng-container matColumnDef="vence">
+                    <th mat-header-cell *matHeaderCellDef> Vence </th>
+                    <td mat-cell *matCellDef="let element"> {{element.vence}} </td>
+                  </ng-container>
+
+                   <!-- Symbol Column -->
+                   <ng-container matColumnDef="oprecio">
+                    <th mat-header-cell *matHeaderCellDef> Bs. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.oprecio}} </td>
+                  </ng-container>
+
+                   <!-- Symbol Column -->
+                   <ng-container matColumnDef="opreciod">
+                    <th mat-header-cell *matHeaderCellDef> US$ </th>
+                    <td mat-cell *matCellDef="let element"> {{element.opreciod}} </td>
+                  </ng-container>
+
+                   <!-- Symbol Column -->
+                   <ng-container matColumnDef="existen">
+                    <th mat-header-cell *matHeaderCellDef> Inventario </th>
+                    <td mat-cell *matCellDef="let element"> {{element.existen}} </td>
+                  </ng-container>
+
+                   <!-- Symbol Column -->
+                   <ng-container matColumnDef="cantidad">
+                    <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+                    <td mat-cell *matCellDef="let element"> 
+                      <input type="text" min="0" maxlength="10" 
+                      [value]="element.descprov ? element.descprov : ''" 
+                      (input)="validateInput(element, $event)" 
+                      id="descprov_{{element.codigo}}" 
+                      placeholder="Descuento" 
+                      class="w-100 input-cant" 
+                      (keyup.enter)="agg_pedido(element)"
+                    >
+                    </td>
+                  </ng-container>
+
+                   <!-- Agregar Column -->
+                   <ng-container matColumnDef="agregar">
+                    <th mat-header-cell *matHeaderCellDef> Agregar </th>
+                    <td mat-cell *matCellDef="let element"> 
+                      <button [ngClass]="{ 
+                          'btn-add': !productosEnCarritoCodigos.includes(element.codigo), 
+                          'btn-agg': productosEnCarritoCodigos.includes(element.codigo), 
+                         
+                          }" 
+                          (click)="agg_pedido(element)">
+                        <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
+                        <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
+                      </button>
+                     </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                               showFirstLastButtons
+                               aria-label="Select page of periodic elements">
+                </mat-paginator>
+              </div>
+              <!-- <table #dataTable datatable [dtOptions]="dtOptions" class="row-border hover">
                 <thead>
                   <tr>
                     <th>Ver</th>
@@ -199,7 +296,7 @@
                   </tr>
                   
                 </tbody>
-              </table>
+              </table> -->
               
             </div>
           </div>

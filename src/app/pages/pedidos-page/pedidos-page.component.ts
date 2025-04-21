@@ -22,8 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs'; // Importa MatTabsModule
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatTabGroup } from '@angular/material/tabs';
-import {MatStepper, MatStepperIntl, MatStepperModule} from '@angular/material/stepper';
+import {MatStepper, MatStepperModule} from '@angular/material/stepper';
 import {MatButtonModule} from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -31,8 +30,7 @@ import { map, startWith } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { CarshopComponent } from "../../components/carshop/carshop.component";
 import * as XLSX from 'xlsx';
-import { DataTableDirective, DataTablesModule } from "angular-datatables";
-import { Config } from 'datatables.net';
+
 
 export interface Clienteselect {
   cliente: string; // Ajusta según la estructura de tu API
@@ -62,32 +60,33 @@ export interface Clienteselect {
     MatButtonModule,
     MatDialogModule,
     CarshopComponent,
-    DataTablesModule
 ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
 })
 export class PedidosPageComponent implements OnInit, OnDestroy {
+  @ViewChild(CarshopComponent) carshopComponent: CarshopComponent | undefined; 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   products: any[] = [];
+  dataSource = new MatTableDataSource<any>(this.products);
+  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
+  
   categoria: string | null = null;
   categorianombre: string | null = null;
   search: string | null = null;
   isLoading = false;
 
-  @ViewChild(CarshopComponent) carshopComponent: CarshopComponent | undefined; 
+  
 
   private destroy$ = new Subject<void>();
-
-  dataSource = new MatTableDataSource<any>(this.products);
-  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   private subscriptions: Subscription[] = [];
   private clienteCambiadoSubscription: Subscription | undefined;
 
   filteredProducts: any[] = [];
   pagedProducts: any[] = [];
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 1000;
   totalPages = 1;
   pages: number[] = [];
   productosEnCarrito: any[] = [];
@@ -128,14 +127,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   /* @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined; */
   @ViewChild('stepper') stepper: MatStepper | undefined; 
 
-  @ViewChild('miTabla', { static: false }) dataTable!: ElementRef;
-
-  @ViewChild(DataTableDirective, {static: false})
   
-  // @ts-ignore
-  dtElement: DataTableDirective;
-  dtOptions: Config = {};
-  dtTrigger: Subject<any> = new Subject();
 
   constructor(
     public dialog: MatDialog,
@@ -149,10 +141,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10
-    };
+   
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
     this.codCli = this.authService.getCodCli();
@@ -201,7 +190,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         }
       });
     }
-    this.dtTrigger.next(null);
 
     // $(this.datatable.nativeElement).DataTable(this.dtOptions);
 
@@ -395,16 +383,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.aplicarDescuentoLineal();
           console.log(this.pagedProducts)
           this.isLoading = false; 
-          $(this.dataTable.nativeElement).DataTable(this.dtOptions);
-          // this.dtElement.dtInstance.then(dtInstance => {
-          //   // Destroy the table first
-          //   dtInstance.draw();
-          //   // Call the dtTrigger to rerender again
-          //   this.dtTrigger.next(null);
-            
-            
-          // });
-
+          
           this.cdr.detectChanges();
 
           
@@ -834,14 +813,14 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });
-      const apiUrl = `http://10.0.100.2/proteoerp/ventas/generador/index/21/S`;
+      const apiUrl = `http://186.167.69.10:50080/proteoerp/ventas/generador/index/21/S`;
     
       this.http.post(apiUrl, {}, { }).subscribe({
         next: (response: any) => {
           const formattedDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
           const fileName = "/generador/listasprv/LISTADO DE PROVEEDOR_" + this.authService.getProveed() + "_" + formattedDate + ".xlsx";
 
-          window.location.href = `http://10.0.100.2/generador/${fileName}`;
+          window.location.href = `http://186.167.69.10:50080/generador/${fileName}`;
           this.isLoading = false; 
         },
         error: (error) => {

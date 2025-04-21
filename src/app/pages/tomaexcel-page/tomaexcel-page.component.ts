@@ -188,7 +188,7 @@ export class TomaexcelPageComponent {
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         const formattedDate = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        window.location.href = `http://10.0.100.2/generador/${response.archivo}`;
+        window.location.href = `http://186.167.69.10:50080/generador/${response.archivo}`;
         this.loading = false;
       },
       error: (error) => {
