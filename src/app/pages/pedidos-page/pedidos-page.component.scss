@@ -403,6 +403,31 @@ nav[aria-label="Page navigation example"] {
      width: 49% !important;
 }
 
+th {
+    background: #6cc32c !important;
+    color: #FFF;
+    text-align: center;
+    font-weight: 900;
+}
+
 td {
     font-size: 10px;
+}
+
+tr:hover {
+    transition: all 0.25s ease-in-out;
+    background: #0000000d;
+    cursor: pointer;
+}
+
+.border-top-left {
+    border-top-left-radius: 1rem !important;
+}
+
+.border-top-right {
+    border-top-right-radius: 1rem !important;
+}
+
+.text-aling-center {
+    text-align: center !important;
 }

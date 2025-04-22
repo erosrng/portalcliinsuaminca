@@ -70,7 +70,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   products: any[] = [];
   dataSource = new MatTableDataSource<any>(this.products);
-  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
+  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'descuento', 'agregar'];
   
   categoria: string | null = null;
   categorianombre: string | null = null;
@@ -383,6 +383,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.aplicarDescuentoLineal();
           console.log(this.pagedProducts)
           this.isLoading = false; 
+          this.dataSource.paginator = this.paginator;
           
           this.cdr.detectChanges();
 
