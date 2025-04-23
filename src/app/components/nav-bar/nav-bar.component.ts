@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
@@ -44,6 +44,8 @@ export class NavBarComponent implements OnInit {
   grup: { grupo: string; nom_grup: string }[] | null = null;
   codCli: string | null = null;
 
+  @Output() openMenu = new EventEmitter<boolean>();
+
   constructor(
     private router: Router,
     public authService: AuthService,
@@ -79,7 +81,8 @@ export class NavBarComponent implements OnInit {
   }
 
   toggleMenu() {
-    this.portalcliLogicaService.toggleMenu();
+    this.openMenu.emit(true)
+    // this.portalcliLogicaService.toggleMenu();
   }
 
   openMenuOnHover() {

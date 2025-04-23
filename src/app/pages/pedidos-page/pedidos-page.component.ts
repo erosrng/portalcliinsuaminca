@@ -30,7 +30,7 @@ import { map, startWith } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { CarshopComponent } from "../../components/carshop/carshop.component";
 import * as XLSX from 'xlsx';
-
+import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 
 export interface Clienteselect {
   cliente: string; // Ajusta según la estructura de tu API
@@ -60,6 +60,8 @@ export interface Clienteselect {
     MatButtonModule,
     MatDialogModule,
     CarshopComponent,
+    MatSidenav,
+    MatSidenavModule
 ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
@@ -70,7 +72,12 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   products: any[] = [];
   dataSource = new MatTableDataSource<any>(this.products);
-  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'descuento', 'agregar'];
+  displayedColumns: string[] = 
+  [
+    'img', 'descrip', 'nomprv', 'lote', 'vence', 
+    'opreciod', 'apliDiscount', 'cantidad',
+    'descuento', 'agregar'
+  ];
   
   categoria: string | null = null;
   categorianombre: string | null = null;
@@ -122,6 +129,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filteredOptions: Observable<Clienteselect[]> | undefined;
 
   descuentoLineal: number | 0 = 0; 
+  toggleMenu = false;
 
 
   /* @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined; */
@@ -503,6 +511,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   }
 
   validateInput(product: any, event: any) {
+    product.descprov = event.target.value;
+    console.log(this.portalcliLogicaService.validateCant(event))
     product.cant = this.portalcliLogicaService.validateCant(event);
   }
 
@@ -830,5 +840,20 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         },
       });
   }
-  
+
+  openMenu(event: any) {
+    if (this.toggleMenu) {
+      this.toggleMenu = false;
+    } else {
+      this.toggleMenu = true;
+    }
+  }
+
+  getPriceWDiscount(element: any) {
+    if (element.descprov > 0) {
+      console.log(element)
+    }
+    
+  }
+   
 }
