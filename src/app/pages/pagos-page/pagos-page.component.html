@@ -86,36 +86,36 @@
 
                               <div class="mb-3 form-group">
                                 <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
-                                <input type="text" name="monto" id="monto" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly>
+                                <input type="text" name="monto" id="monto" *ngIf="montoACancelar" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly [disabled]="!cuentaSeleccionada">
                               </div>
                               
 
                               <div class="mb-3 form-group">
                                   <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
                                   <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" 
-                                  class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly></textarea>
+                                  class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly [disabled]="!cuentaSeleccionada"></textarea>
                               </div>
                           
                               <div class="row mb-3">
                                 <div class="col-md-6">
                                   <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia</label>
-                                  <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
+                                  <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
                                 </div>
                                 <div class="col-md-6">
                                   <label for="numero_referencia" class="form-label pagos-label">Número de referencia</label>
-                                  <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ingrese número de referencia" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
+                                  <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ingrese número de referencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
                                 </div>
                               </div>
                           
                               <div class="mb-3 form-group">
                                 <label for="comprobante" class="form-label pagos-label">Cargar comprobante de pago</label>
-                                <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!tipoPagoSeleccionado">
+                                <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
                               </div>
                           
 
     
                           
-                              <button class="btn btn-primary pagos-submit-btn" [disabled]="!monto">Anexar pago</button>
+                              <button class="btn btn-primary pagos-submit-btn" [disabled]="!montoACancelar">Anexar pago</button>
                             </form>
                           </div>
                       

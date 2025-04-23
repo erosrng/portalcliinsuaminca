@@ -54,12 +54,17 @@ export class PagosPageComponent implements OnInit {
   montoACancelar: number = 0;
 
   @ViewChild(MatSort) sort: MatSort = new MatSort();
+  private subscriptions: Subscription[] = []; 
+  private clienteCambiadoSubscription: Subscription | undefined;
+  
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
   ) { }
+
+
 
   ngOnInit() {
     this.fetchPagos();
@@ -83,10 +88,6 @@ export class PagosPageComponent implements OnInit {
 
   sortColumn: string = 'numero'; // Columna de ordenamiento inicial
   sortDirection: string = 'asc';
-
-  private subscriptions: Subscription[] = []; 
-  private clienteCambiadoSubscription: Subscription | undefined;
-  
 
   actualizarTiposPago() {
     switch (this.metodoPagoSeleccionado) {

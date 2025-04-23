@@ -93,32 +93,11 @@ export class NavBarComponent implements OnInit {
   onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
     this.authService.setCodCli(cliente.cliente);
     this.portalcliLogicaService.buscaalmacen();
-    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos') {
+    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos' || this.rutaActual == 'pagos') {
       this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
     }
     this.revisarCarrito();
   }
-
-  /* onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
-    if (lgrup) {
-      this.categoriaSeleccionadaNombre = lgrup.nom_grup; // Actualiza el nombre
-      this.categoriaSeleccionadaGrupo = lgrup.grupo; // Actualiza el grupo
-      this.router.navigate(['/pedidos'], {
-        queryParams: { categoria: lgrup.grupo, categorianombre: lgrup.nom_grup },
-      });
-    } else {
-      this.categoriaSeleccionadaNombre = ''; // Limpia el nombre
-      this.categoriaSeleccionadaGrupo = ''; // Limpia el grupo
-      this.router.navigate(['/pedidos'], { queryParams: { categoria: '' } });
-    }
-  }
-
-  buscarProductos() {
-    if (this.searchTermNavbar) {
-      this.router.navigate(['/pedidos'], { queryParams: { search: this.searchTermNavbar } });
-    }
-  }
-   */
 
   onCategoriaSeleccionada(lgrup?: { grupo: string; nom_grup: string }): void {
     let currentSearch = '';
@@ -169,49 +148,6 @@ export class NavBarComponent implements OnInit {
     this.searchTermNavbar = '';
     this.buscarProductos(); // Refresca la búsqueda
   }
-
-/*   revisarCarrito() {
-    this.portalcliLogicaService.revisarCarrito();
-    this.subscriptions.push(
-      this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
-        if (productos[0].value > 0) {
-          this.productosEnCarritoNumber = productos[0].value;
-        } else {
-          this.productosEnCarritoNumber = '0';
-        }
-
-        if (this.rutaActual == 'pedidos') {
-          this.productosEnCarrito = productos;
-        }
-      }),
-      this.portalcliLogicaService.unidades$.subscribe((unidades) => {
-        if (this.rutaActual == 'pedidos') {
-          this.unidades = unidades;
-        }
-      }),
-      this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
-        if (this.rutaActual == 'pedidos') {
-          this.totalBs = totalBs;
-        }
-      }),
-      this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
-        if (this.rutaActual == 'pedidos') {
-          this.totalUsd = totalUsd;
-        }
-      }),
-      this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
-        if (this.rutaActual == 'pedidos') {
-          this.encarprod = encarprod;
-        }
-      }),
-      this.portalcliLogicaService.productosEnCarritoCodigos$.subscribe((codigos) => {
-        if (this.rutaActual == 'pedidos') {
-          this.productosEnCarritoCodigos = codigos;
-        }
-      })
-    );
-  } */
-
     revisarCarrito() {
       this.portalcliLogicaService.revisarCarrito();
       this.subscriptions.push(
@@ -259,6 +195,7 @@ export class NavBarComponent implements OnInit {
         })
       );
     }
+
   getNombreClienteSeleccionado(): string {
     const codCli = this.authService.getCodCli();
     if (!this.clientes) {
