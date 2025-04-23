@@ -74,7 +74,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<any>(this.products);
   displayedColumns: string[] = 
   [
-    'img', 'descrip', 'nomprv', 'lote', 'vence', 
+    'img', 'descrip', 'nomprv', 
     'opreciod', 'apliDiscount', 'cantidad',
     'descuento', 'agregar'
   ];
