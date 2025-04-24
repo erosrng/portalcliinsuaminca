@@ -479,7 +479,7 @@ sortData(sortField: string) {
   }
 
   agg_pedido(product: any) {
-    console.log(this.codCli)
+    // console.log(this.codCli)
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
     let cantidad: number;
@@ -505,7 +505,7 @@ sortData(sortField: string) {
       });
       return;
     }
-  
+    console.log(product, cantidad, descprov,this.clienteData.ubica)
     this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
@@ -526,8 +526,8 @@ sortData(sortField: string) {
   }
 
   validateInput(product: any, event: any) {
-    /* product.descprov = event.target.value;
-    console.log(this.portalcliLogicaService.validateCant(event)) */
+    product.descprov = event.target.value;
+    // console.log(this.portalcliLogicaService.validateCant(event))
     product.cant = this.portalcliLogicaService.validateCant(event);
   }
 
@@ -623,27 +623,28 @@ sortData(sortField: string) {
         }).then((result) => {
         if (result.isConfirmed) {
             this.mostrarLoader;
-            this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-              next: (response: any) => {
-                if (response.status) {
-                  this.ocultarLoader;
-                  this.revisarCarrito();
-                  Swal.fire(response.mensaje, '', 'success');
-                  this.productosEnCarrito = [];
-                  this.dataSource.data = this.productosEnCarrito;
-                  this.isLoading = false;  
-                } else {
-                  Swal.fire(response.mensaje, '', 'error');
-                  this.isLoading = false;  
-                }
-              },
-              error: (error) => {
-                this.isLoading = false;  
-                this.ocultarLoader;
-                Swal.fire(error, '', 'error');
-                console.error('Error al enviar pedido:', error);
-              },
-            });
+            console.log(formData)
+            // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            //   next: (response: any) => {
+            //     if (response.status) {
+            //       this.ocultarLoader;
+            //       this.revisarCarrito();
+            //       Swal.fire(response.mensaje, '', 'success');
+            //       this.productosEnCarrito = [];
+            //       this.dataSource.data = this.productosEnCarrito;
+            //       this.isLoading = false;  
+            //     } else {
+            //       Swal.fire(response.mensaje, '', 'error');
+            //       this.isLoading = false;  
+            //     }
+            //   },
+            //   error: (error) => {
+            //     this.isLoading = false;  
+            //     this.ocultarLoader;
+            //     Swal.fire(error, '', 'error');
+            //     console.error('Error al enviar pedido:', error);
+            //   },
+            // });
         }
         });
     }

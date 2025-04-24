@@ -13,6 +13,7 @@ import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
 import Swal from 'sweetalert2';
+import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-miperfil-page',
@@ -24,6 +25,8 @@ import Swal from 'sweetalert2';
     ClicardComponent,
     HistorialpedComponent,
     FormsModule,
+    MatSidenav,
+    MatSidenavModule
   ],
   templateUrl: './miperfil-page.component.html',
   styleUrl: './miperfil-page.component.scss'
@@ -37,6 +40,7 @@ export class MiperfilPageComponent implements OnInit {
   contrasenaValida = false;
   contrasenaInvalida = false;
   isLoading = false;
+  toggleMenu = false;
 
   ngOnInit() {
     const token = this.authService.getToken();
@@ -96,7 +100,6 @@ export class MiperfilPageComponent implements OnInit {
       },
     });
   }
-
 
   actualizarDatos(formData: any) {
     if (this.nuevaContrasena !== this.confirmarContrasena) {
@@ -185,5 +188,13 @@ export class MiperfilPageComponent implements OnInit {
 
   ocultarLoader() {
     this.portalcliLogicaService.ocultarLoader();
+  }
+
+  openMenu(event: any) {
+    if (this.toggleMenu) {
+      this.toggleMenu = false;
+    } else {
+      this.toggleMenu = true;
+    }
   }
 }

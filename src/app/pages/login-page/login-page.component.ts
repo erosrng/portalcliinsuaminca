@@ -12,6 +12,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { ApiService } from '../../services/api.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -47,7 +49,8 @@ export class LoginPageComponent implements AfterViewInit {
     private route: Router,
     private http: HttpClient,
     public authService: AuthService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private apiService: ApiService
   ) {}
 
   ngAfterViewInit() {
@@ -70,6 +73,16 @@ export class LoginPageComponent implements AfterViewInit {
 
     const apiUrl = `${API_URL2}logincli/logincli`;
 
+    this.apiService.setLogUser(this.userData.user).subscribe((info: any) => {
+      this.login(apiUrl, formData)
+    }, () => {
+      this.login(apiUrl, formData)
+    })
+
+    
+  }
+
+  login(apiUrl: any, formData: any): void {
     this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {
         if (response.status === false) {

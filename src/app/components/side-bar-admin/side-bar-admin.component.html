@@ -1,0 +1,27 @@
+<div class="menu__content">
+
+    <ul class="nav flex-column menu__nav">
+      <li class="nav-item" >
+        <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin')">
+          <i class="fas fa-home"></i><span *ngIf="isMenuOpen"> Inicio</span>
+        </a>
+      </li>
+
+      <li class="nav-item" >
+        <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin/pedidos')">
+          <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Pedidos por vendedor</span>
+        </a>
+    </li>
+
+      <li class="nav-item" >
+        <a class="nav-link menu__link" href="javascript:void(0)" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i><span *ngIf="isMenuOpen"> Cerrar sesión</span>
+        </a>
+      </li>
+    </ul>
+
+
+      <div class="menu__footer" *ngIf="isMenuOpen">
+          Insuaminca, + cerca de ti
+      </div>
+  </div>
