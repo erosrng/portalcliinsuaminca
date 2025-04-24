@@ -3,10 +3,13 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { NavBarComponent } from "../nav-bar/nav-bar.component";
+import { SideBarComponent } from "../side-bar/side-bar.component";
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-historialped',
-  imports: [CommonModule],
+  imports: [CommonModule, NavBarComponent, SideBarComponent, FooterComponent],
   templateUrl: './historialped.component.html',
   styleUrl: './historialped.component.scss',
 })

@@ -2,6 +2,11 @@
 @import './../../pages/home-page/home-page.component.scss';
 //@import '../../components/nav-bar/nav-bar.component.scss';
 //@import './../../pages/carrito-page/carrito-page.component.scss';
+.historialped__main{
+  width: 100%;
+  margin-top: 7rem;
+  padding: 1rem;
+}
 
 .historialped {
     &__historial-table {

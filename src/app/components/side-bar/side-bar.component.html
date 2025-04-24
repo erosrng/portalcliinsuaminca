@@ -10,13 +10,19 @@
   
         <li class="nav-item" >
           <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-            <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Catalogo</span>
+            <i class="fas fa-cart-plus"></i><span *ngIf="isMenuOpen"> Catalogo</span>
           </a>
         </li>
   
         <li class="nav-item" >
           <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
             <i class="fas fa-user"></i><span *ngIf="isMenuOpen"> Perfil</span>
+          </a>
+        </li>
+
+        <li class="nav-item" >
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/historialped')">
+            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Triangulaciones Efectuadas</span>
           </a>
         </li>
   

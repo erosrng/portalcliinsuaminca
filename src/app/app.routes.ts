@@ -6,6 +6,7 @@ import { MiperfilPageComponent } from './pages/miperfil-page/miperfil-page.compo
 import { PedidosPageComponent } from './pages/pedidos-page/pedidos-page.component';
 import { TomaexcelPageComponent } from './pages/tomaexcel-page/tomaexcel-page.component';
 import { PagosPageComponent } from './pages/pagos-page/pagos-page.component';
+import { HistorialpedComponent } from "./components/historialped/historialped.component";
 
 
 import { authGuard } from './auth.guard';
@@ -18,5 +19,6 @@ export const routes: Routes = [
     { path: 'miperfil', component: MiperfilPageComponent, canActivate: [authGuard] },
     { path: 'pedidos', component: PedidosPageComponent, canActivate: [authGuard] },
     { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] },
-    { path: 'pagos', component: PagosPageComponent, canActivate: [authGuard] }
+    { path: 'pagos', component: PagosPageComponent, canActivate: [authGuard] },
+    { path: 'historialped', component: HistorialpedComponent, canActivate: [authGuard] }
 ];
