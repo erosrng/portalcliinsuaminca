@@ -161,6 +161,8 @@
     background-color: vars.$background-fondo;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     flex-grow: 1;
     margin-top: 0rem;
     overflow-x: hidden;
@@ -778,8 +780,11 @@
 }
 
 .text-center {
-    display: flex;
-    margin: auto;
+    /* display: flex;
+    margin: auto; */
     font-size: 3rem;
     color: #0176c6;
+}
+.logo__lab{
+    width: 40rem;
 }

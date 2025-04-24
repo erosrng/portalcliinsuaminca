@@ -27,7 +27,7 @@ export class HomePageComponent {
   isMenuOpen: boolean = true;
 
   constructor(
-    private authService: AuthService, 
+    public authService: AuthService, 
     public portalcliLogicaService: PortalcliLogicaService,
     private router: Router
   ) {} 
@@ -44,6 +44,7 @@ export class HomePageComponent {
 
     ngOnInit() {
       // Obtener el token y los datos del usuario
+      console.log(this.authService.getProveed() )
       const token = this.authService.getToken();
       //this.userData = this.authService.getUserData(); // Obtener los datos del usuario
   

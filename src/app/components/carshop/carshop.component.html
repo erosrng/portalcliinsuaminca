@@ -54,13 +54,7 @@
       </div>
 
       
-      <div class="login-container">
-        <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
-          <div class="spinner-border text-success" role="status">
-            <span class="visually-hidden">Cargando...</span>
-          </div>
-        </div>
-      </div>
+      <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
 
     <table mat-table [dataSource]="dataSource" matSort class="carrito__table table table-striped table-bordered">
       <ng-container matColumnDef="img">

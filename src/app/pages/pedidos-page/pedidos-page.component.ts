@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, ElementRef, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, ElementRef, ChangeDetectorRef,AfterViewInit,inject  } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -31,7 +31,10 @@ import { AsyncPipe } from '@angular/common';
 import { CarshopComponent } from "../../components/carshop/carshop.component";
 import * as XLSX from 'xlsx';
 import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 export interface Clienteselect {
   cliente: string; // Ajusta según la estructura de tu API
   nombre: string;  // Este será el campo que mostrarás
@@ -60,8 +63,10 @@ export interface Clienteselect {
     MatButtonModule,
     MatDialogModule,
     CarshopComponent,
+    MatProgressBarModule,
     MatSidenav,
-    MatSidenavModule
+    MatSidenavModule,
+    MatSortModule
 ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
@@ -69,16 +74,17 @@ export interface Clienteselect {
 export class PedidosPageComponent implements OnInit, OnDestroy {
   @ViewChild(CarshopComponent) carshopComponent: CarshopComponent | undefined; 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  
+  private _liveAnnouncer = inject(LiveAnnouncer);
   products: any[] = [];
-  dataSource = new MatTableDataSource<any>(this.products);
+  dataSource = new MatTableDataSource(this.products);
   displayedColumns: string[] = 
   [
     'img', 'descrip', 'nomprv', 
-    'opreciod', 'apliDiscount', 'cantidad',
+    'opreciod', 'apliDiscount', 'existen','cantidad',
     'descuento', 'agregar'
   ];
-  
+
   categoria: string | null = null;
   categorianombre: string | null = null;
   search: string | null = null;
@@ -134,14 +140,15 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   /* @ViewChild(MatTabGroup) tabGroup: MatTabGroup | undefined; */
   @ViewChild('stepper') stepper: MatStepper | undefined; 
-
+  @ViewChild(MatSort)
+  sort: MatSort = new MatSort;
   
 
   constructor(
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
     public http: HttpClient,
-    private authService: AuthService,
+    public authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService,
     private cdr: ChangeDetectorRef,
     private router: Router // Inyecta el Router si lo necesitas para navegación
@@ -160,8 +167,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         }
       });
     }else{
-      console.log(this.rutaActual)
-
       if(this.rutaActual=='pedidos'){
         Swal.fire({
           text: 'Seleccione un cliente para continuar',
@@ -198,6 +203,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         }
       });
     }
+    this.dataSource.sort = this.sort;
 
     // $(this.datatable.nativeElement).DataTable(this.dtOptions);
 
@@ -221,6 +227,35 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const filterValue = name.toLowerCase();
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().includes(filterValue));
   }
+  applyFilters() {
+    this.currentPage = 1; 
+    this.fetchPedidos();
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
+}
+
+sortData(sortField: string) {
+  if (this.orderBy === sortField) {
+    this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
+  } else {
+    this.orderBy = sortField;
+    this.orderDirection = 'asc';
+  }
+  this.applyFilters();
+}
+
+/* announceSortChange(sortState: Sort) {
+  // This example uses English messages. If your application supports
+  // multiple language, you would internationalize these strings.
+  // Furthermore, you can customize the message to add additional
+  // details about the values being sorted.
+  if (sortState.direction) {
+    this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+  } else {
+    this._liveAnnouncer.announce('Sorting cleared');
+  }
+} */
 
   //Trae los datos del cliente al buscarlo o cambiarlo
   subscribeToClienteData(callback?: () => void) { // Añadir un parámetro de callback
@@ -306,23 +341,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.stepper.next();
     } */
   }
-  applyFilters() {
-      this.currentPage = 1; // Reset to first page when applying filters
-      this.fetchPedidos();
-      if (this.paginator) {
-        this.paginator.firstPage();
-      }
-  }
-
-  sortData(sortField: string) {
-    if (this.orderBy === sortField) {
-      this.orderDirection = this.orderDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.orderBy = sortField;
-      this.orderDirection = 'asc';
-    }
-    this.applyFilters();
-  }
 
     checkPriceRange(price: number, range: string): boolean {
       if (!range) return true;
@@ -359,7 +377,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       formData.append('length', length.toString());
     
       formData.append('codCli', codCli ?? '');
-      formData.append('search', this.filterDescrip); 
+      formData.append('search', this.search ?? ''); 
       formData.append('categoria', this.categoria ?? '');
 
       if (this.clienteData && this.clienteData.ubica) {
@@ -389,14 +407,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.pagedProducts = response.data.data;
           this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
           this.aplicarDescuentoLineal();
-          console.log(this.pagedProducts)
-          this.isLoading = false; 
           this.dataSource.paginator = this.paginator;
           
           this.cdr.detectChanges();
+          this.isLoading = false; 
 
-          
-          
         },
         error: (error) => {
           this.isLoading = false; 
@@ -511,8 +526,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   }
 
   validateInput(product: any, event: any) {
-    product.descprov = event.target.value;
-    console.log(this.portalcliLogicaService.validateCant(event))
+    /* product.descprov = event.target.value;
+    console.log(this.portalcliLogicaService.validateCant(event)) */
     product.cant = this.portalcliLogicaService.validateCant(event);
   }
 
@@ -683,7 +698,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
             const ws: XLSX.WorkSheet = wb.Sheets[wsname];
   
             this.jsonData = XLSX.utils.sheet_to_json(ws);
-            //console.log('Datos procesados:', this.jsonData);
             Swal.fire({
               text: 'Presione cargar archivo para procesar pedido',
               icon: 'info',
@@ -851,9 +865,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   getPriceWDiscount(element: any) {
     if (element.descprov > 0) {
-      console.log(element)
+      //console.log(element)
     }
     
   }
+
+
    
 }

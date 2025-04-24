@@ -2,25 +2,19 @@ import {
   Overlay,
   OverlayConfig,
   OverlayModule
-} from "./chunk-SFQVHUJ2.js";
+} from "./chunk-NM5LHVXM.js";
 import {
   TemplatePortal
 } from "./chunk-6OHCPGTX.js";
 import {
   MAT_FORM_FIELD
-} from "./chunk-OBJW2OQM.js";
+} from "./chunk-QJYMSDNK.js";
 import "./chunk-HT24J2AI.js";
 import {
   CdkScrollableModule,
   ViewportRuler
 } from "./chunk-WOGHFPAT.js";
 import {
-  ActiveDescendantKeyManager,
-  BreakpointObserver,
-  Breakpoints,
-  DOWN_ARROW,
-  ENTER,
-  ESCAPE,
   MAT_OPTGROUP,
   MAT_OPTION_PARENT_COMPONENT,
   MatCommonModule,
@@ -28,15 +22,23 @@ import {
   MatOption,
   MatOptionModule,
   MatOptionSelectionChange,
+  _countGroupLabelsBeforeOption,
+  _getOptionScrollPosition
+} from "./chunk-YKCKB3US.js";
+import {
+  ActiveDescendantKeyManager,
+  BreakpointObserver,
+  Breakpoints,
+  DOWN_ARROW,
+  ENTER,
+  ESCAPE,
   TAB,
   UP_ARROW,
   _IdGenerator,
-  _countGroupLabelsBeforeOption,
-  _getOptionScrollPosition,
   addAriaReferencedId,
   hasModifierKey,
   removeAriaReferencedId
-} from "./chunk-5LLRJUFS.js";
+} from "./chunk-62QCO4YT.js";
 import {
   Directionality
 } from "./chunk-CGPPLGDB.js";
