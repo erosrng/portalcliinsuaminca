@@ -66,6 +66,16 @@
         <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
         <td mat-cell *matCellDef="let row" class="carrito__product-name"> {{row.descrip}} </td>
       </ng-container>
+
+      <ng-container matColumnDef="preciod">
+        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> US$ </th>
+        <td mat-cell *matCellDef="let row" class="carrito__product-usd"> {{ portalcliLogicaService.formatCurrency(row.preciod)}} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="ivad">
+        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA US$ </th>
+        <td mat-cell *matCellDef="let row" class="carrito__product-iva-usd">  {{ portalcliLogicaService.formatCurrency(row.ivad)}}</td>
+      </ng-container>
     
       <ng-container matColumnDef="preciosiniva">
         <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Bs. </th>
@@ -77,24 +87,15 @@
         <td mat-cell *matCellDef="let row" class="carrito__product-iva"> {{ portalcliLogicaService.formatCurrency(row.ivabs) }} </td>
       </ng-container>
     
-      <ng-container matColumnDef="preciod">
-        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> US$ </th>
-        <td mat-cell *matCellDef="let row" class="carrito__product-usd"> {{ portalcliLogicaService.formatCurrency(row.preciod)}} </td>
-      </ng-container>
-    
-      <ng-container matColumnDef="ivad">
-        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA US$ </th>
-        <td mat-cell *matCellDef="let row" class="carrito__product-iva-usd">  {{ portalcliLogicaService.formatCurrency(row.ivad)}}</td>
-      </ng-container>
-    
-      <ng-container matColumnDef="totalbs">
-        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total Bs. </th>
-        <td mat-cell *matCellDef="let row" class="carrito__product-total">  {{ portalcliLogicaService.formatCurrency(row.totalbs)}}</td>
-      </ng-container>
     
       <ng-container matColumnDef="totald">
         <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total US$ </th>
         <td mat-cell *matCellDef="let row" class="carrito__product-total-usd">  {{ portalcliLogicaService.formatCurrency(row.totald)}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalbs">
+        <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total Bs. </th>
+        <td mat-cell *matCellDef="let row" class="carrito__product-total">  {{ portalcliLogicaService.formatCurrency(row.totalbs)}}</td>
       </ng-container>
     
       <ng-container matColumnDef="cant">
@@ -138,7 +139,7 @@
   
     </section>
   
-    <section class="carrito__totals">
+    <section class="carrito__totals mt-5">
       <div class="carrito__totals-container">
         <div class="carrito__totals-item">
           <h3 class="carrito__totals-title">US$</h3>

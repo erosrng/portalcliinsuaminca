@@ -53,7 +53,7 @@
             </div>
         </div>
     </div>
-</div>
+  </div>
 
   
   <mat-sidenav-container>
@@ -61,121 +61,130 @@
       <app-side-bar ></app-side-bar>
     </mat-sidenav>
     <mat-sidenav-content class="w-100">
-      <div class="container-fluid mt-6 row inventario__container"  style="min-height: 70rem;">
-        <div class="row">
+      <div class="container-fluid mt-6 p-0 main-container" >
+        <div class="row mb-5 p-5">
+          
+          <!-- CONTROL HEADER -->
           <div class="col-12">
-            <div class="d-flex align-items-center">
-              <h1>Inventario: </h1>
-              <img style="width: 10rem;margin-left: 2rem;margin: 2rem;" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
-  
-            </div>
-
-            <div class="row">
-              <div class="col-12">
-                <div class="card pt-0 card-resumen">
-                  <div class="row w-100 mb-5">
-                    <div class="col-3">
-                      <h4 class="text-blue">Carrito de compra</h4>
-                      <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
-                      <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
-                    </div>
-    
-                    <div class="col-3 box-grey">
-                      <div class="container-text">
-                        <span>Unidades: {{ unidades }}</span>
-                        <br>
-                        <span>Productos: {{ encarprod }}</span>
-                      </div>
-                    </div>
-    
-                    <div class="col-3 box-grey">
-                      <div class="container-text">
-                        <span>Totales:</span>
-                        <div class="">
-                          <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
-                          <br>
-                          <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
-                        </div>
-                      </div>
-                      
-                    </div>
-    
-                    <div class="col-3">
-                      <div class="">
-                        <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
-                        <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
-                      </div>
-                    </div>
+            <div class="card pt-0 card-resumen">
+              <div class="row w-100 mb-5">
+                <div class="col-5 d-center">
+                  <div class="">
+                    <h4 class="text-blue">Carrito de compra</h4>
+                    <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
+                    <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
                   </div>
-    
-                  <div class="row w-100">
-                    <div class="col-6 col-custom-6">
-                     
-                      <form class="example-form">
-                        <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
-                          <mat-label> Seleccione un cliente</mat-label>
-                          <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
-                            (change)="onClienteInputChange($event)">
-                          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                            @for (cliente of filteredOptions | async; track cliente) {
-                            <mat-option (click)="onClienteSeleccionado(cliente)" stepper-indicator [value]="cliente">({{cliente.cliente}})
-                              {{cliente.nombre}}</mat-option>
-                            }
-                          </mat-autocomplete>
-                        </mat-form-field>
-                      </form>
-                    </div>
-    
-                    <div class="col-3">
-                      <mat-form-field appearance="outline" class="w-100 h-custom">
-                        <mat-label>Aplicar Descuento Lineal (%)</mat-label>
-                        <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
-                      </mat-form-field>
-                
-                    </div>
-    
-                    <div class="col-3">
-                      <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
-                          
-                        <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">
-                          <i class="fas fa-file-excel mr-1"></i>Cargar
-                        </button>
-                        <button mat-raised-button color="primary" class="download-btn" (click)="bajaexcel()">
-                          <i class="fas fa-file-excel"></i> Bajar listado
-                        </button>
-                      </div>
-                    </div>
-    
-                  </div>
-
-                  <div class="col-12 mt-5">
-                    <div class="d-flex align-items-center gap-3">
-                      <mat-form-field appearance="outline" style="flex-grow: 1;">
-                        <mat-label>Buscar producto</mat-label>
-                        <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
-                      </mat-form-field>
-    
-                      <mat-form-field appearance="outline" style="width: 200px;">
-                        <mat-label>Ordenar por</mat-label>
-                        <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
-                          <mat-option value="descrip">Descripción</mat-option>
-                          <mat-option value="oprecio">Precio</mat-option>
-                          <mat-option value="existen">Existencia</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-    
-                      <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" style="cursor: pointer;">
-                        {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                      </mat-icon>
-                    </div>
-                  </div>
-
+                 
                 </div>
+
+                <div class="col-2 ">
+                  <div class="container-text box-grey">
+                    <span>Totales:</span>
+                    <div class="">
+                      <span>Unidades: {{ unidades }}</span>
+                      <br>
+                      <span>Productos: {{ encarprod }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-2 ">
+                  <div class="container-text box-grey">
+                    <span>Totales:</span>
+                    <div class="">
+                      <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
+                      <br>
+                      <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
+                    </div>
+                  </div>
+                  
+                </div>
+
+                <div class="col-2 d-center">
+                  <div class="">
+                    <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
+                    <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
+                  </div>
+                </div>
+                
+                <div class="col-1">
+                  <img class="w-100" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
+                </div>
+
+                
+              </div>
+
+              <div class="row w-100">
+                <div class="col-6 col-custom-6">
+                 
+                  <form class="example-form">
+                    <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
+                      <mat-label> Seleccione un cliente</mat-label>
+                      <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
+                        (change)="onClienteInputChange($event)">
+                      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                        @for (cliente of filteredOptions | async; track cliente) {
+                        <mat-option (click)="onClienteSeleccionado(cliente)" stepper-indicator [value]="cliente">({{cliente.cliente}})
+                          {{cliente.nombre}}</mat-option>
+                        }
+                      </mat-autocomplete>
+                    </mat-form-field>
+                  </form>
+                </div>
+
+                <div class="col-3">
+                  <mat-form-field appearance="outline" class="w-100 h-custom">
+                    <mat-label>Aplicar Descuento Lineal (%)</mat-label>
+                    <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
+                  </mat-form-field>
+            
+                </div>
+
+                <div class="col-3">
+                  <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
+                      
+                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">
+                      <i class="fas fa-file-excel mr-1"></i>Cargar
+                    </button>
+                    <button mat-raised-button color="primary" class="download-btn" (click)="bajaexcel()">
+                      <i class="fas fa-file-excel"></i> Bajar listado
+                    </button>
+                  </div>
+                </div>
+
               </div>
             </div>
-    
-            <div class="row mt-5">
-              <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+          </div>
+
+          <!-- TABLA -->
+          <div class="col-12 mt-4">
+            <div class="card  pt-0 card-resumen">
+              <div class="col-12 mt-5">
+                <div class="d-flex align-items-center gap-3">
+                  <mat-form-field appearance="outline" style="flex-grow: 1;">
+                    <mat-label>Buscar producto</mat-label>
+                    <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
+                    @if (search) {
+                      <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" style="width: 10vw;">
+                    <mat-label>Ordenar por</mat-label>
+                    <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                      <mat-option value="descrip">Descripción</mat-option>
+                      <mat-option value="oprecio">Precio</mat-option>
+                      <mat-option value="existen">Existencia</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" style="cursor: pointer;">
+                    {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                  </mat-icon>
+                </div>
+              </div>
 
               <div class="col-12">
                 <table mat-table [dataSource]="dataSource" matSort>
@@ -188,7 +197,7 @@
                         class="img-product" 
                         data-bs-toggle="modal" 
                         data-bs-target="#productModal" 
-                        (click)="openProductModal(element.codigo)">
+                        (click)="openProductModal(element)">
                     </td>
                   </ng-container>
               
@@ -314,7 +323,7 @@
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
               
-                <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                <mat-paginator [pageSizeOptions]="[20, 50, 100]"
                                showFirstLastButtons
                                aria-label="Select page of periodic elements">
                 </mat-paginator>
@@ -328,15 +337,12 @@
               </div>
             </div>
           </div>
+
         </div>
+        <app-footer></app-footer>
+      </div>
       
-    
-        
-    </div>
-
     <div class="col-12">
-
-
       <ng-template #cargarArchivoModal>
         <h1 mat-dialog-title class="ofertas-title carrito__title">Cargar excel</h1>
     
@@ -366,7 +372,8 @@
         </mat-dialog-actions>
       </ng-template>
     </div>
-    <app-footer></app-footer>
+
     </mat-sidenav-content>
   </mat-sidenav-container>
+
 </div>

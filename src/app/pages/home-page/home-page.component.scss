@@ -788,3 +788,47 @@
 .logo__lab{
     width: 40rem;
 }
+
+.container-max {
+    padding: 2rem;
+    margin-top: 10vh;
+    min-height: 85vh !important;
+}
+
+.box-col {
+    text-align: center;
+    padding: 2rem;
+    border: 1px solid #6bc32d;
+    border-radius: 1rem;
+    height: 100%;
+}
+
+* {
+    transition: all ease-in-out 0.25s;
+}
+
+.nav-item {
+    padding: 1rem;
+    text-align: center;
+    background: #0284c5;
+    border: 1px solid #0284c5;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    color: #FFF;
+    text-align: left;
+}
+
+.nav-item > a {
+    color: #FFF !important;
+}
+
+.nav-item:hover {
+    padding: 1rem;
+    text-align: center;
+    background: #6bc32d;
+    border: 1px solid #6bc32d;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    color: #FFF;
+    text-align: left;
+}

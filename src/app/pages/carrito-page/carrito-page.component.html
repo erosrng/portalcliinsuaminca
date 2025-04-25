@@ -1,17 +1,25 @@
-<app-nav-bar></app-nav-bar>
+<app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
 
-<div style="display: flex; flex-direction: row;width: 100%;">
-  <app-side-bar></app-side-bar>
+<div style="display: flex; flex-direction: row;">
+  <mat-sidenav-container>
+    <mat-sidenav mode="over" [opened]="toggleMenu">
+      <app-side-bar></app-side-bar>
+    </mat-sidenav>
+    <mat-sidenav-content class="w-100">
+      <div class="container-fluid container-max">
 
-  <div class="container__carrito">
-    <header class="carrito__header">
-      <h1 class="ofertas-title carrito__title">Carrito de compra</h1>
+        <div class="container__carrito">
+          <header class="carrito__header">
+            <h1 class="ofertas-title carrito__title">Carrito de compra</h1>
 
-    </header>
-    <h2 class="text-primary">Mis productos</h2>
+          </header>
+          <h2 class="text-primary">Mis productos</h2>
 
-    <app-carshop></app-carshop>
+          <app-carshop></app-carshop>
 
-  </div>
+        </div>
+      </div>
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
-

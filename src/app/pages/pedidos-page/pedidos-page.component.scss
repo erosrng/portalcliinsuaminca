@@ -272,7 +272,7 @@ h4 {
 }
 
 .mt-6 {
-    margin-top: 6rem;
+    margin-top: 9rem;
 }
 
 .row-clear-filter {
@@ -363,9 +363,11 @@ nav[aria-label="Page navigation example"] {
     background: #ededed;
     border-radius: 1rem;
     display: flex;
-    align-items: center;
-    margin-right: 1rem;
-    width: 24%;
+    align-items: flex-start;
+    height: 100%;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
   }
 
   .text-blue {
@@ -453,4 +455,17 @@ tr:hover {
 .blue {
     color: #ff4081;
     font-size: 9px;
+}
+
+.container-text {
+    width: 100%;
+}
+
+.d-center {
+    display: flex;
+    align-items: center;
+}
+
+.main-container {
+    width: 99% !important;
 }

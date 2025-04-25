@@ -99,7 +99,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filteredProducts: any[] = [];
   pagedProducts: any[] = [];
   currentPage = 1;
-  itemsPerPage = 1000;
+  itemsPerPage = 2000;
   totalPages = 1;
   pages: number[] = [];
   productosEnCarrito: any[] = [];
@@ -227,12 +227,23 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const filterValue = name.toLowerCase();
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().includes(filterValue));
   }
+  
   applyFilters() {
     this.currentPage = 1; 
     this.fetchPedidos();
     if (this.paginator) {
       this.paginator.firstPage();
     }
+}
+
+searchProducts(event: Event): void {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
+clear(): void {
+  this.search = '';
+  this.dataSource.filter = '';
 }
 
 sortData(sortField: string) {
@@ -363,6 +374,7 @@ sortData(sortField: string) {
   }
 
   fetchPedidos() {
+    Swal.showLoading();
     this.isLoading = true;
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -411,10 +423,16 @@ sortData(sortField: string) {
           
           this.cdr.detectChanges();
           this.isLoading = false; 
+          Swal.close();
 
         },
         error: (error) => {
           this.isLoading = false; 
+          Swal.hideLoading();
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al cargar inventario',
+          })
           console.error('Error al cargar inventario:', error);
         },
       });
@@ -663,15 +681,17 @@ sortData(sortField: string) {
 
     imageficha: any;
 
-    openProductModal(codigo: string) {
-      this.isLoading = true;
-        this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
+    openProductModal(element: any) {
+      console.log(element, 'aca estoy ')
+      Swal.showLoading();
+        this.portalcliLogicaService.openProductModal(element.codigo).subscribe({ // Suscríbete al Observable
           next: (data) => {
             this.selectedProduct = data.product;
             this.imageficha = data.imageUrl;
-            this.isLoading = false; 
+            Swal.close()
           },
           error: (error) => {
+            Swal.close()
             console.error('Error al obtener el producto:', error);
           },
         });

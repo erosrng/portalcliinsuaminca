@@ -14,15 +14,6 @@
 }
 .footer {
     background-color: #0084C5;
-    color: white;
-    padding-top: 2rem;
-    position: absolute;
-    overflow: hidden;
-    height: 10vh !important;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 100% !important;
 }
 
@@ -153,4 +144,21 @@
 
 .text-end {
     text-align: end !important;
+}
+
+.center-text {
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    color: #FFF;
+}
+
+.center-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    height: 5vh;
 }

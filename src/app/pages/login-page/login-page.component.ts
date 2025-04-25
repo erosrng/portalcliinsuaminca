@@ -83,6 +83,7 @@ export class LoginPageComponent implements AfterViewInit {
   }
 
   login(apiUrl: any, formData: any): void {
+    localStorage.clear()
     this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {
         if (response.status === false) {
@@ -93,7 +94,11 @@ export class LoginPageComponent implements AfterViewInit {
           this.userInput.nativeElement.focus(); // Enfoca el input de usuario
         } else {
           this.authService.setToken(response.api_key);
-          this.route.navigate(['/pedidos']);
+          localStorage.setItem('nombre', response.userdata.nombre);
+          localStorage.setItem('nomprv', response.userdata.nomprv);
+          localStorage.setItem('usuario', response.userdata.usuario);
+          localStorage.setItem('proveed', response.userdata.proveed);
+          this.route.navigate(['/home']);
           this.isLoading = false;
         }
       },

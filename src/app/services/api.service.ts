@@ -33,4 +33,9 @@ export class ApiService {
     const apiUrl = this.urlFast + '/log_usuario'
     return this.httpClient.post(apiUrl, aux)
   }
+
+  generate_ped(info: any): Observable<any> {
+    const apiUrl = this.urlFast + '/pedidos_vendedor'
+    return this.httpClient.post(apiUrl, info)
+  }
 }
