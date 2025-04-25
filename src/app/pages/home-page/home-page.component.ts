@@ -4,7 +4,7 @@ import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
-
+import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,10 @@ import { Router } from '@angular/router';
     NavBarComponent,
     FooterComponent,
     SideBarComponent,
-    ClicardComponent
+    ClicardComponent,
+    MatSidenav,
+    MatSidenavModule,
+    CommonModule,
 ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
@@ -25,6 +28,7 @@ export class HomePageComponent {
   userData: any;
   apiKey: string = '';
   isMenuOpen: boolean = true;
+  toggleMenu = false;
 
   constructor(
     public authService: AuthService, 
@@ -56,5 +60,13 @@ export class HomePageComponent {
 
     navigateTo(route: string) {
       this.router.navigate([route]);
+    }
+
+    openMenu(event: any) {
+      if (this.toggleMenu) {
+        this.toggleMenu = false;
+      } else {
+        this.toggleMenu = true;
+      }
     }
 }

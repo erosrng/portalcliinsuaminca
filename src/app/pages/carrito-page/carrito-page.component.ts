@@ -14,6 +14,8 @@ import { MatSort } from '@angular/material/sort';
 
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { CarshopComponent } from "../../components/carshop/carshop.component"; // Importa MatFormFieldModule
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { FooterComponent } from "../../components/footer/footer.component";
 
 @Component({
   selector: 'app-carrito-page',
@@ -21,8 +23,12 @@ import { CarshopComponent } from "../../components/carshop/carshop.component"; /
     CommonModule,
     NavBarComponent,
     SideBarComponent,
-    CarshopComponent
-],
+    CarshopComponent,
+    MatSidenav,
+    MatSidenavModule,
+    CommonModule,
+    FooterComponent
+  ],
   templateUrl: './carrito-page.component.html',
   styleUrl: './carrito-page.component.scss'
 })
@@ -46,17 +52,18 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   totalBs: string = '';
   totalUsd: string = '';
   unidades: string = '';
+  toggleMenu = false;
 
   constructor(
     private route: Router,
     private http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.codCli = this.authService.getCodCli();
-    if(this.codCli){
+    if (this.codCli) {
       this.subscribeToClienteData();
     }
 
@@ -70,6 +77,14 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.clienteData = data;
     });
+  }
+
+  openMenu(event: any) {
+    if (this.toggleMenu) {
+      this.toggleMenu = false;
+    } else {
+      this.toggleMenu = true;
+    }
   }
 
 

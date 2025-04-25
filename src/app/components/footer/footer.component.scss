@@ -13,12 +13,8 @@
     align-items: center;
 }
 .footer {
-    background-color: vars.$principal-color;
-    color: vars.$background-fondo;
-    padding-top: 2rem;
-    position: relative;
-    overflow: hidden;
-    height: 17vh !important;
+    background-color: #0084C5;
+    width: 100% !important;
 }
 
 /* Contenido del footer */
@@ -27,7 +23,7 @@
     justify-content: space-around;
     width: 88%;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 0rem;
     position: relative;
     z-index: 1;
 }
@@ -148,4 +144,21 @@
 
 .text-end {
     text-align: end !important;
+}
+
+.center-text {
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    color: #FFF;
+}
+
+.center-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    height: 5vh;
 }

@@ -2,13 +2,15 @@
 
 
 
+
+
 <app-nav-bar></app-nav-bar>
 
 <div style="display: flex; flex-direction: row;">
   <app-side-bar></app-side-bar>
 
   <div class="modal fade" id="detallesPedidoModal" tabindex="-1" aria-labelledby="detallesPedidoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
       <div class="modal-content">
         <div class="modal-header bg-light">
           <h1 class="card-title text-primary" id="detallesPedidoModalLabel">Detalles del Pedido {{ pedidoSeleccionado?.pedido }}</h1>
@@ -51,11 +53,14 @@
   
 
   <main class="historialped__main ">
-    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-
+    <div class="login-container">
+      <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
+        <div class="spinner-border text-success" role="status"></div>
+      </div>
+    </div>
     <section class="historialped__historial">
       <h3 class="card-title text-primary">Ultimos 10 pedidos enviados</h3>
-      <!-- <table class="historialped__historial-table">
+      <table class="historialped__historial-table">
         <thead>
           <tr>
             <th scope="col">Nro. Pedido</th>
@@ -80,58 +85,7 @@
             </td>
           </tr>
         </tbody>
-      </table> -->
-
-        <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="pedido">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nro. Pedido </th>
-            <td mat-cell *matCellDef="let row"> {{row.pedido}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="origen">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Origen </th>
-            <td mat-cell *matCellDef="let row"> {{row.origen ? row.origen : 'Asesor Ventas'}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="unidades">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Unidades </th>
-            <td mat-cell *matCellDef="let row"> {{row.cantidad}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="factura">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Factura </th>
-            <td mat-cell *matCellDef="let row"> {{row.factura}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="fecha">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-            <td mat-cell *matCellDef="let row"> {{row.fecha}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="estatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Estatus </th>
-            <td mat-cell *matCellDef="let row"> {{row.factura ? 'FACTURADO' : 'PENDIENTE'}} </td>
-          </ng-container>
-      
-          <ng-container matColumnDef="ver">
-            <th mat-header-cell *matHeaderCellDef> Ver </th>
-            <td mat-cell *matCellDef="let row">
-              <span style="text-align: center; cursor: pointer;" (click)="showdetail(row)">
-                <i class="show__detail fa-solid fa-eye" title="Mostrar detalle"></i>
-              </span>
-            </td>
-          </ng-container>
-      
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>   
-  -    
-      <ng-template #noData>
-        <p>No hay historial de pedidos disponibles.</p>
-      </ng-template>
-      
+      </table>
     </section>
     <section class="historialped__pedidos">
       <button class="historialped__checkout-button">Bajar historico de pedidos</button>

@@ -1,0 +1,87 @@
+<app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
+<div style="display: flex; flex-direction: row;">
+    <mat-sidenav-container>
+        <mat-sidenav mode="over" [opened]="toggleMenu">
+          <app-side-bar-admin></app-side-bar-admin>
+        </mat-sidenav>
+        <mat-sidenav-content class="w-100">
+            <div class="container-fluid container-max">
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div style="text-align:center">
+                                    <apx-chart
+                                      [series]="chartOptions.series"
+                                      [chart]="chartOptions.chart"
+                                      [xaxis]="chartOptions.xaxis"
+                                      [title]="chartOptions.title"
+                                    ></apx-chart>
+                                  </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body box-ped">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>
+                                Pedidos Procesados: 
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body box-ped">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="inventory" class="icon"></mat-icon>
+                                Unidades vendidas: 
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body box-ped">
+                                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="attach_money" class="icon"></mat-icon>
+                                Valor $: 
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body box-ped">
+                                <div class="row w-100">
+                                    <div class="col-12">
+                                        <span>Seleccione un vendedor</span>
+                                    </div>
+                                    <div class="col-12 mt-4">
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Vendedores</mat-label>
+                                            <mat-select [(ngModel)]="selectedValue" name="vendedor">
+                                                @for (vendedor of vededores; track vendedor) {
+                                                  <mat-option [value]="vendedor">{{vendedor}}</mat-option>
+                                                }
+                                              </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                              
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <app-historialped></app-historialped>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+
+              <app-footer></app-footer>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>

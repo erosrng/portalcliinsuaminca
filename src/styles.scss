@@ -57,3 +57,12 @@ body { margin: 0;}
 .mat-drawer-container {
   width: 100% !important;
 }
+
+.mat-sidenav-content {
+  min-height: 100vh;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: rgb(255 255 255);
+  border: 1px solid #6bc32d;
+}
