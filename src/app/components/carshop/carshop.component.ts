@@ -19,6 +19,7 @@ import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/mat
 import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
 import { MatFormFieldModule } from '@angular/material/form-field'; // Importa MatFormFieldModule
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { ApiService } from '../../services/api.service';
 
 export interface Product {
   img: string;
@@ -68,7 +69,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
   productosEnCarritoNumber: string = '';
   productscar: Product[] = [];
   dataSource = new MatTableDataSource<Product>(this.productscar);
-  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
+  displayedColumns: string[] = 
+  ['img', 'descrip', 'preciod', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -82,7 +84,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     private route: Router,
     private http: HttpClient,
     private authService: AuthService,
-    public portalcliLogicaService: PortalcliLogicaService
+    public portalcliLogicaService: PortalcliLogicaService,
+    private apiService: ApiService
   ) {}
 
   ngOnInit() {
@@ -255,27 +258,48 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       }).then((result) => {
       if (result.isConfirmed) {
           this.mostrarLoader();
-          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-            next: (response: any) => {
-              if (response.status) {
-                this.ocultarLoader();
-                this.revisarCarrito();
-                Swal.fire(response.mensaje, '', 'success');
-                this.productscar = [];
-                this.dataSource.data = this.productscar;
-                this.isLoading = false;
-              } else {
-                Swal.fire(response.mensaje, '', 'error');
-                this.isLoading = false;
-              }
-            },
-            error: (error) => {
-              this.isLoading = false;
-              this.ocultarLoader();
-              Swal.fire(error, '', 'error');
-              console.error('Error de la API:', error);
-            },
-          });
+          console.log(this.productscar)
+          console.log(this.clienteData)
+          const aux = {
+            'usuario': localStorage.getItem('usuario'),
+            'nombre': localStorage.getItem('nombre'),
+            'nomprv': localStorage.getItem('nomprv'),
+            'proveed': localStorage.getItem('proveed'),
+            'codigo_cliente': this.clienteData.cliente,
+            'nombre_cliente':  this.clienteData.nombre,
+            'Pedido': this.productscar,
+          }
+          this.apiService.generate_ped(aux).subscribe((data: any) => {
+            console.log(data)
+            this.isLoading = false;
+            this.ocultarLoader();
+            Swal.fire('Pedido creado', '', 'success');
+          }, () => {
+            this.isLoading = false;
+            this.ocultarLoader();
+            Swal.fire('Ocurrio un error', '', 'error');
+          })
+          // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+          //   next: (response: any) => {
+          //     if (response.status) {
+          //       this.ocultarLoader();
+          //       this.revisarCarrito();
+          //       Swal.fire(response.mensaje, '', 'success');
+          //       this.productscar = [];
+          //       this.dataSource.data = this.productscar;
+          //       this.isLoading = false;
+          //     } else {
+          //       Swal.fire(response.mensaje, '', 'error');
+          //       this.isLoading = false;
+          //     }
+          //   },
+          //   error: (error) => {
+          //     this.isLoading = false;
+          //     this.ocultarLoader();
+          //     Swal.fire(error, '', 'error');
+          //     console.error('Error de la API:', error);
+          //   },
+          // });
       }
       });
   }

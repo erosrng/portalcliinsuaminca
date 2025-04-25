@@ -167,7 +167,7 @@ export class PortalcliLogicaService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/traeficha`;
+    const apiUrl = `${API_URL}/traeficha`;
 
     return new Observable(observer => {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({

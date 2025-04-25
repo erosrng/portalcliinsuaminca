@@ -98,7 +98,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filteredProducts: any[] = [];
   pagedProducts: any[] = [];
   currentPage = 1;
-  itemsPerPage = 1000;
+  itemsPerPage = 2000;
   totalPages = 1;
   pages: number[] = [];
   productosEnCarrito: any[] = [];
@@ -226,12 +226,23 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const filterValue = name.toLowerCase();
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().includes(filterValue));
   }
+  
   applyFilters() {
     this.currentPage = 1; 
     this.fetchPedidos();
     if (this.paginator) {
       this.paginator.firstPage();
     }
+}
+
+searchProducts(event: Event): void {
+  const filterValue = (event.target as HTMLInputElement).value;
+  this.dataSource.filter = filterValue.trim().toLowerCase();
+}
+
+clear(): void {
+  this.search = '';
+  this.dataSource.filter = '';
 }
 
 sortData(sortField: string) {
@@ -362,6 +373,7 @@ sortData(sortField: string) {
   }
 
   fetchPedidos() {
+    Swal.showLoading();
     this.isLoading = true;
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -410,10 +422,16 @@ sortData(sortField: string) {
           
           this.cdr.detectChanges();
           this.isLoading = false; 
+          Swal.close();
 
         },
         error: (error) => {
           this.isLoading = false; 
+          Swal.hideLoading();
+          Swal.fire({
+            title: 'Error',
+            text: 'Error al cargar inventario',
+          })
           console.error('Error al cargar inventario:', error);
         },
       });
@@ -478,7 +496,7 @@ sortData(sortField: string) {
   }
 
   agg_pedido(product: any) {
-    console.log(this.codCli)
+    // console.log(this.codCli)
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
     let cantidad: number;
@@ -504,7 +522,7 @@ sortData(sortField: string) {
       });
       return;
     }
-  
+    console.log(product, cantidad, descprov,this.clienteData.ubica)
     this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
@@ -525,8 +543,8 @@ sortData(sortField: string) {
   }
 
   validateInput(product: any, event: any) {
-    /* product.descprov = event.target.value;
-    console.log(this.portalcliLogicaService.validateCant(event)) */
+    product.descprov = event.target.value;
+    // console.log(this.portalcliLogicaService.validateCant(event))
     product.cant = this.portalcliLogicaService.validateCant(event);
   }
 
@@ -623,27 +641,28 @@ sortData(sortField: string) {
         }).then((result) => {
         if (result.isConfirmed) {
             this.mostrarLoader;
-            this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-              next: (response: any) => {
-                if (response.status) {
-                  this.ocultarLoader;
-                  this.revisarCarrito();
-                  Swal.fire(response.mensaje, '', 'success');
-                  this.productosEnCarrito = [];
-                  this.dataSource.data = this.productosEnCarrito;
-                  this.isLoading = false;  
-                } else {
-                  Swal.fire(response.mensaje, '', 'error');
-                  this.isLoading = false;  
-                }
-              },
-              error: (error) => {
-                this.isLoading = false;  
-                this.ocultarLoader;
-                Swal.fire(error, '', 'error');
-                console.error('Error al enviar pedido:', error);
-              },
-            });
+            console.log(formData)
+            // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            //   next: (response: any) => {
+            //     if (response.status) {
+            //       this.ocultarLoader;
+            //       this.revisarCarrito();
+            //       Swal.fire(response.mensaje, '', 'success');
+            //       this.productosEnCarrito = [];
+            //       this.dataSource.data = this.productosEnCarrito;
+            //       this.isLoading = false;  
+            //     } else {
+            //       Swal.fire(response.mensaje, '', 'error');
+            //       this.isLoading = false;  
+            //     }
+            //   },
+            //   error: (error) => {
+            //     this.isLoading = false;  
+            //     this.ocultarLoader;
+            //     Swal.fire(error, '', 'error');
+            //     console.error('Error al enviar pedido:', error);
+            //   },
+            // });
         }
         this.isLoading = false; 
         });
@@ -663,15 +682,17 @@ sortData(sortField: string) {
 
     imageficha: any;
 
-    openProductModal(codigo: string) {
-      this.isLoading = true;
-        this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
+    openProductModal(element: any) {
+      console.log(element, 'aca estoy ')
+      Swal.showLoading();
+        this.portalcliLogicaService.openProductModal(element.codigo).subscribe({ // Suscríbete al Observable
           next: (data) => {
             this.selectedProduct = data.product;
             this.imageficha = data.imageUrl;
-            this.isLoading = false; 
+            Swal.close()
           },
           error: (error) => {
+            Swal.close()
             console.error('Error al obtener el producto:', error);
           },
         });
