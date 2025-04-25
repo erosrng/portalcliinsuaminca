@@ -2,7 +2,7 @@
 <div style="display: flex; flex-direction: row;">
     <mat-sidenav-container>
         <mat-sidenav mode="over" [opened]="toggleMenu">
-          <app-side-bar-admin></app-side-bar-admin>
+          <app-side-bar></app-side-bar>
         </mat-sidenav>
         <mat-sidenav-content class="w-100">
             <div class="container-fluid container-max">
@@ -54,10 +54,13 @@
                                     <div class="col-12 mt-4">
                                         <mat-form-field class="w-100">
                                             <mat-label>Vendedores</mat-label>
-                                            <mat-select [(ngModel)]="selectedValue" name="vendedor">
+                                            <!-- <mat-select [(ngModel)]="selectedValue" name="vendedor">
                                                 @for (vendedor of vededores; track vendedor) {
                                                   <mat-option [value]="vendedor">{{vendedor}}</mat-option>
                                                 }
+                                              </mat-select> -->
+                                              <mat-select [(ngModel)]="selectedVendedor" name="vendedor">
+                                                <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor">{{vendedor.us_nombre}}</mat-option>
                                               </mat-select>
                                         </mat-form-field>
                                     </div>
@@ -73,9 +76,9 @@
                 <div class="row mt-5">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body">
+                            <!-- <div class="card-body">
                                 <app-historialped></app-historialped>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>

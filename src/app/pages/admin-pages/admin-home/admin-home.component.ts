@@ -1,8 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { NavBarComponent } from "../../../components/nav-bar/nav-bar.component";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { map, Observable } from 'rxjs';
+import { AuthService } from './../../../auth.service';
+import { API_URL } from './../../../app.config';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -19,6 +23,14 @@ import { FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SideBarAdminComponent } from "../../../components/side-bar-admin/side-bar-admin.component";
+import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
+
+interface Vendedor {
+  us_codigo: string;
+  us_nombre: string;
+  proveed: string;
+  usuariopadre: string;
+}
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -43,20 +55,28 @@ export type ChartOptions = {
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    SideBarAdminComponent
+    SideBarAdminComponent,
+    SideBarComponent
 ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
 })
-export class AdminHomeComponent {
+export class AdminHomeComponent implements OnInit { // Implementa OnInit
   @ViewChild("chart") chart: ChartComponent | undefined;
   public chartOptions: Partial<ChartOptions> | any;
   toggleMenu = false;
   toppings = new FormControl('');
-  vededores: string[] = ['Vendedor 1', 'Vendedor 2', 'Vendedor 3', 'Vendedor 4', 'Vendedor 5', 'Vendedor 6'];
+  // Eliminamos la propiedad estática vededores
   selectedValue: string = '';
+  vendedores: Vendedor[] = [];
+  isLoadingVendedores: boolean = false;
+  selectedVendedor: Vendedor | null = null;
 
-  constructor() {
+  constructor(
+    public authService: AuthService,
+    public http: HttpClient
+  ) {
+
     this.chartOptions = {
       series: [
         {
@@ -77,7 +97,31 @@ export class AdminHomeComponent {
     };
   }
 
+  ngOnInit() {
+    this.obtenerVendedores().subscribe();
+  }
 
+  obtenerVendedores(): Observable<void> {
+    this.isLoadingVendedores = true;
+    const formData = new FormData();
+    const token = this.authService.getToken();
+    const apiUrl = `${API_URL}vendedoresportal`;
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    return this.http.post<{ data: Vendedor[], result: boolean, mensaje: string }>(apiUrl, formData, { headers: headers }).pipe(
+      map(response => {
+        if (response.result) {
+          this.vendedores = response.data;
+        } else {
+          console.error('Error al cargar vendedores:', response);
+          this.vendedores = [];
+        }
+        this.isLoadingVendedores = false;
+      })
+    );
+  }
 
   openMenu(event: any) {
     if (this.toggleMenu) {
@@ -86,5 +130,4 @@ export class AdminHomeComponent {
       this.toggleMenu = true;
     }
   }
-
 }

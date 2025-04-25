@@ -7,6 +7,12 @@
             <i class="fas fa-home"></i><span *ngIf="isMenuOpen"> Inicio</span>
           </a>
         </li>
+
+        <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin/pedidos')">
+            <i class="fas fa-shopping-cart"></i><span *ngIf="isMenuOpen"> Pedidos por vendedor</span>
+          </a>
+        </li>
   
         <li class="nav-item" >
           <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">

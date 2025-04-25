@@ -1,7 +1,8 @@
 import {
   MatCommonModule,
   _StructuralStylesLoader
-} from "./chunk-FLPDDBY6.js";
+} from "./chunk-TN2MDYTP.js";
+import "./chunk-CGPPLGDB.js";
 import {
   AriaDescriber,
   ENTER,
@@ -11,7 +12,6 @@ import {
 import {
   _CdkPrivateStyleLoader
 } from "./chunk-3YKIKGCW.js";
-import "./chunk-CGPPLGDB.js";
 import "./chunk-WBFLLUNG.js";
 import "./chunk-G65P7DDA.js";
 import {

@@ -1,6 +1,7 @@
 import {
   MatCommonModule
-} from "./chunk-FLPDDBY6.js";
+} from "./chunk-TN2MDYTP.js";
+import "./chunk-CGPPLGDB.js";
 import {
   A11yModule,
   AriaDescriber,
@@ -11,7 +12,6 @@ import {
   _CdkPrivateStyleLoader,
   _VisuallyHiddenLoader
 } from "./chunk-3YKIKGCW.js";
-import "./chunk-CGPPLGDB.js";
 import "./chunk-WBFLLUNG.js";
 import {
   DOCUMENT

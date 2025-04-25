@@ -77,7 +77,9 @@ export class AuthService {
   getTipoU(): string | null {
     return this.decodedToken ? this.decodedToken.tipo_u : null;
   }
-
+  getUsuarioPadre(): string | null {
+    return this.decodedToken ? this.decodedToken.usuariopadre : null;
+  }
   getAlmacen(): string | null {
     return this.decodedToken ? this.decodedToken.almacen : null;
   }

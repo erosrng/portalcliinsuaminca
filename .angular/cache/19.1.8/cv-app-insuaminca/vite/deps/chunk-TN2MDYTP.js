@@ -1,4 +1,7 @@
 import {
+  BidiModule
+} from "./chunk-CGPPLGDB.js";
+import {
   ENTER,
   HighContrastModeDetector,
   SPACE,
@@ -11,9 +14,6 @@ import {
   _CdkPrivateStyleLoader,
   _VisuallyHiddenLoader
 } from "./chunk-3YKIKGCW.js";
-import {
-  BidiModule
-} from "./chunk-CGPPLGDB.js";
 import {
   Platform,
   _bindEventWithOptions,
@@ -2266,4 +2266,4 @@ export {
   MatRippleLoader,
   _MatInternalFormField
 };
-//# sourceMappingURL=chunk-FLPDDBY6.js.map
+//# sourceMappingURL=chunk-TN2MDYTP.js.map
