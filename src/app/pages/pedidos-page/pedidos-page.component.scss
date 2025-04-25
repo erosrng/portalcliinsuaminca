@@ -4,9 +4,6 @@
 *{
     transition: all ease 0.25s;
 }
-.container-fluid.mt-4 {
-    font-family: "Alexandria", Helvetica, sans-serif !important;
-}
 .inventario__container{
     width: 100%;
     margin-left: 0.1rem;
@@ -74,6 +71,18 @@
 
 .border-right-top {
     border-top-right-radius: 1rem;
+}
+
+.pedidos__table th {
+    font-family: "Alexandria", Helvetica, sans-serif !important;
+
+}
+.mat-mdc-row.mdc-data-table__row.cdk-row:hover{
+  background-color: #ccc;
+}
+/* Estilos para las celdas de datos */
+.pedidos__table td {
+   font-family: "Alexandria", Helvetica, sans-serif !important;
 }
 
 .cel-product {

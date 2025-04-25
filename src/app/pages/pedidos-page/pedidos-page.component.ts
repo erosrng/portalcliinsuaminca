@@ -62,7 +62,6 @@ export interface Clienteselect {
     MatStepperModule,
     MatButtonModule,
     MatDialogModule,
-    CarshopComponent,
     MatProgressBarModule,
     MatSidenav,
     MatSidenavModule,
@@ -595,6 +594,7 @@ sortData(sortField: string) {
             },
           });
         }
+        this.isLoading = false; 
       });
     }
 
@@ -645,6 +645,7 @@ sortData(sortField: string) {
               },
             });
         }
+        this.isLoading = false; 
         });
     }
 
