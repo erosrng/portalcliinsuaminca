@@ -36,9 +36,9 @@ import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 export interface Clienteselect {
-  cliente: string; // Ajusta según la estructura de tu API
-  nombre: string;  // Este será el campo que mostrarás
-  rifci: string;   // Otros campos que necesites
+  cliente: string;
+  nombre: string; 
+  rifci: string;  
 }
 
 @Component({
@@ -451,10 +451,10 @@ sortData(sortField: string) {
   }
 
   // Función para aplicar el descuento lineal
-  aplicarDescuentoLineal(): void {    
-      if (this.descuentoLineal > 100) {
-        Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
-        return;
+  /* aplicarDescuentoLineal(): void {    
+    if (this.descuentoLineal > 100) {
+      Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
+      return;
     }
 
     if (this.descuentoLineal !== null) {
@@ -475,9 +475,33 @@ sortData(sortField: string) {
       });
       this.dataSource.data = this.pagedProducts; // Actualiza la vista de la tabla
     }
-  }
+  } */
 
-
+    aplicarDescuentoLineal(): void {
+      if (this.descuentoLineal > 100) {
+        Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
+        return;
+      }
+  
+      if (this.descuentoLineal !== null) {
+        this.pagedProducts = this.pagedProducts.map(product => {
+          if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
+            product.descprov = this.descuentoLineal;
+          }
+          return product;
+        });
+        this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
+      } else {
+        // Si el descuento lineal es null, puedes resetear los descuentos si lo deseas
+        this.pagedProducts = this.pagedProducts.map(product => {
+          if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
+            product.descprov = null; // O el valor original si lo tienes almacenado
+          }
+          return product;
+        });
+        this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
+      }
+    }
 
   goToFirstPage() {
     this.currentPage = 1;
@@ -543,9 +567,10 @@ sortData(sortField: string) {
   }
 
   validateInput(product: any, event: any) {
-    product.descprov = event.target.value;
+    //product.descprov = event.target.value;
     // console.log(this.portalcliLogicaService.validateCant(event))
     product.cant = this.portalcliLogicaService.validateCant(event);
+    this.cdr.detectChanges();
   }
 
   revisarCarrito() {
@@ -683,7 +708,6 @@ sortData(sortField: string) {
     imageficha: any;
 
     openProductModal(element: any) {
-      console.log(element, 'aca estoy ')
       Swal.showLoading();
         this.portalcliLogicaService.openProductModal(element.codigo).subscribe({ // Suscríbete al Observable
           next: (data) => {
@@ -885,13 +909,43 @@ sortData(sortField: string) {
     }
   }
 
-  getPriceWDiscount(element: any) {
-    if (element.descprov > 0) {
-      //console.log(element)
-    }
-    
+  updateDescuento(product: any, event: any) {
+    product.descprov = event.target.value;
+    this.cdr.detectChanges();
   }
 
+  getPriceWDiscount(element: any): number {
+    let precio = parseFloat(String(element.opreciod).replace(',', '.'));
+    let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
+
+    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+      if (!isNaN(precio)) {
+        const descuento = (precio * descuentoPorcentaje) / 100;
+        return precio - descuento;
+      } else {
+        console.warn('Oprecio no es un número válido:', element);
+        return precio;
+      }
+    }
+    return precio;
+  }
+
+  getPriceWDiscountBS(element: any): number {
+    let precio = parseFloat(String(element.oprecio).replace(',', '.'));
+    console.log(element)
+    let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
+
+    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+      if (!isNaN(precio)) {
+        const descuento = (precio * descuentoPorcentaje) / 100;
+        return precio - descuento;
+      } else {
+        console.warn('Oprecio no es un número válido:', element);
+        return precio; // Devuelve el precio original (NaN si no es válido)
+      }
+    }
+    return precio; // Devuelve el precio original (NaN si no es válido)
+  }
 
    
 }
