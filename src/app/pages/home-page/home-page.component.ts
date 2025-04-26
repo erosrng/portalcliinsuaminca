@@ -8,6 +8,7 @@ import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-home-page',
@@ -29,11 +30,13 @@ export class HomePageComponent {
   apiKey: string = '';
   isMenuOpen: boolean = true;
   toggleMenu = false;
+  adminOptions = false;
 
   constructor(
     public authService: AuthService, 
     public portalcliLogicaService: PortalcliLogicaService,
-    private router: Router
+    private router: Router,
+    private apiServices: ApiService
   ) {} 
 
   /* ngOnInit() { // Implementa ngOnInit
@@ -56,6 +59,17 @@ export class HomePageComponent {
       this.portalcliLogicaService.isMenuOpen$.subscribe((isOpen: boolean) => {
         this.isMenuOpen = isOpen;
       });
+
+      const aux = localStorage.getItem('userType')
+      if (aux === 'MASTERPROV') {
+        this.adminOptions = true;
+      } else {
+        this.adminOptions = false;
+      }
+
+      this.apiServices.get_document_by_group('TAKI').subscribe((data: any) => {
+        console.log(data)
+      })
     }
 
     navigateTo(route: string) {

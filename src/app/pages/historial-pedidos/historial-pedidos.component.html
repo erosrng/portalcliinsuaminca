@@ -1,0 +1,120 @@
+<app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
+
+<div style="display: flex; flex-direction: row;">
+  <mat-sidenav-container>
+    <mat-sidenav mode="over" [opened]="toggleMenu">
+      <app-side-bar></app-side-bar>
+    </mat-sidenav>
+    <mat-sidenav-content class="w-100">
+      <div class="container-fluid container-max">
+        <div class="row">
+            <div class="col-12">
+                 <h3 class="card-title text-primary"><i class="fas fa-circle-nodes"></i><span> Triangulaciones Efectuadas</span></h3>
+            </div>
+        </div>
+
+        <div class="row mt-5" *ngIf="historialPedidos && historialPedidos.length > 0">
+            <div class="col-12">
+                <table class="historialped__historial-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-left-top">ID</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Unidades</th>
+                        <th scope="col">Valor $</th>
+                        <th scope="col">Tasa</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" class="border-right-top"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let pedido of historialPedidos">
+                        <td>{{ pedido.id }}</td>
+                        <td>{{ pedido.nombre_cliente }}</td>
+                        <td>{{ pedido.fecha }}</td>
+                        <td>{{ pedido.hora }}</td>
+                        <td>{{ pedido.unidades }}</td>
+                        <td>{{ pedido.valor_dolar | number: '1.0-3'}} $</td>
+                        <td>{{ pedido.tasa_dia | number: '1.0-3'}} Bs.</td>
+                        <td>{{ pedido.estado }}</td>
+                        <td style="text-align: center; cursor: pointer;">
+                          <i class="show__detail fa-solid fa-eye" 
+                            title="Mostrar detalle" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#staticBackdrop"
+                            (click)="openDetail(pedido)"
+                            ></i>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+
+        <div class="row mt-5"  *ngIf="!historialPedidos || historialPedidos.length === 0">
+          <h3>Aun no ha realizado ningun pedido</h3>
+        </div>
+      </div>
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Informacion de pedido</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="pedidoActivo">
+          <div class="row">
+            <div class="col-12 box-modal">
+              <div class="div-text">
+                <label>Cliente: {{pedidoActivo.nombre_cliente }}</label>
+                <label>Fecha: {{pedidoActivo.fecha }}</label>
+                <label>Hora: {{pedidoActivo.hora }}</label>
+                <label>Valor $: {{pedidoActivo.valor_dolar | number: '1.0-3'}} $</label>
+                <label>Valor Bs.: {{pedidoActivo.tasa_dia | number: '1.0-3'}} Bs.</label>
+              </div>
+              <img class="w-25" src="./assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
+            </div>
+
+    
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <table class="historialped__historial-table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="border-left-top">Ver</th>
+                    <th scope="col">Descripcion </th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Descuento</th>
+                    <th scope="col">Precio $</th>
+                    <th scope="col">Total $</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pedido of pedidoActivo.Pedido">
+                    <td><img src="{{pedido.img}}" class="img-product"> </td>
+                    <td>{{ pedido.descrip }}</td>
+                    <td>{{ pedido.cant }}</td>
+                    <td>{{ pedido.descprov }}%</td>
+                    <td>{{ pedido.preciod | number: '1.0-3'}} $</td>
+                    <td>{{ pedido.totald | number: '1.0-3'}} Bs.</td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>

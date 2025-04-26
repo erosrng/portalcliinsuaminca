@@ -98,7 +98,11 @@ export class LoginPageComponent implements AfterViewInit {
           localStorage.setItem('nomprv', response.userdata.nomprv);
           localStorage.setItem('usuario', response.userdata.usuario);
           localStorage.setItem('proveed', response.userdata.proveed);
-
+          if (response.userdata.usuariopadre === 'MASTERPROV') {
+            localStorage.setItem('userType', response.userdata.usuariopadre);
+          } else {
+            localStorage.setItem('userType', 'VENDEDOR');
+          }
           /*if(response.userdata.usuariopadre == 'MASTERPROV'){
             this.route.navigate(['/admin']);
           }else{*/

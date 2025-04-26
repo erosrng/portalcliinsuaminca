@@ -95,5 +95,14 @@
     .busca__pedido:hover {
         background-color: vars.$text-color2-hover;
     }
+
+    .container-fluid {
+      min-height: 80vh;
+    }
+
+    .d-flex-auto {
+      margin: auto;
+      display: flex;
+    }
     
   }

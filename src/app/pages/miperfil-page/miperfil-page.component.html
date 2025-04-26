@@ -13,9 +13,11 @@
       
         <div class="container-fluid">
           <div class="row p-3">
-            <div class="col-12">
+            <div class="col-6 offset-3">
+              
               <aside class="mi-perfil__sidebar">
-                <section class="mi-perfil__datos">
+                <section class="mi-perfil__datos p-5">
+                  <img class="logo__lab mt-3 w-50 mb-5 d-flex-auto" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png"  alt="">
                 <h3 class="card-title text-primary">Datos del usuario</h3>
                 <div class="row mt-3">
                   <div class="col-8">
@@ -45,15 +47,7 @@
             </div>
           </div>
 
-          <div class="row p-3">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body">
-                  <app-historialped></app-historialped>
-                </div>
-              </div>
-            </div>
-          </div>
+      
         </div>
        
     
