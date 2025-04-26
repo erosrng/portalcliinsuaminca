@@ -87,6 +87,9 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     }
   }
 
+    navigateTo(route: string) {
+    this.portalcliLogicaService.navigateTo(route);
+  }
 
 
 }

@@ -79,6 +79,13 @@ export class CarshopComponent implements OnInit, AfterViewInit {
   unidades: string = '';
 
   descuentoLineal: number | 0 = 0; 
+  ivaBs: string = '';
+  ivaUsd: string = '';
+  descuentoBs: string = '';
+  descuentoUsd: string = '';
+
+  diasCredito: number = 0;
+  montoFactura: number = 0;
 
   constructor(
     private route: Router,
@@ -147,7 +154,15 @@ export class CarshopComponent implements OnInit, AfterViewInit {
   }
 
   // Función para aplicar el descuento lineal a todos los items del carrito
-  aplicarDescuentoLineal(): void {
+  aplicarDescuentoLineal(event: any): void {
+    const inputValue = event.target.value;
+    this.descuentoLineal = parseFloat(inputValue);
+
+    if (isNaN(this.descuentoLineal) || inputValue === '') {
+      this.descuentoLineal = 0;
+      // También puedes actualizar directamente el valor del input si lo prefieres:
+      event.target.value = '0';
+    }
     if (this.descuentoLineal > 100) {
       Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
       return;
@@ -155,12 +170,13 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     if (this.descuentoLineal !== null) {
       this.productscar = this.productscar.map(product => {
         product.descprov = this.descuentoLineal!; // Asignación directa (usando '!' para asegurar que no es null)
+        
         return product;
       });
       this.dataSource.data = [...this.productscar];
     } else {
       this.productscar = this.productscar.map(product => {
-        product.descprov = 0; // O null si la interfaz lo permite
+        product.descprov = 0;
         return product;
       });
       this.dataSource.data = [...this.productscar];
@@ -180,7 +196,24 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
     this.http.post(apiUrl,formData, { headers: headers }).subscribe({
       next: (response: any) => {
-        
+        if (response.result === true) {
+          this.revisarCarrito();
+          Swal.fire({
+              text: 'Descuento aplicado',
+              icon: 'success',
+              showConfirmButton: false,
+              timer: 3000,
+              toast: true,
+              position: 'bottom-end',
+          });
+          this.productscar.map(product => {
+            const cantidadinput = document.getElementById(`cantidad_${product.codigoa}`) as HTMLInputElement;
+
+            this.recalculadescud(product);
+            this.recalculadescubs(product);
+            this.recalcular(parseFloat(cantidadinput.value), product.codigoa)
+          });
+      }
       },
       error: (error) => {
         this.isLoading = false;
@@ -242,7 +275,9 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       const token = this.authService.getToken();
 
       formData.append('codCli', codCli ?? '');
-
+      formData.append('diasCredito', String(this.diasCredito)); 
+      formData.append('montoFactura', String(this.montoFactura));
+      
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });
@@ -366,6 +401,20 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
         this.totalUsd = totalUsd;
       }),
+
+      this.portalcliLogicaService.ivaBs$.subscribe((ivaBs) => {
+        this.ivaBs = ivaBs;
+      }),
+      this.portalcliLogicaService.ivaUsd$.subscribe((ivaUsd) => {
+        this.ivaUsd = ivaUsd;
+      }),
+
+      this.portalcliLogicaService.descuentoBs$.subscribe((descuentoBs) => {
+        this.descuentoBs = descuentoBs;
+      }),
+      this.portalcliLogicaService.descuentoUsd$.subscribe((descuentoUsd) => {
+        this.descuentoUsd = descuentoUsd;
+      }),
     );
   }
 
@@ -434,7 +483,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     if (input) {
         const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
 
-        if (cantidadInput > existenNum) { // Comparar el valor del input con existen
+        if (cantidadInput > existenNum && change!="-") { // Comparar el valor del input con existen
             Swal.fire('Cantidad mayor a existencia', '', 'error');
             return;
         }
@@ -443,11 +492,67 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
         if (newValue > 0) {
             input.value = newValue.toString();
+            this.recalcular(newValue,codigo)
+
             this.totaliza(idPedido, codigo, newValue, existenNum); // Usar existenNum
         }
     }
 }
 
+/* recalculadescu(product: any){
+  console.log(product)
+} */
+
+  recalculadescud(product: any): number {
+    let precio = parseFloat(String(product.preciod).replace(',', '.'));
+    let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+
+    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+      if (!isNaN(precio)) {
+        const descuento = (precio * descuentoPorcentaje) / 100;
+        return precio - descuento;
+      } else {
+        return precio;
+      }
+    }
+    return precio;
+  }
+
+  recalculadescubs(product: any): number {
+    let precio = parseFloat(String(product.precio1).replace(',', '.'));
+    let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+
+    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+      if (!isNaN(precio)) {
+        const descuento = (precio * descuentoPorcentaje) / 100;
+        return precio - descuento;
+      } else {
+        return precio;
+      }
+    }
+    return precio;
+  }
+
+recalcular(newValue: number, codigo: string) {
+  var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
+  var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
+  var preciod2 = preciod.innerText.replace('.','').replace(',','.') as any
+
+  totald.innerText=(parseFloat(preciod2)*newValue).toFixed(2).toString();
+
+  var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
+  var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
+  var preciobs2 = preciobs.innerText.replace('.','').replace(',','.') as any
+  
+  totalbs.innerText=(parseFloat(preciobs2)*newValue).toFixed(2).toString();
+}
+
+totalbscalc = 0;
+totaldcalc = 0;
+ivabscalc = 0;
+ivadcalc = 0;
+descubscalc = 0;
+descudcalc = 0;
 
   totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
       const apiUrl = `${API_URL}totalizacampo`;
@@ -468,6 +573,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
               if (response.result == true) {
                   // Actualiza productscar
                   this.revisarCarrito();
+                  this.dataSource.data = [...this.productscar]; 
+
                   Swal.fire({
                       text: 'Producto Actualizado',
                       icon: 'success',
@@ -486,5 +593,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
           },
       });
 }
+
+
 
 }

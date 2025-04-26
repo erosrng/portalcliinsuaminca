@@ -16,9 +16,9 @@ import {
   VIRTUAL_SCROLL_STRATEGY,
   ViewportRuler,
   _fixedSizeVirtualScrollStrategyFactory
-} from "./chunk-WOGHFPAT.js";
+} from "./chunk-NLPL4F2K.js";
+import "./chunk-IC6GI7LI.js";
 import "./chunk-CGPPLGDB.js";
-import "./chunk-WBFLLUNG.js";
 import "./chunk-G65P7DDA.js";
 import "./chunk-SK5KBZ3U.js";
 import "./chunk-WPM5VTLQ.js";

@@ -21,6 +21,16 @@ export class PortalcliLogicaService {
   totalBs$ = this.totalBsSubject.asObservable();
   private totalUsdSubject = new BehaviorSubject<string>('');
   totalUsd$ = this.totalUsdSubject.asObservable();
+
+  private ivaBsSubject = new BehaviorSubject<string>('');
+  ivaBs$ = this.ivaBsSubject.asObservable();
+  private ivaUsdSubject = new BehaviorSubject<string>('');
+  ivaUsd$ = this.ivaUsdSubject.asObservable();
+
+  private descuentoBsSubject = new BehaviorSubject<string>('');
+  descuentoBs$ = this.descuentoBsSubject.asObservable();
+  private descuentoUsdSubject = new BehaviorSubject<string>('');
+  descuentoUsd$ = this.descuentoUsdSubject.asObservable();
   private encarprodSubject = new BehaviorSubject<string>('');
   encarprod$ = this.encarprodSubject.asObservable();
   private productosEnCarritoCodigosSubject = new BehaviorSubject<string[]>([]);
@@ -110,8 +120,15 @@ export class PortalcliLogicaService {
 
           this.productosEnCarritoSubject.next(productosEnCarrito);
           this.unidadesSubject.next(response.data.encar.cana);
-          this.totalBsSubject.next(response.data.encar.preciobs);
-          this.totalUsdSubject.next(response.data.encar.preciod);
+          this.totalBsSubject.next(response.data.encar.totalbs_con_descuento);
+          this.totalUsdSubject.next(response.data.encar.totald_con_descuento);
+
+          this.ivaBsSubject.next(response.data.encar.iva);
+          this.ivaUsdSubject.next(response.data.encar.ivad);
+
+          this.descuentoBsSubject.next(response.data.encar.descuento_bs);
+          this.descuentoUsdSubject.next(response.data.encar.descuento_dolar);
+
           this.encarprodSubject.next(response.data.encar.products);
           this.productosEnCarritoCodigosSubject.next(response.data.codigos || []);
         } else {
@@ -157,7 +174,7 @@ export class PortalcliLogicaService {
   selectedProduct: any;
   imageficha: any;
 
-  openProductModal(codigo: string): Observable<any> { // Devuelve un Observable
+  openProductModal(codigo: string): Observable<any> {
     this.loading = true;
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -167,7 +184,7 @@ export class PortalcliLogicaService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = `${API_URL}/traeficha`;
+    const apiUrl = `${API_URL}traeficha`;
 
     return new Observable(observer => {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
