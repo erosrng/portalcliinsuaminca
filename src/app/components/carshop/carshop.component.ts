@@ -269,37 +269,37 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             'nombre_cliente':  this.clienteData.nombre,
             'Pedido': this.productscar,
           }
-          // this.apiService.generate_ped(aux).subscribe((data: any) => {
-          //   console.log(data)
-          //   this.isLoading = false;
-          //   this.ocultarLoader();
-          //   Swal.fire('Pedido creado', '', 'success');
-          // }, () => {
-          //   this.isLoading = false;
-          //   this.ocultarLoader();
-          //   Swal.fire('Ocurrio un error', '', 'error');
-          // })
-          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-            next: (response: any) => {
-              if (response.status) {
-                this.ocultarLoader();
-                this.revisarCarrito();
-                Swal.fire(response.mensaje, '', 'success');
-                this.productscar = [];
-                this.dataSource.data = this.productscar;
-                this.isLoading = false;
-              } else {
-                Swal.fire(response.mensaje, '', 'error');
-                this.isLoading = false;
-              }
-            },
-            error: (error) => {
-              this.isLoading = false;
-              this.ocultarLoader();
-              Swal.fire(error, '', 'error');
-              console.error('Error de la API:', error);
-            },
-          });
+          this.apiService.generate_ped(aux).subscribe((data: any) => {
+            console.log(data)
+            this.isLoading = false;
+            this.ocultarLoader();
+            Swal.fire('Pedido creado', '', 'success');
+          }, () => {
+            this.isLoading = false;
+            this.ocultarLoader();
+            Swal.fire('Ocurrio un error', '', 'error');
+          })
+          // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+          //   next: (response: any) => {
+          //     if (response.status) {
+          //       this.ocultarLoader();
+          //       this.revisarCarrito();
+          //       Swal.fire(response.mensaje, '', 'success');
+          //       this.productscar = [];
+          //       this.dataSource.data = this.productscar;
+          //       this.isLoading = false;
+          //     } else {
+          //       Swal.fire(response.mensaje, '', 'error');
+          //       this.isLoading = false;
+          //     }
+          //   },
+          //   error: (error) => {
+          //     this.isLoading = false;
+          //     this.ocultarLoader();
+          //     Swal.fire(error, '', 'error');
+          //     console.error('Error de la API:', error);
+          //   },
+          // });
       }
       });
   }

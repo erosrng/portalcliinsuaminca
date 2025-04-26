@@ -16,6 +16,10 @@ import { AuthService } from './../../../auth.service';
 import { API_URL } from './../../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
+import { HistoricoPedidosModel } from '../../../models/model';
+import { ApiService } from '../../../services/api.service';
+import Swal from 'sweetalert2';
+import { data } from 'jquery';
 
 interface Vendedor {
   us_codigo: string;
@@ -49,7 +53,8 @@ interface Vendedor {
 export class AdminPedidosVendedorComponent {
   constructor(
     public authService: AuthService,
-    public http: HttpClient
+    public http: HttpClient,
+    private apiService: ApiService
   ) {}
   toggleMenu = false;
   toppings = new FormControl('');
@@ -58,6 +63,12 @@ export class AdminPedidosVendedorComponent {
   vendedores: Vendedor[] = [];
   isLoadingVendedores: boolean = false;
   selectedVendedor: Vendedor | null = null;
+  historialPedidos: HistoricoPedidosModel[] | null = null
+  totalPedidos = 0;
+  totalUnidades = 0;
+  totalValorDolar = 0;
+  vendedorSeleccionado: Vendedor | null = null;
+  pedidoActivo: HistoricoPedidosModel | null = null;
 
   openMenu(event: any) {
     if (this.toggleMenu) {
@@ -69,9 +80,42 @@ export class AdminPedidosVendedorComponent {
 
   ngOnInit() {
     this.obtenerVendedores().subscribe();
+    Swal.close()
+  }
+
+  getInfoVendedor(): void {
+    this.totalPedidos = 0;
+    this.totalUnidades = 0;
+    this.totalValorDolar = 0;
+    if (this.selectedVendedor) {
+      Swal.showLoading()
+      this.apiService.get_historial_by_user(this.selectedVendedor.us_codigo).subscribe((data: HistoricoPedidosModel[]) => {
+        this.historialPedidos = data;
+        // 1) Calcular el total de pedidos procesados
+        const totalPedidos = data.length;
+        this.totalPedidos = totalPedidos
+      
+        // 2) Calcular el total de unidades
+        const totalUnidades = data.reduce((sum, pedido) => sum + pedido.unidades, 0);
+        this.totalUnidades = totalUnidades
+       
+      
+        // 3) Calcular el total de valor en dólares
+        const totalValorDolar = data.reduce((sum, pedido) => sum + pedido.valor_dolar, 0);
+        this.totalValorDolar = totalValorDolar
+        Swal.close()
+      }, () => {
+        Swal.fire('Ocurrio un error', '', 'error');
+      })
+    }
+  }
+
+  openDetail(pedido: HistoricoPedidosModel): void {
+    this.pedidoActivo = pedido;
   }
 
   obtenerVendedores(): Observable<void> {
+      Swal.showLoading()
       const formData = new FormData();
       const token = this.authService.getToken();
       const apiUrl = `${API_URL}vendedoresportal`;
@@ -83,9 +127,12 @@ export class AdminPedidosVendedorComponent {
         map(response => {
           if (response.result) {
             this.vendedores = response.data;
+            Swal.close()
           } else {
             console.error('Error al cargar vendedores:', response);
+            Swal.fire('Ocurrio un error', response.mensaje, 'error');
             this.vendedores = [];
+            Swal.close()
           }
         })
       );

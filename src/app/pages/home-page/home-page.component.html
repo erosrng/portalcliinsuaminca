@@ -1,55 +1,64 @@
 <app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
 
 <div style="display: flex; flex-direction: row;">
-    <mat-sidenav-container>
-        <mat-sidenav mode="over" [opened]="toggleMenu">
-          <app-side-bar ></app-side-bar>
-        </mat-sidenav>
-        <mat-sidenav-content class="w-100">
-            <div class="container-fluid container-max">
-                <div class="row">
-                    <div class="col-8 ">
-                        <div class="box-col">
-                            <h1 class="text-center">Bienvenido a nuestro Centro de Transferencia </h1>
-                            <img class="logo__lab" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
-                        </div>
-                        
-                    </div>
-
-                    <div class="col-4 ">
-                        <div class="box-col">
-                            <h1 class="text-center">Accesos</h1>
-                            <ul class="nav flex-column menu__nav mt-5">
-                            <li class="nav-item" >
-                                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                                  <i class="fas fa-cart-plus"></i><span > Catalogo</span>
-                                </a>
-                              </li>
-                        
-                              <li class="nav-item" >
-                                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
-                                  <i class="fas fa-user"></i><span > Perfil</span>
-                                </a>
-                              </li>
-                      
-                              <li class="nav-item" >
-                                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/historialped')">
-                                  <i class="fas fa-circle-nodes"></i><span > Triangulaciones Efectuadas</span>
-                                </a>
-                              </li>
-                              </ul>
-                        </div>
-                     
-                    
-                    </div>
-                    
-                </div>
+  <mat-sidenav-container>
+    <mat-sidenav mode="over" [opened]="toggleMenu">
+      <app-side-bar></app-side-bar>
+    </mat-sidenav>
+    <mat-sidenav-content class="w-100">
+      <div class="container-fluid container-max">
+        <div class="row">
+          <div class="col-8 ">
+            <div class="box-col">
+              <h1 class="text-center mb-5 mt-5">Bienvenido a nuestro Centro de Transferencia </h1>
+              <img class="logo__lab mt-5" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png"
+                alt="">
             </div>
-            <app-footer></app-footer>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
+
+          </div>
+
+          <div class="col-4 ">
+            <div class="box-col">
+              <h1 class="text-center mt-5">Accesos</h1>
+              <ul class="nav flex-column menu__nav mt-5">
+                <li class="nav-item">
+                  <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
+                    <i class="fas fa-cart-plus"></i><span> Catalogo</span>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
+                    <i class="fas fa-user"></i><span> Perfil</span>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/historialped')">
+                    <i class="fas fa-circle-nodes"></i><span> Triangulaciones Efectuadas</span>
+                  </a>
+                </li>
+
+                <li class="nav-item" *ngIf="adminOptions">
+                  <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin')">
+                    <i class="fas fa-circle-nodes"></i><span> Resumen de ventas</span>
+                  </a>
+                </li>
+
+                <li class="nav-item" *ngIf="adminOptions">
+                  <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin/pedidos')">
+                    <i class="fas fa-circle-nodes"></i><span> Detalle por vendedor </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+
+          </div>
+
+        </div>
+      </div>
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
-
-    
-
-

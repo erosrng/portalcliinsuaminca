@@ -24,6 +24,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SideBarAdminComponent } from "../../../components/side-bar-admin/side-bar-admin.component";
 import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
+import { ApiService } from '../../../services/api.service';
+import { HistoricoPedidosModel } from '../../../models/model';
+import Swal from 'sweetalert2';
 
 interface Vendedor {
   us_codigo: string;
@@ -57,13 +60,14 @@ export type ChartOptions = {
     ReactiveFormsModule,
     SideBarAdminComponent,
     SideBarComponent
-],
+  ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss'
 })
 export class AdminHomeComponent implements OnInit { // Implementa OnInit
   @ViewChild("chart") chart: ChartComponent | undefined;
-  public chartOptions: Partial<ChartOptions> | any;
+  public ventasPorVendedor: Partial<ChartOptions> | any;
+  public unidadesPorVendedor: Partial<ChartOptions> | any;
   toggleMenu = false;
   toppings = new FormControl('');
   // Eliminamos la propiedad estática vededores
@@ -71,16 +75,23 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
   vendedores: Vendedor[] = [];
   isLoadingVendedores: boolean = false;
   selectedVendedor: Vendedor | null = null;
+  pedidos: HistoricoPedidosModel[] | null = []
+  totalPedidos = 0;
+  totalUnidades = 0;
+  totalValorDolar = 0;
 
   constructor(
     public authService: AuthService,
-    public http: HttpClient
+    public http: HttpClient,
+    private apiService: ApiService
   ) {
 
-    this.chartOptions = {
+
+
+  this.ventasPorVendedor = {
       series: [
         {
-          name: "My-series",
+          name: "Ventas",
           data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
         }
       ],
@@ -95,10 +106,105 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
         categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"]
       }
     };
+
+  this.unidadesPorVendedor = {
+    series: [
+      {
+        name: "Unidades",
+        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+      }
+    ],
+    chart: {
+      height: 350,
+      type: "bar"
+    },
+    title: {
+      text: "Ventas de unidades por vendedor"
+    },
+    xaxis: {
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"]
+    }
+  };
   }
 
+
   ngOnInit() {
+    Swal.showLoading();
     this.obtenerVendedores().subscribe();
+    const aux = localStorage.getItem('proveed')
+    if (aux) {
+      this.apiService.get_historial_by_prov(aux).subscribe((data: HistoricoPedidosModel[]) => {
+        console.log(data);
+        Swal.close();
+      
+        // 1) Calcular el total de pedidos procesados
+        const totalPedidos = data.length;
+        this.totalPedidos = totalPedidos
+      
+        // 2) Calcular el total de unidades
+        const totalUnidades = data.reduce((sum, pedido) => sum + pedido.unidades, 0);
+        this.totalUnidades = totalUnidades
+       
+      
+        // 3) Calcular el total de valor en dólares
+        const totalValorDolar = data.reduce((sum, pedido) => sum + pedido.valor_dolar, 0);
+        this.totalValorDolar = totalValorDolar
+       
+      
+        // Preparar datos para el gráfico de Ventas por Vendedor
+        const ventasPorVendedorMap = new Map<string, number>();
+        data.forEach(pedido => {
+          ventasPorVendedorMap.set(pedido.usuario, (ventasPorVendedorMap.get(pedido.usuario) || 0) + 1);
+        });
+      
+        this.ventasPorVendedor = {
+          series: [
+            {
+              name: "Ventas",
+              data: Array.from(ventasPorVendedorMap.values())
+            }
+          ],
+          chart: {
+            height: 350,
+            type: "bar"
+          },
+          title: {
+            text: "Ventas por vendedor"
+          },
+          xaxis: {
+            categories: Array.from(ventasPorVendedorMap.keys())
+          }
+        };
+      
+        // Preparar datos para el gráfico de Unidades por Vendedor
+        const unidadesPorVendedorMap = new Map<string, number>();
+        data.forEach(pedido => {
+          unidadesPorVendedorMap.set(pedido.usuario, (unidadesPorVendedorMap.get(pedido.usuario) || 0) + pedido.unidades);
+        });
+      
+        this.unidadesPorVendedor = {
+          series: [
+            {
+              name: "Unidades",
+              data: Array.from(unidadesPorVendedorMap.values())
+            }
+          ],
+          chart: {
+            height: 350,
+            type: "bar"
+          },
+          title: {
+            text: "Ventas de unidades por vendedor"
+          },
+          xaxis: {
+            categories: Array.from(unidadesPorVendedorMap.keys())
+          }
+        };
+      }, () => {
+        Swal.close();
+      });
+    }
+
   }
 
   obtenerVendedores(): Observable<void> {

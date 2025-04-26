@@ -1,0 +1,16 @@
+export interface HistoricoPedidosModel {
+    id: number,
+    nombre: string,
+    codigo_cliente: string,
+    estado: string,
+    fecha: string,
+    hora: string,
+    nombre_cliente: string,
+    nomprv: string,
+    proveed: string,
+    tasa_dia: number,
+    unidades: number,
+    usuario: string,
+    valor_dolar: number,
+    Pedido: any[],
+}
