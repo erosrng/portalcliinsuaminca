@@ -18,7 +18,7 @@
                                     <div class="col-12 mt-4">
                                         <mat-form-field class="w-100">
                                             <mat-label>Vendedores</mat-label>
-                                            <mat-select [(ngModel)]="selectedVendedor" name="vendedor">
+                                            <mat-select [(ngModel)]="selectedVendedor" name="vendedor" (selectionChange)="getInfoVendedor()">
                                                 <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor">{{vendedor.us_nombre}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -34,7 +34,7 @@
                         <div class="card">
                             <div class="card-body box-ped">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>
-                                Pedidos Procesados: 
+                                Pedidos Procesados: {{totalPedidos}}
                             </div>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                         <div class="card">
                             <div class="card-body box-ped">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="inventory" class="icon"></mat-icon>
-                                Unidades vendidas: 
+                                Unidades vendidas: {{totalUnidades}}
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="card">
                             <div class="card-body box-ped">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="attach_money" class="icon"></mat-icon>
-                                Valor $: 
+                                Valor $: {{totalValorDolar}}
                             </div>
                         </div>
                     </div>
@@ -74,8 +74,45 @@
                 <div class="row mt-5">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body">
-                                <app-historialped></app-historialped>
+                            <div class="card-body" *ngIf="historialPedidos !== null && historialPedidos.length > 0">
+                                <table class="historialped__historial-table w-100">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col" class="border-left-top">ID</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Hora</th>
+                                        <th scope="col">Unidades</th>
+                                        <th scope="col">Valor $</th>
+                                        <th scope="col">Tasa</th>
+                                        <th scope="col">Estado</th>
+                                        <th scope="col" class="border-right-top"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let pedido of historialPedidos">
+                                        <td>{{ pedido.id }}</td>
+                                        <td>{{ pedido.nombre_cliente }}</td>
+                                        <td>{{ pedido.fecha }}</td>
+                                        <td>{{ pedido.hora }}</td>
+                                        <td>{{ pedido.unidades }}</td>
+                                        <td>{{ pedido.valor_dolar | number: '1.0-3'}} $</td>
+                                        <td>{{ pedido.tasa_dia | number: '1.0-3'}} Bs.</td>
+                                        <td>{{ pedido.estado }}</td>
+                                        <td style="text-align: center; cursor: pointer;">
+                                          <i class="show__detail fa-solid fa-eye" 
+                                            title="Mostrar detalle" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#staticBackdrop"
+                                            (click)="openDetail(pedido)"
+                                            ></i>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-body" *ngIf="historialPedidos !== null && historialPedidos.length === 0">
+                                <h2>Este vendedor no ha realizado ventas</h2>
                             </div>
                         </div>
                     </div>
@@ -85,4 +122,61 @@
               <app-footer></app-footer>
         </mat-sidenav-content>
     </mat-sidenav-container>
+
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Informacion de pedido</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" *ngIf="pedidoActivo">
+              <div class="row">
+                <div class="col-12 box-modal">
+                  <div class="div-text">
+                    <label>Cliente: {{pedidoActivo.nombre_cliente }}</label>
+                    <label>Fecha: {{pedidoActivo.fecha }}</label>
+                    <label>Hora: {{pedidoActivo.hora }}</label>
+                    <label>Valor $: {{pedidoActivo.valor_dolar | number: '1.0-3'}} $</label>
+                    <label>Valor Bs.: {{pedidoActivo.tasa_dia | number: '1.0-3'}} Bs.</label>
+                  </div>
+                  <img class="w-25" src="./assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
+                </div>
+    
+        
+              </div>
+    
+              <div class="row m-5">
+                <div class="col-12">
+                  <table class="historialped__historial-table w-100">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-left-top">Ver</th>
+                        <th scope="col">Descripcion </th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Descuento</th>
+                        <th scope="col">Precio $</th>
+                        <th scope="col">Total $</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let pedido of pedidoActivo.Pedido">
+                        <td><img src="{{pedido.img}}" class="img-product"> </td>
+                        <td>{{ pedido.descrip }}</td>
+                        <td>{{ pedido.cant }}</td>
+                        <td>{{ pedido.descprov }}%</td>
+                        <td>{{ pedido.preciod | number: '1.0-3'}} $</td>
+                        <td>{{ pedido.totald | number: '1.0-3'}} Bs.</td>
+                        
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
 </div>
