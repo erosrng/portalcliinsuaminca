@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription, takeUntil, Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms'; 
@@ -20,6 +20,8 @@ import { MatSelectModule } from '@angular/material/select'; // Importa MatSelect
 import { MatFormFieldModule } from '@angular/material/form-field'; // Importa MatFormFieldModule
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { ApiService } from '../../services/api.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface Product {
   img: string;
@@ -48,6 +50,8 @@ export interface Product {
       FormsModule,
       MatPaginatorModule,
       MatProgressBarModule,
+      MatDialogModule,
+      MatButtonModule,
       MatSelectModule
     ],
   templateUrl: './carshop.component.html',
@@ -66,11 +70,16 @@ export class CarshopComponent implements OnInit, AfterViewInit {
   private clienteDataSubscription: Subscription | undefined;
   codCli: string | null = null;
 
+  encarprod: string = '';
+
+  @ViewChild('productModalTemplate')
+  productModalTemplate!: TemplateRef<any>;
+
   productosEnCarritoNumber: string = '';
   productscar: Product[] = [];
   dataSource = new MatTableDataSource<Product>(this.productscar);
   displayedColumns: string[] = 
-  ['img', 'descrip', 'preciod', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
+  ['img', 'descrip', 'preciosinivad', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -86,13 +95,15 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
   diasCredito: number = 0;
   montoFactura: number = 0;
+  productosEnCarritoCodigos: string[] = [];
 
   constructor(
     private route: Router,
     private http: HttpClient,
     private authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -281,7 +292,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });
-      const apiUrl = `${API_URL}portalcli/enviaped`;
+      const apiUrl = `${API_URL}enviaped`;
 
       Swal.fire({
       title: '¿Desea enviar el pedido?',
@@ -293,8 +304,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       }).then((result) => {
       if (result.isConfirmed) {
           this.mostrarLoader();
-          console.log(this.productscar)
-          console.log(this.clienteData)
+          //console.log(this.productscar)
+          //console.log(this.clienteData)
           const aux = {
             'usuario': localStorage.getItem('usuario'),
             'nombre': localStorage.getItem('nombre'),
@@ -304,37 +315,37 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             'nombre_cliente':  this.clienteData.nombre,
             'Pedido': this.productscar,
           }
-          this.apiService.generate_ped(aux).subscribe((data: any) => {
+        /*  this.apiService.generate_ped(aux).subscribe((data: any) => {
             console.log(data)
             this.isLoading = false;
             this.ocultarLoader();
             Swal.fire('Pedido creado', '', 'success');
           }, () => {
             this.isLoading = false;
-            this.ocultarLoader();
+            this.ocultarLoader();/!*
             Swal.fire('Ocurrio un error', '', 'error');
-          })
-          // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-          //   next: (response: any) => {
-          //     if (response.status) {
-          //       this.ocultarLoader();
-          //       this.revisarCarrito();
-          //       Swal.fire(response.mensaje, '', 'success');
-          //       this.productscar = [];
-          //       this.dataSource.data = this.productscar;
-          //       this.isLoading = false;
-          //     } else {
-          //       Swal.fire(response.mensaje, '', 'error');
-          //       this.isLoading = false;
-          //     }
-          //   },
-          //   error: (error) => {
-          //     this.isLoading = false;
-          //     this.ocultarLoader();
-          //     Swal.fire(error, '', 'error');
-          //     console.error('Error de la API:', error);
-          //   },
-          // });
+          })*!/*/
+          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+              if (response.result) {
+                this.ocultarLoader();
+                this.revisarCarrito();
+                Swal.fire(response.message, '', 'success');
+                this.productscar = [];
+                this.dataSource.data = this.productscar;
+                this.isLoading = false;
+              } else {
+                Swal.fire(response.message, '', 'error');
+                this.isLoading = false;
+              }
+            },
+            error: (error) => {
+              this.isLoading = false;
+              this.ocultarLoader();
+              Swal.fire(error, '', 'error');
+              console.error('Error de la API:', error);
+            },
+          });
       }
       });
   }
@@ -401,7 +412,9 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
         this.totalUsd = totalUsd;
       }),
-
+      this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
+        this.encarprod = encarprod;
+      }),
       this.portalcliLogicaService.ivaBs$.subscribe((ivaBs) => {
         this.ivaBs = ivaBs;
       }),
@@ -416,6 +429,33 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.descuentoUsd = descuentoUsd;
       }),
     );
+  }
+  
+  imageficha: any;
+  selectedProduct: any = null;
+
+  openProductModal(row: any) {
+    Swal.showLoading();
+    this.portalcliLogicaService.openProductModal(row.codigoa).subscribe({
+      next: (data) => {
+        Swal.close();
+        this.selectedProduct = data.product;
+        this.imageficha = data.imageUrl;
+        this.openDialog(); // Llama a la función para abrir el modal
+      },
+      error: (error) => {
+        Swal.close();
+        console.error('Error al obtener el producto:', error);
+      },
+    });
+  }
+
+  openDialog() {
+    this.dialog.open(this.productModalTemplate, {
+      width: '80%',
+      maxWidth: '1200px',
+      data: { product: this.selectedProduct, imageUrl: this.imageficha } // Puedes pasar datos si es necesario
+    });
   }
 
   validateInput(product: any, event: any) {
@@ -504,7 +544,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 } */
 
   recalculadescud(product: any): number {
-    let precio = parseFloat(String(product.preciod).replace(',', '.'));
+    let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
     let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
@@ -519,7 +559,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
   }
 
   recalculadescubs(product: any): number {
-    let precio = parseFloat(String(product.precio1).replace(',', '.'));
+    let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
     let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {

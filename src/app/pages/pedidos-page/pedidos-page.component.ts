@@ -546,7 +546,6 @@ sortData(sortField: string) {
       });
       return;
     }
-    console.log(product, cantidad, descprov,this.clienteData.ubica)
     this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
@@ -614,8 +613,8 @@ sortData(sortField: string) {
           this.portalcliLogicaService.vaciacar().subscribe({
             next: (response: any) => {
               if (response.result) {
-                this.productosEnCarrito = [];
-                this.dataSource.data = this.productosEnCarrito;
+                //this.productosEnCarrito = [];
+                //this.dataSource.data = this.productosEnCarrito;
     
                 // Actualizar el carrito
                 this.revisarCarrito();
@@ -653,7 +652,7 @@ sortData(sortField: string) {
         const headers = new HttpHeaders({
           'Authorization': `${token}`
         });
-        const apiUrl = `${API_URL}portalcli/enviaped`;
+        const apiUrl = `${API_URL}enviaped`;
       
         Swal.fire({
           
@@ -666,7 +665,7 @@ sortData(sortField: string) {
         }).then((result) => {
         if (result.isConfirmed) {
             this.mostrarLoader;
-            console.log(formData)
+            //console.log(formData)
             // this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             //   next: (response: any) => {
             //     if (response.status) {
@@ -825,7 +824,7 @@ sortData(sortField: string) {
               .then((response: any) => {
                 if (response.status) {
                   i++;
-                  console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
+                  //console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
                 } else {
                   codigosvacios.push(celdas);
                   console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, response);
@@ -932,7 +931,7 @@ sortData(sortField: string) {
 
   getPriceWDiscountBS(element: any): number {
     let precio = parseFloat(String(element.oprecio).replace(',', '.'));
-    console.log(element)
+    //console.log(element)
     let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
