@@ -1,12 +1,16 @@
 @use '../../../styles/variables.scss' as vars;
 
+* {
+    transition: all ease-in-out 0.25s;
+}
+
 .menu__general {
     box-shadow: none;
     margin-top: 6rem;
     position: relative;
     border-right: 1px solid #a3a3a3;
     transition: width 0.3s ease;
-    width: 250px;
+    width: 25vw;
     height: auto;
 }
 
@@ -76,4 +80,9 @@
     margin-top: 45rem;
     color: vars.$menu-color;
     text-align: center;
+}
+
+.nav-item:hover {
+    cursor: pointer;
+    background: #6bc32d80;
 }

@@ -244,7 +244,7 @@
 }
 
 .btn-clear {
-    margin-top: 1vh !important;
+    margin-top: 0.5vh !important;
     width: 100%;
     padding: 0;
     margin: 0;
@@ -254,6 +254,19 @@
     color: #FFF;
     background: #ff2f2f;
     font-size: 2rem;
+}
+
+.btn-download {
+  margin-top: 0.5vh !important;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  height: 4vh;
+  border-radius: 1rem;
+  border: none;
+  color: #FFF;
+  background: #6BC32C;
+  font-size: 2rem;
 }
 
 .text-center {
@@ -419,10 +432,11 @@ th {
     color: #FFF;
     text-align: center;
     font-weight: 900;
+    text-align: center;
 }
 
 td {
-    font-size: 10px;
+    font-size: 14px;
 }
 
 tr:hover {
@@ -458,12 +472,12 @@ tr:hover {
 .green {
     color: #2e5b0d;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .blue {
     color: #ff4081;
-    font-size: 9px;
+    font-size: 12px;
 }
 
 .container-text {
@@ -477,4 +491,11 @@ tr:hover {
 
 .main-container {
     width: 99% !important;
+}
+
+.img-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
 }

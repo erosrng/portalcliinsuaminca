@@ -14,3 +14,24 @@ export interface HistoricoPedidosModel {
     valor_dolar: number,
     Pedido: any[],
 }
+
+export interface CasaMatrizModel {
+    codigo: string,
+    nombre: string,
+}
+
+export interface ExcelData {
+    headers: string[];
+    data: any[];
+}
+
+export interface PedidoAgrupado {
+    nombre: string | undefined;
+    codigo: string | undefined;
+    items: {
+        CodigoProd: string | undefined;
+        Descripcion: string | undefined;
+        Precio: any;
+        Descuento: any;
+    }[];
+}

@@ -66,3 +66,30 @@ body { margin: 0;}
   background-color: rgb(255 255 255);
   border: 1px solid #6bc32d;
 }
+
+.mat-mdc-select {
+  color: white !important;
+}
+
+.mat-mdc-paginator-icon {
+  fill: rgb(255 255 255) !important;
+}
+
+
+.mat-button-toggle-appearance-standard {
+  padding: 1rem !important;
+  font-size: 1.5rem !important;
+  background: #6bc32d !important;
+  color: #FFF !important;
+}
+
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  color: #FFF !important;
+  background-color: #0284c5 !important;
+  font-size: 1.5rem !important;
+  font-weight: 500 !important;
+}
+
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard .mat-pseudo-checkbox, .mat-button-toggle-group-appearance-standard .mat-pseudo-checkbox {
+  --mat-minimal-pseudo-checkbox-selected-checkmark-color: rgb(255 255 255) !important;
+}

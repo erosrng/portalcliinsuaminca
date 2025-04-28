@@ -4,15 +4,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { AuthService } from './auth.service'; 
 import { NgxSpinnerModule } from 'ngx-spinner';
-export const API_URL = 'http://10.0.100.2/practica/api/ptprv/post/';
+
 //export const API_URL = 'http://insuaminca.proteoerp.org:50080/practica/api/ptprv/post/';
 //export const API_URL2 = 'http://insuaminca.proteoerp.org:50080/practica/api/ptprv/';
+
+// ACCESO INTERNO INSUAMINCA
+export const PROTEO_URL_ALONE = 'http://10.0.100.2/practica/'
+export const API_URL = 'http://10.0.100.2/practica/api/ptprv/post/';
 export const API_URL2 = 'http://10.0.100.2/practica/api/';
-export const API_FAST ='http://127.0.0.1:8000'
+export const PROTEO_URL = 'http://10.0.100.2/practica/api/ptprv/';
+// export const API_FAST ='http://127.0.0.1:8000';
 
-// export const API_URL = 'http://186.167.69.10:50080/practica/api/ptprv/post/'
-// export const API_URL2 = 'http://186.167.69.10:50080/practica/api/ptprv/'
-
+// ACCESO EXTERNO INSUAMINCA
+// export const PROTEO_URL_ALONE = 'http://186.167.69.10:50080/practica/';
+// export const API_URL = 'http://186.167.69.10:50080/practica/api/ptprv/post/';
+// export const API_URL2 = 'http://186.167.69.10:50080/practica/api/ptprv/';
+// export const PROTEO_URL = 'http://186.167.69.10:50080/practica/api/ptprv/';
+export const API_FAST ='http://127.0.0.1:8000';
 
 
 
