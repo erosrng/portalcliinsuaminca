@@ -13,6 +13,7 @@ import { authGuard } from './auth.guard';
 import { AdminHomeComponent } from './pages/admin-pages/admin-home/admin-home.component';
 import { AdminPedidosVendedorComponent } from './pages/admin-pages/admin-pedidos-vendedor/admin-pedidos-vendedor.component';
 import { HistorialPedidosComponent } from './pages/historial-pedidos/historial-pedidos.component';
+import {UploadPedidosComponent} from "./pages/upload-pedidos/upload-pedidos.component";
 
 export const routes: Routes = [
     { path: '', component: LoginPageComponent},
@@ -24,6 +25,7 @@ export const routes: Routes = [
     { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] },
     { path: 'pagos', component: PagosPageComponent, canActivate: [authGuard] },
     { path: 'historialped', component: HistorialPedidosComponent, canActivate: [authGuard] },
-    { path: 'admin', component: AdminHomeComponent, canActivate: [] },
-    { path: 'admin/pedidos', component: AdminPedidosVendedorComponent, canActivate: [] }
+    { path: 'admin', component: AdminHomeComponent, canActivate: [authGuard] },
+    { path: 'admin/pedidos', component: AdminPedidosVendedorComponent, canActivate: [authGuard] },
+    { path: 'cargar-pedidos', component: UploadPedidosComponent, canActivate: [authGuard]}
 ];

@@ -68,6 +68,10 @@
           <div class="col-12">
             <div class="card pt-0 card-resumen">
               <div class="row w-100 mb-5">
+                  <div class="col-1 d-flex">
+                      <img class="w-100 img-flex" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
+                  </div>
+
                 <div class="col-5 d-center">
                   <div class="">
                     <h4 class="text-blue">Carrito de compra</h4>
@@ -102,20 +106,17 @@
 
                 <div class="col-2 d-center">
                   <div class="">
-                    <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
-                    <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
+                      <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
+                      <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
+                      <button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>
+
                   </div>
                 </div>
-                
-                <div class="col-1">
-                  <img class="w-100" src="./../../../assets/images/logoprv/{{authService.getProveed()}}.png" alt="">
-                </div>
-
                 
               </div>
 
               <div class="row w-100">
-                <div class="col-6 col-custom-6">
+                <div class="col-5 col-custom-6">
                  
                   <form class="example-form">
                     <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
@@ -132,7 +133,7 @@
                   </form>
                 </div>
 
-                <div class="col-3">
+                <div class="col-3 offset-3">
                   <mat-form-field appearance="outline" class="w-100 h-custom">
                     <mat-label>Aplicar Descuento Lineal (%)</mat-label>
                     <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
@@ -143,12 +144,10 @@
                 <div class="col-3">
                   <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
                       
-                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">
-                      <i class="fas fa-file-excel mr-1"></i>Cargar
-                    </button>
-                    <button mat-raised-button color="primary" class="download-btn" (click)="bajaexcel()">
-                      <i class="fas fa-file-excel"></i> Bajar listado
-                    </button>
+<!--                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">-->
+<!--                      <i class="fas fa-file-excel mr-1"></i>Cargar-->
+<!--                    </button>-->
+
                   </div>
                 </div>
 
@@ -200,12 +199,11 @@
                         (click)="openProductModal(element.codigo)">
                     </td>
                   </ng-container>
-              
-                  <!-- Name Column -->
-                  <!-- <ng-container matColumnDef="descrip">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" class="w-15"> Descripción </th>
-                    <td mat-cell *matCellDef="let element"> {{element.descrip}} </td>
-                  </ng-container> -->
+
+                    <ng-container matColumnDef="codigo">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header="codigo" (click)="sortData('codigo')" > Codigo </th>
+                        <td mat-cell *matCellDef="let element"> {{element.codigo}} </td>
+                    </ng-container>
 
                   <ng-container matColumnDef="descrip">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" (click)="sortData('descrip')" class="w-15"> Descripción </th>
@@ -213,10 +211,10 @@
                   </ng-container>
               
                   <!-- Weight Column -->
-                  <ng-container matColumnDef="nomprv">
-                    <th mat-header-cell *matHeaderCellDef class="w-15"> Proveedor </th>
-                    <td mat-cell *matCellDef="let element" class="text-aling-center"> {{element.nomprv}} </td>
-                  </ng-container>
+<!--                  <ng-container matColumnDef="nomprv">-->
+<!--                    <th mat-header-cell *matHeaderCellDef class="w-15"> Proveedor </th>-->
+<!--                    <td mat-cell *matCellDef="let element" class="text-aling-center"> {{element.nomprv}} </td>-->
+<!--                  </ng-container>-->
               
                   <!-- Symbol Column -->
              <!--      <ng-container matColumnDef="lote">
@@ -256,9 +254,7 @@
                   <ng-container matColumnDef="apliDiscount">
                     <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
-                      <span class="green">
-                        {{getPriceWDiscount(element) | number:'1.2-2'}}
-                      </span>
+                      <span class="green"> {{getPriceWDiscount(element) | number:'1.2-2'}} US$</span>
                       <br>
                       <span class="blue"> {{getPriceWDiscountBS(element) | number:'1.2-2'}} Bs.</span>
                     </td>

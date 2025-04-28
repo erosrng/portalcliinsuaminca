@@ -92,7 +92,7 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
       series: [
         {
           name: "Ventas",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+          data: []
         }
       ],
       chart: {
@@ -103,7 +103,7 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
         text: "Ventas por vendedor"
       },
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"]
+        categories: []
       }
     };
 
@@ -111,7 +111,7 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
     series: [
       {
         name: "Unidades",
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+        data: []
       }
     ],
     chart: {
@@ -122,7 +122,7 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
       text: "Ventas de unidades por vendedor"
     },
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"]
+      categories: []
     }
   };
   }
