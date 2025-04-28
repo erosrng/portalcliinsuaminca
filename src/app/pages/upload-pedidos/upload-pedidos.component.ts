@@ -70,9 +70,10 @@ export class UploadPedidosComponent implements OnInit {
     pedidosAgrupados: PedidoAgrupado[] = [];
 
 
-    displayedColumns = ['select','codigoCliente', 'nombreCliente',];
+    displayedColumns = ['select','codigoCliente', 'nombreCliente', 'unidades', 'valor', 'detalle'];
     dataSource: any = new MatTableDataSource<any>([]);
     selection = new SelectionModel<any>(true, []);
+    listActive: any[] = [];
 
     constructor(
         private proteoServices: ProteoService,
@@ -329,5 +330,29 @@ export class UploadPedidosComponent implements OnInit {
             return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
         }
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
+    }
+
+    getUnits(element: any): number {
+        const aux = element.pedido;
+        let valueOfRetur = 0
+        aux.forEach((info: any) => {
+            valueOfRetur = Number(info.Unidades) + valueOfRetur
+        })
+
+        return valueOfRetur
+    }
+
+    getValor(element: any): number {
+        const aux = element.pedido;
+        let valueOfRetur = 0
+        aux.forEach((info: any) => {
+            valueOfRetur = Number(info.Precio) + valueOfRetur
+        })
+
+        return valueOfRetur
+    }
+
+    openDetail(info: any): void {
+        this.listActive = info.pedido
     }
 }
