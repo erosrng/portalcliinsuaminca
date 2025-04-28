@@ -1,0 +1,249 @@
+<app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
+<div style="display: flex; flex-direction: row;">
+    <mat-sidenav-container>
+        <mat-sidenav mode="over" [opened]="toggleMenu">
+            <app-side-bar></app-side-bar>
+        </mat-sidenav>
+        <mat-sidenav-content class="w-100">
+            <div class="container-fluid container-max">
+                <div class="row mt-4">
+                    <div class="col-4 ">
+                        <div class="card p-5">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <h3>Seleccione un metodo de carga de pedido </h3>
+                                </div>
+                                <mat-divider></mat-divider>
+                                <div class="col-12">
+                                    <mat-button-toggle-group class="w-100 mt-5 mb-5 toggle-box" [(ngModel)]="typeUpload"  name="typeUpload" aria-label="type-upload">
+                                        <mat-button-toggle  class="w-50" value="INDIVIDUAL">Unico</mat-button-toggle>
+                                        <mat-button-toggle  class="w-50" value="GRUPO">Grupo</mat-button-toggle>
+                                    </mat-button-toggle-group>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="card p-5" *ngIf="typeUpload === 'GRUPO'">
+                                        <div class="row">
+                                            <div class="col-12 mb-4">
+                                                <h4>Seleccione un grupo para descargar el formato de carga </h4>
+                                            </div>
+                                            <div class="col-12 mb-3 mt-3">
+                                                <form class="example-form w-100">
+                                                    <mat-form-field class="w-100">
+                                                        <mat-label>Busque un grupo</mat-label>
+                                                        <input type="text"
+                                                               placeholder="Grupo"
+                                                               aria-label="Number"
+                                                               matInput
+                                                               [formControl]="controlCasaMatriz"
+                                                               [matAutocomplete]="auto">
+                                                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                            @for (option of filteredOptions | async; track option) {
+                                                                <mat-option [value]="option.codigo">{{option.nombre}}</mat-option>
+                                                            }
+                                                        </mat-autocomplete>
+                                                    </mat-form-field>
+                                                </form>
+                                            </div>
+                                            <mat-divider class="mb-4"></mat-divider>
+                                            <div class="col-12"
+                                                 *ngIf="controlCasaMatriz.value !== '' && controlCasaMatriz.value !== null"
+                                            >
+                                                <button class="btn-download" (click)="downloadFile();">
+                                                    <i class="fas fa-download"></i>
+                                                    Descargar Formato
+                                                </button>
+
+                                            </div>
+
+                                            <div class="col-12" *ngIf="controlCasaMatriz.value !== '' && controlCasaMatriz.value !== null">
+                                                <input type="file" (change)="onFileChange($event)" style="display: none;" #fileInput>
+                                                <button class="btn-upload" (click)="fileInput.click()">
+                                                    <i class="fas fa-file-upload"></i>
+                                                    Cargar archivo
+                                                </button>
+                                            </div>
+
+<!--                                            <pre>{{ jsonData | json }}</pre>-->
+                                        </div>
+                                    </div>
+
+                                    <div class="card p-5" *ngIf="typeUpload === 'INDIVIDUAL'">
+                                        <div class="row">
+                                            <div class="col-12 mb-4">
+                                                <h4>Seleccione un cliente para descargar el formato de carga </h4>
+                                            </div>
+                                            <div class="col-12 mb-3 mt-3">
+                                                <form class="example-form w-100">
+                                                    <mat-form-field class="w-100">
+                                                        <mat-label>Busque un cliente</mat-label>
+                                                        <input type="text"
+                                                               placeholder="Cliente"
+                                                               aria-label="Number"
+                                                               matInput
+                                                               [formControl]="controlUnico"
+                                                               [matAutocomplete]="auto">
+                                                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                            @for (option of filteredOptionsUnico | async; track option) {
+                                                                <mat-option [value]="option.cliente">{{option.nombre}}</mat-option>
+                                                            }
+                                                        </mat-autocomplete>
+                                                    </mat-form-field>
+                                                </form>
+                                            </div>
+                                            <mat-divider class="mb-4"></mat-divider>
+                                            <div class="col-12"
+                                                 *ngIf="controlUnico.value !== '' && controlUnico.value !== null"
+                                            >
+                                                <button class="btn-download" (click)="downloadFile();">
+                                                    <i class="fas fa-download"></i>
+                                                    Descargar Formato
+                                                </button>
+
+                                            </div>
+
+                                            <div class="col-12"
+                                                 *ngIf="controlUnico.value !== '' && controlUnico.value !== null"
+                                            >
+                                                <button class="btn-upload" (click)="uploadFile();">
+                                                    <i class="fas fa-file-upload"></i>
+                                                    Cargar archivo
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-5 disclaimer">
+                                    <label>
+                                    <strong>*Grupo</strong>: Se refiere a realizar la descarga del formato de una <strong>casa matriz</strong>
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <strong>*Unico</strong>: Se refiere a solo descargar el formato para un <strong>cliente</strong>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-8" *ngIf="dataSource.length > 0">
+                        <div class="card p-5">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <h3>Pedidos cargados </h3>
+                                </div>
+                            </div>
+                            <mat-divider></mat-divider>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                                        <!-- Checkbox Column -->
+                                        <ng-container matColumnDef="select">
+                                            <th mat-header-cell *matHeaderCellDef>
+                                                <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                                                              [checked]="selection.hasValue() && isAllSelected()"
+                                                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                              [aria-label]="checkboxLabel()">
+                                                </mat-checkbox>
+                                            </th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <mat-checkbox (click)="$event.stopPropagation()"
+                                                              (change)="$event ? selection.toggle(row) : null"
+                                                              [checked]="selection.isSelected(row)"
+                                                              [aria-label]="checkboxLabel(row)">
+                                                </mat-checkbox>
+                                            </td>
+                                        </ng-container>
+
+                                        <!-- Position Column -->
+                                        <ng-container matColumnDef="codigoCliente">
+                                            <th mat-header-cell *matHeaderCellDef> Codigo Cliente. </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.codigoCliente}} </td>
+                                        </ng-container>
+
+                                        <!-- Name Column -->
+                                        <ng-container matColumnDef="nombreCliente">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre Cliente </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombreCliente}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="unidades">
+                                            <th mat-header-cell *matHeaderCellDef> Unidades </th>
+                                            <td mat-cell *matCellDef="let element"> {{ getUnits(element) }} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="valor">
+                                            <th mat-header-cell *matHeaderCellDef> Valor </th>
+                                            <td mat-cell *matCellDef="let element"> {{ getValor(element) | number:'1.2-2' }} $</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="detalle">
+                                            <th mat-header-cell *matHeaderCellDef> Detalle </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <i class="fas fa-eye"
+                                                   title="Mostrar detalle"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#staticBackdrop"
+                                                   (click)="openDetail(element)"></i>
+                                            </td>
+                                        </ng-container>
+
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="row-hover"
+                                        >
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <app-footer></app-footer>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Informacion de pedido</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" *ngIf="listActive">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="historialped__historial-table">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="border-left-top">Ver</th>
+                                    <th scope="col">Codigo </th>
+                                    <th scope="col">Descripcion</th>
+                                    <th scope="col">Descuento</th>
+                                    <th scope="col">Precio $</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let pedido of listActive">
+                                    <td><img src="{{pedido.Codigo}}" class="img-product"> </td>
+                                    <td>{{ pedido.Codigo }}</td>
+                                    <td>{{ pedido.Descripcion }}</td>
+                                    <td>{{ pedido.Descuento }}%</td>
+                                    <td>{{ pedido.Precio | number: '1.0-3'}} $</td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
