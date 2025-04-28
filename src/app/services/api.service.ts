@@ -1,18 +1,21 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_FAST } from '../app.config';
+import {API_FAST, PROTEO_URL_ALONE} from '../app.config';
+import {AuthService} from "../auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  // urlBase = 'http://186.167.69.10:50080/proteoerp/api'
-  urlBase = 'http://insuaminca.proteoerp.org:50080/practica/'
-  urlFast = API_FAST
+  urlBase = PROTEO_URL_ALONE;
+  urlFast = API_FAST;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+      private httpClient: HttpClient,
+      public authService: AuthService,
+  ) { }
 
 
   /**
@@ -50,12 +53,5 @@ export class ApiService {
   get_historial_by_prov(user: string) : Observable<any> {
     const apiUrl = this.urlFast + '/pedidos_vendedor/proveedor/' + user
     return this.httpClient.get(apiUrl)
-  }
-
-  //Para obtener los pedidod del formato 
-  get_document_by_group(grupo: string) : Observable<any> {
-    const info =  {'cmatriz': grupo}
-    const apiUrl = this.urlBase + 'api/ptprv/post/getfile'
-    return this.httpClient.post(apiUrl, info)
   }
 }

@@ -30,7 +30,7 @@
                         
                         <div class="col-12 upload-container">
                             <label for="excelUpload" class="upload-label">
-                              <i class="fas fa-file-upload"></i>
+                    `          <i class="fas fa-file-upload"></i>`
                               <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
                               <span *ngIf="fileName">{{ fileName }}</span>
                               <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />

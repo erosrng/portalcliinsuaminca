@@ -35,8 +35,7 @@ export class HomePageComponent {
   constructor(
     public authService: AuthService, 
     public portalcliLogicaService: PortalcliLogicaService,
-    private router: Router,
-    private apiServices: ApiService
+    private router: Router
   ) {} 
 
   /* ngOnInit() { // Implementa ngOnInit
@@ -66,10 +65,6 @@ export class HomePageComponent {
       } else {
         this.adminOptions = false;
       }
-
-      this.apiServices.get_document_by_group('TAKI').subscribe((data: any) => {
-        console.log(data)
-      })
     }
 
     navigateTo(route: string) {
