@@ -478,21 +478,54 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     this.sortField = sortField;
     if (this.productscar && Array.isArray(this.productscar)) {
       this.productscar.sort((a, b) => {
-          let valueA = a[sortField];
-          let valueB = b[sortField];
+        let valueA = a[sortField];
+        let valueB = b[sortField];
 
-          if (typeof valueA === 'string' && typeof valueB === 'string') {
-              valueA = valueA.toLowerCase();
-              valueB = valueB.toLowerCase();
-          }
-
-          if (valueA < valueB) {
+        if (sortField === 'cant') {
+          // Ordenamiento numérico para la columna 'cant'
+          const numA = Number(valueA);
+          const numB = Number(valueB);
+          if (!isNaN(numA) && !isNaN(numB)) {
+            if (numA < numB) {
               return this.sortDirection === 'asc' ? -1 : 1;
-          } else if (valueA > valueB) {
+            } else if (numA > numB) {
               return this.sortDirection === 'asc' ? 1 : -1;
-          } else {
+            } else {
               return 0;
+            }
+          } else {
+            // Si los valores no son números válidos, vuelve a la comparación de strings (opcional)
+            const strA = String(valueA).toLowerCase();
+            const strB = String(valueB).toLowerCase();
+            if (strA < strB) {
+              return this.sortDirection === 'asc' ? -1 : 1;
+            } else if (strA > strB) {
+              return this.sortDirection === 'asc' ? 1 : -1;
+            } else {
+              return 0;
+            }
           }
+        } else if (typeof valueA === 'string' && typeof valueB === 'string') {
+          // Ordenamiento de strings (ignorando mayúsculas/minúsculas) para otras columnas de texto
+          valueA = valueA.toLowerCase();
+          valueB = valueB.toLowerCase();
+          if (valueA < valueB) {
+            return this.sortDirection === 'asc' ? -1 : 1;
+          } else if (valueA > valueB) {
+            return this.sortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        } else {
+          // Ordenamiento por defecto para otros tipos de datos (puede necesitar ajustes según tus datos)
+          if (valueA < valueB) {
+            return this.sortDirection === 'asc' ? -1 : 1;
+          } else if (valueA > valueB) {
+            return this.sortDirection === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        }
       });
       this.dataSource.data = this.productscar;
     } else {
