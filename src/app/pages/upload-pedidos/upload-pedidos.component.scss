@@ -61,3 +61,30 @@ th {
   cursor: pointer;
   background: #cccccc38 !important;
 }
+
+.box-modal {
+  display: flex;
+
+  padding: 2rem;
+  border: 1px solid #CCC;
+  border-radius: 1rem;
+  margin-bottom: 1rem !important;
+  width: 98.5%;
+  margin: auto;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-dialog {
+  width: auto;
+  max-width: 70vw !important;
+}
+
+.img-product {
+  width: 50px !important;
+}
+
+.historialped__historial-table {
+  width: 100% !important;
+}

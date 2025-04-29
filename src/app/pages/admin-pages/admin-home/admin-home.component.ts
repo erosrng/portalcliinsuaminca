@@ -3,8 +3,8 @@ import { NavBarComponent } from "../../../components/nav-bar/nav-bar.component";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable } from 'rxjs';
-import { AuthService } from './../../../auth.service';
-import { API_URL } from './../../../app.config';
+import { AuthService } from '../../../auth.service';
+import { API_URL } from '../../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {

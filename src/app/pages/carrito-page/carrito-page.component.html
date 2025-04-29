@@ -1,6 +1,8 @@
 <app-nav-bar (openMenu)="openMenu($event)"></app-nav-bar>
 
+
 <div style="display: flex; flex-direction: row;">
+  
   <mat-sidenav-container>
     <mat-sidenav mode="over" [opened]="toggleMenu">
       <app-side-bar></app-side-bar>
@@ -12,6 +14,7 @@
 
           <header class="carrito__header">
             <h1 class="ofertas-title carrito__title">Carrito de compra</h1>
+            <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
 
           </header>
           <h2 class="text-primary">Mis productos</h2>
