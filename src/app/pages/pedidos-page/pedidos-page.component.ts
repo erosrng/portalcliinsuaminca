@@ -240,6 +240,8 @@ searchProducts(event: Event): void {
   this.dataSource.filter = filterValue.trim().toLowerCase();
 }
 
+
+
 clear(): void {
   this.search = '';
   this.dataSource.filter = '';
@@ -945,6 +947,8 @@ sortData(sortField: string) {
     }
     return precio; // Devuelve el precio original (NaN si no es válido)
   }
+
+  
 
    
 }
