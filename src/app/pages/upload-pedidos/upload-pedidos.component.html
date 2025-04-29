@@ -169,6 +169,27 @@
                                             <td mat-cell *matCellDef="let element"> {{element.nombreCliente}} </td>
                                         </ng-container>
 
+                                        <ng-container matColumnDef="unidades">
+                                            <th mat-header-cell *matHeaderCellDef> Unidades </th>
+                                            <td mat-cell *matCellDef="let element"> {{ getUnits(element) }} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="valor">
+                                            <th mat-header-cell *matHeaderCellDef> Valor </th>
+                                            <td mat-cell *matCellDef="let element"> {{ getValor(element) | number:'1.2-2' }} $</td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="detalle">
+                                            <th mat-header-cell *matHeaderCellDef> Detalle </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                <i class="fas fa-eye"
+                                                   title="Mostrar detalle"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#staticBackdrop"
+                                                   (click)="openDetail(element)"></i>
+                                            </td>
+                                        </ng-container>
+
 
                                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                                         <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="row-hover"
@@ -186,4 +207,43 @@
             <app-footer></app-footer>
         </mat-sidenav-content>
     </mat-sidenav-container>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Informacion de pedido</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" *ngIf="listActive">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="historialped__historial-table">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="border-left-top">Ver</th>
+                                    <th scope="col">Codigo </th>
+                                    <th scope="col">Descripcion</th>
+                                    <th scope="col">Descuento</th>
+                                    <th scope="col">Precio $</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let pedido of listActive">
+                                    <td><img src="{{pedido.Codigo}}" class="img-product"> </td>
+                                    <td>{{ pedido.Codigo }}</td>
+                                    <td>{{ pedido.Descripcion }}</td>
+                                    <td>{{ pedido.Descuento }}%</td>
+                                    <td>{{ pedido.Precio | number: '1.0-3'}} $</td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
