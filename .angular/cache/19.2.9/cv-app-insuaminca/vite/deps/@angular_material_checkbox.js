@@ -1,9 +1,4 @@
 import {
-  CheckboxRequiredValidator,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR
-} from "./chunk-HDHCX5MQ.js";
-import {
   MatRipple
 } from "./chunk-T2QHIGVT.js";
 import {
@@ -18,12 +13,17 @@ import {
 import {
   _IdGenerator
 } from "./chunk-DHR5YDJI.js";
+import "./chunk-IJ3KGSPX.js";
+import "./chunk-Q5GE6IRN.js";
 import {
   _CdkPrivateStyleLoader
 } from "./chunk-V2R7SCBH.js";
-import "./chunk-IJ3KGSPX.js";
-import "./chunk-Q5GE6IRN.js";
 import "./chunk-RYZWFTBI.js";
+import {
+  CheckboxRequiredValidator,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR
+} from "./chunk-HDHCX5MQ.js";
 import "./chunk-OFWNEWDS.js";
 import "./chunk-7MFUTISS.js";
 import {

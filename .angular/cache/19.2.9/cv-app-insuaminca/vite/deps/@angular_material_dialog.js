@@ -4,7 +4,7 @@ import {
   OverlayContainer,
   OverlayModule,
   OverlayRef
-} from "./chunk-HMNQVNDI.js";
+} from "./chunk-SXWFUD7F.js";
 import "./chunk-OIBNGD5S.js";
 import {
   BasePortalOutlet,
@@ -28,7 +28,6 @@ import {
   _getFocusedElementPierceShadowDom,
   hasModifierKey
 } from "./chunk-DHR5YDJI.js";
-import "./chunk-V2R7SCBH.js";
 import {
   CdkScrollable
 } from "./chunk-UF2CGQV3.js";
@@ -37,6 +36,7 @@ import "./chunk-LR32L5Z3.js";
 import {
   Directionality
 } from "./chunk-Q5GE6IRN.js";
+import "./chunk-V2R7SCBH.js";
 import {
   Platform,
   coerceNumberProperty

@@ -532,6 +532,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
       console.warn('this.productscar no es un array, no se puede ordenar.');
     }
   }
+
   onSortChange(sortField: string) {
     this.sortData(sortField as keyof Product);
 }
