@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription, takeUntil, Subject } from 'rxjs';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
 
-import { MatTableDataSource, MatTableModule } from '@angular/material/table'; 
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input'; // Importa MatInputModule
 import { MatIconModule } from '@angular/material/icon';
@@ -24,649 +24,709 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
 export interface Product {
-  img: string;
-  descrip: string;
-  preciosiniva: number;
-  ivabs: number;
-  preciod: number;
-  ivad: number;
-  totalbs: number;
-  totald: number;
-  cant: number;
-  descprov: number;
-  id_pedido: number;
-  codigoa: string;
+    img: string;
+    descrip: string;
+    preciosiniva: number;
+    ivabs: number;
+    preciod: number;
+    ivad: number;
+    totalbs: number;
+    totald: number;
+    cant: number;
+    descprov: number;
+    descu: number;
+    id_pedido: number;
+    codigoa: string;
 }
 
 
 @Component({
-  selector: 'app-carshop',
+    selector: 'app-carshop',
     imports: [
-      CommonModule,
-      MatTableModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatIconModule,
-      FormsModule,
-      MatPaginatorModule,
-      MatProgressBarModule,
-      MatDialogModule,
-      MatButtonModule,
-      MatSelectModule
+        CommonModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        FormsModule,
+        MatPaginatorModule,
+        MatProgressBarModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatSelectModule
     ],
-  templateUrl: './carshop.component.html',
-  styleUrl: './carshop.component.scss'
+    templateUrl: './carshop.component.html',
+    styleUrl: './carshop.component.scss'
 })
 export class CarshopComponent implements OnInit, AfterViewInit {
- isLoading = false;
+    isLoading = false;
 
-  sortField: string = 'descrip'; // Campo de ordenamiento inicial
-  sortDirection: 'desc' | 'asc' = 'desc';
-  private subscriptions: Subscription[] = [];
-  private clienteCambiadoSubscription: Subscription | undefined;
+    sortField: string = 'descrip'; // Campo de ordenamiento inicial
+    sortDirection: 'desc' | 'asc' = 'desc';
+    private subscriptions: Subscription[] = [];
+    private clienteCambiadoSubscription: Subscription | undefined;
 
-  private destroy$ = new Subject<void>();
-  clienteData: any;
-  private clienteDataSubscription: Subscription | undefined;
-  codCli: string | null = null;
+    private destroy$ = new Subject<void>();
+    clienteData: any;
+    private clienteDataSubscription: Subscription | undefined;
+    codCli: string | null = null;
 
-  encarprod: string = '';
+    encarprod: string = '';
 
-  @ViewChild('productModalTemplate')
-  productModalTemplate!: TemplateRef<any>;
+    @ViewChild('productModalTemplate')
+    productModalTemplate!: TemplateRef<any>;
 
-  productosEnCarritoNumber: string = '';
-  productscar: Product[] = [];
-  dataSource = new MatTableDataSource<Product>(this.productscar);
-  displayedColumns: string[] = 
-  ['img', 'descrip', 'preciosinivad', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+    productosEnCarritoNumber: string = '';
+    productscar: Product[] = [];
+    dataSource = new MatTableDataSource<Product>(this.productscar);
+    displayedColumns: string[] =
+        ['img', 'descrip', 'preciosinivad', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov','descu', 'actions']; // Ajusta las columnas según tus necesidades
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) sort!: MatSort;
 
-  totalBs: string = '';
-  totalUsd: string = '';
-  unidades: string = '';
+    totalBs: string = '';
+    totalUsd: string = '';
+    unidades: string = '';
 
-  descuentoLineal: number | 0 = 0; 
-  ivaBs: string = '';
-  ivaUsd: string = '';
-  descuentoBs: string = '';
-  descuentoUsd: string = '';
+    descuentoLineal: number | 0 = 0;
+    ivaBs: string = '';
+    ivaUsd: string = '';
+    descuentoBs: string = '';
+    descuentoUsd: string = '';
 
-  diasCredito: number = 0;
-  montoFactura: number = 0;
-  productosEnCarritoCodigos: string[] = [];
+    diasCredito: number = 0;
+    montoFactura: number = 0;
+    productosEnCarritoCodigos: string[] = [];
 
-  constructor(
-    private route: Router,
-    private http: HttpClient,
-    private authService: AuthService,
-    public portalcliLogicaService: PortalcliLogicaService,
-    private apiService: ApiService,
-    public dialog: MatDialog
-  ) {}
+    constructor(
+        private route: Router,
+        private http: HttpClient,
+        private authService: AuthService,
+        public portalcliLogicaService: PortalcliLogicaService,
+        private apiService: ApiService,
+        public dialog: MatDialog
+    ) {}
 
-  ngOnInit() {
-    this.codCli = this.authService.getCodCli();
-    if(this.codCli){
-      this.subscribeToClienteData();
+    ngOnInit() {
+        this.codCli = this.authService.getCodCli();
+        if(this.codCli){
+            this.subscribeToClienteData();
+        }
+
+        /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
+          console.log(this.clienteCambiadoSubscription)
+          this.openCar();
+        }); */
     }
 
-    /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
-      console.log(this.clienteCambiadoSubscription)
-      this.openCar();
-    }); */
-  }
+    ngAfterViewInit(): void {
 
-  ngAfterViewInit(): void {
-
-  }
-
-  subscribeToClienteData() {
-    this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
-      this.clienteData = data;
-      this.openCar();
-    });
-  }
-
-  openCar() {
-    const codCli = this.authService.getCodCli();
-
-    this.isLoading = true;
-    const token = this.authService.getToken();
-    const formData = new FormData();
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-
-    const apiUrl = `${API_URL}opencardb`;
-    formData.append('codCli', codCli ?? '');
-   if (this.clienteData && this.clienteData.ubica) {
-      formData.append('almacen', this.clienteData.ubica);
-    }else{
-      formData.append('almacen', '');
-    }
-    this.http.post(apiUrl,formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        this.revisarCarrito();
-        this.productscar = response.data;
-        this.dataSource.data = this.productscar;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error al cargar carrito de compras:', error);
-      },
-    });
-  }
-
-  // Función para aplicar el descuento lineal a todos los items del carrito
-  aplicarDescuentoLineal(event: any): void {
-    const inputValue = event.target.value;
-    this.descuentoLineal = parseFloat(inputValue);
-
-    if (isNaN(this.descuentoLineal) || inputValue === '') {
-      this.descuentoLineal = 0;
-      // También puedes actualizar directamente el valor del input si lo prefieres:
-      event.target.value = '0';
-    }
-    if (this.descuentoLineal > 100) {
-      Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
-      return;
-    }
-    if (this.descuentoLineal !== null) {
-      this.productscar = this.productscar.map(product => {
-        product.descprov = this.descuentoLineal!; // Asignación directa (usando '!' para asegurar que no es null)
-        
-        return product;
-      });
-      this.dataSource.data = [...this.productscar];
-    } else {
-      this.productscar = this.productscar.map(product => {
-        product.descprov = 0;
-        return product;
-      });
-      this.dataSource.data = [...this.productscar];
     }
 
-    const apiUrl = `${API_URL}totalizadesc`;
-    const formData = new FormData();
-    const token = this.authService.getToken();
-    const codCli = this.authService.getCodCli();
+    subscribeToClienteData() {
+        this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+            this.clienteData = data;
+            this.openCar();
+        });
+    }
 
-    const headers = new HttpHeaders({
-        'Authorization': `${token}`
-    });
+    openCar() {
+        const codCli = this.authService.getCodCli();
 
-    formData.append('desc', this.descuentoLineal!.toString());
-    formData.append('codCli', codCli ?? '');
+        this.isLoading = true;
+        const token = this.authService.getToken();
+        const formData = new FormData();
 
-    this.http.post(apiUrl,formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        if (response.result === true) {
-          this.revisarCarrito();
-          Swal.fire({
-              text: 'Descuento aplicado',
-              icon: 'success',
-              showConfirmButton: false,
-              timer: 3000,
-              toast: true,
-              position: 'bottom-end',
-          });
-          this.productscar.map(product => {
-            const cantidadinput = document.getElementById(`cantidad_${product.codigoa}`) as HTMLInputElement;
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
 
-            this.recalculadescud(product);
-            this.recalculadescubs(product);
-            this.recalcular(parseFloat(cantidadinput.value), product.codigoa)
-          });
-      }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error al actualizar', error);
-        this.alertaerror();
-      },
-    });
-  }
-
-  eliminareg(caller: any, idPedido: any, codigo: any) {
-      this.isLoading = true;
-
-      const apiUrl = `${API_URL}eliminareg`;
-      const formData = new FormData();
-      const token = this.authService.getToken();
-
-      const headers = new HttpHeaders({
-          'Authorization': `${token}`
-      });
-
-      formData.append('id', idPedido);
-      formData.append('codigo', codigo);
-
-      this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
-      this.dataSource.data = this.productscar;
-
-      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-          next: (response: any) => {
-              this.isLoading = false;
-              if (response.result === true) {
-                  // Actualiza productscar
-                  this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
-                  this.revisarCarrito();
-                  Swal.fire({
-                      text: 'Producto eliminado',
-                      icon: 'success',
-                      showConfirmButton: false,
-                      timer: 3000,
-                      toast: true,
-                      position: 'bottom-end',
-                  });
-              } else {
-                this.alertaerror();
-              }
-          },
-          error: (error) => {
-              this.isLoading = false;
-              this.alertaerror();
-          },
-      });
-  }
-
-  //Envia pedidos al servidor
-  enviaped(){
-    this.isLoading = true;
-    const codCli = this.authService.getCodCli();
-
-      const formData = new FormData();
-      const token = this.authService.getToken();
-
-      formData.append('codCli', codCli ?? '');
-      formData.append('diasCredito', String(this.diasCredito)); 
-      formData.append('montoFactura', String(this.montoFactura));
-      
-      const headers = new HttpHeaders({
-        'Authorization': `${token}`
-      });
-      const apiUrl = `${API_URL}enviaped`;
-
-      Swal.fire({
-      title: '¿Desea enviar el pedido?',
-      text: "Esta acción no se puede deshacer.",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar'
-      }).then((result) => {
-      if (result.isConfirmed) {
-          this.mostrarLoader();
-          //console.log(this.productscar)
-          //console.log(this.clienteData)
-          const aux = {
-            'usuario': localStorage.getItem('usuario'),
-            'nombre': localStorage.getItem('nombre'),
-            'nomprv': localStorage.getItem('nomprv'),
-            'proveed': localStorage.getItem('proveed'),
-            'codigo_cliente': this.clienteData.cliente,
-            'nombre_cliente':  this.clienteData.nombre,
-            'Pedido': this.productscar,
-          }
-        /*  this.apiService.generate_ped(aux).subscribe((data: any) => {
-            console.log(data)
-            this.isLoading = false;
-            this.ocultarLoader();
-            Swal.fire('Pedido creado', '', 'success');
-          }, () => {
-            this.isLoading = false;
-            this.ocultarLoader();/!*
-            Swal.fire('Ocurrio un error', '', 'error');
-          })*!/*/
-          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+        const apiUrl = `${API_URL}opencardb`;
+        formData.append('codCli', codCli ?? '');
+        if (this.clienteData && this.clienteData.ubica) {
+            formData.append('almacen', this.clienteData.ubica);
+        }else{
+            formData.append('almacen', '');
+        }
+        this.http.post(apiUrl,formData, { headers: headers }).subscribe({
             next: (response: any) => {
-              if (response.result) {
-                this.ocultarLoader();
                 this.revisarCarrito();
-                Swal.fire(response.message, '', 'success');
-                this.productscar = [];
+                
+                this.productscar = response.data;
                 this.dataSource.data = this.productscar;
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+                this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
                 this.isLoading = false;
-              } else {
-                Swal.fire(response.message, '', 'error');
-                this.isLoading = false;
-              }
             },
             error: (error) => {
-              this.isLoading = false;
-              this.ocultarLoader();
-              Swal.fire(error, '', 'error');
-              console.error('Error de la API:', error);
+                this.isLoading = false;
+                console.error('Error al cargar carrito de compras:', error);
             },
-          });
-      }
-      });
-  }
-
-  //Vacia carrito
-  vaciacar(): void {
-    Swal.fire({
-      title: '¿Desea vaciar el carrito?',
-      text: "Eliminar todos los productos en el mismo.",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Vaciar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.portalcliLogicaService.vaciacar().subscribe({
-          next: (response: any) => {
-            if (response.result) {
-              // Vaciar this.productscar
-              this.productscar = [];
-
-              // Actualizar this.dataSource.data
-              this.dataSource.data = this.productscar;
-
-              // Actualizar el carrito
-              this.revisarCarrito();
-
-              Swal.fire({
-                text: 'Carro vacio',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 3000,
-                toast: true,
-                position: 'bottom-end',
-              });
-            } else {
-              this.alertaerror();
-            }
-          },
-          error: (error) => {
-            this.alertaerror();
-          },
         });
-      }
-    });
-  }
-
-  revisarCarrito() {
-    this.portalcliLogicaService.revisarCarrito();
-    this.subscriptions.push(
-      this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
-        if (productos && productos.length > 0 && productos[0] && productos[0].value > 0) {
-          this.productosEnCarritoNumber = productos[0].value;
-        } else {
-          this.productosEnCarritoNumber = '0';
-        }
-      }),
-      this.portalcliLogicaService.unidades$.subscribe((unidades) => {
-        this.unidades = unidades;
-      }),
-      this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
-        this.totalBs = totalBs;
-      }),
-      this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
-        this.totalUsd = totalUsd;
-      }),
-      this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
-        this.encarprod = encarprod;
-      }),
-      this.portalcliLogicaService.ivaBs$.subscribe((ivaBs) => {
-        this.ivaBs = ivaBs;
-      }),
-      this.portalcliLogicaService.ivaUsd$.subscribe((ivaUsd) => {
-        this.ivaUsd = ivaUsd;
-      }),
-
-      this.portalcliLogicaService.descuentoBs$.subscribe((descuentoBs) => {
-        this.descuentoBs = descuentoBs;
-      }),
-      this.portalcliLogicaService.descuentoUsd$.subscribe((descuentoUsd) => {
-        this.descuentoUsd = descuentoUsd;
-      }),
-    );
-  }
-  
-  imageficha: any;
-  selectedProduct: any = null;
-
-  openProductModal(row: any) {
-    Swal.showLoading();
-    this.portalcliLogicaService.openProductModal(row.codigoa).subscribe({
-      next: (data) => {
-        Swal.close();
-        this.selectedProduct = data.product;
-        this.imageficha = data.imageUrl;
-        this.openDialog(); // Llama a la función para abrir el modal
-      },
-      error: (error) => {
-        Swal.close();
-        console.error('Error al obtener el producto:', error);
-      },
-    });
-  }
-
-  openDialog() {
-    this.dialog.open(this.productModalTemplate, {
-      width: '80%',
-      maxWidth: '1200px',
-      data: { product: this.selectedProduct, imageUrl: this.imageficha } // Puedes pasar datos si es necesario
-    });
-  }
-
-  validateInput(product: any, event: any) {
-    product.cant = this.portalcliLogicaService.validateCant(event);
-  }
-
-  alertaerror(){
-    this.portalcliLogicaService.alertaerror();
-  }
-
-  mostrarLoader(){
-    this.portalcliLogicaService.mostrarLoader();
-  }
-
-  ocultarLoader(){
-    this.portalcliLogicaService.ocultarLoader();
-  }
-
-  sortData(sortField: keyof Product) {
-    this.sortField = sortField;
-    if (this.productscar && Array.isArray(this.productscar)) {
-      this.productscar.sort((a, b) => {
-        let valueA = a[sortField];
-        let valueB = b[sortField];
-
-        if (sortField === 'cant') {
-          // Ordenamiento numérico para la columna 'cant'
-          const numA = Number(valueA);
-          const numB = Number(valueB);
-          if (!isNaN(numA) && !isNaN(numB)) {
-            if (numA < numB) {
-              return this.sortDirection === 'asc' ? -1 : 1;
-            } else if (numA > numB) {
-              return this.sortDirection === 'asc' ? 1 : -1;
-            } else {
-              return 0;
-            }
-          } else {
-            // Si los valores no son números válidos, vuelve a la comparación de strings (opcional)
-            const strA = String(valueA).toLowerCase();
-            const strB = String(valueB).toLowerCase();
-            if (strA < strB) {
-              return this.sortDirection === 'asc' ? -1 : 1;
-            } else if (strA > strB) {
-              return this.sortDirection === 'asc' ? 1 : -1;
-            } else {
-              return 0;
-            }
-          }
-        } else if (typeof valueA === 'string' && typeof valueB === 'string') {
-          // Ordenamiento de strings (ignorando mayúsculas/minúsculas) para otras columnas de texto
-          valueA = valueA.toLowerCase();
-          valueB = valueB.toLowerCase();
-          if (valueA < valueB) {
-            return this.sortDirection === 'asc' ? -1 : 1;
-          } else if (valueA > valueB) {
-            return this.sortDirection === 'asc' ? 1 : -1;
-          } else {
-            return 0;
-          }
-        } else {
-          // Ordenamiento por defecto para otros tipos de datos (puede necesitar ajustes según tus datos)
-          if (valueA < valueB) {
-            return this.sortDirection === 'asc' ? -1 : 1;
-          } else if (valueA > valueB) {
-            return this.sortDirection === 'asc' ? 1 : -1;
-          } else {
-            return 0;
-          }
-        }
-      });
-      this.dataSource.data = this.productscar;
-    } else {
-      console.warn('this.productscar no es un array, no se puede ordenar.');
     }
-  }
 
-  onSortChange(sortField: string) {
-    this.sortData(sortField as keyof Product);
-}
+    // Función para aplicar el descuento lineal a todos los items del carrito
+    aplicarDescuentoLineal(event: any): void {
+        const inputValue = event.target.value;
+        this.descuentoLineal = parseFloat(inputValue);
 
-  toggleSortDirection() {
-    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    this.sortData(this.sortField as keyof Product);
-}
-
-
-  // Agrega la función applyFilter
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  updatecant(idPedido: string, codigo: string, existen: string, change: string) {
-    const input = document.getElementById(`cantidad_${codigo}`) as HTMLInputElement;
-
-    const existenNum = parseInt(existen); // Convertir a número correctamente
-
-    if (input) {
-        const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
-
-        if (cantidadInput > existenNum && change!="-") { // Comparar el valor del input con existen
-            Swal.fire('Cantidad mayor a existencia', '', 'error');
+        if (isNaN(this.descuentoLineal) || inputValue === '') {
+            this.descuentoLineal = 0;
+            // También puedes actualizar directamente el valor del input si lo prefieres:
+            event.target.value = '0';
+        }
+        if (this.descuentoLineal > 100) {
+            Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
             return;
         }
+        if (this.descuentoLineal !== null) {
+            this.productscar = this.productscar.map(product => {
+                product.descprov = this.descuentoLineal!; // Asignación directa (usando '!' para asegurar que no es null)
 
-        let newValue = cantidadInput + ((change === '-') ? -1 : 1);
+                return product;
+            });
+            this.dataSource.data = [...this.productscar];
+        } else {
+            this.productscar = this.productscar.map(product => {
+                product.descprov = 0;
+                return product;
+            });
+            this.dataSource.data = [...this.productscar];
+        }
 
-        if (newValue > 0) {
-            input.value = newValue.toString();
-            this.recalcular(newValue,codigo)
+        const apiUrl = `${API_URL}totalizadesc`;
+        const formData = new FormData();
+        const token = this.authService.getToken();
+        const codCli = this.authService.getCodCli();
 
-            this.totaliza(idPedido, codigo, newValue, existenNum); // Usar existenNum
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+
+        formData.append('desc', this.descuentoLineal!.toString());
+        formData.append('codCli', codCli ?? '');
+
+        this.http.post(apiUrl,formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+                if (response.result === true) {
+                    this.revisarCarrito();
+                    Swal.fire({
+                        text: 'Descuento aplicado',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        toast: true,
+                        position: 'bottom-end',
+                    });
+                    this.productscar.map(product => {
+                        const cantidadinput = document.getElementById(`cantidad_${product.codigoa}`) as HTMLInputElement;
+
+                        this.recalculadescud(product);
+                        this.recalculadescubs(product);
+                        this.recalcular(parseFloat(cantidadinput.value), product.codigoa)
+                    });
+                }
+            },
+            error: (error) => {
+                this.isLoading = false;
+                console.error('Error al actualizar', error);
+                this.alertaerror();
+            },
+        });
+    }
+
+    eliminareg(caller: any, idPedido: any, codigo: any) {
+        this.isLoading = true;
+
+        const apiUrl = `${API_URL}eliminareg`;
+        const formData = new FormData();
+        const token = this.authService.getToken();
+
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+
+        formData.append('id', idPedido);
+        formData.append('codigo', codigo);
+
+        this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
+        this.dataSource.data = this.productscar;
+
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+                this.isLoading = false;
+                if (response.result === true) {
+                    // Actualiza productscar
+                    this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
+                    this.revisarCarrito();
+                    Swal.fire({
+                        text: 'Producto eliminado',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        toast: true,
+                        position: 'bottom-end',
+                    });
+                } else {
+                    this.alertaerror();
+                }
+            },
+            error: (error) => {
+                this.isLoading = false;
+                this.alertaerror();
+            },
+        });
+    }
+
+    //Envia pedidos al servidor
+    enviaped(){
+        this.isLoading = true;
+        const codCli = this.authService.getCodCli();
+
+        const formData = new FormData();
+        const token = this.authService.getToken();
+
+        formData.append('codCli', codCli ?? '');
+        formData.append('diasCredito', String(this.diasCredito));
+        formData.append('montoFactura', String(this.montoFactura));
+
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+        const apiUrl = `${API_URL}enviaped`;
+
+        Swal.fire({
+            title: '¿Desea enviar el pedido?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Enviar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.mostrarLoader();
+                //console.log(this.productscar)
+                //console.log(this.clienteData)
+                const aux = {
+                    'usuario': localStorage.getItem('usuario'),
+                    'nombre': localStorage.getItem('nombre'),
+                    'nomprv': localStorage.getItem('nomprv'),
+                    'proveed': localStorage.getItem('proveed'),
+                    'codigo_cliente': this.clienteData.cliente,
+                    'nombre_cliente':  this.clienteData.nombre,
+                    'Pedido': this.productscar,
+                }
+                /*  this.apiService.generate_ped(aux).subscribe((data: any) => {
+                    console.log(data)
+                    this.isLoading = false;
+                    this.ocultarLoader();
+                    Swal.fire('Pedido creado', '', 'success');
+                  }, () => {
+                    this.isLoading = false;
+                    this.ocultarLoader();/!*
+                    Swal.fire('Ocurrio un error', '', 'error');
+                  })*!/*/
+                this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+                    next: (response: any) => {
+                        if (response.result) {
+                            this.ocultarLoader();
+                            this.revisarCarrito();
+                            Swal.fire(response.message, '', 'success');
+                            this.productscar = [];
+                            this.dataSource.data = this.productscar;
+                            this.isLoading = false;
+                        } else {
+                            Swal.fire(response.message, '', 'error');
+                            this.isLoading = false;
+                        }
+                    },
+                    error: (error) => {
+                        this.isLoading = false;
+                        this.ocultarLoader();
+                        Swal.fire(error, '', 'error');
+                        console.error('Error de la API:', error);
+                    },
+                });
+            }
+        });
+    }
+
+    //Vacia carrito
+    vaciacar(): void {
+        Swal.fire({
+            title: '¿Desea vaciar el carrito?',
+            text: "Eliminar todos los productos en el mismo.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Vaciar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.portalcliLogicaService.vaciacar().subscribe({
+                    next: (response: any) => {
+                        if (response.result) {
+                            // Vaciar this.productscar
+                            this.productscar = [];
+
+                            // Actualizar this.dataSource.data
+                            this.dataSource.data = this.productscar;
+
+                            // Actualizar el carrito
+                            this.revisarCarrito();
+
+                            Swal.fire({
+                                text: 'Carro vacio',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                toast: true,
+                                position: 'bottom-end',
+                            });
+                        } else {
+                            this.alertaerror();
+                        }
+                    },
+                    error: (error) => {
+                        this.alertaerror();
+                    },
+                });
+            }
+        });
+    }
+
+    revisarCarrito() {
+        this.portalcliLogicaService.revisarCarrito();
+        this.subscriptions.push(
+            this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
+                if (productos && productos.length > 0 && productos[0] && productos[0].value > 0) {
+                    this.productosEnCarritoNumber = productos[0].value;
+                } else {
+                    this.productosEnCarritoNumber = '0';
+                }
+            }),
+
+
+            this.portalcliLogicaService.unidades$.subscribe((unidades) => {
+                this.unidades = unidades;
+            }),
+            this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
+                this.totalBs = totalBs;
+            }),
+            this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
+                this.totalUsd = totalUsd;
+            }),
+            this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
+                this.encarprod = encarprod;
+            }),
+            this.portalcliLogicaService.ivaBs$.subscribe((ivaBs) => {
+                this.ivaBs = ivaBs;
+            }),
+            this.portalcliLogicaService.ivaUsd$.subscribe((ivaUsd) => {
+                this.ivaUsd = ivaUsd;
+            }),
+
+            this.portalcliLogicaService.descuentoBs$.subscribe((descuentoBs) => {
+                this.descuentoBs = descuentoBs;
+            }),
+            this.portalcliLogicaService.descuentoUsd$.subscribe((descuentoUsd) => {
+                this.descuentoUsd = descuentoUsd;
+            }),
+        );
+    }
+
+    imageficha: any;
+    selectedProduct: any = null;
+
+    openProductModal(row: any) {
+        Swal.showLoading();
+        this.portalcliLogicaService.openProductModal(row.codigoa).subscribe({
+            next: (data) => {
+                Swal.close();
+                this.selectedProduct = data.product;
+                this.imageficha = data.imageUrl;
+                this.openDialog(); // Llama a la función para abrir el modal
+            },
+            error: (error) => {
+                Swal.close();
+                console.error('Error al obtener el producto:', error);
+            },
+        });
+    }
+
+    openDialog() {
+        this.dialog.open(this.productModalTemplate, {
+            width: '80%',
+            maxWidth: '1200px',
+            data: { product: this.selectedProduct, imageUrl: this.imageficha } // Puedes pasar datos si es necesario
+        });
+    }
+
+    validateInput(product: any, event: any) {
+        product.cant = this.portalcliLogicaService.validateCant(event);
+    }
+
+    alertaerror(){
+        this.portalcliLogicaService.alertaerror();
+    }
+
+    mostrarLoader(){
+        this.portalcliLogicaService.mostrarLoader();
+    }
+
+    ocultarLoader(){
+        this.portalcliLogicaService.ocultarLoader();
+    }
+
+    sortData(sortField: keyof Product) {
+        this.sortField = sortField;
+        if (this.productscar && Array.isArray(this.productscar)) {
+            this.productscar.sort((a, b) => {
+                let valueA = a[sortField];
+                let valueB = b[sortField];
+
+                if (sortField === 'cant') {
+                    // Ordenamiento numérico para la columna 'cant'
+                    const numA = Number(valueA);
+                    const numB = Number(valueB);
+                    if (!isNaN(numA) && !isNaN(numB)) {
+                        if (numA < numB) {
+                            return this.sortDirection === 'asc' ? -1 : 1;
+                        } else if (numA > numB) {
+                            return this.sortDirection === 'asc' ? 1 : -1;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        // Si los valores no son números válidos, vuelve a la comparación de strings (opcional)
+                        const strA = String(valueA).toLowerCase();
+                        const strB = String(valueB).toLowerCase();
+                        if (strA < strB) {
+                            return this.sortDirection === 'asc' ? -1 : 1;
+                        } else if (strA > strB) {
+                            return this.sortDirection === 'asc' ? 1 : -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                } else if (typeof valueA === 'string' && typeof valueB === 'string') {
+                    // Ordenamiento de strings (ignorando mayúsculas/minúsculas) para otras columnas de texto
+                    valueA = valueA.toLowerCase();
+                    valueB = valueB.toLowerCase();
+                    if (valueA < valueB) {
+                        return this.sortDirection === 'asc' ? -1 : 1;
+                    } else if (valueA > valueB) {
+                        return this.sortDirection === 'asc' ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                } else {
+                    // Ordenamiento por defecto para otros tipos de datos (puede necesitar ajustes según tus datos)
+                    if (valueA < valueB) {
+                        return this.sortDirection === 'asc' ? -1 : 1;
+                    } else if (valueA > valueB) {
+                        return this.sortDirection === 'asc' ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+            this.dataSource.data = this.productscar;
+        } else {
+            console.warn('this.productscar no es un array, no se puede ordenar.');
         }
     }
-}
 
-/* recalculadescu(product: any){
-  console.log(product)
-} */
-
-  recalculadescud(product: any): number {
-    let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
-    let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-
-    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
-      if (!isNaN(precio)) {
-        const descuento = (precio * descuentoPorcentaje) / 100;
-        return precio - descuento;
-      } else {
-        return precio;
-      }
+    onSortChange(sortField: string) {
+        this.sortData(sortField as keyof Product);
     }
-    return precio;
-  }
 
-  recalculadescubs(product: any): number {
-    let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
-    let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-
-    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
-      if (!isNaN(precio)) {
-        const descuento = (precio * descuentoPorcentaje) / 100;
-        return precio - descuento;
-      } else {
-        return precio;
-      }
+    toggleSortDirection() {
+        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        this.sortData(this.sortField as keyof Product);
     }
-    return precio;
-  }
 
-recalcular(newValue: number, codigo: string) {
-  var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
-  var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
-  var preciod2 = preciod.innerText.replace('.','').replace(',','.') as any
 
-  totald.innerText=(parseFloat(preciod2)*newValue).toFixed(2).toString();
+    // Agrega la función applyFilter
+    applyFilter(event: Event) {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
 
-  var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
-  var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
-  var preciobs2 = preciobs.innerText.replace('.','').replace(',','.') as any
-  
-  totalbs.innerText=(parseFloat(preciobs2)*newValue).toFixed(2).toString();
-}
+    updatecant(idPedido: string, codigo: string, existen: string, change: string) {
+        const input = document.getElementById(`cantidad_${codigo}`) as HTMLInputElement;
 
-totalbscalc = 0;
-totaldcalc = 0;
-ivabscalc = 0;
-ivadcalc = 0;
-descubscalc = 0;
-descudcalc = 0;
+        const existenNum = parseInt(existen); // Convertir a número correctamente
 
-  totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-      const apiUrl = `${API_URL}totalizacampo`;
-      const formData = new FormData();
-      const token = this.authService.getToken();
+        if (input) {
+            const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
 
-      const headers = new HttpHeaders({
-          'Authorization': `${token}`
-      });
+            if (cantidadInput > existenNum && change!="-") { // Comparar el valor del input con existen
+                Swal.fire('Cantidad mayor a existencia', '', 'error');
+                return;
+            }
 
-      formData.append('id', idPedido);
-      formData.append('codigo', codigo);
-      formData.append('cantidad', cantidad.toString());
+            let newValue = cantidadInput + ((change === '-') ? -1 : 1);
 
-      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-          next: (response: any) => {
-              this.isLoading = false;
-              if (response.result == true) {
-                  // Actualiza productscar
-                  this.revisarCarrito();
-                  this.dataSource.data = [...this.productscar]; 
+            if (newValue > 0) {
+                input.value = newValue.toString();
+                this.recalcular(newValue,codigo)
 
-                  Swal.fire({
-                      text: 'Producto Actualizado',
-                      icon: 'success',
-                      showConfirmButton: false,
-                      timer: 3000,
-                      toast: true,
-                      position: 'bottom-end',
-                  });
-              } else {
+                this.totaliza(idPedido, codigo, newValue, existenNum); // Usar existenNum
+            }
+        }
+    }
+
+    /* recalculadescu(product: any){
+      console.log(product)
+    } */
+
+    /* recalculadescud(product: any): number {
+        let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
+        let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+
+        if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+            if (!isNaN(precio)) {
+                const descuento = (precio * descuentoPorcentaje) / 100;
+                return precio - descuento;
+            } else {
+                return precio;
+            }
+        }
+        return precio;
+    } */
+
+        recalculadescud(product: any): number {
+            let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
+            let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+            let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+        
+            if (!isNaN(precio)) {
+                let precioConDescuentoProveedor = precio;
+        
+                // Aplicar descuento del proveedor si es válido y mayor que cero
+                if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                    const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
+                    precioConDescuentoProveedor -= descuentoProveedor;
+                }
+        
+                let precioFinal = precioConDescuentoProveedor;
+        
+                // Aplicar el otro descuento si es válido y mayor que cero
+                if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                    const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
+                    precioFinal -= otroDescuento;
+                }
+        
+                return precioFinal;
+            } else {
+                return precio;
+            }
+        }
+
+    /* recalculadescubs(product: any): number {
+        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
+        let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+
+        if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
+            if (!isNaN(precio)) {
+                const descuento = (precio * descuentoPorcentaje) / 100;
+                return precio - descuento;
+            } else {
+                return precio;
+            }
+        }
+        return precio;
+    } */
+
+        recalculadescubs(product: any): number {
+            let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
+            let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+            let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+        
+            if (!isNaN(precio)) {
+                let precioConDescuentoProveedor = precio;
+        
+                // Aplicar descuento del proveedor si es válido y mayor que cero
+                if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                    const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
+                    precioConDescuentoProveedor -= descuentoProveedor;
+                }
+        
+                let precioFinal = precioConDescuentoProveedor;
+        
+                // Aplicar el otro descuento si es válido y mayor que cero
+                if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                    const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
+                    precioFinal -= otroDescuento;
+                }
+        
+                return precioFinal;
+            } else {
+                return precio;
+            }
+        }
+
+    recalcular(newValue: number, codigo: string) {
+        var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
+        var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
+        var preciod2 = preciod.innerText.replace('.','').replace(',','.') as any
+
+        totald.innerText=(parseFloat(preciod2)*newValue).toFixed(2).toString();
+
+        var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
+        var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
+        var preciobs2 = preciobs.innerText.replace('.','').replace(',','.') as any
+        //console.log(preciobs)
+        totalbs.innerText=(parseFloat(preciobs2)*newValue).toFixed(2).toString();
+    }
+
+    totalbscalc = 0;
+    totaldcalc = 0;
+    ivabscalc = 0;
+    ivadcalc = 0;
+    descubscalc = 0;
+    descudcalc = 0;
+
+    totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
+        const apiUrl = `${API_URL}totalizacampo`;
+        const formData = new FormData();
+        const token = this.authService.getToken();
+
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+
+        formData.append('id', idPedido);
+        formData.append('codigo', codigo);
+        formData.append('cantidad', cantidad.toString());
+
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+                this.isLoading = false;
+                if (response.result == true) {
+                    // Actualiza productscar
+                    this.revisarCarrito();
+                    this.dataSource.data = [...this.productscar];
+
+                    Swal.fire({
+                        text: 'Producto Actualizado',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        toast: true,
+                        position: 'bottom-end',
+                    });
+                } else {
+                    this.alertaerror();
+                }
+            },
+            error: (error) => {
+                this.isLoading = false;
                 this.alertaerror();
-              }
-          },
-          error: (error) => {
-              this.isLoading = false;
-              this.alertaerror();
-          },
-      });
-}
+            },
+        });
+    }
 
 
 
