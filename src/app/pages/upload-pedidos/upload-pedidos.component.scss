@@ -42,6 +42,19 @@
   font-size: 1.5rem;
 }
 
+.btn-generate {
+  margin-top: 0.5vh !important;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  height: 4vh;
+  border-radius: 1rem;
+  border: none;
+  color: #FFF;
+  background:   #198754;
+  font-size: 1.5rem;
+}
+
 .disclaimer {
   color: #dc3545;
 }
@@ -87,4 +100,30 @@ th {
 
 .historialped__historial-table {
   width: 100% !important;
+}
+
+.mr-2 {
+  margin-right: 0.5rem !important;
+
+}
+
+.dt-th-modal {
+  padding: 1rem;
+  font-size: 1rem !important;
+}
+
+.dt-td-modal {
+  padding: 1rem;
+  font-size: 0.9rem !important;
+}
+
+.header-flex-btw {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon-close {
+  font-size: 3rem;
+  color: #dc3545 !important;
 }

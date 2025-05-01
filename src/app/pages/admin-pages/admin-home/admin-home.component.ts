@@ -16,13 +16,11 @@ import {
   NgApexchartsModule
 } from "ng-apexcharts";
 import { CommonModule } from '@angular/common';
-import { HistorialpedComponent } from "../../../components/historialped/historialped.component";
 import { MatIconModule } from '@angular/material/icon';
 import { FooterComponent } from "../../../components/footer/footer.component";
 import { FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { SideBarAdminComponent } from "../../../components/side-bar-admin/side-bar-admin.component";
 import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
 import { ApiService } from '../../../services/api.service';
 import { HistoricoPedidosModel } from '../../../models/model';
@@ -51,14 +49,12 @@ export type ChartOptions = {
     FormsModule,
     ReactiveFormsModule,
     NgApexchartsModule,
-    HistorialpedComponent,
     MatIconModule,
     FooterComponent,
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    SideBarAdminComponent,
     SideBarComponent
   ],
   templateUrl: './admin-home.component.html',

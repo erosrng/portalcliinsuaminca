@@ -50,4 +50,15 @@ export class ProteoService {
     const apiUrl = this.apiUrl + `post/bdscli`;
     return this.httpClient.post(apiUrl,formData, {headers: headers})
   }
+
+  //Para enviar mutilples pedido por excel
+  generate_ped_multi(info: any): Observable<any> {
+    const token = this.authService.getToken();
+    const formData = new FormData();
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = this.apiUrl + `post/multiped`;
+    return this.httpClient.post(apiUrl, info, {headers: headers})
+  }
 }

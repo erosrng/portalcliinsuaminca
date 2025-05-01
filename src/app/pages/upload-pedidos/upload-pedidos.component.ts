@@ -113,9 +113,12 @@ export class UploadPedidosComponent implements OnInit {
 
     private _filterUnico(value: string): Clienteselect[] {
         const filterValue = value.toLowerCase();
-        return this.clientesIndividual.filter((option: Clienteselect) => option.nombre.toLowerCase().includes(filterValue));
-    }
 
+        return this.clientesIndividual.filter((option: Clienteselect) =>
+            option.nombre.toLowerCase().includes(filterValue) ||
+            option.cliente.toLowerCase().includes(filterValue) // Agregamos la búsqueda por cliente
+        );
+    }
     downloadFile(): void {
 
         if (this.typeUpload === 'GRUPO') {
@@ -211,85 +214,82 @@ export class UploadPedidosComponent implements OnInit {
 
     readFile(file: File): void {
         const reader: FileReader = new FileReader();
+        try {
+            reader.onload = (e: any) => {
+                try {
+                    const binaryString: string = e.target.result;
+                    const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
+                    const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
+                    const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+                    this.processExcelData(worksheet);
+                } catch (e) {
+                    this.showError();
+                }
+            };
 
-        reader.onload = (e: any) => {
-            const binaryString: string = e.target.result;
-            const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
-            const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
-            const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+            reader.onerror = (error) => {
+                console.error('Error al leer el archivo:', error);
+                this.showError();
+            };
 
-            this.processExcelData(worksheet);
-        };
+            reader.readAsBinaryString(file);
+        } catch (e) {
+           this.showError();
+        }
 
-        reader.onerror = (error) => {
-            console.error('Error al leer el archivo:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al leer el archivo',
-                text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
-                showCancelButton: false,
-            })
-        };
+    }
 
-        reader.readAsBinaryString(file);
+    showError() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al leer el archivo',
+            text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+            showCancelButton: false,
+        })
     }
 
     processExcelData(worksheet: XLSX.WorkSheet): void {
-        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
-
+        Swal.showLoading()
+        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
         if (jsonData && jsonData.length > 2) {
-            const oterHeader:  string[] = jsonData[1].filter(header => header !== null && header !== undefined);
-            const headers: string[] = jsonData[2].filter(header => header !== null && header !== undefined);
-            const dataRows: any[] = jsonData.slice(3).map(row => {
-                const rowData: any = {};
-                headers.forEach((header, index) => {
-                    rowData[header] = row[index];
-                });
-                return rowData;
-            });
+            // const
+            const headersNames = jsonData[0].filter(header => header !== null && header !== undefined);
+            const headersCodigos = jsonData[1].filter(header => header !== null && header !== undefined);
+            const pedidosRealizados: any[] = [];
+            const dataRows: any[] = jsonData.slice(2).map(row => {return row})
 
-            this.jsonData = {headers, data: dataRows};
-            console.log('Datos procesados:', this.jsonData);
 
-            const aux: any[] = []
-            oterHeader.forEach((item: any, index: number) => {
-                if (index > 0) {
-                    aux.push({
-
+                headersNames.forEach((item, index) => {
+                if (index > 5) {
+                    pedidosRealizados.push({
                         nombreCliente: item,
-                        codigoCliente: null,
-                        pedido: []
-                    })
+                        codigoCliente: headersCodigos[index],
+                        indexPedido: index,
+                        pedido: [],
+                    });
                 }
             });
 
-            headers.forEach((header, index) => {
-                if (index > 3) {
-                    aux[index - 4].codigoCliente = header;
-                }
-            });
-
-            aux.forEach(aux => {
-                dataRows.forEach((row: any, index: number) => {
-                    const auxCode = aux.codigoCliente
-                    if (row[auxCode] ) {
-                        if (Number(row[auxCode]) > 0 && row[auxCode] !== null) {
-                            aux.pedido.push({
-                                Codigo: row.Codigo,
-                                Descripcion: row.Descripcion,
-                                Descuento: row.Descuento,
-                                Precio: row.Precio,
-                                Unidades: row[auxCode]
-                            });
-                        }
+            pedidosRealizados.forEach((item, index) => {
+                dataRows.forEach((row) => {
+                    if (row[item.indexPedido]) {
+                        item.pedido.push({
+                            Codigo: row[0],
+                            COD_Proveedor: row[1],
+                            Descripcion: row[2],
+                            Precio: row[3],
+                            Oferta: row[4],
+                            Descuento: row[5],
+                            Unidades: row[item.indexPedido]
+                        });
                     }
                 })
             });
 
-            this.dataSource = aux;
+            const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
+            this.dataSource = pedidoFinales;
+            Swal.close()
 
-
-            console.log(aux)
         } else {
             console.warn('El archivo Excel no tiene suficientes filas o la estructura esperada.');
             this.jsonData = null;
@@ -298,7 +298,7 @@ export class UploadPedidosComponent implements OnInit {
                 title: 'El archivo Excel no tiene suficientes filas o la estructura esperada.',
                 text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
                 showCancelButton: false,
-            })
+            });
         }
     }
 
@@ -355,4 +355,86 @@ export class UploadPedidosComponent implements OnInit {
     openDetail(info: any): void {
         this.listActive = info.pedido
     }
+
+    generatePedido() {
+        console.log(this.selection.selected)
+        Swal.fire({
+            title: "Esta seguro que desea realizar el pedido",
+            text: "",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, continuar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const pedidoResponse: any = {
+                    pedidos: {} // Initialize 'pedidos' as an empty object
+                };
+
+                this.selection.selected.forEach((element: any) => {
+                    const codigoCliente = element.codigoCliente;
+                    if (!pedidoResponse.pedidos[codigoCliente]) {
+                        pedidoResponse.pedidos[codigoCliente] = []; // Initialize the array if it doesn't exist
+                    }
+
+                    element.pedido.forEach((info: any) => {
+                        pedidoResponse.pedidos[codigoCliente].push({
+                            cantidad: info.Unidades,
+                            descuento: info.Descuento,
+                            codigo: info.Codigo,
+                            diasCredito: 0,
+                            montoFactura:0
+                        });
+                    });
+                });
+                Swal.showLoading()
+                this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
+                    console.log(data)
+                    this.clearUpload();
+                    Swal.fire({
+                        title: "Pedidos generado",
+                        text: "",
+                        icon: "success"
+                    });
+                }, () => {
+                    Swal.fire({
+                        title: "Error al generar pedidos",
+                        text: "",
+                        icon: "error"
+                    });
+                })
+
+            }
+        });
+    }
+
+    clearAll() {
+        Swal.fire({
+            title: "Esta seguro que desea eliminar todos los pedidos?",
+            text: "Tendra que cargarlos nuevamente",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.clearUpload();
+                Swal.fire({
+                    title: "Pedidos borrados",
+                    text: "",
+                    icon: "success"
+                });
+            }
+        });
+    }
+
+    clearUpload() {
+        this.dataSource= new MatTableDataSource<any>([]);
+        this.selection= new SelectionModel<any>(true, []);
+        this.listActive= [];
+        this.controlCasaMatriz.setValue(null)
+    }
+
 }
