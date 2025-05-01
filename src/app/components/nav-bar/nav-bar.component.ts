@@ -77,7 +77,10 @@ export class NavBarComponent implements OnInit {
     //this.clientes = this.authService.getClientes();
     this.grup = this.authService.getLgrup();
     this.portalcliLogicaService.buscaalmacen();
-    this.revisarCarrito();
+
+    //if (this.rutaActual != 'carrito') {
+      this.revisarCarrito();
+    //}
   }
 
   toggleMenu() {

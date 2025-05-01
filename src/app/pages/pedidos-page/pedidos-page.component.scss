@@ -273,6 +273,19 @@
     text-align: center;
 }
 
+  .oferta-proveedor-inline {
+    background-color: #f0f0f0; /* Fondo claro */
+    color: #4960e6; /* Color primario de Angular Material */
+    font-size: 0.6em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px; /* Espacio entre la existencia y la etiqueta */
+    vertical-align: middle; /* Alinear verticalmente con el texto de existencia */
+    display: inline-block; /* Permite que los elementos se muestren en línea */
+    line-height: 1; /* Asegura que el texto dentro del div no tenga un espaciado vertical excesivo */
+  }
+  
+  
 .clear-car {
     text-align: center;
     color: #ff2f2f;

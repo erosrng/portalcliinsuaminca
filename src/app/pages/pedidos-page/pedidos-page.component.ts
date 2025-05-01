@@ -33,7 +33,7 @@ import * as XLSX from 'xlsx';
 import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 export interface Clienteselect {
   cliente: string;
@@ -57,6 +57,7 @@ export interface Clienteselect {
     MatFormFieldModule,
     MatIconModule,
     ReactiveFormsModule,
+    MatTooltipModule,
     AsyncPipe,
     MatTabsModule,
     MatStepperModule,
@@ -124,6 +125,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filterLote: string = '';
   orderBy: string = 'descrip'; // Valor por defecto
   orderDirection: string = 'asc';
+
+  escalaActiva = ''
 
   codCli: string | null = null;
   //clientes: any[] = [];
@@ -196,10 +199,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     if (this.stepper) {
       this.stepper.selectionChange.pipe(takeUntil(this.destroy$)).subscribe((step) => {
         // Verifica si el índice del paso actual es 2 (el tercer paso, ya que los índices son 0, 1, 2)
-        if (step.selectedIndex == 2 && this.carshopComponent) {
+        /*if (step.selectedIndex == 2 && this.carshopComponent) {
           // Llama a la función openCar() del CarshopComponent
           this.carshopComponent.subscribeToClienteData();
-        }
+        }*/
       });
     }
     this.dataSource.sort = this.sort;
@@ -331,10 +334,10 @@ sortData(sortField: string) {
         cliente.rifci === inputValue
     );
 
-    if (selectedCliente) {
+    /* if (selectedCliente) {
       this.onClienteSeleccionado(selectedCliente);
 
-    }
+    } */
   }
 
   onClienteSeleccionado(cliente: Clienteselect): void {
@@ -343,8 +346,6 @@ sortData(sortField: string) {
 
     this.portalcliLogicaService.buscaalmacen();
     this.clienteData = cliente; // Actualizar clienteData al seleccionar
-    this.applyFilters(); // Recargar productos al seleccionar cliente
-    this.revisarCarrito();
     if(this.codCli){
       this.subscribeToClienteData();
     }
@@ -363,7 +364,7 @@ sortData(sortField: string) {
     pageChanged(event: PageEvent) {
       this.currentPage = event.pageIndex + 1;
       this.itemsPerPage = event.pageSize;
-      this.fetchPedidos();
+      //this.fetchPedidos();
     }
   
   
@@ -421,7 +422,6 @@ sortData(sortField: string) {
           this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
           this.aplicarDescuentoLineal();
           this.dataSource.paginator = this.paginator;
-          
           this.cdr.detectChanges();
           this.isLoading = false; 
           Swal.close();
@@ -452,33 +452,10 @@ sortData(sortField: string) {
 
   }
 
+  formatOfertasTooltip(ofertas: any[]): string {
+    return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
+  }
   // Función para aplicar el descuento lineal
-  /* aplicarDescuentoLineal(): void {    
-    if (this.descuentoLineal > 100) {
-      Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
-      return;
-    }
-
-    if (this.descuentoLineal !== null) {
-      this.pagedProducts = this.pagedProducts.map(product => {
-        if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
-          product.descprov = this.descuentoLineal;
-        }
-        return product;
-      });
-      this.dataSource.data = this.pagedProducts; // Actualiza la vista de la tabla
-    } else {
-      // Si el descuento lineal es null, puedes resetear los descuentos si lo deseas
-      this.pagedProducts = this.pagedProducts.map(product => {
-        if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
-          product.descprov = null; // O el valor original si lo tienes almacenado
-        }
-        return product;
-      });
-      this.dataSource.data = this.pagedProducts; // Actualiza la vista de la tabla
-    }
-  } */
-
     aplicarDescuentoLineal(): void {
       if (this.descuentoLineal > 100) {
         Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
@@ -507,7 +484,7 @@ sortData(sortField: string) {
 
   goToFirstPage() {
     this.currentPage = 1;
-    this.fetchPedidos();
+    //this.fetchPedidos();
     if (this.paginator) {
       this.paginator.firstPage();
     }
@@ -515,7 +492,7 @@ sortData(sortField: string) {
 
   goToLastPage() {
     this.currentPage = this.totalPages;
-    this.fetchPedidos();
+    //this.fetchPedidos();
     if (this.paginator) {
       this.paginator.lastPage();
     }
@@ -932,8 +909,9 @@ sortData(sortField: string) {
   }
 
   getPriceWDiscountBS(element: any): number {
-    let precio = parseFloat(String(element.oprecio).replace(',', '.'));
-    //console.log(element)
+    let precioStr = String(element.oprecio);
+    precioStr = precioStr.replace(/\./g, ''); // Elimina todos los puntos (asumiendo que son separadores de miles)
+    let precio = parseFloat(precioStr.replace(',', '.'));
     let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
@@ -942,12 +920,11 @@ sortData(sortField: string) {
         return precio - descuento;
       } else {
         console.warn('Oprecio no es un número válido:', element);
-        return precio; // Devuelve el precio original (NaN si no es válido)
+        return precio;
       }
     }
-    return precio; // Devuelve el precio original (NaN si no es válido)
+    return parseFloat(String(precio).replace(',', '.').replace('.',','));
   }
-
   
 
    

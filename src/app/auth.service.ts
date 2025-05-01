@@ -7,6 +7,7 @@ interface DecodedToken {
   nomprv: string;
   usuario: string;
   nombre: string;
+  emailuser: string | null;
   logged_in: boolean;
   tipo_u: string;
   almacen: string;
@@ -60,6 +61,10 @@ export class AuthService {
 
   getUsuario(): string | null {
     return this.decodedToken ? this.decodedToken.usuario : null;
+  }
+
+  getEmailuser(): string | null {
+    return this.decodedToken ? this.decodedToken.emailuser : null;
   }
 
   getProveed(): string | null {
@@ -128,7 +133,6 @@ export class AuthService {
   setCodCli(cliente: string | null): void {
     this._codCli = cliente;
     localStorage.setItem('codCli', cliente || '');
-    console.log('en el setcodcli auth service: '+this._codCli)
   }
   getClientes(): { cliente: string; nombre: string; rifci: string }[] | null {
     return this.decodedToken ? this.decodedToken.clientes : null;
