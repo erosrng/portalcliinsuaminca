@@ -395,6 +395,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         });
     }
 
+    totalCompleto: number = 0;
+    
     revisarCarrito() {
         this.portalcliLogicaService.revisarCarrito();
         this.subscriptions.push(
@@ -410,7 +412,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             this.portalcliLogicaService.unidades$.subscribe((unidades) => {
                 this.unidades = unidades;
             }),
-            this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
+           this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
                 this.totalBs = totalBs;
             }),
             this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {

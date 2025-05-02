@@ -12,6 +12,7 @@ interface DecodedToken {
   tipo_u: string;
   almacen: string;
   tasa: string;
+  rif: string;
   cmatriz: string;
   lgrup: { grupo: string; nom_grup: string;}[];
   clientes: { cliente: string; nombre: string; rifci: string }[];
@@ -88,7 +89,9 @@ export class AuthService {
   getAlmacen(): string | null {
     return this.decodedToken ? this.decodedToken.almacen : null;
   }
-
+  getRif(): string | null {
+    return this.decodedToken ? this.decodedToken.rif : null;
+  }
   getTasa(): number {
     if (!this.decodedToken || this.decodedToken.tasa === undefined || this.decodedToken.tasa === null) {
       return 0;
