@@ -12,11 +12,12 @@ interface DecodedToken {
   tipo_u: string;
   almacen: string;
   tasa: string;
-  rif: string;
+  rifproveed: string;
   cmatriz: string;
   lgrup: { grupo: string; nom_grup: string;}[];
   clientes: { cliente: string; nombre: string; rifci: string }[];
   API_TIME: number;
+  dmfactura: number;
 }
 
 @Injectable({
@@ -90,7 +91,7 @@ export class AuthService {
     return this.decodedToken ? this.decodedToken.almacen : null;
   }
   getRif(): string | null {
-    return this.decodedToken ? this.decodedToken.rif : null;
+    return this.decodedToken ? this.decodedToken.rifproveed : null;
   }
   getTasa(): number {
     if (!this.decodedToken || this.decodedToken.tasa === undefined || this.decodedToken.tasa === null) {
@@ -99,6 +100,14 @@ export class AuthService {
   
     const parsedTasa = parseFloat(this.decodedToken.tasa);
     return isNaN(parsedTasa) ? 0 : parsedTasa;
+  }
+
+  getDiasMontoFactura(): number {
+    if (!this.decodedToken || this.decodedToken.dmfactura === undefined || this.decodedToken.dmfactura === null) {
+      return 0;
+    }
+  
+    return this.decodedToken.dmfactura;
   }
 
   getNomprv(): string | null {

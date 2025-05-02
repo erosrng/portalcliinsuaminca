@@ -11,7 +11,7 @@ import {
   setClassMetadata,
   ɵɵdefineComponent,
   ɵɵdefineInjectable
-} from "./chunk-CKNLAB5I.js";
+} from "./chunk-SK5KBZ3U.js";
 
 // node_modules/@angular/cdk/fesm2022/private.mjs
 var appsWithLoaders = /* @__PURE__ */ new WeakMap();
@@ -95,4 +95,4 @@ export {
   _CdkPrivateStyleLoader,
   _VisuallyHiddenLoader
 };
-//# sourceMappingURL=chunk-KYNG3EHC.js.map
+//# sourceMappingURL=chunk-3YKIKGCW.js.map
