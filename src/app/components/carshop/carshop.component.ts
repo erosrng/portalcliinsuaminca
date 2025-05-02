@@ -316,39 +316,45 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                     'codigo_cliente': this.clienteData.cliente,
                     'nombre_cliente':  this.clienteData.nombre,
                     'Pedido': this.productscar,
+                    'diasCredito': this.diasCredito,
+                    'montoFactura': this.montoFactura,
                 }
-                /*  this.apiService.generate_ped(aux).subscribe((data: any) => {
+                this.apiService.generate_ped(aux).subscribe((data: any) => {
                     console.log(data)
                     this.isLoading = false;
                     this.ocultarLoader();
-                    Swal.fire('Pedido creado', '', 'success');
+                    this.generar_pedido_proteo(apiUrl, formData, headers);
                   }, () => {
                     this.isLoading = false;
-                    this.ocultarLoader();/!*
-                    Swal.fire('Ocurrio un error', '', 'error');
-                  })*!/*/
-                this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-                    next: (response: any) => {
-                        if (response.result) {
-                            this.ocultarLoader();
-                            this.revisarCarrito();
-                            Swal.fire(response.message, '', 'success');
-                            this.productscar = [];
-                            this.dataSource.data = this.productscar;
-                            this.isLoading = false;
-                        } else {
-                            Swal.fire(response.message, '', 'error');
-                            this.isLoading = false;
-                        }
-                    },
-                    error: (error) => {
-                        this.isLoading = false;
-                        this.ocultarLoader();
-                        Swal.fire(error, '', 'error');
-                        console.error('Error de la API:', error);
-                    },
-                });
+                    this.ocultarLoader();
+
+                  })
+
             }
+        });
+    }
+
+    generar_pedido_proteo(apiUrl: any, formData: any, headers: any): void {
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+                if (response.result) {
+                    this.ocultarLoader();
+                    this.revisarCarrito();
+                    Swal.fire(response.message, '', 'success');
+                    this.productscar = [];
+                    this.dataSource.data = this.productscar;
+                    this.isLoading = false;
+                } else {
+                    Swal.fire(response.message, '', 'error');
+                    this.isLoading = false;
+                }
+            },
+            error: (error) => {
+                this.isLoading = false;
+                this.ocultarLoader();
+                Swal.fire(error, '', 'error');
+                console.error('Error de la API:', error);
+            },
         });
     }
 

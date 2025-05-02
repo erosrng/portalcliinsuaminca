@@ -61,4 +61,30 @@ export class ProteoService {
     const apiUrl = this.apiUrl + `post/multiped`;
     return this.httpClient.post(apiUrl, info, {headers: headers})
   }
+
+
+  //Para enviar pedido por excel sencillo
+  generate_ped_simple(info: any): Observable<any> {
+    const token = this.authService.getToken();
+    const formData = new FormData();
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = this.apiUrl + `post/listape`;
+    return this.httpClient.post(apiUrl, info, {headers: headers})
+  }
+
+
+  //Para obtener el excel de pedido sencillo
+  get_file_simple() : Observable<Blob> {
+    const formData = new FormData();
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = this.apiUrl + `post/simplefile`;
+    return this.httpClient.post(apiUrl, '', { headers: headers, responseType: 'blob', })
+  }
+
 }

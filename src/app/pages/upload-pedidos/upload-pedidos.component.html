@@ -102,10 +102,10 @@
 
                                             </div>
 
-                                            <div class="col-12"
-                                                 *ngIf="controlUnico.value !== '' && controlUnico.value !== null"
-                                            >
-                                                <button class="btn-upload" (click)="uploadFile();">
+
+                                            <div class="col-12" *ngIf="controlUnico.value !== '' && controlUnico.value !== null">
+                                                <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>
+                                                <button class="btn-upload" (click)="fileInput.click()">
                                                     <i class="fas fa-file-upload"></i>
                                                     Cargar archivo
                                                 </button>
@@ -247,7 +247,7 @@
                                     <td class="dt-td-modal ">{{ pedido.Codigo }}</td>
                                     <td class="dt-td-modal ">{{ pedido.Descripcion }}</td>
                                     <td class="dt-td-modal ">{{ pedido.Descuento }}%</td>
-                                    <td class="dt-td-modal ">{{ pedido.Precio | number: '1.0-3'}} $</td>
+                                    <td class="dt-td-modal ">{{ getprice(pedido)| number: '1.0-3'}} $</td>
 
                                 </tr>
                                 </tbody>
