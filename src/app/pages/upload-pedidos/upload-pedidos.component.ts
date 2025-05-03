@@ -23,6 +23,10 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {SelectionModel} from '@angular/cdk/collections';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {API_URL} from "../../app.config";
+import {AuthService} from "../../auth.service";
+import {ApiService} from "../../services/api.service";
 
 
 @Component({
@@ -74,14 +78,71 @@ export class UploadPedidosComponent implements OnInit {
     dataSource: any = new MatTableDataSource<any>([]);
     selection = new SelectionModel<any>(true, []);
     listActive: any[] = [];
+    listProdutos: any[] = [];
+    clienteData: any;
+    diasCredito = 0
+    montoFactura = 0
+    emailSendUser = ''
 
     constructor(
         private proteoServices: ProteoService,
+        private authService: AuthService,
+        public http: HttpClient,
+        private apiService: ApiService,
     ) {
     }
 
     ngOnInit() {
         this.loadAll();
+    }
+
+    fetchPedidos() {
+        Swal.showLoading();
+        const formData = new FormData();
+        const token = this.authService.getToken();
+        const codCli = '00001';
+
+        if(codCli){
+            formData.append('start', '0');
+            formData.append('length', '1000');
+            formData.append('codCli', '00001');
+            formData.append('search', '');
+            formData.append('categoria','');
+            formData.append('almacen', '0001');
+            formData.append('lote', '');
+            formData.append('orderby', 'descrip');
+            formData.append('orderDirection', 'asc');
+            formData.append('nuevos', '0');
+            formData.append('columns', JSON.stringify([
+                { data: 'codigo' },
+                { data: 'descrip' },
+                { data: 'nomprv' },
+                { data: 'oprecio' },
+                { data: 'existen' },
+            ]));
+
+            const headers = new HttpHeaders({
+                'Authorization': `${token}`
+            });
+            const apiUrl = `${API_URL}inventarioprv`;
+
+            this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+                next: (response: any) => {
+                    this.listProdutos = response.data.data;
+                    console.log('ENTRE')
+                },
+                error: (error) => {
+                    Swal.hideLoading();
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error al cargar inventario',
+                    })
+                    console.error('Error al cargar inventario:', error);
+                },
+            });
+
+        }
+
     }
 
     loadAll(): void {
@@ -101,6 +162,7 @@ export class UploadPedidosComponent implements OnInit {
                     map(value => this._filterUnico(value || '')),
                 );
 
+                this.fetchPedidos();
                 Swal.close()
             })
         });
@@ -113,7 +175,11 @@ export class UploadPedidosComponent implements OnInit {
 
     private _filterUnico(value: string): Clienteselect[] {
         const filterValue = value.toLowerCase();
-        return this.clientesIndividual.filter((option: Clienteselect) => option.nombre.toLowerCase().includes(filterValue));
+
+        return this.clientesIndividual.filter((option: Clienteselect) =>
+            option.nombre.toLowerCase().includes(filterValue) ||
+            option.cliente.toLowerCase().includes(filterValue) // Agregamos la búsqueda por cliente
+        );
     }
 
     downloadFile(): void {
@@ -159,7 +225,7 @@ export class UploadPedidosComponent implements OnInit {
             if (this.controlUnico.value !== '' && this.controlUnico.value !== null) {
                 const nombreUnico: any = this.controlUnico.value;
                 Swal.showLoading();
-                this.proteoServices.get_document_by_group(nombreUnico).subscribe(
+                this.proteoServices.get_file_simple().subscribe(
                     (data: Blob) => {
                         const url = window.URL.createObjectURL(data);
                         const a = document.createElement('a');
@@ -211,85 +277,119 @@ export class UploadPedidosComponent implements OnInit {
 
     readFile(file: File): void {
         const reader: FileReader = new FileReader();
+        try {
+            reader.onload = (e: any) => {
+                try {
+                    const binaryString: string = e.target.result;
+                    const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
+                    const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
+                    const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+                    this.processExcelData(worksheet);
+                } catch (e) {
+                    this.showError();
+                }
+            };
 
-        reader.onload = (e: any) => {
-            const binaryString: string = e.target.result;
-            const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
-            const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
-            const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+            reader.onerror = (error) => {
+                console.error('Error al leer el archivo:', error);
+                this.showError();
+            };
 
-            this.processExcelData(worksheet);
-        };
+            reader.readAsBinaryString(file);
+        } catch (e) {
+           this.showError();
+        }
 
-        reader.onerror = (error) => {
-            console.error('Error al leer el archivo:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error al leer el archivo',
-                text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
-                showCancelButton: false,
-            })
-        };
+    }
 
-        reader.readAsBinaryString(file);
+
+    onFileChangeUnico(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            this.readFileUnico(file);
+        }
+    }
+
+    readFileUnico(file: File): void {
+        const reader: FileReader = new FileReader();
+        try {
+            reader.onload = (e: any) => {
+                try {
+                    const binaryString: string = e.target.result;
+                    const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
+                    const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
+                    const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+                    this.processExcelDataUnico(worksheet);
+                } catch (e) {
+                    this.showError();
+                }
+            };
+
+            reader.onerror = (error) => {
+                console.error('Error al leer el archivo:', error);
+                this.showError();
+            };
+
+            reader.readAsBinaryString(file);
+        } catch (e) {
+            this.showError();
+        }
+
+    }
+
+    showError() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al leer el archivo',
+            text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+            showCancelButton: false,
+        })
     }
 
     processExcelData(worksheet: XLSX.WorkSheet): void {
-        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, {header: 1, raw: false});
-
+        Swal.showLoading()
+        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
         if (jsonData && jsonData.length > 2) {
-            const oterHeader:  string[] = jsonData[1].filter(header => header !== null && header !== undefined);
-            const headers: string[] = jsonData[2].filter(header => header !== null && header !== undefined);
-            const dataRows: any[] = jsonData.slice(3).map(row => {
-                const rowData: any = {};
-                headers.forEach((header, index) => {
-                    rowData[header] = row[index];
-                });
-                return rowData;
-            });
+            // const
+            const headersNames = jsonData[0].filter(header => header !== null && header !== undefined);
+            const headersCodigos = jsonData[1].filter(header => header !== null && header !== undefined);
+            const pedidosRealizados: any[] = [];
+            const dataRows: any[] = jsonData.slice(2).map(row => {return row})
 
-            this.jsonData = {headers, data: dataRows};
-            console.log('Datos procesados:', this.jsonData);
 
-            const aux: any[] = []
-            oterHeader.forEach((item: any, index: number) => {
-                if (index > 0) {
-                    aux.push({
-
+            headersNames.forEach((item, index) => {
+                if (index > 5) {
+                    pedidosRealizados.push({
                         nombreCliente: item,
-                        codigoCliente: null,
-                        pedido: []
-                    })
+                        codigoCliente: headersCodigos[index - 5],
+                        indexPedido: index,
+                        pedido: [],
+                    });
                 }
             });
 
-            headers.forEach((header, index) => {
-                if (index > 3) {
-                    aux[index - 4].codigoCliente = header;
-                }
-            });
+            console.log(pedidosRealizados)
 
-            aux.forEach(aux => {
-                dataRows.forEach((row: any, index: number) => {
-                    const auxCode = aux.codigoCliente
-                    if (row[auxCode] ) {
-                        if (Number(row[auxCode]) > 0 && row[auxCode] !== null) {
-                            aux.pedido.push({
-                                Codigo: row.Codigo,
-                                Descripcion: row.Descripcion,
-                                Descuento: row.Descuento,
-                                Precio: row.Precio,
-                                Unidades: row[auxCode]
-                            });
-                        }
+            pedidosRealizados.forEach((item, index) => {
+                dataRows.forEach((row) => {
+                    if (row[item.indexPedido]) {
+                        item.pedido.push({
+                            Codigo: row[0],
+                            COD_Proveedor: row[1],
+                            Descripcion: row[2],
+                            Precio: row[3],
+                            Oferta: row[4],
+                            Descuento: row[5],
+                            Unidades: row[item.indexPedido]
+                        });
                     }
                 })
             });
 
-            this.dataSource = aux;
+            const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
+            this.dataSource = pedidoFinales;
+            Swal.close()
 
-
-            console.log(aux)
         } else {
             console.warn('El archivo Excel no tiene suficientes filas o la estructura esperada.');
             this.jsonData = null;
@@ -298,7 +398,65 @@ export class UploadPedidosComponent implements OnInit {
                 title: 'El archivo Excel no tiene suficientes filas o la estructura esperada.',
                 text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
                 showCancelButton: false,
+            });
+        }
+    }
+
+    processExcelDataUnico(worksheet: XLSX.WorkSheet): void {
+        Swal.showLoading()
+        const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
+        console.log(jsonData)
+        if (jsonData && jsonData.length > 2) {
+            // const
+            const headersNames = jsonData[3].filter(header => header !== null && header !== undefined);
+            const pedidosRealizados: any[] = [];
+            const dataRows: any[] = jsonData.slice(4).map(row => {return row})
+            let cliente: any;
+            this.clientesIndividual.forEach((item, index) => {
+                if (item.cliente === this.controlUnico.value) {
+                    cliente = item
+                }
             })
+
+
+            pedidosRealizados.push({
+                nombreCliente: cliente.nombre,
+                codigoCliente: this.controlUnico.value,
+                indexPedido: 0,
+                pedido: [],
+            });
+
+            pedidosRealizados.forEach((item, index) => {
+                dataRows.forEach((row) => {
+                    if (Number(row[11]) > 0) {
+                        item.pedido.push({
+                            Codigo: row[0],
+                            COD_Proveedor: localStorage.getItem('proveed'),
+                            Descripcion: row[2],
+                            Precio: row[12],
+                            Oferta1: row[4],
+                            Oferta2: row[6],
+                            Descuento: row[13],
+                            Unidades: row[11]
+                        });
+                    }
+                })
+            });
+
+            const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
+            this.dataSource = pedidoFinales;
+            console.log(this.dataSource)
+            Swal.close()
+
+        } else {
+            console.warn('El archivo Excel no tiene suficientes filas o la estructura esperada.');
+            this.jsonData = null;
+            Swal.fire({
+                icon: 'error',
+                title: 'El archivo Excel no tiene suficientes filas o la estructura esperada.',
+                text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+                showCancelButton: false,
+            });
         }
     }
 
@@ -343,16 +501,366 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getValor(element: any): number {
+
         const aux = element.pedido;
         let valueOfRetur = 0
         aux.forEach((info: any) => {
-            valueOfRetur = Number(info.Precio) + valueOfRetur
+            const stringNumber = info.Precio;
+            const normalizedString = stringNumber.replace(",", "");
+            const number = parseFloat(normalizedString);
+            valueOfRetur = number + valueOfRetur
         })
-
         return valueOfRetur
     }
 
     openDetail(info: any): void {
         this.listActive = info.pedido
     }
+
+    getprice(pedido: any) {
+        const stringNumber = pedido.Precio;
+        const normalizedString = stringNumber.replace(",", ".");
+        const number = parseFloat(normalizedString);
+        return number
+    }
+
+    generatePedido() {
+        if (this.typeUpload === 'GRUPO') {
+            Swal.fire({
+                title: "Esta seguro que desea realizar el pedido",
+                text: "",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, continuar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    Swal.fire({
+                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                        input: "text",
+                        inputAttributes: {
+                            autocapitalize: "off"
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Enviar",
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (login) => {
+                           if (login === '' || login === null) {
+                               return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                           } else {
+                               this.emailSendUser = login;
+                           }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.executeMultiPed();
+                        }
+                    });
+                }
+            });
+        }
+        if (this.typeUpload === 'INDIVIDUAL') {
+            Swal.fire({
+                title: "Esta seguro que desea realizar el pedido",
+                text: "",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, continuar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                        input: "text",
+                        inputAttributes: {
+                            autocapitalize: "off"
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Enviar",
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (login) => {
+                            if (login === '' || login === null) {
+                                return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                            } else {
+                                this.emailSendUser = login;
+                            }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.executePed();
+                        }
+                    });
+
+                }
+            });
+        }
+
+    }
+
+    executePed(): void {
+        Swal.showLoading()
+        // {
+        //     "enviar":true,
+        //     "cliente":"01234",
+        //     "pedido":[
+        //     {"codigo":"012345","cantidad":12,"descuento":12},
+        //     ...
+        // ]
+        // }
+        const pedidoResponse: any = {
+            cliente: this.controlUnico.value,
+            enviar: true,
+            diasCredito: this.diasCredito,
+            montoFactura:this.montoFactura,
+            pedido: []
+        };
+        this.selection.selected.forEach((element: any) => {
+
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+
+        const pedidoApi: any[] = [];
+        this.selection.selected.forEach((element: any) => {
+
+            element.pedido.forEach((info: any) => {
+                this.listProdutos.forEach((item: any) => {
+                    if (info.Codigo === item.codigo) {
+                        console.log('entre')
+                        pedidoApi.push({
+                            cant: Number(info.Unidades),
+                            descuento: info.Descuento,
+                            codigo: item.codigo,
+                            descprov: item.descprov,
+                            descrip: item.descrip,
+                            dprice: item.dprice,
+                            dpriced: item.dpriced,
+                            encar: item.encar,
+                            existen: item.existen,
+                            img: item.img,
+                            lote: item.lote,
+                            nomprv: item.nomprv,
+                            oferta: item.oferta,
+                            oprecio: item.oprecio,
+                            opreciod: item.opreciod,
+                            vence: item.vence,
+                            barras: '',
+                            bssiniva: '',
+                            cod_cli: '',
+                            codigoa: '',
+                            dconiva: '',
+                            descu: '',
+                            dsiniva: '',
+                            escala: '',
+                            id_pedido: '',
+                            iva: '',
+                            ivabs: '',
+                            ivad: '',
+                            preciod: '',
+                            preciosiniva: '',
+                            tasa: 0,
+                            tivabs: '',
+                            tivad: '',
+                            totalbs: '',
+                            totald: info.Precio,
+
+
+                        });
+                    }
+                })
+
+            });
+        });
+
+        this.clientesIndividual.forEach((item, index) => {
+            if (item.cliente === this.controlUnico.value) {
+                this.clienteData = item
+            }
+        })
+
+        const aux = {
+            'usuario': localStorage.getItem('usuario'),
+            'nombre': localStorage.getItem('nombre'),
+            'nomprv': localStorage.getItem('nomprv'),
+            'proveed': localStorage.getItem('proveed'),
+            'codigo_cliente': this.clienteData.cliente,
+            'nombre_cliente':  this.clienteData.nombre,
+            'Pedido': pedidoApi,
+            'diasCredito': this.diasCredito,
+            'montoFactura': this.montoFactura,
+        }
+        this.apiService.generate_ped(aux).subscribe((data: any) => {
+            Swal.showLoading()
+            this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
+                console.log(data)
+                this.clearUpload();
+                Swal.fire({
+                    title: "Pedidos generado",
+                    text: "",
+                    icon: "success"
+                });
+            }, () => {
+                Swal.fire({
+                    title: "Error al generar pedidos",
+                    text: "",
+                    icon: "error"
+                });
+            })
+        })
+    }
+
+    executeMultiPed(): void {
+        const pedidoResponse: any = {
+            pedidos: {}
+        };
+
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            pedidoResponse.pedidos[codigoCliente] = {
+                diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
+                montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
+                pedido: []
+            };
+
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedidos[codigoCliente].pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+        Swal.showLoading()
+
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            this.clientesIndividual.forEach((item, index) => {
+                if (item.cliente === codigoCliente) {
+                    this.clienteData = item
+                }
+            });
+            const pedidoApi: any[] = [];
+            console.log(element)
+            console.log(this.listProdutos)
+            element.pedido.forEach((info: any) => {
+                this.listProdutos.forEach((item: any) => {
+                    if (info.Codigo === item.codigo) {
+                        console.log(info)
+                        pedidoApi.push({
+                            cant: Number(info.Unidades),
+                            descuento: info.Descuento,
+                            codigo: item.codigo,
+                            descprov: item.descprov,
+                            descrip: item.descrip,
+                            dprice: item.dprice,
+                            dpriced: item.dpriced,
+                            encar: item.encar,
+                            existen: item.existen,
+                            img: item.img,
+                            lote: item.lote,
+                            nomprv: item.nomprv,
+                            oferta: item.oferta,
+                            oprecio: item.oprecio,
+                            opreciod: item.opreciod,
+                            vence: item.vence,
+                            barras: '',
+                            bssiniva: '',
+                            cod_cli: '',
+                            codigoa: '',
+                            dconiva: '',
+                            descu: '',
+                            dsiniva: '',
+                            escala: '',
+                            id_pedido: '',
+                            iva: '',
+                            ivabs: '',
+                            ivad: '',
+                            preciod: '',
+                            preciosiniva: '',
+                            tasa: 0,
+                            tivabs: '',
+                            tivad: '',
+                            totalbs: '',
+                            totald: info.Precio,
+
+
+                        });
+                    }
+                })
+            });
+            const aux = {
+                'usuario': localStorage.getItem('usuario'),
+                'nombre': localStorage.getItem('nombre'),
+                'nomprv': localStorage.getItem('nomprv'),
+                'proveed': localStorage.getItem('proveed'),
+                'codigo_cliente': this.clienteData.cliente,
+                'nombre_cliente':  this.clienteData.nombre,
+                'Pedido': pedidoApi,
+                'diasCredito': this.diasCredito,
+                'montoFactura': this.montoFactura,
+                'emailSendUser': this.emailSendUser,
+            }
+            this.apiService.generate_ped(aux).subscribe((data: any) => {
+                console.log('pedido enviado')
+            })
+        });
+
+        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
+            console.log(data)
+            this.clearUpload();
+            Swal.fire({
+                title: "Pedidos generado",
+                text: "",
+                icon: "success"
+            });
+        }, () => {
+            Swal.fire({
+                title: "Error al generar pedidos",
+                text: "",
+                icon: "error"
+            });
+        })
+
+    }
+
+    clearAll() {
+        Swal.fire({
+            title: "Esta seguro que desea eliminar todos los pedidos?",
+            text: "Tendra que cargarlos nuevamente",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, eliminar!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.clearUpload();
+                Swal.fire({
+                    title: "Pedidos borrados",
+                    text: "",
+                    icon: "success"
+                });
+            }
+        });
+    }
+
+    clearUpload() {
+        this.dataSource= new MatTableDataSource<any>([]);
+        this.selection= new SelectionModel<any>(true, []);
+        this.listActive= [];
+        this.controlCasaMatriz.setValue(null)
+        this.controlUnico.setValue(null)
+        this.emailSendUser = ''
+    }
+
 }
