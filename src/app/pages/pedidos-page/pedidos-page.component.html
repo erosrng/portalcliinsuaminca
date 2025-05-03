@@ -210,7 +210,7 @@
                     <td mat-cell *matCellDef="let element"> {{element.descrip}} </td>
                   </ng-container>
               
-                  <ng-container matColumnDef="opreciod" class="w-10">
+                 <!--  <ng-container matColumnDef="opreciod" class="w-10">
                     <th mat-header-cell *matHeaderCellDef  mat-sort-header="oprecio" (click)="sortData('oprecio')" > Precio </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center"> 
                       <span class="green">{{element.dpriced}} US$</span>
@@ -218,9 +218,34 @@
                       <span class="blue"> {{element.dprice}} Bs.</span>
                      
                     </td>
+                  </ng-container> -->
+
+                  <ng-container matColumnDef="opreciod" class="w-10">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="oprecio" (click)="sortData('oprecio')"> Precio </th>
+                    <td mat-cell *matCellDef="let element" class="text-aling-center">
+                      <span class="green">
+                        
+                        <ng-container *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">{{element.dpriced}} US$</ng-container>
+                      </span>
+                      <br *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">
+                      <span [ngClass]="{'green': diasMontoFactura !== undefined && diasMontoFactura > 0, 'blue': diasMontoFactura === undefined || diasMontoFactura <= 0}">
+                       {{element.dprice}} Bs.</span>
+                    </td>
                   </ng-container>
                   
                   <ng-container matColumnDef="apliDiscount">
+                    <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
+                    <td mat-cell *matCellDef="let element" class="text-aling-center">
+                      <ng-container *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0"> {{getPriceWDiscount(element) | number:'1.2-2'}} US$</ng-container>
+                      <br>
+                      <span [ngClass]="{'green': diasMontoFactura !== undefined && diasMontoFactura > 0, 'blue': diasMontoFactura === undefined || diasMontoFactura <= 0}">
+                       {{getPriceWDiscountBS(element) | number:'1.2-2'}} Bs.</span>
+                      
+                    </td>
+                  </ng-container>
+                  
+                  
+                  <!-- <ng-container matColumnDef="apliDiscount">
                     <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <span class="green"> {{getPriceWDiscount(element) | number:'1.2-2'}} US$</span>
@@ -229,7 +254,7 @@
                       
                     </td>
                   </ng-container>
-                  
+                   -->
 
                   <ng-container matColumnDef="existen">
                     <th mat-header-cell *matHeaderCellDef style="width: 80px;" mat-sort-header="existen" (click)="sortData('existen')" >Existencia</th>

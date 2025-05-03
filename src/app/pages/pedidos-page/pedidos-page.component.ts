@@ -157,8 +157,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   ) { }
 
 
+  diasMontoFactura: number | undefined;
+
   ngOnInit() {
-   
+    console.log(this.authService.getDiasMontoFactura())
+    this.diasMontoFactura = this.authService.getDiasMontoFactura();   
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
     this.codCli = this.authService.getCodCli();
