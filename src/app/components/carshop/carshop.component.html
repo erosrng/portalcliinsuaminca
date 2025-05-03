@@ -211,15 +211,15 @@
             <div class="carrito__totals-container">
                 <div class="carrito__totals-item">
                     <h3 class="carrito__totals-title">US$</h3>
-                    <p class="carrito__totals-info">Descuento US$: <span>{{ portalcliLogicaService.formatCurrency(descuentoUsd) }}</span></p>
-                    <p class="carrito__totals-info">IVA US$: <span>{{ portalcliLogicaService.formatCurrency(ivaUsd) }}</span></p>
-                    <p class="carrito__totals-info">Total US$: <span>{{ portalcliLogicaService.formatCurrency(totalUsd) }}</span></p>
+                    <p class="carrito__totals-info" id="descuento">Descuento US$: <span>{{ portalcliLogicaService.formatCurrency(descuentoUsd) }}</span></p>
+                    <p class="carrito__totals-info" id="totalivad">IVA US$: <span>{{ portalcliLogicaService.formatCurrency(ivaUsd) }}</span></p>
+                    <p class="carrito__totals-info" id="totald">Total US$: <span>{{ portalcliLogicaService.formatCurrency(totalUsd) }}</span></p>
                 </div>
                 <div class="carrito__totals-item">
                     <h3 class="carrito__totals-title">Bs.</h3>
                     <p class="carrito__totals-info">Descuento Bs: <span>{{ portalcliLogicaService.formatCurrency(descuentoBs) }}</span></p>
                     <p class="carrito__totals-info">IVA Bs: <span>{{ portalcliLogicaService.formatCurrency(ivaBs) }}</span></p>
-                    <p class="carrito__totals-info">Total Bs: <span>{{ portalcliLogicaService.formatCurrency(totalBs) }}</span></p>
+                    <p class="carrito__totals-info" id="total">Total Bs: <span>{{ portalcliLogicaService.formatCurrency(totalBs) }}</span></p>
                 </div>
             </div>
 
@@ -241,10 +241,5 @@
             </div>
         </section>
     </div>
-
-
-
-
-
 
 </div>

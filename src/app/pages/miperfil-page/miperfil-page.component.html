@@ -24,11 +24,11 @@
                     <p>Proveedor: {{ authService.getNomprv() }}</p>
                   </div>
                   <div class="col-4">
-                    <p>RIF: {{ (portalcliLogicaService.clienteData$ | async)?.rifci }}</p>
+                    <p>RIF: {{ authService.getRif() }}</p>
                   </div>
 
                   <div class="col-8">
-                    <p>Correo Electrónico: {{ (portalcliLogicaService.clienteData$ | async)?.email }}</p>
+                    <p>Correo Electrónico: {{ authService.getEmailuser() }}</p>
                   </div>
                   <div class="col-4">
                     <p>Usuario: {{ authService.getUsuario() }}</p>

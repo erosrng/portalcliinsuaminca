@@ -41,7 +41,6 @@ export class MiperfilPageComponent implements OnInit {
   ngOnInit() {
     const token = this.authService.getToken();
 
-    this.cargarDatosCliente();
   }
 
   constructor(
@@ -49,24 +48,6 @@ export class MiperfilPageComponent implements OnInit {
     public authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
   ) { }
-
-  cargarDatosCliente() {
-    this.portalcliLogicaService.clienteData$.subscribe(data => {
-      if (data) {
-        let telefono = data.telefono || '';
-        telefono = telefono.replace(/\D/g, '');
-        this.fichaData = {
-          cliente: data.cliente,
-          nombre: data.nombre,
-          correoElectronico: data.email,
-          telefono: telefono.substring(4),
-          contacto: data.contacto,
-          direccion: data.direccion,
-        };
-        this.prefijoTelefono = telefono.substring(0, 4) || '0414';
-      }
-    });
-  }
 
   verificarContrasena() {
     const old_pws = this.contrasenaActual;
