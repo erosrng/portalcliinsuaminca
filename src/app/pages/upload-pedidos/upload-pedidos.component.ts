@@ -82,6 +82,7 @@ export class UploadPedidosComponent implements OnInit {
     clienteData: any;
     diasCredito = 0
     montoFactura = 0
+    emailSendUser = ''
 
     constructor(
         private proteoServices: ProteoService,
@@ -99,7 +100,7 @@ export class UploadPedidosComponent implements OnInit {
         Swal.showLoading();
         const formData = new FormData();
         const token = this.authService.getToken();
-        const codCli = this.authService.getCodCli();
+        const codCli = '00001';
 
         if(codCli){
             formData.append('start', '0');
@@ -128,7 +129,7 @@ export class UploadPedidosComponent implements OnInit {
             this.http.post(apiUrl, formData, { headers: headers }).subscribe({
                 next: (response: any) => {
                     this.listProdutos = response.data.data;
-
+                    console.log('ENTRE')
                 },
                 error: (error) => {
                     Swal.hideLoading();
@@ -180,6 +181,7 @@ export class UploadPedidosComponent implements OnInit {
             option.cliente.toLowerCase().includes(filterValue) // Agregamos la búsqueda por cliente
         );
     }
+
     downloadFile(): void {
 
         if (this.typeUpload === 'GRUPO') {
@@ -343,6 +345,7 @@ export class UploadPedidosComponent implements OnInit {
             showCancelButton: false,
         })
     }
+
     processExcelData(worksheet: XLSX.WorkSheet): void {
         Swal.showLoading()
         const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
@@ -358,12 +361,14 @@ export class UploadPedidosComponent implements OnInit {
                 if (index > 5) {
                     pedidosRealizados.push({
                         nombreCliente: item,
-                        codigoCliente: headersCodigos[index],
+                        codigoCliente: headersCodigos[index - 5],
                         indexPedido: index,
                         pedido: [],
                     });
                 }
             });
+
+            console.log(pedidosRealizados)
 
             pedidosRealizados.forEach((item, index) => {
                 dataRows.forEach((row) => {
@@ -455,7 +460,6 @@ export class UploadPedidosComponent implements OnInit {
         }
     }
 
-
     uploadFile(): void {
         // Simplemente activamos el input de tipo 'file' al hacer clic en el botón
         document.getElementById('fileInput')?.click();
@@ -532,114 +536,29 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const pedidoResponse: any = { // Using 'any' for flexibility with the nested structure
-                        pedidos: {}
-                    };
 
-                    this.selection.selected.forEach((element: any) => {
-                        const codigoCliente = element.codigoCliente;
-                        pedidoResponse.pedidos[codigoCliente] = {
-                            diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
-                            montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
-                            pedido: []
-                        };
-
-                        element.pedido.forEach((info: any) => {
-                            pedidoResponse.pedidos[codigoCliente].pedido.push({
-                                cantidad: info.Unidades,
-                                descuento: info.Descuento,
-                                codigo: info.Codigo,
-                            });
-                        });
-                    });
-                    Swal.showLoading()
-
-                    this.selection.selected.forEach((element: any) => {
-                        const codigoCliente = element.codigoCliente;
-                        this.clientesIndividual.forEach((item, index) => {
-                            if (item.cliente === codigoCliente) {
-                                this.clienteData = item
-                            }
-                        });
-                        const pedidoApi: any[] = [];
-                        element.pedido.forEach((info: any) => {
-                            this.listProdutos.forEach((item: any) => {
-                                if (info.Codigo === item.codigo) {
-                                    console.log('entre')
-                                    pedidoApi.push({
-                                        cant: Number(info.Unidades),
-                                        descuento: info.Descuento,
-                                        codigo: item.codigo,
-                                        descprov: item.descprov,
-                                        descrip: item.descrip,
-                                        dprice: item.dprice,
-                                        dpriced: item.dpriced,
-                                        encar: item.encar,
-                                        existen: item.existen,
-                                        img: item.img,
-                                        lote: item.lote,
-                                        nomprv: item.nomprv,
-                                        oferta: item.oferta,
-                                        oprecio: item.oprecio,
-                                        opreciod: item.opreciod,
-                                        vence: item.vence,
-                                        barras: '',
-                                        bssiniva: '',
-                                        cod_cli: '',
-                                        codigoa: '',
-                                        dconiva: '',
-                                        descu: '',
-                                        dsiniva: '',
-                                        escala: '',
-                                        id_pedido: '',
-                                        iva: '',
-                                        ivabs: '',
-                                        ivad: '',
-                                        preciod: '',
-                                        preciosiniva: '',
-                                        tasa: 0,
-                                        tivabs: '',
-                                        tivad: '',
-                                        totalbs: '',
-                                        totald: info.Precio,
-
-
-                                    });
-                                }
-                            })
-                        });
-                        const aux = {
-                            'usuario': localStorage.getItem('usuario'),
-                            'nombre': localStorage.getItem('nombre'),
-                            'nomprv': localStorage.getItem('nomprv'),
-                            'proveed': localStorage.getItem('proveed'),
-                            'codigo_cliente': this.clienteData.cliente,
-                            'nombre_cliente':  this.clienteData.nombre,
-                            'Pedido': pedidoApi,
-                            'diasCredito': this.diasCredito,
-                            'montoFactura': this.montoFactura,
+                    Swal.fire({
+                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                        input: "text",
+                        inputAttributes: {
+                            autocapitalize: "off"
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Enviar",
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (login) => {
+                           if (login === '' || login === null) {
+                               return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                           } else {
+                               this.emailSendUser = login;
+                           }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.executeMultiPed();
                         }
-                        this.apiService.generate_ped(aux).subscribe((data: any) => {
-                            console.log('pedido enviado')
-                        })
                     });
-
-                    this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
-                        console.log(data)
-                        this.clearUpload();
-                        Swal.fire({
-                            title: "Pedidos generado",
-                            text: "",
-                            icon: "success"
-                        });
-                    }, () => {
-                        Swal.fire({
-                            title: "Error al generar pedidos",
-                            text: "",
-                            icon: "error"
-                        });
-                    })
-
                 }
             });
         }
@@ -654,123 +573,263 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.showLoading()
-                    // {
-                    //     "enviar":true,
-                    //     "cliente":"01234",
-                    //     "pedido":[
-                    //     {"codigo":"012345","cantidad":12,"descuento":12},
-                    //     ...
-                    // ]
-                    // }
-                    const pedidoResponse: any = {
-                        cliente: this.controlUnico.value,
-                        enviar: true,
-                        diasCredito: this.diasCredito,
-                        montoFactura:this.montoFactura,
-                        pedido: []
-                    };
-                    this.selection.selected.forEach((element: any) => {
-
-                        element.pedido.forEach((info: any) => {
-                            pedidoResponse.pedido.push({
-                                cantidad: info.Unidades,
-                                descuento: info.Descuento,
-                                codigo: info.Codigo,
-                            });
-                        });
-                    });
-
-                    const pedidoApi: any[] = [];
-                    this.selection.selected.forEach((element: any) => {
-
-                        element.pedido.forEach((info: any) => {
-                            this.listProdutos.forEach((item: any) => {
-                                if (info.Codigo === item.codigo) {
-                                    console.log('entre')
-                                    pedidoApi.push({
-                                        cant: Number(info.Unidades),
-                                        descuento: info.Descuento,
-                                        codigo: item.codigo,
-                                        descprov: item.descprov,
-                                        descrip: item.descrip,
-                                        dprice: item.dprice,
-                                        dpriced: item.dpriced,
-                                        encar: item.encar,
-                                        existen: item.existen,
-                                        img: item.img,
-                                        lote: item.lote,
-                                        nomprv: item.nomprv,
-                                        oferta: item.oferta,
-                                        oprecio: item.oprecio,
-                                        opreciod: item.opreciod,
-                                        vence: item.vence,
-                                        barras: '',
-                                        bssiniva: '',
-                                        cod_cli: '',
-                                        codigoa: '',
-                                        dconiva: '',
-                                        descu: '',
-                                        dsiniva: '',
-                                        escala: '',
-                                        id_pedido: '',
-                                        iva: '',
-                                        ivabs: '',
-                                        ivad: '',
-                                        preciod: '',
-                                        preciosiniva: '',
-                                        tasa: 0,
-                                        tivabs: '',
-                                        tivad: '',
-                                        totalbs: '',
-                                        totald: info.Precio,
-
-
-                                    });
-                                }
-                            })
-
-                        });
-                    });
-
-                    this.clientesIndividual.forEach((item, index) => {
-                        if (item.cliente === this.controlUnico.value) {
-                            this.clienteData = item
+                    Swal.fire({
+                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                        input: "text",
+                        inputAttributes: {
+                            autocapitalize: "off"
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Enviar",
+                        showLoaderOnConfirm: true,
+                        preConfirm: async (login) => {
+                            if (login === '' || login === null) {
+                                return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                            } else {
+                                this.emailSendUser = login;
+                            }
+                        },
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.executePed();
                         }
-                    })
+                    });
 
-                    const aux = {
-                        'usuario': localStorage.getItem('usuario'),
-                        'nombre': localStorage.getItem('nombre'),
-                        'nomprv': localStorage.getItem('nomprv'),
-                        'proveed': localStorage.getItem('proveed'),
-                        'codigo_cliente': this.clienteData.cliente,
-                        'nombre_cliente':  this.clienteData.nombre,
-                        'Pedido': pedidoApi,
-                        'diasCredito': this.diasCredito,
-                        'montoFactura': this.montoFactura,
-                    }
-                    this.apiService.generate_ped(aux).subscribe((data: any) => {
-                        Swal.showLoading()
-                        this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
-                            console.log(data)
-                            this.clearUpload();
-                            Swal.fire({
-                                title: "Pedidos generado",
-                                text: "",
-                                icon: "success"
-                            });
-                        }, () => {
-                            Swal.fire({
-                                title: "Error al generar pedidos",
-                                text: "",
-                                icon: "error"
-                            });
-                        })
-                    })
                 }
             });
         }
+
+    }
+
+    executePed(): void {
+        Swal.showLoading()
+        // {
+        //     "enviar":true,
+        //     "cliente":"01234",
+        //     "pedido":[
+        //     {"codigo":"012345","cantidad":12,"descuento":12},
+        //     ...
+        // ]
+        // }
+        const pedidoResponse: any = {
+            cliente: this.controlUnico.value,
+            enviar: true,
+            diasCredito: this.diasCredito,
+            montoFactura:this.montoFactura,
+            pedido: []
+        };
+        this.selection.selected.forEach((element: any) => {
+
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+
+        const pedidoApi: any[] = [];
+        this.selection.selected.forEach((element: any) => {
+
+            element.pedido.forEach((info: any) => {
+                this.listProdutos.forEach((item: any) => {
+                    if (info.Codigo === item.codigo) {
+                        console.log('entre')
+                        pedidoApi.push({
+                            cant: Number(info.Unidades),
+                            descuento: info.Descuento,
+                            codigo: item.codigo,
+                            descprov: item.descprov,
+                            descrip: item.descrip,
+                            dprice: item.dprice,
+                            dpriced: item.dpriced,
+                            encar: item.encar,
+                            existen: item.existen,
+                            img: item.img,
+                            lote: item.lote,
+                            nomprv: item.nomprv,
+                            oferta: item.oferta,
+                            oprecio: item.oprecio,
+                            opreciod: item.opreciod,
+                            vence: item.vence,
+                            barras: '',
+                            bssiniva: '',
+                            cod_cli: '',
+                            codigoa: '',
+                            dconiva: '',
+                            descu: '',
+                            dsiniva: '',
+                            escala: '',
+                            id_pedido: '',
+                            iva: '',
+                            ivabs: '',
+                            ivad: '',
+                            preciod: '',
+                            preciosiniva: '',
+                            tasa: 0,
+                            tivabs: '',
+                            tivad: '',
+                            totalbs: '',
+                            totald: info.Precio,
+
+
+                        });
+                    }
+                })
+
+            });
+        });
+
+        this.clientesIndividual.forEach((item, index) => {
+            if (item.cliente === this.controlUnico.value) {
+                this.clienteData = item
+            }
+        })
+
+        const aux = {
+            'usuario': localStorage.getItem('usuario'),
+            'nombre': localStorage.getItem('nombre'),
+            'nomprv': localStorage.getItem('nomprv'),
+            'proveed': localStorage.getItem('proveed'),
+            'codigo_cliente': this.clienteData.cliente,
+            'nombre_cliente':  this.clienteData.nombre,
+            'Pedido': pedidoApi,
+            'diasCredito': this.diasCredito,
+            'montoFactura': this.montoFactura,
+        }
+        this.apiService.generate_ped(aux).subscribe((data: any) => {
+            Swal.showLoading()
+            this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
+                console.log(data)
+                this.clearUpload();
+                Swal.fire({
+                    title: "Pedidos generado",
+                    text: "",
+                    icon: "success"
+                });
+            }, () => {
+                Swal.fire({
+                    title: "Error al generar pedidos",
+                    text: "",
+                    icon: "error"
+                });
+            })
+        })
+    }
+
+    executeMultiPed(): void {
+        const pedidoResponse: any = {
+            pedidos: {}
+        };
+
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            pedidoResponse.pedidos[codigoCliente] = {
+                diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
+                montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
+                pedido: []
+            };
+
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedidos[codigoCliente].pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+        Swal.showLoading()
+
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            this.clientesIndividual.forEach((item, index) => {
+                if (item.cliente === codigoCliente) {
+                    this.clienteData = item
+                }
+            });
+            const pedidoApi: any[] = [];
+            console.log(element)
+            console.log(this.listProdutos)
+            element.pedido.forEach((info: any) => {
+                this.listProdutos.forEach((item: any) => {
+                    if (info.Codigo === item.codigo) {
+                        console.log(info)
+                        pedidoApi.push({
+                            cant: Number(info.Unidades),
+                            descuento: info.Descuento,
+                            codigo: item.codigo,
+                            descprov: item.descprov,
+                            descrip: item.descrip,
+                            dprice: item.dprice,
+                            dpriced: item.dpriced,
+                            encar: item.encar,
+                            existen: item.existen,
+                            img: item.img,
+                            lote: item.lote,
+                            nomprv: item.nomprv,
+                            oferta: item.oferta,
+                            oprecio: item.oprecio,
+                            opreciod: item.opreciod,
+                            vence: item.vence,
+                            barras: '',
+                            bssiniva: '',
+                            cod_cli: '',
+                            codigoa: '',
+                            dconiva: '',
+                            descu: '',
+                            dsiniva: '',
+                            escala: '',
+                            id_pedido: '',
+                            iva: '',
+                            ivabs: '',
+                            ivad: '',
+                            preciod: '',
+                            preciosiniva: '',
+                            tasa: 0,
+                            tivabs: '',
+                            tivad: '',
+                            totalbs: '',
+                            totald: info.Precio,
+
+
+                        });
+                    }
+                })
+            });
+            const aux = {
+                'usuario': localStorage.getItem('usuario'),
+                'nombre': localStorage.getItem('nombre'),
+                'nomprv': localStorage.getItem('nomprv'),
+                'proveed': localStorage.getItem('proveed'),
+                'codigo_cliente': this.clienteData.cliente,
+                'nombre_cliente':  this.clienteData.nombre,
+                'Pedido': pedidoApi,
+                'diasCredito': this.diasCredito,
+                'montoFactura': this.montoFactura,
+                'emailSendUser': this.emailSendUser,
+            }
+            this.apiService.generate_ped(aux).subscribe((data: any) => {
+                console.log('pedido enviado')
+            })
+        });
+
+        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
+            console.log(data)
+            this.clearUpload();
+            Swal.fire({
+                title: "Pedidos generado",
+                text: "",
+                icon: "success"
+            });
+        }, () => {
+            Swal.fire({
+                title: "Error al generar pedidos",
+                text: "",
+                icon: "error"
+            });
+        })
 
     }
 
@@ -801,6 +860,7 @@ export class UploadPedidosComponent implements OnInit {
         this.listActive= [];
         this.controlCasaMatriz.setValue(null)
         this.controlUnico.setValue(null)
+        this.emailSendUser = ''
     }
 
 }

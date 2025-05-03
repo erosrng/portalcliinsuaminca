@@ -64,6 +64,13 @@
                                                 </button>
                                             </div>
 
+                                            <div class="col-12" *ngIf="controlCasaMatriz.value !== '' && controlCasaMatriz.value !== null">
+                                                <button class="btn-clear" (click)="clearAll()">
+                                                    <i class="fas fa-trash-can"></i>
+                                                    Limpiar
+                                                </button>
+                                            </div>
+
 <!--                                            <pre>{{ jsonData | json }}</pre>-->
                                         </div>
                                     </div>
