@@ -134,7 +134,7 @@
 
                         </div>
                     </div>
-                    <div class="col-8" *ngIf="dataSource.length > 0">
+                    <div class="col-8" *ngIf="dataSource.length > 0 && showloader === false">
                         <div class="card p-5">
                             <div class="row">
                                 <div class="col-12 mb-4 header-flex-btw">
@@ -232,6 +232,13 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-8 center-loader" *ngIf="dataSource.length > 0 && showloader === true">
+                        <div >
+                            <mat-spinner class="spiiner"></mat-spinner>
+                            <label>Generando pedido, espere</label>
+
                         </div>
 
                     </div>
