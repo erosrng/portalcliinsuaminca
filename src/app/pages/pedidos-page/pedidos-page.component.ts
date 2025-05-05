@@ -541,7 +541,7 @@ sortData(sortField: string) {
         }
         Swal.fire({
           text: mensaje == 'Producto Agregado' ? 'Producto agregado exitosamente!' : mensaje,
-          icon: mensaje == 'Producto Agregado' ? 'success' : 'error',
+          icon: mensaje == 'Producto Agregado' ? 'error' : 'success',
           showConfirmButton: false,
           timer: 3000,
           toast: true,

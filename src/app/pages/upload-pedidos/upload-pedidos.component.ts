@@ -698,6 +698,7 @@ export class UploadPedidosComponent implements OnInit {
             'Pedido': pedidoApi,
             'diasCredito': this.diasCredito,
             'montoFactura': this.montoFactura,
+            'emailSendUser': this.emailSendUser
         }
         this.apiService.generate_ped(aux).subscribe((data: any) => {
             Swal.showLoading()
