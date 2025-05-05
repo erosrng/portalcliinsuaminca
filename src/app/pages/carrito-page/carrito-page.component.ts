@@ -45,7 +45,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   clienteData: any;
   codCli: string | null = null;
 
-  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
+  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald',
+    'cant', 'descprov', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 

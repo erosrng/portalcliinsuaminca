@@ -125,7 +125,7 @@
                         (change)="onClienteInputChange($event)">
                       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                         @for (cliente of filteredOptions | async; track cliente) {
-                        <mat-option (click)="onClienteSeleccionado(cliente)" stepper-indicator [value]="cliente">({{cliente.cliente}})
+                        <mat-option (click)="onClienteSeleccionado(cliente)" [value]="cliente">({{cliente.cliente}})
                           {{cliente.nombre}}</mat-option>
                         }
                       </mat-autocomplete>

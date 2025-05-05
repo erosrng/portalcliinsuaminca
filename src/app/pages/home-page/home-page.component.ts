@@ -3,12 +3,10 @@ import { Component } from '@angular/core';
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
-import { ClicardComponent } from "../../components/clicard/clicard.component";
 import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Router } from '@angular/router';
-import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-home-page',
@@ -17,7 +15,6 @@ import { ApiService } from '../../services/api.service';
     NavBarComponent,
     FooterComponent,
     SideBarComponent,
-    ClicardComponent,
     MatSidenav,
     MatSidenavModule,
     CommonModule,

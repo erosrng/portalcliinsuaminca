@@ -64,6 +64,13 @@
                                                 </button>
                                             </div>
 
+                                            <div class="col-12" *ngIf="controlCasaMatriz.value !== '' && controlCasaMatriz.value !== null">
+                                                <button class="btn-clear" (click)="clearAll()">
+                                                    <i class="fas fa-trash-can"></i>
+                                                    Limpiar
+                                                </button>
+                                            </div>
+
 <!--                                            <pre>{{ jsonData | json }}</pre>-->
                                         </div>
                                     </div>
@@ -85,7 +92,7 @@
                                                                [matAutocomplete]="auto">
                                                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                             @for (option of filteredOptionsUnico | async; track option) {
-                                                                <mat-option [value]="option.cliente">{{option.nombre}}</mat-option>
+                                                                <mat-option [value]="option.cliente">{{option.cliente}} - {{option.nombre}}</mat-option>
                                                             }
                                                         </mat-autocomplete>
                                                     </mat-form-field>
@@ -102,10 +109,10 @@
 
                                             </div>
 
-                                            <div class="col-12"
-                                                 *ngIf="controlUnico.value !== '' && controlUnico.value !== null"
-                                            >
-                                                <button class="btn-upload" (click)="uploadFile();">
+
+                                            <div class="col-12" *ngIf="controlUnico.value !== '' && controlUnico.value !== null">
+                                                <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>
+                                                <button class="btn-upload" (click)="fileInput.click()">
                                                     <i class="fas fa-file-upload"></i>
                                                     Cargar archivo
                                                 </button>
@@ -130,12 +137,13 @@
                     <div class="col-8" *ngIf="dataSource.length > 0">
                         <div class="card p-5">
                             <div class="row">
-                                <div class="col-12 mb-4">
+                                <div class="col-12 mb-4 header-flex-btw">
                                     <h3>Pedidos cargados </h3>
+                                    <i class="fas fa-xmark icon-close" (click)="clearAll()" ></i>
                                 </div>
                             </div>
                             <mat-divider></mat-divider>
-                            <div class="row">
+                            <div class="row mb-5">
                                 <div class="col-12">
                                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
@@ -198,6 +206,18 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <mat-divider></mat-divider>
+                            <div class="row mt-4" *ngIf="selection.selected.length > 0 ">
+                                <div class="col-4">
+                                    <button class="btn-generate "
+                                            (click)="generatePedido()"
+                                    >
+                                        <i class="fas fa-paper-plane mr-2"></i>
+                                        Generar Pedido
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                     </div>
@@ -221,20 +241,20 @@
                             <table class="historialped__historial-table">
                                 <thead>
                                 <tr>
-                                    <th scope="col" class="border-left-top">Ver</th>
-                                    <th scope="col">Codigo </th>
-                                    <th scope="col">Descripcion</th>
-                                    <th scope="col">Descuento</th>
-                                    <th scope="col">Precio $</th>
+                                    <th scope="col" class="border-left-top dt-th-modal ">Ver</th>
+                                    <th scope="col" class="dt-th-modal">Codigo </th>
+                                    <th scope="col" class="dt-th-modal">Descripcion</th>
+                                    <th scope="col" class="dt-th-modal">Descuento</th>
+                                    <th scope="col" class="dt-th-modal">Precio $</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let pedido of listActive">
-                                    <td><img src="{{pedido.Codigo}}" class="img-product"> </td>
-                                    <td>{{ pedido.Codigo }}</td>
-                                    <td>{{ pedido.Descripcion }}</td>
-                                    <td>{{ pedido.Descuento }}%</td>
-                                    <td>{{ pedido.Precio | number: '1.0-3'}} $</td>
+                                    <td class="dt-td-modal "><img src="{{pedido.Codigo}}" class="img-product"> </td>
+                                    <td class="dt-td-modal ">{{ pedido.Codigo }}</td>
+                                    <td class="dt-td-modal ">{{ pedido.Descripcion }}</td>
+                                    <td class="dt-td-modal ">{{ pedido.Descuento }}%</td>
+                                    <td class="dt-td-modal ">{{ getprice(pedido)| number: '1.0-3'}} $</td>
 
                                 </tr>
                                 </tbody>
