@@ -165,6 +165,9 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 console.error('Error al cargar carrito de compras:', error);
             },
         });
+        setTimeout(()=>{
+            this.totalizartodo();
+        },500);
     }
 
     // Función para aplicar el descuento lineal a todos los items del carrito
@@ -280,8 +283,6 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         });
     }
 
-
-
     //Envia pedidos al servidor
     enviaped(){
         this.isLoading = true;
@@ -308,78 +309,52 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.showLoading()
-                // Swal.fire({
-                //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                //     input: "text",
-                //     inputAttributes: {
-                //         autocapitalize: "off"
-                //     },
-                //     showCancelButton: true,
-                //     confirmButtonText: "Enviar",
-                //     showLoaderOnConfirm: true,
-                //     preConfirm: async (login) => {
-                //         if (login === '' || login === null) {
-                //             return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                //         } else {
-                //             this.emailSendUser = login;
-                //         }
-                //     },
-                //     allowOutsideClick: () => !Swal.isLoading()
-                // }).then((result) => {
-                //     if (result.isConfirmed) {
-                //         this.mostrarLoader();
-                //         //console.log(this.productscar)
-                //         //console.log(this.clienteData)
-                //         const aux = {
-                //             'usuario': localStorage.getItem('usuario'),
-                //             'nombre': localStorage.getItem('nombre'),
-                //             'nomprv': localStorage.getItem('nomprv'),
-                //             'proveed': localStorage.getItem('proveed'),
-                //             'codigo_cliente': this.clienteData.cliente,
-                //             'nombre_cliente':  this.clienteData.nombre,
-                //             'Pedido': this.productscar,
-                //             'diasCredito': this.diasCredito,
-                //             'montoFactura': this.montoFactura,
-                //             'emailSendUser': this.emailSendUser,
-                //         }
-                //         this.apiService.generate_ped(aux).subscribe((data: any) => {
-                //             console.log(data)
-                //             this.isLoading = false;
-                //             this.ocultarLoader();
-                //             this.generar_pedido_proteo(apiUrl, formData, headers);
-                //         }, () => {
-                //             this.isLoading = false;
-                //             this.ocultarLoader();
-                //
-                //         })
-                //     }
-                // });
-                this.mostrarLoader();
-                //console.log(this.productscar)
-                //console.log(this.clienteData)
-                const aux = {
-                    'usuario': localStorage.getItem('usuario'),
-                    'nombre': localStorage.getItem('nombre'),
-                    'nomprv': localStorage.getItem('nomprv'),
-                    'proveed': localStorage.getItem('proveed'),
-                    'codigo_cliente': this.clienteData.cliente,
-                    'nombre_cliente':  this.clienteData.nombre,
-                    'Pedido': this.productscar,
-                    'diasCredito': this.diasCredito,
-                    'montoFactura': this.montoFactura,
-                    'emailSendUser': this.emailSendUser,
-                }
-                this.generar_pedido_proteo(apiUrl, formData, headers);
-                this.apiService.generate_ped(aux).subscribe((data: any) => {
-                    this.isLoading = false;
-                    this.ocultarLoader();
+                /* Swal.fire({
+                    title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                    input: "text",
+                    inputAttributes: {
+                        autocapitalize: "off"
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: "Enviar",
+                    showLoaderOnConfirm: true,
+                    preConfirm: async (login) => {
+                        if (login === '' || login === null) {
+                            return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                        } else {
+                            this.emailSendUser = login;
+                        }
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => { */
+                    if (result.isConfirmed) {
+                        this.mostrarLoader();
+                        //console.log(this.productscar)
+                        const aux = {
+                            'usuario': localStorage.getItem('usuario'),
+                            'nombre': localStorage.getItem('nombre'),
+                            'nomprv': localStorage.getItem('nomprv'),
+                            'proveed': localStorage.getItem('proveed'),
+                            'codigo_cliente': this.clienteData.cliente,
+                            'nombre_cliente':  this.clienteData.nombre,
+                            'Pedido': this.productscar,
+                            'diasCredito': this.diasCredito,
+                            'montoFactura': this.montoFactura,
+                            'emailSendUser': this.clienteData.email,
+                        }
+                        this.apiService.generate_ped(aux).subscribe((data: any) => {
+                            //console.log(data)
+                            this.isLoading = false;
+                            this.ocultarLoader();
+                            this.generar_pedido_proteo(apiUrl, formData, headers);
+                        }, () => {
+                            this.isLoading = false;
+                            this.ocultarLoader();
 
-                }, () => {
-                    this.isLoading = false;
-                    this.ocultarLoader();
+                        })
+                    }
+                //});
 
-                })
 
             }
         });
@@ -634,6 +609,39 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 this.totaliza(idPedido, codigo, newValue, existenNum); // Usar existenNum
             }
         }
+        this.totalizartodo();
+    }
+
+    sumabs: number = 0.00;
+    sumausd: number = 0.00;
+
+    totalizartodo(): void {
+        this.sumausd = 0.00; // Resetear la suma al inicio
+        this.sumabs = 0.00; // Resetear la suma al inicio
+
+        const self = this; // Guarda una referencia a 'this' para usar dentro de la función each
+        //console.log($('tbody >tr> td[id^="totald"]'));
+        $('tbody >tr> td[id^="total"]').each(function(i, e) {
+            let valor = $(this).html();
+            if (valor) {
+                valor = valor.replace('USD&nbsp;','').replace('Bs.S&nbsp;','').replace('.', '').replace(',', '.');
+                const valorNumerico:number = parseFloat(valor);
+                //console.log(valorNumerico)
+
+                if (!isNaN(valorNumerico)) {
+                    // @ts-ignore
+                    let nid:string = $(this).attr('id').split('_')[0]
+                    if( nid == 'totald') {
+                        self.sumausd += valorNumerico; // Usa 'self.suma' para acceder a la propiedad del componente
+                    } else {
+                        self.sumabs += valorNumerico; // Usa 'self.suma' para acceder a la propiedad del componente
+                    }
+                    //self.suma += valorNumerico; // Usa 'self.suma' para acceder a la propiedad del componente
+                }
+            }
+        });
+
+        //console.log([this.sumabs.toFixed(2),this.sumausd.toFixed(2)]);
     }
 
     /* recalculadescu(product: any){
@@ -698,46 +706,54 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         return precio;
     } */
 
-        recalculadescubs(product: any): number {
-            let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
-            let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-            let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
-        
-            if (!isNaN(precio)) {
-                let precioConDescuentoProveedor = precio;
-        
-                // Aplicar descuento del proveedor si es válido y mayor que cero
-                if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
-                    const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
-                    precioConDescuentoProveedor -= descuentoProveedor;
-                }
-        
-                let precioFinal = precioConDescuentoProveedor;
-        
-                // Aplicar el otro descuento si es válido y mayor que cero
-                if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
-                    const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
-                    precioFinal -= otroDescuento;
-                }
-        
-                return precioFinal;
-            } else {
-                return precio;
+    recalculadescubs(product: any): number {
+        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
+        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+
+        if (!isNaN(precio)) {
+            let precioConDescuentoProveedor = precio;
+
+            // Aplicar descuento del proveedor si es válido y mayor que cero
+            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
+                precioConDescuentoProveedor -= descuentoProveedor;
             }
+
+            let precioFinal = precioConDescuentoProveedor;
+
+            // Aplicar el otro descuento si es válido y mayor que cero
+            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
+                precioFinal -= otroDescuento;
+            }
+
+            return precioFinal;
+        } else {
+            return precio;
         }
+    }
 
     recalcular(newValue: number, codigo: string) {
         var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
         var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
-        var preciod2 = preciod.innerText.replace('.','').replace(',','.') as any
-
-        totald.innerText=(parseFloat(preciod2)*newValue).toFixed(2).toString();
+        var preciod2 = preciod.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
+        totald.innerText=this.formatCurrency((parseFloat(preciod2)*newValue),'USD').toString();
 
         var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
         var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
-        var preciobs2 = preciobs.innerText.replace('.','').replace(',','.') as any
-        //console.log(preciobs)
-        totalbs.innerText=(parseFloat(preciobs2)*newValue).toFixed(2).toString();
+        var preciobs2 = preciobs.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
+        totalbs.innerText=this.formatCurrency((parseFloat(preciobs2)*newValue),'VES').toString();
+    }
+    formatCurrency(value: number | string,moneda:string = 'USD'): string {
+
+        const formateador:any = new Intl.NumberFormat('es-VE',{
+            style:"currency",
+            currency: moneda,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        return formateador.format(value);
     }
 
     totalbscalc = 0;
