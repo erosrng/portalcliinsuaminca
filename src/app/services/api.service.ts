@@ -54,4 +54,10 @@ export class ApiService {
     const apiUrl = this.urlFast + '/pedidos_vendedor/proveedor/' + user
     return this.httpClient.get(apiUrl)
   }
+
+  //Para obtener toda la informacion de los clientes
+  get_info_client(): Observable<any> {
+    const apiUrl = this.urlFast + '/informacion/clientes'
+    return this.httpClient.get(apiUrl)
+  }
 }
