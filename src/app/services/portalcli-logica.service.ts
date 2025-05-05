@@ -79,6 +79,7 @@ export class PortalcliLogicaService {
 
   agregarAlCarrito(producto: any, cantidad: number, descprov: number, almacen: string) {
     const codCli = this.authService.getCodCli();
+    const proveed = this.authService.getProveed();
     const token = this.authService.getToken();
     const formData = new FormData();
 
@@ -90,6 +91,7 @@ export class PortalcliLogicaService {
     formData.append('cana', cantidad.toString());
     formData.append('descprov', descprov.toString());
     formData.append('codCli', codCli ?? '');
+    formData.append('proveed', proveed ?? '');
 
     formData.append('almacen', almacen);
 
@@ -230,13 +232,16 @@ export class PortalcliLogicaService {
       Swal.close();
     }
 
-    formatCurrency(value: number | string): string {
-      if (!value) return '';
-      const num = typeof value === 'string' ? parseFloat(value) : value;
-      const roundedNum = Math.round(num * 100) / 100; // Redondea a dos decimales
-      const formattedValue = roundedNum.toFixed(2);
-      return formattedValue.replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    }
+  formatCurrency(value: number | string,moneda:string = 'USD'): string {
+
+    const formateador:any = new Intl.NumberFormat('es-VE',{
+      style:"currency",
+      currency: moneda,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return formateador.format(value);
+  }
 
     private clienteCambiado = new Subject<string>();
     clienteCambiado$ = this.clienteCambiado.asObservable();

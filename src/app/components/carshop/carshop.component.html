@@ -129,34 +129,34 @@
             </ng-container>
 
             <ng-container matColumnDef="preciosinivad">
-                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> US$ </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-usd" id="preciod_{{row.codigoa}}"> {{ portalcliLogicaService.formatCurrency(this.recalculadescud(row)) }} </td>
+                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header>Precio US$ </th>
+                <td mat-cell *matCellDef="let row" class="carrito__product-usd" id="preciod_{{row.codigoa}}"> {{ this.formatCurrency(this.recalculadescud(row)) }} </td>
             </ng-container>
 
             <ng-container matColumnDef="ivad">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA US$ </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-iva-usd">  {{ portalcliLogicaService.formatCurrency(row.ivad)}}</td>
+                <td mat-cell *matCellDef="let row" class="carrito__product-iva-usd">  {{ this.formatCurrency(row.ivad)}}</td>
             </ng-container>
 
             <ng-container matColumnDef="preciosiniva">
-                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Bs. </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-price" id="preciobs_{{row.codigoa}}">{{ portalcliLogicaService.formatCurrency(this.recalculadescubs(row)) }}</td>
+                <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header>Precio Bs. </th>
+                <td mat-cell *matCellDef="let row" class="carrito__product-price" id="preciobs_{{row.codigoa}}">{{ this.formatCurrency(this.recalculadescubs(row),'VES') }}</td>
             </ng-container>
 
             <ng-container matColumnDef="ivabs">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA Bs. </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-iva"> {{ portalcliLogicaService.formatCurrency(row.ivabs) }} </td>
+                <td mat-cell *matCellDef="let row" class="carrito__product-iva"> {{ this.formatCurrency(row.ivabs,'VES') }} </td>
             </ng-container>
 
 
             <ng-container matColumnDef="totald">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total US$ </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-total-usd" id="totald_{{row.codigoa}}">  {{ portalcliLogicaService.formatCurrency(row.totald)}}</td>
+                <td mat-cell *matCellDef="let row" class="carrito__product-total-usd" id="totald_{{row.codigoa}}">  {{ this.formatCurrency(row.totald)}}</td>
             </ng-container>
 
             <ng-container matColumnDef="totalbs">
                 <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total Bs. </th>
-                <td mat-cell *matCellDef="let row" class="carrito__product-total" id="totalbs_{{row.codigoa}}">  {{ portalcliLogicaService.formatCurrency(row.totalbs)}}</td>
+                <td mat-cell *matCellDef="let row" class="carrito__product-total" id="totalbs_{{row.codigoa}}">  {{ this.formatCurrency(row.totalbs,'VES')}}</td>
             </ng-container>
 
             <ng-container matColumnDef="cant">
