@@ -108,8 +108,7 @@
                   <div class="">
                       <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
                       <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
-                      <button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>
-
+                      <!--<button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>-->
                   </div>
                 </div>
                 
@@ -175,7 +174,7 @@
                     <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
                       <mat-option value="descrip">Descripción</mat-option>
                       <mat-option value="oprecio">Precio</mat-option>
-                      <mat-option value="existen">Existencia</mat-option>
+                      <!--<mat-option value="existen">Existencia</mat-option>-->
                     </mat-select>
                   </mat-form-field>
 
@@ -257,7 +256,7 @@
                    -->
 
                   <ng-container matColumnDef="existen">
-                    <th mat-header-cell *matHeaderCellDef style="width: 80px;" mat-sort-header="existen" (click)="sortData('existen')" >Existencia</th>
+                    <th mat-header-cell *matHeaderCellDef style="width: 80px;" mat-sort-header="existen" (click)="sortData('existen')" >Oferta</th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <div *ngIf="element.oferta && element.oferta.length > 0"
                           class="oferta-proveedor-inline"
@@ -265,7 +264,7 @@
                           matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta <br> Proveedor
                       </div>
                       &nbsp;
-                      <span class="green">{{element.existen}}</span>
+                      <!--<span class="green">{{element.existen}}</span>-->
                     </td>
                   </ng-container>
     
