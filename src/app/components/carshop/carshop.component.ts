@@ -370,10 +370,11 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                     'montoFactura': this.montoFactura,
                     'emailSendUser': this.emailSendUser,
                 }
+                this.generar_pedido_proteo(apiUrl, formData, headers);
                 this.apiService.generate_ped(aux).subscribe((data: any) => {
                     this.isLoading = false;
                     this.ocultarLoader();
-                    this.generar_pedido_proteo(apiUrl, formData, headers);
+
                 }, () => {
                     this.isLoading = false;
                     this.ocultarLoader();

@@ -5,7 +5,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
 import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
 import {Clienteselect} from "../pedidos-page/pedidos-page.component";
-import {Observable} from "rxjs";
+import {debounceTime, distinctUntilChanged, Observable, Subject, takeUntil} from "rxjs";
 import {MatCard, MatCardContent, MatCardTitle} from "@angular/material/card";
 import {map, startWith} from "rxjs/operators";
 interface EstadisticasCliente {
@@ -62,28 +62,38 @@ interface ClienteAutocomplete {
 })
 export class ResumenClienteComponent implements  OnInit {
   clienteControl = new FormControl('');
-  clientes: EstadisticasCliente[] = [];
+  clientes: unknown = [];
   filteredOptions!: Observable<ClienteAutocomplete[]>;
   data: EstadisticasCliente | null = null;
+  private readonly _destroying$ = new Subject<void>();
 
 
   constructor(private apiService: ApiService) {
   }
 
   ngOnInit() {
-    this.apiService.get_info_client().subscribe(data => {
+    this.apiService.get_info_client().pipe(takeUntil(this._destroying$)).subscribe(data => {
       this.clientes = data;
       this.filteredOptions = this.clienteControl.valueChanges.pipe(
+          takeUntil(this._destroying$),
+          debounceTime(300), // Espera 300ms después de que el usuario deja de escribir
+          distinctUntilChanged(), // Emite solo si el valor ha cambiado
           startWith(''),
           map(value => this._filter(value || '')),
       );
     });
   }
 
+  ngOnDestroy(): void {
+    this._destroying$.next();
+    this._destroying$.complete();
+  }
+
   private _filter(value: string): ClienteAutocomplete[] {
     const filterValue = value.toLowerCase();
+    // @ts-ignore
     return this.clientes.map(cliente => ({ cliente: cliente.codigo, nombre: cliente.nombre }))
-        .filter(option => option.cliente.toLowerCase().includes(filterValue) || option.nombre.toLowerCase().includes(filterValue));
+        .filter((option: { cliente: string; nombre: string; }) => option.cliente.toLowerCase().includes(filterValue) || option.nombre.toLowerCase().includes(filterValue));
   }
 
   displayFn(cliente: ClienteAutocomplete): string {
@@ -91,6 +101,7 @@ export class ResumenClienteComponent implements  OnInit {
   }
 
   onClienteSeleccionado(clienteSeleccionado: ClienteAutocomplete) {
+    // @ts-ignore
     const clienteEncontrado = this.clientes.find(cliente => cliente.codigo === clienteSeleccionado.cliente);
     this.cargarDatosCliente(clienteEncontrado);
   }
@@ -133,7 +144,7 @@ export class ResumenClienteComponent implements  OnInit {
       if (this.data.vta_3_meses) this.data.vta_3_meses = String(parseFloat(this.data.vta_3_meses));
       if (this.data.prom_3_Meses) this.data.prom_3_Meses = String(parseFloat(this.data.prom_3_Meses));
       if (this.data.vta_unid_3_meses) this.data.vta_unid_3_meses = String(parseFloat(this.data.vta_unid_3_meses));
-      if (this.data.prom_unid_3_meses) this.data.prom_unid_3_meses = String(parseFloat(this.data.prom_unid_3_meses));
+      if (this.data.prom_unid_3_meses)  this.data.prom_unid_3_meses = String(parseFloat(this.data.prom_unid_3_meses));
       if (this.data.dias_credito) this.data.dias_credito = this.data.dias_credito;
       if (this.data.pPago_dias_1) this.data.pPago_dias_1 = this.data.pPago_dias_1;
       if (this.data.desc_ppago_1) this.data.desc_ppago_1 = this.data.desc_ppago_1;
