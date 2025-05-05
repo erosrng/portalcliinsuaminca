@@ -160,7 +160,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   diasMontoFactura: number | undefined;
 
   ngOnInit() {
-    console.log(this.authService.getDiasMontoFactura())
     this.diasMontoFactura = this.authService.getDiasMontoFactura();   
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
@@ -197,6 +196,39 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   }
 
+  onClienteInputChange(event: any): void {
+    const inputValue = event.target.value;
+    if (!inputValue) { // Si el input está vacío
+      this.clienteData = null;
+      this.authService.setCodCli(null); 
+      this.codCli = this.authService.getCodCli();
+      return; // Sale de la función para evitar la búsqueda
+    }
+
+    const selectedCliente = this.clientes.find(
+      (cliente) =>
+        cliente.cliente === inputValue ||
+        cliente.nombre.toLowerCase().includes(inputValue.toLowerCase()) ||
+        cliente.rifci === inputValue
+    );
+  }
+
+  onClienteSeleccionado(cliente: Clienteselect): void {
+    this.authService.setCodCli(cliente.cliente);
+    this.codCli = this.authService.getCodCli();
+
+    this.portalcliLogicaService.buscaalmacen();
+    this.clienteData = cliente; // Actualizar clienteData al seleccionar
+    if(this.codCli){
+      this.subscribeToClienteData();
+    }
+    // Cambiar a la pestaña del inventario (índice 1)
+    /* if (this.stepper) {
+      this.stepper.next();
+    } */
+  }
+
+
   ngAfterViewInit(): void {
     // Escucha el evento de cambio de paso del stepper
     if (this.stepper) {
@@ -228,10 +260,19 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     return cliente && cliente.nombre ? cliente.nombre : '';
   }
 
-  private _filter(name: string): Clienteselect[] {
+  /* private _filter(name: string): Clienteselect[] {
     const filterValue = name.toLowerCase();
     return this.clientes.filter(cliente => cliente.nombre.toLowerCase().includes(filterValue));
-  }
+  } */
+
+    private _filter(name: string): Clienteselect[] {
+      const filterValue = name.toLowerCase();
+      return this.clientes.filter(cliente =>
+        cliente.nombre.toLowerCase().includes(filterValue) ||
+        cliente.cliente?.toLowerCase().includes(filterValue) ||
+        cliente.rifci?.toLowerCase().includes(filterValue)
+      );
+    }
   
   applyFilters() {
     this.currentPage = 1; 
@@ -321,42 +362,6 @@ sortData(sortField: string) {
     );
   }
 
-  onClienteInputChange(event: any): void {
-    const inputValue = event.target.value;
-    if (!inputValue) { // Si el input está vacío
-      this.clienteData = null;
-      this.authService.setCodCli(null); 
-      this.codCli = this.authService.getCodCli();
-      return; // Sale de la función para evitar la búsqueda
-    }
-
-    const selectedCliente = this.clientes.find(
-      (cliente) =>
-        cliente.cliente === inputValue ||
-        cliente.nombre.toLowerCase().includes(inputValue.toLowerCase()) ||
-        cliente.rifci === inputValue
-    );
-
-    /* if (selectedCliente) {
-      this.onClienteSeleccionado(selectedCliente);
-
-    } */
-  }
-
-  onClienteSeleccionado(cliente: Clienteselect): void {
-    this.authService.setCodCli(cliente.cliente);
-    this.codCli = this.authService.getCodCli();
-
-    this.portalcliLogicaService.buscaalmacen();
-    this.clienteData = cliente; // Actualizar clienteData al seleccionar
-    if(this.codCli){
-      this.subscribeToClienteData();
-    }
-    // Cambiar a la pestaña del inventario (índice 1)
-    /* if (this.stepper) {
-      this.stepper.next();
-    } */
-  }
 
     checkPriceRange(price: number, range: string): boolean {
       if (!range) return true;
