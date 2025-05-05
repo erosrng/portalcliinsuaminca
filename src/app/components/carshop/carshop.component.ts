@@ -338,6 +338,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                             'Pedido': this.productscar,
                             'diasCredito': this.diasCredito,
                             'montoFactura': this.montoFactura,
+                            'emailSendUser': this.emailSendUser,
                         }
                         this.apiService.generate_ped(aux).subscribe((data: any) => {
                             console.log(data)
