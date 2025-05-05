@@ -144,7 +144,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatStepper | undefined; 
   @ViewChild(MatSort)
   sort: MatSort = new MatSort;
-  
+
+  seclectElement: any | null = null;
+  cantAddModal = 0
+  descprov = 0
 
   constructor(
     public dialog: MatDialog,
@@ -506,8 +509,8 @@ sortData(sortField: string) {
     }
   }
 
-  agg_pedido(product: any) {
-    // console.log(this.codCli)
+  agg_pedido(product: any, type: string) {
+    console.log(this.seclectElement)
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
     let cantidad: number;
@@ -515,24 +518,30 @@ sortData(sortField: string) {
     const descprovInput = document.getElementById(`descprov_${product.codigo}`) as HTMLInputElement;
     const descprovInput2 = document.getElementById(`descprov2_${product.codigo}`) as HTMLInputElement;
     let descprov: number;
-  
-    if (cantidadInput && cantidadInput.value) {
-      cantidad = parseInt(cantidadInput.value, 10);
-      descprov = parseInt(descprovInput.value, 10);
-    } else if (cantidadInput2 && cantidadInput2.value) {
-      cantidad = parseInt(cantidadInput2.value, 10);
-      descprov = parseInt(descprovInput2.value, 10);
+
+    if (type === 'MODAL') {
+      cantidad = this.cantAddModal
+      descprov = this.descprov
     } else {
-      Swal.fire({
-        text: 'Cantidad inválida',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 3000,
-        toast: true,
-        position: 'bottom-end',
-      });
-      return;
+      if (cantidadInput && cantidadInput.value) {
+        cantidad = parseInt(cantidadInput.value, 10);
+        descprov = parseInt(descprovInput.value, 10);
+      } else if (cantidadInput2 && cantidadInput2.value) {
+        cantidad = parseInt(cantidadInput2.value, 10);
+        descprov = parseInt(descprovInput2.value, 10);
+      } else {
+        Swal.fire({
+          text: 'Cantidad inválida',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'bottom-end',
+        });
+        return;
+      }
     }
+
     this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
@@ -694,6 +703,7 @@ sortData(sortField: string) {
     imageficha: any;
 
     openProductModal(element: any) {
+      this.seclectElement = element
       Swal.showLoading();
         this.portalcliLogicaService.openProductModal(element.codigo).subscribe({ // Suscríbete al Observable
           next: (data) => {
@@ -932,6 +942,10 @@ sortData(sortField: string) {
       }
     }
     return parseFloat(String(precio).replace(',', '.').replace('.',','));
+  }
+
+  goToCard(): void {
+    this.router.navigate(['/carrito']);
   }
   
 
