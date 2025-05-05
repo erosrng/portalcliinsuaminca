@@ -1,4 +1,4 @@
-import {CommonModule, formatCurrency} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription, takeUntil, Subject } from 'rxjs';
@@ -112,7 +112,6 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.codCli = this.authService.getCodCli();
         if(this.codCli){
             this.subscribeToClienteData();
-            
         }
 
         /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
@@ -160,7 +159,6 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 this.dataSource.sort = this.sort;
                 this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
                 this.isLoading = false;
-
             },
             error: (error) => {
                 this.isLoading = false;
@@ -712,24 +710,24 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
         let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
         let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
-    
+
         if (!isNaN(precio)) {
             let precioConDescuentoProveedor = precio;
-    
+
             // Aplicar descuento del proveedor si es válido y mayor que cero
             if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
                 const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
                 precioConDescuentoProveedor -= descuentoProveedor;
             }
-    
+
             let precioFinal = precioConDescuentoProveedor;
-    
+
             // Aplicar el otro descuento si es válido y mayor que cero
             if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
                 const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
                 precioFinal -= otroDescuento;
             }
-    
+
             return precioFinal;
         } else {
             return precio;
@@ -738,7 +736,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
     recalcular(newValue: number, codigo: string) {
         var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
-        var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;        
+        var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
         var preciod2 = preciod.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
         totald.innerText=this.formatCurrency((parseFloat(preciod2)*newValue),'USD').toString();
 
