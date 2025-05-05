@@ -280,6 +280,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         });
     }
 
+
+
     //Envia pedidos al servidor
     enviaped(){
         this.isLoading = true;
@@ -306,53 +308,77 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                    input: "text",
-                    inputAttributes: {
-                        autocapitalize: "off"
-                    },
-                    showCancelButton: true,
-                    confirmButtonText: "Enviar",
-                    showLoaderOnConfirm: true,
-                    preConfirm: async (login) => {
-                        if (login === '' || login === null) {
-                            return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                        } else {
-                            this.emailSendUser = login;
-                        }
-                    },
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.mostrarLoader();
-                        //console.log(this.productscar)
-                        //console.log(this.clienteData)
-                        const aux = {
-                            'usuario': localStorage.getItem('usuario'),
-                            'nombre': localStorage.getItem('nombre'),
-                            'nomprv': localStorage.getItem('nomprv'),
-                            'proveed': localStorage.getItem('proveed'),
-                            'codigo_cliente': this.clienteData.cliente,
-                            'nombre_cliente':  this.clienteData.nombre,
-                            'Pedido': this.productscar,
-                            'diasCredito': this.diasCredito,
-                            'montoFactura': this.montoFactura,
-                            'emailSendUser': this.emailSendUser,
-                        }
-                        this.apiService.generate_ped(aux).subscribe((data: any) => {
-                            console.log(data)
-                            this.isLoading = false;
-                            this.ocultarLoader();
-                            this.generar_pedido_proteo(apiUrl, formData, headers);
-                        }, () => {
-                            this.isLoading = false;
-                            this.ocultarLoader();
+                Swal.showLoading()
+                // Swal.fire({
+                //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                //     input: "text",
+                //     inputAttributes: {
+                //         autocapitalize: "off"
+                //     },
+                //     showCancelButton: true,
+                //     confirmButtonText: "Enviar",
+                //     showLoaderOnConfirm: true,
+                //     preConfirm: async (login) => {
+                //         if (login === '' || login === null) {
+                //             return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                //         } else {
+                //             this.emailSendUser = login;
+                //         }
+                //     },
+                //     allowOutsideClick: () => !Swal.isLoading()
+                // }).then((result) => {
+                //     if (result.isConfirmed) {
+                //         this.mostrarLoader();
+                //         //console.log(this.productscar)
+                //         //console.log(this.clienteData)
+                //         const aux = {
+                //             'usuario': localStorage.getItem('usuario'),
+                //             'nombre': localStorage.getItem('nombre'),
+                //             'nomprv': localStorage.getItem('nomprv'),
+                //             'proveed': localStorage.getItem('proveed'),
+                //             'codigo_cliente': this.clienteData.cliente,
+                //             'nombre_cliente':  this.clienteData.nombre,
+                //             'Pedido': this.productscar,
+                //             'diasCredito': this.diasCredito,
+                //             'montoFactura': this.montoFactura,
+                //             'emailSendUser': this.emailSendUser,
+                //         }
+                //         this.apiService.generate_ped(aux).subscribe((data: any) => {
+                //             console.log(data)
+                //             this.isLoading = false;
+                //             this.ocultarLoader();
+                //             this.generar_pedido_proteo(apiUrl, formData, headers);
+                //         }, () => {
+                //             this.isLoading = false;
+                //             this.ocultarLoader();
+                //
+                //         })
+                //     }
+                // });
+                this.mostrarLoader();
+                //console.log(this.productscar)
+                //console.log(this.clienteData)
+                const aux = {
+                    'usuario': localStorage.getItem('usuario'),
+                    'nombre': localStorage.getItem('nombre'),
+                    'nomprv': localStorage.getItem('nomprv'),
+                    'proveed': localStorage.getItem('proveed'),
+                    'codigo_cliente': this.clienteData.cliente,
+                    'nombre_cliente':  this.clienteData.nombre,
+                    'Pedido': this.productscar,
+                    'diasCredito': this.diasCredito,
+                    'montoFactura': this.montoFactura,
+                    'emailSendUser': this.emailSendUser,
+                }
+                this.apiService.generate_ped(aux).subscribe((data: any) => {
+                    this.isLoading = false;
+                    this.ocultarLoader();
+                    this.generar_pedido_proteo(apiUrl, formData, headers);
+                }, () => {
+                    this.isLoading = false;
+                    this.ocultarLoader();
 
-                        })
-                    }
-                });
-
+                })
 
             }
         });

@@ -537,28 +537,29 @@ export class UploadPedidosComponent implements OnInit {
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    Swal.fire({
-                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                        input: "text",
-                        inputAttributes: {
-                            autocapitalize: "off"
-                        },
-                        showCancelButton: true,
-                        confirmButtonText: "Enviar",
-                        showLoaderOnConfirm: true,
-                        preConfirm: async (login) => {
-                           if (login === '' || login === null) {
-                               return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                           } else {
-                               this.emailSendUser = login;
-                           }
-                        },
-                        allowOutsideClick: () => !Swal.isLoading()
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            this.executeMultiPed();
-                        }
-                    });
+                    // Swal.fire({
+                    //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                    //     input: "text",
+                    //     inputAttributes: {
+                    //         autocapitalize: "off"
+                    //     },
+                    //     showCancelButton: true,
+                    //     confirmButtonText: "Enviar",
+                    //     showLoaderOnConfirm: true,
+                    //     preConfirm: async (login) => {
+                    //        if (login === '' || login === null) {
+                    //            return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                    //        } else {
+                    //            this.emailSendUser = login;
+                    //        }
+                    //     },
+                    //     allowOutsideClick: () => !Swal.isLoading()
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         this.executeMultiPed();
+                    //     }
+                    // });
+                    this.executeMultiPed();
                 }
             });
         }
@@ -573,28 +574,29 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                        input: "text",
-                        inputAttributes: {
-                            autocapitalize: "off"
-                        },
-                        showCancelButton: true,
-                        confirmButtonText: "Enviar",
-                        showLoaderOnConfirm: true,
-                        preConfirm: async (login) => {
-                            if (login === '' || login === null) {
-                                return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                            } else {
-                                this.emailSendUser = login;
-                            }
-                        },
-                        allowOutsideClick: () => !Swal.isLoading()
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            this.executePed();
-                        }
-                    });
+                    // Swal.fire({
+                    //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
+                    //     input: "text",
+                    //     inputAttributes: {
+                    //         autocapitalize: "off"
+                    //     },
+                    //     showCancelButton: true,
+                    //     confirmButtonText: "Enviar",
+                    //     showLoaderOnConfirm: true,
+                    //     preConfirm: async (login) => {
+                    //         if (login === '' || login === null) {
+                    //             return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
+                    //         } else {
+                    //             this.emailSendUser = login;
+                    //         }
+                    //     },
+                    //     allowOutsideClick: () => !Swal.isLoading()
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         this.executePed();
+                    //     }
+                    // });
+                    this.executePed();
 
                 }
             });

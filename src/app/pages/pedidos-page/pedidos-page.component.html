@@ -29,21 +29,21 @@
                                 </ul>
                             </div>
                             <div class="quantity">
-                                <input type="text" id="cana2_{{selectedProduct?.codigo}}" value="{{ selectedProduct?.encar }}" placeholder="Cant..." class="quantity-input">
-                                <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>
+<!--                                <input type="text" id="cana2_{{selectedProduct?.codigo}}" [(ngModel)]="cantAddModal"  placeholder="Cant..." class="quantity-input">-->
+<!--                                <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>-->
                             </div>
                             <!-- <button class="carrito__checkout-button">¡Agregar al carrito!</button> -->
 
-                            <button 
-                              [ngClass]="{ 
-                                'carrito__checkout-button': !productosEnCarritoCodigos.includes(selectedProduct?.codigo), 
-                                'carrito__checkout-button-agg': productosEnCarritoCodigos.includes(selectedProduct?.codigo)
-                              }" 
-                              (click)="agg_pedido(selectedProduct)"
-                            >
-                              <span *ngIf="!productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Agregar al carrito</span>
-                              <span *ngIf="productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Producto agregado</span>
-                            </button>
+<!--                            <button -->
+<!--                              [ngClass]="{ -->
+<!--                                'carrito__checkout-button': !productosEnCarritoCodigos.includes(selectedProduct?.codigo),-->
+<!--                                'carrito__checkout-button-agg': productosEnCarritoCodigos.includes(selectedProduct?.codigo)-->
+<!--                              }" -->
+<!--                              (click)="agg_pedido(seclectElement, 'MODAL')"-->
+<!--                            >-->
+<!--                              <span *ngIf="!productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Agregar al carrito</span>-->
+<!--                              <span *ngIf="productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Producto agregado</span>-->
+<!--                            </button>-->
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
 
                 <div class="col-2 d-center">
                   <div class="">
-                      <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
+                      <button class="btn-end" (click)="goToCard();"> Finalizar compra</button>
                       <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
                       <button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>
 
@@ -156,7 +156,7 @@
           </div>
 
           <!-- TABLA -->
-          <div class="col-12 mt-4">
+          <div class="col-12 mt-4 min-h">
             <div class="card  pt-0 card-resumen">
               <div class="col-12 mt-5">
                 <div class="d-flex align-items-center gap-3">
@@ -278,7 +278,7 @@
                           id="cana_{{element.codigo}}" 
                           placeholder="0" 
                           class="w-100 input-cant" 
-                          (keyup.enter)="agg_pedido(element)"
+                          (keyup.enter)="agg_pedido(element, '-')"
                         >
                     </td>
                   </ng-container>
@@ -289,9 +289,9 @@
                       <input type="number" min="0" maxlength="3"
                              [value]="element.descprov ? element.descprov : ''"
                              (input)="updateDescuento(element, $event)" id="descprov_{{element.codigo}}"
-                             placeholder="5%"
+                             placeholder="0%"
                              class="w-100 input-cant"
-                             (keyup.enter)="agg_pedido(element)"
+                             (keyup.enter)="agg_pedido(element, '-')"
                       >
                     </td>
                   </ng-container>
@@ -305,7 +305,7 @@
                           'btn-agg': productosEnCarritoCodigos.includes(element.codigo), 
                          
                           }" 
-                          (click)="agg_pedido(element)">
+                          (click)="agg_pedido(element, '-')">
                         <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
                         <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
                       </button>
