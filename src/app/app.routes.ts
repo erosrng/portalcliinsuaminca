@@ -14,6 +14,7 @@ import { AdminHomeComponent } from './pages/admin-pages/admin-home/admin-home.co
 import { AdminPedidosVendedorComponent } from './pages/admin-pages/admin-pedidos-vendedor/admin-pedidos-vendedor.component';
 import { HistorialPedidosComponent } from './pages/historial-pedidos/historial-pedidos.component';
 import {UploadPedidosComponent} from "./pages/upload-pedidos/upload-pedidos.component";
+import {ResumenClienteComponent} from "./pages/resumen-cliente/resumen-cliente.component";
 
 export const routes: Routes = [
     { path: '', component: LoginPageComponent},
@@ -27,5 +28,6 @@ export const routes: Routes = [
     { path: 'historialped', component: HistorialPedidosComponent, canActivate: [authGuard] },
     { path: 'admin', component: AdminHomeComponent, canActivate: [authGuard] },
     { path: 'admin/pedidos', component: AdminPedidosVendedorComponent, canActivate: [authGuard] },
-    { path: 'cargar-pedidos', component: UploadPedidosComponent, canActivate: [authGuard]}
+    { path: 'cargar-pedidos', component: UploadPedidosComponent, canActivate: [authGuard]},
+    { path: 'resumen-cliente', component: ResumenClienteComponent}
 ];
