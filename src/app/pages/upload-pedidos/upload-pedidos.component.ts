@@ -445,6 +445,8 @@ export class UploadPedidosComponent implements OnInit {
                 })
             });
 
+            console.log(pedidosRealizados)
+
             const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
             this.dataSource = pedidoFinales;
             console.log(this.dataSource)
@@ -503,16 +505,46 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getValor(element: any): number {
-
         const aux = element.pedido;
-        let valueOfRetur = 0
+        let valueOfRetur = 0;
         aux.forEach((info: any) => {
             const stringNumber = info.Precio;
             const normalizedString = stringNumber.replace(",", "");
-            const number = parseFloat(normalizedString);
-            valueOfRetur = number + valueOfRetur
-        })
-        return valueOfRetur
+            const precio = parseFloat(normalizedString);
+            const descuento = parseFloat(info.Descuento) / 100; // Convertir el porcentaje a decimal
+            const precioConDescuento = precio * (1 - descuento);
+            valueOfRetur = precioConDescuento + valueOfRetur;
+        });
+        return valueOfRetur;
+    }
+
+    getValorGrupo(element: any): number {
+        const aux = element.pedido;
+        let totalOferta = 0;
+        aux.forEach((info: any) => {
+            const stringOferta = info.Oferta;
+            const normalizedString = stringOferta.replace(",", "");
+            const oferta = parseFloat(normalizedString);
+            totalOferta += oferta; // Sumamos el valor de la oferta al total
+        });
+        return totalOferta;
+    }
+
+
+
+
+    calculateDiscount(stringNumber: string, descuentoItem: string): number {
+        if (this.typeUpload === 'INDIVIDUAL') {
+            const normalizedString = stringNumber.replace(",", "");
+            const precio = parseFloat(normalizedString);
+            const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
+            return (precio * (1 - descuento));
+        } else {
+            const normalizedString = stringNumber.replace(",", "");
+            const precio = parseFloat(normalizedString);
+            return precio
+        }
+
     }
 
     openDetail(info: any): void {
@@ -520,10 +552,26 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getprice(pedido: any) {
-        const stringNumber = pedido.Precio;
-        const normalizedString = stringNumber.replace(",", ".");
-        const number = parseFloat(normalizedString);
-        return number
+        if (this.typeUpload === 'INDIVIDUAL') {
+            const stringNumber = pedido.Precio;
+            const normalizedString = stringNumber.replace(",", ".");
+            const number = parseFloat(normalizedString);
+            return number
+        } else {
+            const stringNumber = pedido.Oferta;
+            const normalizedString = stringNumber.replace(",", ".");
+            const number = parseFloat(normalizedString);
+            return number
+        }
+
+    }
+
+    getimagen(pedido: any) {
+        return `http://192.168.1.48/proteoerp/uploads/inventario/Image/${pedido.Codigo}_.png`
+    }
+
+    setDefaultImage(event: any) {
+        event.target.src = 'http://192.168.1.48/proteoerp/assets/images/elemento-44.png';
     }
 
     generatePedido() {
@@ -613,7 +661,7 @@ export class UploadPedidosComponent implements OnInit {
                             cod_cli: '',
                             codigoa: '',
                             dconiva: '',
-                            descu: '',
+                            descu: info.Descuento,
                             dsiniva: '',
                             escala: '',
                             id_pedido: '',
@@ -777,7 +825,7 @@ export class UploadPedidosComponent implements OnInit {
                                     tivabs: '',
                                     tivad: '',
                                     totalbs: '',
-                                    totald: info.Precio,
+                                    totald: info.Oferta,
 
 
                                 });
