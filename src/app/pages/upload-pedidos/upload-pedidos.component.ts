@@ -27,6 +27,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {API_URL} from "../../app.config";
 import {AuthService} from "../../auth.service";
 import {ApiService} from "../../services/api.service";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
 
 
 @Component({
@@ -49,7 +50,7 @@ import {ApiService} from "../../services/api.service";
         AsyncPipe,
 
         MatTableModule, MatButtonModule, MatIconModule,
-        MatCheckboxModule
+        MatCheckboxModule, MatProgressSpinner
     ],
     templateUrl: './upload-pedidos.component.html',
     styleUrl: './upload-pedidos.component.scss'
@@ -83,6 +84,7 @@ export class UploadPedidosComponent implements OnInit {
     diasCredito = 0
     montoFactura = 0
     emailSendUser = ''
+    showloader = false;
 
     constructor(
         private proteoServices: ProteoService,
@@ -443,6 +445,8 @@ export class UploadPedidosComponent implements OnInit {
                 })
             });
 
+            console.log(pedidosRealizados)
+
             const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
             this.dataSource = pedidoFinales;
             console.log(this.dataSource)
@@ -501,16 +505,46 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getValor(element: any): number {
-
         const aux = element.pedido;
-        let valueOfRetur = 0
+        let valueOfRetur = 0;
         aux.forEach((info: any) => {
             const stringNumber = info.Precio;
             const normalizedString = stringNumber.replace(",", "");
-            const number = parseFloat(normalizedString);
-            valueOfRetur = number + valueOfRetur
-        })
-        return valueOfRetur
+            const precio = parseFloat(normalizedString);
+            const descuento = parseFloat(info.Descuento) / 100; // Convertir el porcentaje a decimal
+            const precioConDescuento = precio * (1 - descuento);
+            valueOfRetur = precioConDescuento + valueOfRetur;
+        });
+        return valueOfRetur;
+    }
+
+    getValorGrupo(element: any): number {
+        const aux = element.pedido;
+        let totalOferta = 0;
+        aux.forEach((info: any) => {
+            const stringOferta = info.Oferta;
+            const normalizedString = stringOferta.replace(",", "");
+            const oferta = parseFloat(normalizedString);
+            totalOferta += oferta; // Sumamos el valor de la oferta al total
+        });
+        return totalOferta;
+    }
+
+
+
+
+    calculateDiscount(stringNumber: string, descuentoItem: string): number {
+        if (this.typeUpload === 'INDIVIDUAL') {
+            const normalizedString = stringNumber.replace(",", "");
+            const precio = parseFloat(normalizedString);
+            const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
+            return (precio * (1 - descuento));
+        } else {
+            const normalizedString = stringNumber.replace(",", "");
+            const precio = parseFloat(normalizedString);
+            return precio
+        }
+
     }
 
     openDetail(info: any): void {
@@ -518,10 +552,26 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getprice(pedido: any) {
-        const stringNumber = pedido.Precio;
-        const normalizedString = stringNumber.replace(",", ".");
-        const number = parseFloat(normalizedString);
-        return number
+        if (this.typeUpload === 'INDIVIDUAL') {
+            const stringNumber = pedido.Precio;
+            const normalizedString = stringNumber.replace(",", ".");
+            const number = parseFloat(normalizedString);
+            return number
+        } else {
+            const stringNumber = pedido.Oferta;
+            const normalizedString = stringNumber.replace(",", ".");
+            const number = parseFloat(normalizedString);
+            return number
+        }
+
+    }
+
+    getimagen(pedido: any) {
+        return `http://192.168.1.48/proteoerp/uploads/inventario/Image/${pedido.Codigo}_.png`
+    }
+
+    setDefaultImage(event: any) {
+        event.target.src = 'http://192.168.1.48/proteoerp/assets/images/elemento-44.png';
     }
 
     generatePedido() {
@@ -536,29 +586,6 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
-
-                    // Swal.fire({
-                    //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                    //     input: "text",
-                    //     inputAttributes: {
-                    //         autocapitalize: "off"
-                    //     },
-                    //     showCancelButton: true,
-                    //     confirmButtonText: "Enviar",
-                    //     showLoaderOnConfirm: true,
-                    //     preConfirm: async (login) => {
-                    //        if (login === '' || login === null) {
-                    //            return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                    //        } else {
-                    //            this.emailSendUser = login;
-                    //        }
-                    //     },
-                    //     allowOutsideClick: () => !Swal.isLoading()
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         this.executeMultiPed();
-                    //     }
-                    // });
                     this.executeMultiPed();
                 }
             });
@@ -574,28 +601,7 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Swal.fire({
-                    //     title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                    //     input: "text",
-                    //     inputAttributes: {
-                    //         autocapitalize: "off"
-                    //     },
-                    //     showCancelButton: true,
-                    //     confirmButtonText: "Enviar",
-                    //     showLoaderOnConfirm: true,
-                    //     preConfirm: async (login) => {
-                    //         if (login === '' || login === null) {
-                    //             return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                    //         } else {
-                    //             this.emailSendUser = login;
-                    //         }
-                    //     },
-                    //     allowOutsideClick: () => !Swal.isLoading()
-                    // }).then((result) => {
-                    //     if (result.isConfirmed) {
-                    //         this.executePed();
-                    //     }
-                    // });
+
                     this.executePed();
 
                 }
@@ -605,15 +611,9 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     executePed(): void {
+        Swal.close()
         Swal.showLoading()
-        // {
-        //     "enviar":true,
-        //     "cliente":"01234",
-        //     "pedido":[
-        //     {"codigo":"012345","cantidad":12,"descuento":12},
-        //     ...
-        // ]
-        // }
+        this.showloader = true;
         const pedidoResponse: any = {
             cliente: this.controlUnico.value,
             enviar: true,
@@ -661,7 +661,7 @@ export class UploadPedidosComponent implements OnInit {
                             cod_cli: '',
                             codigoa: '',
                             dconiva: '',
-                            descu: '',
+                            descu: info.Descuento,
                             dsiniva: '',
                             escala: '',
                             id_pedido: '',
@@ -702,27 +702,47 @@ export class UploadPedidosComponent implements OnInit {
             'montoFactura': this.montoFactura,
             'emailSendUser': this.emailSendUser
         }
-        this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
-            console.log(data)
-            this.apiService.generate_ped(aux).subscribe((data: any) => {
+        this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((INFO: any) => {
+            const pedidosTem = INFO.data.agg_pedido;
+            let auxLet = true
+            pedidosTem.forEach((element: any) => {
+                if (element.result === false) {
+                    auxLet = element.result;
+                }
+            });
+            if (auxLet) {
+                this.apiService.generate_ped(aux).subscribe((data: any) => {
+                    Swal.fire({
+                        title: "Pedidos generado",
+                        text: "",
+                        icon: "success"
+                    });
+                    this.clearUpload();
+                })
+            } else {
+                Swal.close()
                 Swal.fire({
-                    title: "Pedidos generado",
-                    text: "",
-                    icon: "success"
+                    title: "Error al generar pedidos",
+                    text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
+                    icon: "error"
                 });
-                this.clearUpload();
-            })
+                this.showloader = false;
+            }
+
         }, () => {
             Swal.fire({
                 title: "Error al generar pedidos",
                 text: "",
                 icon: "error"
             });
+            this.showloader = false;
         })
 
     }
 
     executeMultiPed(): void {
+        Swal.close()
+        this.showloader = true;
         const pedidoResponse: any = {
             pedidos: {}
         };
@@ -747,87 +767,105 @@ export class UploadPedidosComponent implements OnInit {
 
 
 
-        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
-
-            this.selection.selected.forEach((element: any) => {
-                const codigoCliente = element.codigoCliente;
-                this.clientesIndividual.forEach((item, index) => {
-                    if (item.cliente === codigoCliente) {
-                        this.clienteData = item
-                    }
-                });
-                const pedidoApi: any[] = [];
-                console.log(element)
-                console.log(this.listProdutos)
-                element.pedido.forEach((info: any) => {
-                    this.listProdutos.forEach((item: any) => {
-                        if (info.Codigo === item.codigo) {
-                            console.log(info)
-                            pedidoApi.push({
-                                cant: Number(info.Unidades),
-                                descuento: info.Descuento,
-                                codigo: item.codigo,
-                                descprov: item.descprov,
-                                descrip: item.descrip,
-                                dprice: item.dprice,
-                                dpriced: item.dpriced,
-                                encar: item.encar,
-                                existen: item.existen,
-                                img: item.img,
-                                lote: item.lote,
-                                nomprv: item.nomprv,
-                                oferta: item.oferta,
-                                oprecio: item.oprecio,
-                                opreciod: item.opreciod,
-                                vence: item.vence,
-                                barras: '',
-                                bssiniva: '',
-                                cod_cli: '',
-                                codigoa: '',
-                                dconiva: '',
-                                descu: '',
-                                dsiniva: '',
-                                escala: '',
-                                id_pedido: '',
-                                iva: '',
-                                ivabs: '',
-                                ivad: '',
-                                preciod: '',
-                                preciosiniva: '',
-                                tasa: 0,
-                                tivabs: '',
-                                tivad: '',
-                                totalbs: '',
-                                totald: info.Precio,
-
-
-                            });
-                        }
-                    })
-                });
-                const aux = {
-                    'usuario': localStorage.getItem('usuario'),
-                    'nombre': localStorage.getItem('nombre'),
-                    'nomprv': localStorage.getItem('nomprv'),
-                    'proveed': localStorage.getItem('proveed'),
-                    'codigo_cliente': this.clienteData.cliente,
-                    'nombre_cliente':  this.clienteData.nombre,
-                    'Pedido': pedidoApi,
-                    'diasCredito': this.diasCredito,
-                    'montoFactura': this.montoFactura,
-                    'emailSendUser': this.emailSendUser,
+        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
+            const pedidosTem = INFO.data.tem_carrito;
+            let auxLet = true
+            pedidosTem.forEach((element: any) => {
+                if (element.result === false) {
+                    auxLet = element.result;
                 }
-                this.apiService.generate_ped(aux).subscribe((data: any) => {
-                    console.log('pedido enviado')
-                    console.log(data)
-                    this.clearUpload();
-                })
-                Swal.fire({
-                    title: "Pedidos generado",
-                    text: "",
-                    icon: "success"
-                });
             });
+            if (auxLet) {
+                this.selection.selected.forEach((element: any) => {
+                    const codigoCliente = element.codigoCliente;
+                    this.clientesIndividual.forEach((item, index) => {
+                        if (item.cliente === codigoCliente) {
+                            this.clienteData = item
+                        }
+                    });
+                    const pedidoApi: any[] = [];
+                    console.log(element)
+                    console.log(this.listProdutos)
+                    element.pedido.forEach((info: any) => {
+                        this.listProdutos.forEach((item: any) => {
+                            if (info.Codigo === item.codigo) {
+                                console.log(info)
+                                pedidoApi.push({
+                                    cant: Number(info.Unidades),
+                                    descuento: info.Descuento,
+                                    codigo: item.codigo,
+                                    descprov: item.descprov,
+                                    descrip: item.descrip,
+                                    dprice: item.dprice,
+                                    dpriced: item.dpriced,
+                                    encar: item.encar,
+                                    existen: item.existen,
+                                    img: item.img,
+                                    lote: item.lote,
+                                    nomprv: item.nomprv,
+                                    oferta: item.oferta,
+                                    oprecio: item.oprecio,
+                                    opreciod: item.opreciod,
+                                    vence: item.vence,
+                                    barras: '',
+                                    bssiniva: '',
+                                    cod_cli: '',
+                                    codigoa: '',
+                                    dconiva: '',
+                                    descu: '',
+                                    dsiniva: '',
+                                    escala: '',
+                                    id_pedido: '',
+                                    iva: '',
+                                    ivabs: '',
+                                    ivad: '',
+                                    preciod: '',
+                                    preciosiniva: '',
+                                    tasa: 0,
+                                    tivabs: '',
+                                    tivad: '',
+                                    totalbs: '',
+                                    totald: info.Oferta,
+
+
+                                });
+                            }
+                        })
+                    });
+                    const aux = {
+                        'usuario': localStorage.getItem('usuario'),
+                        'nombre': localStorage.getItem('nombre'),
+                        'nomprv': localStorage.getItem('nomprv'),
+                        'proveed': localStorage.getItem('proveed'),
+                        'codigo_cliente': this.clienteData.cliente,
+                        'nombre_cliente':  this.clienteData.nombre,
+                        'Pedido': pedidoApi,
+                        'diasCredito': this.diasCredito,
+                        'montoFactura': this.montoFactura,
+                        'emailSendUser': this.emailSendUser,
+                    }
+                    this.apiService.generate_ped(aux).subscribe((data: any) => {
+                        console.log('pedido enviado')
+                        console.log(data)
+                        this.clearUpload();
+                    })
+                    Swal.fire({
+                        title: "Pedidos generado",
+                        text: "",
+                        icon: "success"
+                    });
+                });
+            } else {
+                Swal.close()
+                Swal.fire({
+                    title: "Error al generar pedidos",
+                    text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
+                    icon: "error"
+                });
+                this.showloader = false;
+            }
+
+
 
         }, () => {
             Swal.fire({
@@ -835,6 +873,7 @@ export class UploadPedidosComponent implements OnInit {
                 text: "",
                 icon: "error"
             });
+            this.showloader = false;
         })
 
     }
@@ -867,6 +906,7 @@ export class UploadPedidosComponent implements OnInit {
         this.controlCasaMatriz.setValue(null)
         this.controlUnico.setValue(null)
         this.emailSendUser = ''
+        this.showloader = false;
     }
 
 }

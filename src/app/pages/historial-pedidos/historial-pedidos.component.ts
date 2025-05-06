@@ -59,5 +59,29 @@ export class HistorialPedidosComponent implements OnInit {
 
   openDetail(pedido: HistoricoPedidosModel): void {
     this.pedidoActivo = pedido;
+    console.log(this.pedidoActivo)
+  }
+
+  calculateDiscount(stringNumber: string, descuentoItem: string): number {
+    const normalizedString = stringNumber.replace(",", "");
+    const precio = parseFloat(normalizedString);
+    const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
+    return (precio * (1 - descuento));
+  }
+
+  getValor(element: any): number {
+
+
+    const aux = element.Pedido;
+    let valueOfRetur = 0;
+    aux.forEach((info: any) => {
+      const stringNumber = info.totald;
+      const normalizedString = stringNumber.replace(",", "");
+      const precio = parseFloat(normalizedString);
+      const descuento = parseFloat(info.descu) / 100; // Convertir el porcentaje a decimal
+      const precioConDescuento = precio * (1 - descuento);
+      valueOfRetur = precioConDescuento + valueOfRetur;
+    });
+    return valueOfRetur;
   }
 }

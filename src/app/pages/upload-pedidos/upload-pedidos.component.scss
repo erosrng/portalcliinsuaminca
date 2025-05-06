@@ -144,3 +144,20 @@ th {
 i {
   cursor: pointer !important;
 }
+
+.center-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spiiner {
+  margin: auto;
+  margin-bottom: 3rem;
+}
+
+.row-item-hover:hover{
+  background: #cccccc38 !important;
+  cursor: pointer;
+
+}
