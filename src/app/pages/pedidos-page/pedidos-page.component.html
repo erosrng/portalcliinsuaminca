@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  
+
   <mat-sidenav-container>
     <mat-sidenav mode="over" [opened]="toggleMenu">
       <app-side-bar ></app-side-bar>
@@ -63,7 +63,7 @@
     <mat-sidenav-content class="w-100">
       <div class="container-fluid mt-6 p-0 main-container" >
         <div class="row mb-5 p-5">
-          
+
           <!-- CONTROL HEADER -->
           <div class="col-12">
             <div class="card pt-0 card-resumen">
@@ -78,7 +78,7 @@
                     <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
                     <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
                   </div>
-                 
+
                 </div>
 
                 <div class="col-2 ">
@@ -101,7 +101,7 @@
                       <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
                     </div>
                   </div>
-                  
+
                 </div>
 
                 <div class="col-2 d-center">
@@ -111,12 +111,12 @@
                       <!--<button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>-->
                   </div>
                 </div>
-                
+
               </div>
 
               <div class="row w-100">
                 <div class="col-5 col-custom-6">
-                 
+
                   <form class="example-form">
                     <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
                       <mat-label> Seleccione un cliente</mat-label>
@@ -137,12 +137,12 @@
                     <mat-label>Aplicar Descuento Lineal (%)</mat-label>
                     <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
                   </mat-form-field>
-            
+
                 </div>
 
                 <div class="col-3">
                   <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
-                      
+
 <!--                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">-->
 <!--                      <i class="fas fa-file-excel mr-1"></i>Cargar-->
 <!--                    </button>-->
@@ -186,15 +186,15 @@
 
               <div class="col-12">
                 <table mat-table [dataSource]="dataSource" matSort class="pedidos__table">
-                  
+
                   <!-- Position Column -->
                   <ng-container matColumnDef="img">
                     <th mat-header-cell *matHeaderCellDef class="border-top-left"> Ver </th>
-                    <td mat-cell *matCellDef="let element"> 
-                       <img src="{{element.img}}" 
-                        class="img-product" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#productModal" 
+                    <td mat-cell *matCellDef="let element">
+                       <img src="{{element.img}}"
+                        class="img-product"
+                        data-bs-toggle="modal"
+                        data-bs-target="#productModal"
                         (click)="openProductModal(element)">
                     </td>
                   </ng-container>
@@ -208,14 +208,14 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" (click)="sortData('descrip')" class="w-15"> Descripción </th>
                     <td mat-cell *matCellDef="let element"> {{element.descrip}} </td>
                   </ng-container>
-              
+
                  <!--  <ng-container matColumnDef="opreciod" class="w-10">
                     <th mat-header-cell *matHeaderCellDef  mat-sort-header="oprecio" (click)="sortData('oprecio')" > Precio </th>
-                    <td mat-cell *matCellDef="let element" class="text-aling-center"> 
+                    <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <span class="green">{{element.dpriced}} US$</span>
                       <br>
                       <span class="blue"> {{element.dprice}} Bs.</span>
-                     
+
                     </td>
                   </ng-container> -->
 
@@ -223,7 +223,7 @@
                     <th mat-header-cell *matHeaderCellDef mat-sort-header="oprecio" (click)="sortData('oprecio')"> Precio </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <span class="green">
-                        
+
                         <ng-container *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">{{element.dpriced}} US$</ng-container>
                       </span>
                       <br *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">
@@ -231,7 +231,7 @@
                        {{element.dprice}} Bs.</span>
                     </td>
                   </ng-container>
-                  
+
                   <ng-container matColumnDef="apliDiscount">
                     <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
@@ -239,18 +239,18 @@
                       <br>
                       <span [ngClass]="{'green': diasMontoFactura !== undefined && diasMontoFactura > 0, 'blue': diasMontoFactura === undefined || diasMontoFactura <= 0}">
                        {{getPriceWDiscountBS(element) | number:'1.2-2'}} Bs.</span>
-                      
+
                     </td>
                   </ng-container>
-                  
-                  
+
+
                   <!-- <ng-container matColumnDef="apliDiscount">
                     <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <span class="green"> {{getPriceWDiscount(element) | number:'1.2-2'}} US$</span>
                       <br>
                       <span class="blue"> {{getPriceWDiscountBS(element) | number:'1.2-2'}} Bs.</span>
-                      
+
                     </td>
                   </ng-container>
                    -->
@@ -267,21 +267,21 @@
                       <!--<span class="green">{{element.existen}}</span>-->
                     </td>
                   </ng-container>
-    
+
                   <ng-container matColumnDef="cantidad">
                     <th mat-header-cell *matHeaderCellDef> Cantidad </th>
-                    <td mat-cell *matCellDef="let element"> 
-                      <input type="number" min="1" maxlength="10" 
-                          [value]="element.encar ? element.encar : ''" 
-                          (input)="validateInput(element, $event)" 
-                          id="cana_{{element.codigo}}" 
-                          placeholder="0" 
-                          class="w-100 input-cant" 
+                    <td mat-cell *matCellDef="let element">
+                      <input type="number" min="1" maxlength="10"
+                          [value]="element.encar ? element.encar : ''"
+                          (input)="validateInput(element, $event)"
+                          id="cana_{{element.codigo}}"
+                          placeholder="0"
+                          class="w-100 input-cant"
                           (keyup.enter)="agg_pedido(element, '-')"
                         >
                     </td>
                   </ng-container>
-    
+
                   <ng-container matColumnDef="descuento">
                     <th mat-header-cell *matHeaderCellDef> Descuento </th>
                     <td mat-cell *matCellDef="let element">
@@ -294,16 +294,16 @@
                       >
                     </td>
                   </ng-container>
-    
+
                    <!-- Agregar Column -->
                    <ng-container matColumnDef="agregar">
                     <th mat-header-cell *matHeaderCellDef class="border-top-right"> Agregar </th>
-                    <td mat-cell *matCellDef="let element"> 
-                      <button [ngClass]="{ 
-                          'btn-add': !productosEnCarritoCodigos.includes(element.codigo), 
-                          'btn-agg': productosEnCarritoCodigos.includes(element.codigo), 
-                         
-                          }" 
+                    <td mat-cell *matCellDef="let element">
+                      <button [ngClass]="{
+                          'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
+                          'btn-agg': productosEnCarritoCodigos.includes(element.codigo),
+
+                          }"
                           (click)="agg_pedido(element, '-')">
                         <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
                         <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>

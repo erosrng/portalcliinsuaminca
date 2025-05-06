@@ -1,0 +1,71 @@
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card p-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 mt-5">
+                            <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
+                                <mat-label> Seleccione un cliente</mat-label>
+                                <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
+                                       (change)="onClienteInputChange($event)">
+                                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                                    @for (cliente of filteredOptions | async; track cliente) {
+                                        <mat-option (click)="onClienteSeleccionado(cliente)" [value]="cliente">({{cliente.cliente}})
+                                            {{cliente.nombre}}</mat-option>
+                                    }
+                                </mat-autocomplete>
+                            </mat-form-field>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-5" *ngIf="data">
+            <mat-card style="flex: 1 1 300px;" class="resumen-card">
+                <mat-card-title>Información General</mat-card-title>
+                <mat-card-content>
+                    <p><strong>Código:</strong> {{ data.codigo }}</p>
+                    <p><strong>Nombre:</strong> {{ data.nombre }}</p>
+                    <p><strong>Condición:</strong> {{ data.condicion }}</p>
+                    <p><strong>Días Crédito:</strong> {{ data.dias_credito }}</p>
+                    <p><strong>Segmento:</strong> {{ data.segmento }}</p>
+                    <p><strong>Grupo Económico:</strong> {{ data.grupo_economico }}</p>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card style="flex: 1 1 300px;" class="resumen-card">
+                <mat-card-title>Información Financiera</mat-card-title>
+                <mat-card-content>
+                    <p><strong>Monto Factura:</strong> {{ data.monto_actura  }}</p>
+                    <p><strong>Límite Crédito:</strong> {{ data.limt  }}</p>
+                    <p><strong>Deuda $:</strong> {{ data.deuda  }}</p>
+                    <p><strong>Días Retraso:</strong> {{ data.dias_retraso }}</p>
+                    <p><strong>Solvencia:</strong> {{ data.solvencia }}</p>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card style="flex: 1 1 300px;" class="resumen-card">
+                <mat-card-title>Descuentos por Pronto Pago</mat-card-title>
+                <mat-card-content>
+                    <p><strong>PPago días 1:</strong> {{ data.pPago_dias_1 }} - <strong>%Desc:</strong> {{ data.desc_ppago_1 }}%</p>
+                    <p><strong>PPago días 2:</strong> {{ data.pPago_dias_2 }} - <strong>%Desc:</strong> {{ data.desc_ppago_2 }}%</p>
+                    <p><strong>PPago días 3:</strong> {{ data.pPago_dias_3 }} - <strong>%Desc:</strong> {{ data.desc_ppago_3 }}%</p>
+                    <p><strong>PPago días 4:</strong> {{ data.pPago_dias_4 }} - <strong>%Desc:</strong> {{ data.desc_ppago_4 }}%</p>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card style="flex: 1 1 300px;" class="resumen-card">
+                <mat-card-title>Ventas Últimos 3 Meses</mat-card-title>
+                <mat-card-content>
+                    <p><strong>Venta $:</strong> {{ data.vta_3_meses  }}</p>
+                    <p><strong>Promedio $:</strong> {{ data.prom_3_Meses  }}</p>
+                    <p><strong>Venta Unid.:</strong> {{ data.vta_unid_3_meses }}</p>
+                    <p><strong>Promedio Unid.:</strong> {{ data.prom_unid_3_meses }}</p>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>

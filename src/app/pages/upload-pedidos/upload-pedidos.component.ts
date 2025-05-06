@@ -702,24 +702,24 @@ export class UploadPedidosComponent implements OnInit {
             'montoFactura': this.montoFactura,
             'emailSendUser': this.emailSendUser
         }
-        this.apiService.generate_ped(aux).subscribe((data: any) => {
-            Swal.showLoading()
-            this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
-                console.log(data)
-                this.clearUpload();
+        this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((data: any) => {
+            console.log(data)
+            this.apiService.generate_ped(aux).subscribe((data: any) => {
                 Swal.fire({
                     title: "Pedidos generado",
                     text: "",
                     icon: "success"
                 });
-            }, () => {
-                Swal.fire({
-                    title: "Error al generar pedidos",
-                    text: "",
-                    icon: "error"
-                });
+                this.clearUpload();
             })
+        }, () => {
+            Swal.fire({
+                title: "Error al generar pedidos",
+                text: "",
+                icon: "error"
+            });
         })
+
     }
 
     executeMultiPed(): void {
@@ -745,87 +745,90 @@ export class UploadPedidosComponent implements OnInit {
         });
         Swal.showLoading()
 
-        this.selection.selected.forEach((element: any) => {
-            const codigoCliente = element.codigoCliente;
-            this.clientesIndividual.forEach((item, index) => {
-                if (item.cliente === codigoCliente) {
-                    this.clienteData = item
-                }
-            });
-            const pedidoApi: any[] = [];
-            console.log(element)
-            console.log(this.listProdutos)
-            element.pedido.forEach((info: any) => {
-                this.listProdutos.forEach((item: any) => {
-                    if (info.Codigo === item.codigo) {
-                        console.log(info)
-                        pedidoApi.push({
-                            cant: Number(info.Unidades),
-                            descuento: info.Descuento,
-                            codigo: item.codigo,
-                            descprov: item.descprov,
-                            descrip: item.descrip,
-                            dprice: item.dprice,
-                            dpriced: item.dpriced,
-                            encar: item.encar,
-                            existen: item.existen,
-                            img: item.img,
-                            lote: item.lote,
-                            nomprv: item.nomprv,
-                            oferta: item.oferta,
-                            oprecio: item.oprecio,
-                            opreciod: item.opreciod,
-                            vence: item.vence,
-                            barras: '',
-                            bssiniva: '',
-                            cod_cli: '',
-                            codigoa: '',
-                            dconiva: '',
-                            descu: '',
-                            dsiniva: '',
-                            escala: '',
-                            id_pedido: '',
-                            iva: '',
-                            ivabs: '',
-                            ivad: '',
-                            preciod: '',
-                            preciosiniva: '',
-                            tasa: 0,
-                            tivabs: '',
-                            tivad: '',
-                            totalbs: '',
-                            totald: info.Precio,
 
-
-                        });
-                    }
-                })
-            });
-            const aux = {
-                'usuario': localStorage.getItem('usuario'),
-                'nombre': localStorage.getItem('nombre'),
-                'nomprv': localStorage.getItem('nomprv'),
-                'proveed': localStorage.getItem('proveed'),
-                'codigo_cliente': this.clienteData.cliente,
-                'nombre_cliente':  this.clienteData.nombre,
-                'Pedido': pedidoApi,
-                'diasCredito': this.diasCredito,
-                'montoFactura': this.montoFactura,
-                'emailSendUser': this.emailSendUser,
-            }
-            this.apiService.generate_ped(aux).subscribe((data: any) => {
-                console.log('pedido enviado')
-            })
-        });
 
         this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((data: any) => {
-            console.log(data)
-            this.clearUpload();
-            Swal.fire({
-                title: "Pedidos generado",
-                text: "",
-                icon: "success"
+
+            this.selection.selected.forEach((element: any) => {
+                const codigoCliente = element.codigoCliente;
+                this.clientesIndividual.forEach((item, index) => {
+                    if (item.cliente === codigoCliente) {
+                        this.clienteData = item
+                    }
+                });
+                const pedidoApi: any[] = [];
+                console.log(element)
+                console.log(this.listProdutos)
+                element.pedido.forEach((info: any) => {
+                    this.listProdutos.forEach((item: any) => {
+                        if (info.Codigo === item.codigo) {
+                            console.log(info)
+                            pedidoApi.push({
+                                cant: Number(info.Unidades),
+                                descuento: info.Descuento,
+                                codigo: item.codigo,
+                                descprov: item.descprov,
+                                descrip: item.descrip,
+                                dprice: item.dprice,
+                                dpriced: item.dpriced,
+                                encar: item.encar,
+                                existen: item.existen,
+                                img: item.img,
+                                lote: item.lote,
+                                nomprv: item.nomprv,
+                                oferta: item.oferta,
+                                oprecio: item.oprecio,
+                                opreciod: item.opreciod,
+                                vence: item.vence,
+                                barras: '',
+                                bssiniva: '',
+                                cod_cli: '',
+                                codigoa: '',
+                                dconiva: '',
+                                descu: '',
+                                dsiniva: '',
+                                escala: '',
+                                id_pedido: '',
+                                iva: '',
+                                ivabs: '',
+                                ivad: '',
+                                preciod: '',
+                                preciosiniva: '',
+                                tasa: 0,
+                                tivabs: '',
+                                tivad: '',
+                                totalbs: '',
+                                totald: info.Precio,
+
+
+                            });
+                        }
+                    })
+                });
+                const aux = {
+                    'usuario': localStorage.getItem('usuario'),
+                    'nombre': localStorage.getItem('nombre'),
+                    'nomprv': localStorage.getItem('nomprv'),
+                    'proveed': localStorage.getItem('proveed'),
+                    'codigo_cliente': this.clienteData.cliente,
+                    'nombre_cliente':  this.clienteData.nombre,
+                    'Pedido': pedidoApi,
+                    'diasCredito': this.diasCredito,
+                    'montoFactura': this.montoFactura,
+                    'emailSendUser': this.emailSendUser,
+                }
+                this.apiService.generate_ped(aux).subscribe((data: any) => {
+                    console.log('pedido enviado')
+                    console.log(data)
+                    this.clearUpload();
+                })
+                Swal.fire({
+                    title: "Pedidos generado",
+                    text: "",
+                    icon: "success"
+                });
             });
+
         }, () => {
             Swal.fire({
                 title: "Error al generar pedidos",
