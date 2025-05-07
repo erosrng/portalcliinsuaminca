@@ -32,7 +32,7 @@ export interface Product {
     ivad: number;
     totalbs: number;
     totald: number;
-    cant: number;
+    cant: string;
     descprov: number;
     descu: number;
     id_pedido: number;
@@ -120,9 +120,14 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         }); */
     }
 
-    ngAfterViewInit(): void {
+   /*  ngAfterViewInit(): void {
 
-    }
+    } */
+
+   ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+}
 
     subscribeToClienteData() {
         this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
@@ -131,7 +136,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         });
     }
 
-    openCar() {
+    /* openCar() {
         const codCli = this.authService.getCodCli();
 
         this.isLoading = true;
@@ -159,6 +164,21 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 this.dataSource.sort = this.sort;
                 this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
                 this.isLoading = false;
+
+                for (const producto of this.productscar) {
+                    console.log('Descripción:', producto.descrip);
+                    console.log('Precio Total Bs:', producto.preciod);
+                    console.log('Codigo', producto.codigoa);
+                    console.log('descuento:', producto.descprov);
+                    console.log('cantidad:', producto.cant);
+
+                    this.recalculadescud(producto);
+                    this.recalculadescubs(producto);
+                    setTimeout(()=>{
+                        this.recalcular(parseFloat(producto.cant), producto.codigoa)
+                    },500);
+                    
+                }
             },
             error: (error) => {
                 this.isLoading = false;
@@ -168,6 +188,81 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         setTimeout(()=>{
             this.totalizartodo();
         },500);
+    } */
+
+
+    openCar() {
+        const codCli = this.authService.getCodCli();
+
+        this.isLoading = true;
+        // Ocultar la tabla al iniciar la carga
+        const tableElement = document.querySelector('.carrito__table');
+        if (tableElement) {
+            tableElement.classList.add('hidden');
+        }
+
+        const token = this.authService.getToken();
+        const formData = new FormData();
+
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+
+        const apiUrl = `${API_URL}opencardb`;
+        formData.append('codCli', codCli ?? '');
+        if (this.clienteData && this.clienteData.ubica) {
+            formData.append('almacen', this.clienteData.ubica);
+        } else {
+            formData.append('almacen', '');
+        }
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+                this.revisarCarrito();
+
+                this.productscar = response.data;
+                this.dataSource.data = this.productscar;
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+                this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
+
+                // Recalcular datos y luego mostrar la tabla
+                let recalculationPromises: Promise<void>[] = [];
+                for (const producto of this.productscar) {
+                    console.log('Descripción:', producto.descrip);
+                    console.log('Precio Total Bs:', producto.preciod);
+                    console.log('Codigo', producto.codigoa);
+                    console.log('descuento:', producto.descprov);
+                    console.log('cantidad:', producto.cant);
+
+                    this.recalculadescud(producto);
+                    this.recalculadescubs(producto);
+                    recalculationPromises.push(new Promise(resolve => {
+                        setTimeout(() => {
+                            this.recalcular(parseFloat(producto.cant), producto.codigoa);
+                            resolve();
+                        }, 100); // Reduje el tiempo para una respuesta más rápida
+                    }));
+                }
+
+                Promise.all(recalculationPromises).then(() => {
+                    this.totalizartodo();
+                    this.isLoading = false;
+                    // Mostrar la tabla después de la carga y el recálculo
+                    if (tableElement) {
+                        tableElement.classList.remove('hidden');
+                    }
+                });
+            },
+            error: (error) => {
+                this.isLoading = false;
+                // Mostrar la tabla en caso de error también para que el usuario vea si hay algún mensaje
+                const tableElement = document.querySelector('.carrito__table');
+                if (tableElement) {
+                    tableElement.classList.remove('hidden');
+                }
+                console.error('Error al cargar carrito de compras:', error);
+            },
+        });
     }
 
     // Función para aplicar el descuento lineal a todos los items del carrito
@@ -703,67 +798,33 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         //console.log([this.sumabs.toFixed(2),this.sumausd.toFixed(2)]);
     }
 
-    /* recalculadescu(product: any){
-      console.log(product)
-    } */
-
-    /* recalculadescud(product: any): number {
+    recalculadescud(product: any): number {
         let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
-        let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-
-        if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
-            if (!isNaN(precio)) {
-                const descuento = (precio * descuentoPorcentaje) / 100;
-                return precio - descuento;
-            } else {
-                return precio;
+        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+    
+        if (!isNaN(precio)) {
+            let precioConDescuentoProveedor = precio;
+    
+            // Aplicar descuento del proveedor si es válido y mayor que cero
+            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
+                precioConDescuentoProveedor -= descuentoProveedor;
             }
-        }
-        return precio;
-    } */
-
-        recalculadescud(product: any): number {
-            let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
-            let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-            let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
-        
-            if (!isNaN(precio)) {
-                let precioConDescuentoProveedor = precio;
-        
-                // Aplicar descuento del proveedor si es válido y mayor que cero
-                if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
-                    const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
-                    precioConDescuentoProveedor -= descuentoProveedor;
-                }
-        
-                let precioFinal = precioConDescuentoProveedor;
-        
-                // Aplicar el otro descuento si es válido y mayor que cero
-                if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
-                    const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
-                    precioFinal -= otroDescuento;
-                }
-        
-                return precioFinal;
-            } else {
-                return precio;
+    
+            let precioFinal = precioConDescuentoProveedor;
+    
+            // Aplicar el otro descuento si es válido y mayor que cero
+            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
+                precioFinal -= otroDescuento;
             }
+    
+            return precioFinal;
+        } else {
+            return precio;
         }
-
-    /* recalculadescubs(product: any): number {
-        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
-        let descuentoPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-
-        if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
-            if (!isNaN(precio)) {
-                const descuento = (precio * descuentoPorcentaje) / 100;
-                return precio - descuento;
-            } else {
-                return precio;
-            }
-        }
-        return precio;
-    } */
+    }
 
     recalculadescubs(product: any): number {
         let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
