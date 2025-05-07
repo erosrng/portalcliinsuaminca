@@ -440,6 +440,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             'diasCredito': this.diasCredito,
             'montoFactura': this.montoFactura,
             'emailSendUser': this.clienteData.email,
+            'emailSendProveed': localStorage.getItem('emailprov'),
             'observa': observacion
         };
 

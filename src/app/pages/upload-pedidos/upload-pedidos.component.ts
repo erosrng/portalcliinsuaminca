@@ -85,7 +85,7 @@ export class UploadPedidosComponent implements OnInit {
     diasCredito = 0
     montoFactura = 0
     emailSendUser = '';
-    emailSendProveed: string | null = '';
+    emailSendProveed: string | null = localStorage.getItem('emailprov');
     showloader = false;
 
     constructor(
@@ -728,7 +728,7 @@ export class UploadPedidosComponent implements OnInit {
                     'montoFactura': this.montoFactura,
                     'emailSendUser': this.emailSendUser,
                     'emailSendProveed': this.emailSendProveed,
-                    'observacion': observacion
+                    'observa': observacion
                 }
                 this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((INFO: any) => {
                     const pedidosTem = INFO.data.agg_pedido;
@@ -786,6 +786,7 @@ export class UploadPedidosComponent implements OnInit {
                 return null;
             },
             preConfirm: (observacion) => {
+                this.emailSendUser = ''
                 Swal.close()
                 this.showloader = true;
                 const pedidoResponse: any = {
@@ -877,28 +878,90 @@ export class UploadPedidosComponent implements OnInit {
                                     }
                                 })
                             });
-                            const aux = {
-                                'usuario': localStorage.getItem('usuario'),
-                                'nombre': localStorage.getItem('nombre'),
-                                'nomprv': localStorage.getItem('nomprv'),
-                                'proveed': localStorage.getItem('proveed'),
-                                'codigo_cliente': this.clienteData.cliente,
-                                'nombre_cliente':  this.clienteData.nombre,
-                                'Pedido': pedidoApi,
-                                'diasCredito': this.diasCredito,
-                                'montoFactura': this.montoFactura,
-                                'emailSendUser': this.emailSendUser,
-                            }
-                            this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                console.log('pedido enviado')
-                                console.log(data)
-                                this.clearUpload();
+
+                            this.proteoServices.get_client_data(codigoCliente).subscribe((data: any) => {
+                                console.log(data);
+                                if (data.data.datcli) {
+                                    const aux2 = data.data.datcli;
+                                    this.emailSendUser = aux2.email;
+                                    this.emailSendProveed = localStorage.getItem('emailprov');
+                                    const aux = {
+                                        'usuario': localStorage.getItem('usuario'),
+                                        'nombre': localStorage.getItem('nombre'),
+                                        'nomprv': localStorage.getItem('nomprv'),
+                                        'proveed': localStorage.getItem('proveed'),
+                                        'codigo_cliente': this.clienteData.cliente,
+                                        'nombre_cliente':  this.clienteData.nombre,
+                                        'Pedido': pedidoApi,
+                                        'diasCredito': this.diasCredito,
+                                        'montoFactura': this.montoFactura,
+                                        'emailSendUser': this.emailSendUser,
+                                        'emailSendProveed': localStorage.getItem('emailprov'),
+                                        'observa': observacion
+                                    }
+                                    this.apiService.generate_ped(aux).subscribe((data: any) => {
+                                        console.log('pedido enviado')
+                                        console.log(data)
+                                        this.clearUpload();
+                                    })
+                                    Swal.fire({
+                                        title: "Pedidos generado",
+                                        text: "",
+                                        icon: "success"
+                                    });
+                                } else {
+                                    const aux = {
+                                        'usuario': localStorage.getItem('usuario'),
+                                        'nombre': localStorage.getItem('nombre'),
+                                        'nomprv': localStorage.getItem('nomprv'),
+                                        'proveed': localStorage.getItem('proveed'),
+                                        'codigo_cliente': this.clienteData.cliente,
+                                        'nombre_cliente':  this.clienteData.nombre,
+                                        'Pedido': pedidoApi,
+                                        'diasCredito': this.diasCredito,
+                                        'montoFactura': this.montoFactura,
+                                        'emailSendUser': this.emailSendUser,
+                                        'emailSendProveed': localStorage.getItem('emailprov'),
+                                        'observa': observacion
+                                    }
+                                    this.apiService.generate_ped(aux).subscribe((data: any) => {
+                                        console.log('pedido enviado')
+                                        console.log(data)
+                                        this.clearUpload();
+                                    })
+                                    Swal.fire({
+                                        title: "Pedidos generado",
+                                        text: "",
+                                        icon: "success"
+                                    });
+                                }
+                            }, () => {
+                                const aux = {
+                                    'usuario': localStorage.getItem('usuario'),
+                                    'nombre': localStorage.getItem('nombre'),
+                                    'nomprv': localStorage.getItem('nomprv'),
+                                    'proveed': localStorage.getItem('proveed'),
+                                    'codigo_cliente': this.clienteData.cliente,
+                                    'nombre_cliente':  this.clienteData.nombre,
+                                    'Pedido': pedidoApi,
+                                    'diasCredito': this.diasCredito,
+                                    'montoFactura': this.montoFactura,
+                                    'emailSendUser': this.emailSendUser,
+                                    'emailSendProveed': localStorage.getItem('emailprov'),
+                                    'observa': observacion
+                                }
+                                this.apiService.generate_ped(aux).subscribe((data: any) => {
+                                    console.log('pedido enviado')
+                                    console.log(data)
+                                    this.clearUpload();
+                                })
+                                Swal.fire({
+                                    title: "Pedidos generado",
+                                    text: "",
+                                    icon: "success"
+                                });
                             })
-                            Swal.fire({
-                                title: "Pedidos generado",
-                                text: "",
-                                icon: "success"
-                            });
+
                         });
                     } else {
                         Swal.close()
