@@ -13,6 +13,7 @@ export interface HistoricoPedidosModel {
     usuario: string,
     valor_dolar: number,
     Pedido: any[],
+    totald?: any
 }
 
 export interface CasaMatrizModel {

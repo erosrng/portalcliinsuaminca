@@ -36,7 +36,7 @@
                         <td>{{ pedido.fecha }}</td>
                         <td>{{ pedido.hora }}</td>
                         <td>{{ pedido.unidades }}</td>
-                        <td>{{ pedido.valor_dolar | number: '1.0-3'}} $</td>
+                        <td>{{ pedido.valor_dolar | number: '1.2-2'}} $</td>
                           <td>{{ getValor(pedido) | number:'1.2-2' }} $</td>
                         <td>{{ pedido.estado }}</td>
                         <td style="text-align: center; cursor: pointer;">
@@ -103,8 +103,8 @@
                         <td>{{ pedido.descrip }}</td>
                         <td>{{ pedido.cant }}</td>
                         <td>{{ pedido.descu }}%</td>
-                        <td>{{ pedido.totald | number: '1.0-3'}} $</td>
-                        <td>{{ calculateDiscount(pedido.totald,pedido.descu)| number: '1.0-3'}} $</td>
+                        <td>{{ pedido.totald | number: '1.2-2'}} $</td>
+                        <td>{{ calculateDiscount(pedido.totald,pedido.descu)| number: '1.2-2'}} $</td>
                   </tr>
                 </tbody>
               </table>

@@ -28,6 +28,7 @@ import {API_URL} from "../../app.config";
 import {AuthService} from "../../auth.service";
 import {ApiService} from "../../services/api.service";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {event} from "jquery";
 
 
 @Component({
@@ -83,7 +84,8 @@ export class UploadPedidosComponent implements OnInit {
     clienteData: any;
     diasCredito = 0
     montoFactura = 0
-    emailSendUser = ''
+    emailSendUser = '';
+    emailSendProveed: string | null = '';
     showloader = false;
 
     constructor(
@@ -601,8 +603,20 @@ export class UploadPedidosComponent implements OnInit {
                 confirmButtonText: "Si, continuar",
             }).then((result) => {
                 if (result.isConfirmed) {
+                    this.proteoServices.get_client_data(this.controlUnico.value).subscribe((data: any) => {
+                        console.log(data);
+                        if (data.data.datcli) {
+                           const aux = data.data.datcli;
+                           this.emailSendUser = aux.email;
+                           this.emailSendProveed = localStorage.getItem('emailprov');
+                           this.executePed();
+                        } else {
+                            this.executePed();
+                        }
+                    }, () => {
+                        this.executePed();
+                    })
 
-                    this.executePed();
 
                 }
             });
@@ -611,185 +625,46 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     executePed(): void {
-        Swal.close()
-        Swal.showLoading()
-        this.showloader = true;
-        const pedidoResponse: any = {
-            cliente: this.controlUnico.value,
-            enviar: true,
-            diasCredito: this.diasCredito,
-            montoFactura:this.montoFactura,
-            pedido: []
-        };
-        this.selection.selected.forEach((element: any) => {
-
-            element.pedido.forEach((info: any) => {
-                pedidoResponse.pedido.push({
-                    cantidad: info.Unidades,
-                    descuento: info.Descuento,
-                    codigo: info.Codigo,
-                });
-            });
-        });
-
-        const pedidoApi: any[] = [];
-        this.selection.selected.forEach((element: any) => {
-
-            element.pedido.forEach((info: any) => {
-                this.listProdutos.forEach((item: any) => {
-                    if (info.Codigo === item.codigo) {
-                        console.log('entre')
-                        pedidoApi.push({
-                            cant: Number(info.Unidades),
-                            descuento: info.Descuento,
-                            codigo: item.codigo,
-                            descprov: item.descprov,
-                            descrip: item.descrip,
-                            dprice: item.dprice,
-                            dpriced: item.dpriced,
-                            encar: item.encar,
-                            existen: item.existen,
-                            img: item.img,
-                            lote: item.lote,
-                            nomprv: item.nomprv,
-                            oferta: item.oferta,
-                            oprecio: item.oprecio,
-                            opreciod: item.opreciod,
-                            vence: item.vence,
-                            barras: '',
-                            bssiniva: '',
-                            cod_cli: '',
-                            codigoa: '',
-                            dconiva: '',
-                            descu: info.Descuento,
-                            dsiniva: '',
-                            escala: '',
-                            id_pedido: '',
-                            iva: '',
-                            ivabs: '',
-                            ivad: '',
-                            preciod: '',
-                            preciosiniva: '',
-                            tasa: 0,
-                            tivabs: '',
-                            tivad: '',
-                            totalbs: '',
-                            totald: info.Precio,
-
-
-                        });
-                    }
-                })
-
-            });
-        });
-
-        this.clientesIndividual.forEach((item, index) => {
-            if (item.cliente === this.controlUnico.value) {
-                this.clienteData = item
-            }
-        })
-
-        const aux = {
-            'usuario': localStorage.getItem('usuario'),
-            'nombre': localStorage.getItem('nombre'),
-            'nomprv': localStorage.getItem('nomprv'),
-            'proveed': localStorage.getItem('proveed'),
-            'codigo_cliente': this.clienteData.cliente,
-            'nombre_cliente':  this.clienteData.nombre,
-            'Pedido': pedidoApi,
-            'diasCredito': this.diasCredito,
-            'montoFactura': this.montoFactura,
-            'emailSendUser': this.emailSendUser
-        }
-        this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((INFO: any) => {
-            const pedidosTem = INFO.data.agg_pedido;
-            let auxLet = true
-            pedidosTem.forEach((element: any) => {
-                if (element.result === false) {
-                    auxLet = element.result;
+        Swal.fire({
+            title: 'Ingrese una observación para el pedido',
+            input: 'textarea',
+            inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
+            showCancelButton: true,
+            confirmButtonText: 'Continuar con el envío',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value) {
+                    return '¡La observación es obligatoria!';
                 }
-            });
-            if (auxLet) {
-                this.apiService.generate_ped(aux).subscribe((data: any) => {
-                    Swal.fire({
-                        title: "Pedidos generado",
-                        text: "",
-                        icon: "success"
-                    });
-                    this.clearUpload();
-                })
-            } else {
-                Swal.close()
-                Swal.fire({
-                    title: "Error al generar pedidos",
-                    text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
-                    icon: "error"
-                });
-                this.showloader = false;
-            }
-
-        }, () => {
-            Swal.fire({
-                title: "Error al generar pedidos",
-                text: "",
-                icon: "error"
-            });
-            this.showloader = false;
-        })
-
-    }
-
-    executeMultiPed(): void {
-        Swal.close()
-        this.showloader = true;
-        const pedidoResponse: any = {
-            pedidos: {}
-        };
-
-        this.selection.selected.forEach((element: any) => {
-            const codigoCliente = element.codigoCliente;
-            pedidoResponse.pedidos[codigoCliente] = {
-                diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
-                montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
-                pedido: []
-            };
-
-            element.pedido.forEach((info: any) => {
-                pedidoResponse.pedidos[codigoCliente].pedido.push({
-                    cantidad: info.Unidades,
-                    descuento: info.Descuento,
-                    codigo: info.Codigo,
-                });
-            });
-        });
-        Swal.showLoading()
-
-
-
-        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
-            const pedidosTem = INFO.data.tem_carrito;
-            let auxLet = true
-            pedidosTem.forEach((element: any) => {
-                if (element.result === false) {
-                    auxLet = element.result;
-                }
-            });
-            if (auxLet) {
+                return null;
+            },
+            preConfirm: (observacion) => {
+                this.showloader = true;
+                const pedidoResponse: any = {
+                    cliente: this.controlUnico.value,
+                    enviar: true,
+                    diasCredito: this.diasCredito,
+                    montoFactura:this.montoFactura,
+                    pedido: []
+                };
                 this.selection.selected.forEach((element: any) => {
-                    const codigoCliente = element.codigoCliente;
-                    this.clientesIndividual.forEach((item, index) => {
-                        if (item.cliente === codigoCliente) {
-                            this.clienteData = item
-                        }
+
+                    element.pedido.forEach((info: any) => {
+                        pedidoResponse.pedido.push({
+                            cantidad: info.Unidades,
+                            descuento: info.Descuento,
+                            codigo: info.Codigo,
+                        });
                     });
-                    const pedidoApi: any[] = [];
-                    console.log(element)
-                    console.log(this.listProdutos)
+                });
+
+                const pedidoApi: any[] = [];
+                this.selection.selected.forEach((element: any) => {
+
                     element.pedido.forEach((info: any) => {
                         this.listProdutos.forEach((item: any) => {
                             if (info.Codigo === item.codigo) {
-                                console.log(info)
+                                console.log('entre')
                                 pedidoApi.push({
                                     cant: Number(info.Unidades),
                                     descuento: info.Descuento,
@@ -812,7 +687,7 @@ export class UploadPedidosComponent implements OnInit {
                                     cod_cli: '',
                                     codigoa: '',
                                     dconiva: '',
-                                    descu: '',
+                                    descu: info.Descuento,
                                     dsiniva: '',
                                     escala: '',
                                     id_pedido: '',
@@ -825,56 +700,229 @@ export class UploadPedidosComponent implements OnInit {
                                     tivabs: '',
                                     tivad: '',
                                     totalbs: '',
-                                    totald: info.Oferta,
+                                    totald: info.Precio,
 
 
                                 });
                             }
                         })
+
                     });
-                    const aux = {
-                        'usuario': localStorage.getItem('usuario'),
-                        'nombre': localStorage.getItem('nombre'),
-                        'nomprv': localStorage.getItem('nomprv'),
-                        'proveed': localStorage.getItem('proveed'),
-                        'codigo_cliente': this.clienteData.cliente,
-                        'nombre_cliente':  this.clienteData.nombre,
-                        'Pedido': pedidoApi,
-                        'diasCredito': this.diasCredito,
-                        'montoFactura': this.montoFactura,
-                        'emailSendUser': this.emailSendUser,
+                });
+
+                this.clientesIndividual.forEach((item, index) => {
+                    if (item.cliente === this.controlUnico.value) {
+                        this.clienteData = item
                     }
-                    this.apiService.generate_ped(aux).subscribe((data: any) => {
-                        console.log('pedido enviado')
-                        console.log(data)
-                        this.clearUpload();
-                    })
+                })
+
+                const aux = {
+                    'usuario': localStorage.getItem('usuario'),
+                    'nombre': localStorage.getItem('nombre'),
+                    'nomprv': localStorage.getItem('nomprv'),
+                    'proveed': localStorage.getItem('proveed'),
+                    'codigo_cliente': this.clienteData.cliente,
+                    'nombre_cliente':  this.clienteData.nombre,
+                    'Pedido': pedidoApi,
+                    'diasCredito': this.diasCredito,
+                    'montoFactura': this.montoFactura,
+                    'emailSendUser': this.emailSendUser,
+                    'emailSendProveed': this.emailSendProveed,
+                    'observacion': observacion
+                }
+                this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((INFO: any) => {
+                    const pedidosTem = INFO.data.agg_pedido;
+                    let auxLet = true
+                    pedidosTem.forEach((element: any) => {
+                        if (element.result === false) {
+                            auxLet = element.result;
+                        }
+                    });
+                    if (auxLet) {
+                        this.apiService.generate_ped(aux).subscribe((data: any) => {
+                            Swal.fire({
+                                title: "Pedidos generado",
+                                text: "",
+                                icon: "success"
+                            });
+                            this.clearUpload();
+                        })
+                    } else {
+                        Swal.close()
+                        Swal.fire({
+                            title: "Error al generar pedidos",
+                            text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
+                            icon: "error"
+                        });
+                        this.showloader = false;
+                    }
+
+                }, () => {
                     Swal.fire({
-                        title: "Pedidos generado",
+                        title: "Error al generar pedidos",
                         text: "",
-                        icon: "success"
+                        icon: "error"
+                    });
+                    this.showloader = false;
+                });
+            }
+        });
+
+
+    }
+
+    executeMultiPed(): void {
+        Swal.fire({
+            title: 'Ingrese una observación para el pedido',
+            input: 'textarea',
+            inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
+            showCancelButton: true,
+            confirmButtonText: 'Continuar con el envío',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value) {
+                    return '¡La observación es obligatoria!';
+                }
+                return null;
+            },
+            preConfirm: (observacion) => {
+                Swal.close()
+                this.showloader = true;
+                const pedidoResponse: any = {
+                    pedidos: {}
+                };
+
+                this.selection.selected.forEach((element: any) => {
+                    const codigoCliente = element.codigoCliente;
+                    pedidoResponse.pedidos[codigoCliente] = {
+                        diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
+                        montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
+                        pedido: []
+                    };
+
+                    element.pedido.forEach((info: any) => {
+                        pedidoResponse.pedidos[codigoCliente].pedido.push({
+                            cantidad: info.Unidades,
+                            descuento: info.Descuento,
+                            codigo: info.Codigo,
+                        });
                     });
                 });
-            } else {
-                Swal.close()
-                Swal.fire({
-                    title: "Error al generar pedidos",
-                    text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
-                    icon: "error"
-                });
-                this.showloader = false;
+                Swal.showLoading()
+
+
+
+                this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
+                    const pedidosTem = INFO.data.tem_carrito;
+                    let auxLet = true
+                    pedidosTem.forEach((element: any) => {
+                        if (element.result === false) {
+                            auxLet = element.result;
+                        }
+                    });
+                    if (auxLet) {
+                        this.selection.selected.forEach((element: any) => {
+                            const codigoCliente = element.codigoCliente;
+                            this.clientesIndividual.forEach((item, index) => {
+                                if (item.cliente === codigoCliente) {
+                                    this.clienteData = item
+                                }
+                            });
+                            const pedidoApi: any[] = [];
+                            console.log(element)
+                            console.log(this.listProdutos)
+                            element.pedido.forEach((info: any) => {
+                                this.listProdutos.forEach((item: any) => {
+                                    if (info.Codigo === item.codigo) {
+                                        console.log(info)
+                                        pedidoApi.push({
+                                            cant: Number(info.Unidades),
+                                            descuento: info.Descuento,
+                                            codigo: item.codigo,
+                                            descprov: item.descprov,
+                                            descrip: item.descrip,
+                                            dprice: item.dprice,
+                                            dpriced: item.dpriced,
+                                            encar: item.encar,
+                                            existen: item.existen,
+                                            img: item.img,
+                                            lote: item.lote,
+                                            nomprv: item.nomprv,
+                                            oferta: item.oferta,
+                                            oprecio: item.oprecio,
+                                            opreciod: item.opreciod,
+                                            vence: item.vence,
+                                            barras: '',
+                                            bssiniva: '',
+                                            cod_cli: '',
+                                            codigoa: '',
+                                            dconiva: '',
+                                            descu: '',
+                                            dsiniva: '',
+                                            escala: '',
+                                            id_pedido: '',
+                                            iva: '',
+                                            ivabs: '',
+                                            ivad: '',
+                                            preciod: '',
+                                            preciosiniva: '',
+                                            tasa: 0,
+                                            tivabs: '',
+                                            tivad: '',
+                                            totalbs: '',
+                                            totald: info.Oferta,
+
+
+                                        });
+                                    }
+                                })
+                            });
+                            const aux = {
+                                'usuario': localStorage.getItem('usuario'),
+                                'nombre': localStorage.getItem('nombre'),
+                                'nomprv': localStorage.getItem('nomprv'),
+                                'proveed': localStorage.getItem('proveed'),
+                                'codigo_cliente': this.clienteData.cliente,
+                                'nombre_cliente':  this.clienteData.nombre,
+                                'Pedido': pedidoApi,
+                                'diasCredito': this.diasCredito,
+                                'montoFactura': this.montoFactura,
+                                'emailSendUser': this.emailSendUser,
+                            }
+                            this.apiService.generate_ped(aux).subscribe((data: any) => {
+                                console.log('pedido enviado')
+                                console.log(data)
+                                this.clearUpload();
+                            })
+                            Swal.fire({
+                                title: "Pedidos generado",
+                                text: "",
+                                icon: "success"
+                            });
+                        });
+                    } else {
+                        Swal.close()
+                        Swal.fire({
+                            title: "Error al generar pedidos",
+                            text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
+                            icon: "error"
+                        });
+                        this.showloader = false;
+                    }
+
+
+
+                }, () => {
+                    Swal.fire({
+                        title: "Error al generar pedidos",
+                        text: "",
+                        icon: "error"
+                    });
+                    this.showloader = false;
+                })
             }
-
-
-
-        }, () => {
-            Swal.fire({
-                title: "Error al generar pedidos",
-                text: "",
-                icon: "error"
-            });
-            this.showloader = false;
         })
+
 
     }
 
@@ -909,4 +957,19 @@ export class UploadPedidosComponent implements OnInit {
         this.showloader = false;
     }
 
+    getTotalIndividual() {
+        let total = 0
+        // console.log(this.dataSource)
+        this.dataSource.forEach((element: any) => {
+            total = this.getValor(element) + total
+        })
+
+        return total
+    }
+
+    getEmailIndiv(event: any) {
+       console.log( event)
+    }
+
+    protected readonly event = event;
 }

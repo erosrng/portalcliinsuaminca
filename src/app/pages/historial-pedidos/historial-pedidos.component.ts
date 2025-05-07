@@ -79,8 +79,13 @@ export class HistorialPedidosComponent implements OnInit {
       const normalizedString = stringNumber.replace(",", "");
       const precio = parseFloat(normalizedString);
       const descuento = parseFloat(info.descu) / 100; // Convertir el porcentaje a decimal
-      const precioConDescuento = precio * (1 - descuento);
-      valueOfRetur = precioConDescuento + valueOfRetur;
+      if (descuento > 0) {
+        const precioConDescuento = precio * (1 - descuento);
+        valueOfRetur = precioConDescuento + valueOfRetur;
+      } else {
+        valueOfRetur = valueOfRetur + valueOfRetur
+      }
+
     });
     return valueOfRetur;
   }

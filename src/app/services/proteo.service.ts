@@ -87,4 +87,15 @@ export class ProteoService {
     return this.httpClient.post(apiUrl, '', { headers: headers, responseType: 'blob', })
   }
 
+  get_client_data(cliente: any) : Observable<any> {
+    const info = {"codCli": cliente}
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = this.apiUrl + `post/buscaalmacen`;
+    return this.httpClient.post(apiUrl, info, { headers: headers })
+  }
+
 }

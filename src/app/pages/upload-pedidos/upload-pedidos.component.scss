@@ -113,8 +113,9 @@ th {
 }
 
 .dt-td-modal {
-  padding: 1rem;
-  font-size: 0.9rem !important;
+  padding: 0.5rem;
+  text-align: unset;
+  font-size: 1rem !important;
 }
 
 .header-flex-btw {
@@ -160,4 +161,13 @@ i {
   background: #cccccc38 !important;
   cursor: pointer;
 
+}
+
+.border-top-left {
+  border-top: 1px solid #CCC;
+  padding: 1rem;
+}
+
+.text-end {
+  text-align: end !important;
 }

@@ -26,7 +26,7 @@ th {
 
 td {
   padding: 1rem !important;
-  text-align: center;
+  text-align: left;
   border: 1px solid #ccc;
 }
 
@@ -83,7 +83,7 @@ tr:hover {
           color: vars.$menu-color;
           font-weight: bold;
           padding: 1rem;
-          text-align: center;
+          text-align: left;
           border-bottom: none;
           vertical-align: middle; 
       }
@@ -93,7 +93,7 @@ tr:hover {
           padding: 0.5rem;
           border: 1px solid vars.$bordes-claros;
           vertical-align: middle;
-          text-align: center;
+          text-align: left;
       }
       /* &__historial-table tbody tr:hover {
           cursor: pointer;
