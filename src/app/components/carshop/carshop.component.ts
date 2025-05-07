@@ -309,24 +309,83 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                /* Swal.fire({
-                    title: "Ingrese un correo electronico para enviar el resumen del pedido",
-                    input: "text",
-                    inputAttributes: {
-                        autocapitalize: "off"
-                    },
+                Swal.fire({
+                    title: 'Ingrese una observación para el pedido',
+                    input: 'textarea',
+                    inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
                     showCancelButton: true,
-                    confirmButtonText: "Enviar",
-                    showLoaderOnConfirm: true,
-                    preConfirm: async (login) => {
-                        if (login === '' || login === null) {
-                            return Swal.showValidationMessage(`El campo de correo electronico es necesario`);
-                        } else {
-                            this.emailSendUser = login;
+                    confirmButtonText: 'Continuar con el envío',
+                    cancelButtonText: 'Cancelar',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return '¡La observación es obligatoria!';
                         }
+                        return null;
                     },
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => { */
+                    preConfirm: (observacion) => {
+                        this.enviarPedidoConObservacion(apiUrl, formData, headers, observacion);
+                    }
+                });
+            }
+        });
+    }
+
+    enviarPedidoConObservacion(apiUrl: string, formData: FormData, headers: HttpHeaders, observacion: string) {
+        this.mostrarLoader();
+        formData.append('observa', observacion); // Agrega la observación al FormData
+
+        const aux = {
+            'usuario': localStorage.getItem('usuario'),
+            'nombre': localStorage.getItem('nombre'),
+            'nomprv': localStorage.getItem('nomprv'),
+            'proveed': localStorage.getItem('proveed'),
+            'codigo_cliente': this.clienteData.cliente,
+            'nombre_cliente':  this.clienteData.nombre,
+            'Pedido': this.productscar,
+            'diasCredito': this.diasCredito,
+            'montoFactura': this.montoFactura,
+            'emailSendUser': this.clienteData.email,
+            'observa': observacion
+        };
+
+        this.apiService.generate_ped(aux).subscribe({
+            next: (data: any) => {
+                this.isLoading = false;
+                this.ocultarLoader();
+                this.generar_pedido_proteo(apiUrl, formData, headers);
+            },
+            error: () => {
+                this.isLoading = false;
+                this.ocultarLoader();
+            }
+        });
+    }
+/*     enviaped(){
+        this.isLoading = true;
+        const codCli = this.authService.getCodCli();
+
+        const formData = new FormData();
+        const token = this.authService.getToken();
+
+        formData.append('codCli', codCli ?? '');
+        formData.append('diasCredito', String(this.diasCredito));
+        formData.append('montoFactura', String(this.montoFactura));
+
+        const headers = new HttpHeaders({
+            'Authorization': `${token}`
+        });
+        const apiUrl = `${API_URL}enviaped`;
+
+        Swal.fire({
+            title: '¿Desea enviar el pedido?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Enviar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
                     if (result.isConfirmed) {
                         this.mostrarLoader();
                         //console.log(this.productscar)
@@ -358,7 +417,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
             }
         });
-    }
+    } */
 
     generar_pedido_proteo(apiUrl: any, formData: any, headers: any): void {
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
