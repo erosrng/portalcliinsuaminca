@@ -38,7 +38,7 @@ export const PROTEO_URL_ALONE = 'http://172.16.3.234/';
 export const API_URL = 'http://172.16.3.234/proteoerp/api/ptprv/post/';
 export const API_URL2 = 'http://172.16.3.234/proteoerp/api/ptprv/';
 export const PROTEO_URL = 'http://172.16.3.234/proteoerp/api/ptprv/';
-export const API_FAST ='http://172.16.3.234:5020';
+export const API_FAST ='http://172.16.3.234:5000';
 
 // export const API_FAST ='http://0.0.0.0:5000';
 

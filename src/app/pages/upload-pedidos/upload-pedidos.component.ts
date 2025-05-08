@@ -80,6 +80,7 @@ export class UploadPedidosComponent implements OnInit {
     dataSource: any = new MatTableDataSource<any>([]);
     selection = new SelectionModel<any>(true, []);
     listActive: any[] = [];
+    listActiveGrupo: any[] = [];
     listProdutos: any[] = [];
     clienteData: any;
     diasCredito = 0
@@ -229,7 +230,7 @@ export class UploadPedidosComponent implements OnInit {
             if (this.controlUnico.value !== '' && this.controlUnico.value !== null) {
                 const nombreUnico: any = this.controlUnico.value;
                 Swal.showLoading();
-                this.proteoServices.get_file_simple().subscribe(
+                this.proteoServices.get_file_simple(nombreUnico).subscribe(
                     (data: Blob) => {
                         const url = window.URL.createObjectURL(data);
                         const a = document.createElement('a');
@@ -550,7 +551,12 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     openDetail(info: any): void {
+        console.log(info, 'ACA')
         this.listActive = info.pedido
+    }
+
+    openDetailGrupo(info: any): void {
+        this.listActiveGrupo = info.pedido
     }
 
     getprice(pedido: any) {
@@ -563,7 +569,7 @@ export class UploadPedidosComponent implements OnInit {
             const stringNumber = pedido.Oferta;
             const normalizedString = stringNumber.replace(",", ".");
             const number = parseFloat(normalizedString);
-            return number
+            return number * pedido.Unidades
         }
 
     }
@@ -750,9 +756,10 @@ export class UploadPedidosComponent implements OnInit {
                     } else {
                         Swal.close()
                         Swal.fire({
-                            title: "Error al generar pedidos",
-                            text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
-                            icon: "error"
+                            icon: 'error',
+                            title: 'Ocurrio un error al realizar la descarga',
+                            text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+                            showCancelButton: false,
                         });
                         this.showloader = false;
                     }
@@ -966,9 +973,10 @@ export class UploadPedidosComponent implements OnInit {
                     } else {
                         Swal.close()
                         Swal.fire({
-                            title: "Error al generar pedidos",
-                            text: "El producto no fué agregado ya que es del otro proveedor y este usuario pertenece a otro proveedor",
-                            icon: "error"
+                            icon: 'error',
+                            title: 'Ocurrio un error al realizar la descarga',
+                            text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+                            showCancelButton: false,
                         });
                         this.showloader = false;
                     }
@@ -1032,6 +1040,24 @@ export class UploadPedidosComponent implements OnInit {
 
     getEmailIndiv(event: any) {
        console.log( event)
+    }
+
+    getAllPriceGroup(): number {
+        let aux = 0;
+        this.listActiveGrupo.forEach((element: any) => {
+            aux = this.getprice(element) + aux
+        });
+        return aux
+    }
+
+    getValorTotalGrupo(element: any): number {
+        console.log(element)
+        const aux = element.pedido;
+        let totalOferta = 0;
+        aux.forEach((info: any) => {
+            totalOferta = this.getprice(info) + totalOferta
+        });
+        return totalOferta;
     }
 
     protected readonly event = event;

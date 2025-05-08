@@ -139,7 +139,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     /* openCar() {
         const codCli = this.authService.getCodCli();
 
-        this.isLoading = true;
+        Swal.showLoading()
         const token = this.authService.getToken();
         const formData = new FormData();
 
@@ -194,7 +194,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     openCar() {
         const codCli = this.authService.getCodCli();
 
-        this.isLoading = true;
+        Swal.showLoading()
+        Swal.showLoading()
         // Ocultar la tabla al iniciar la carga
         const tableElement = document.querySelector('.carrito__table');
         if (tableElement) {
@@ -247,6 +248,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 Promise.all(recalculationPromises).then(() => {
                     this.totalizartodo();
                     this.isLoading = false;
+                    Swal.close()
                     // Mostrar la tabla después de la carga y el recálculo
                     if (tableElement) {
                         tableElement.classList.remove('hidden');
@@ -255,6 +257,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             },
             error: (error) => {
                 this.isLoading = false;
+                Swal.close()
                 // Mostrar la tabla en caso de error también para que el usuario vea si hay algún mensaje
                 const tableElement = document.querySelector('.carrito__table');
                 if (tableElement) {
@@ -329,6 +332,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             },
             error: (error) => {
                 this.isLoading = false;
+                Swal.close()
                 console.error('Error al actualizar', error);
                 this.alertaerror();
             },
@@ -336,7 +340,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     }
 
     eliminareg(caller: any, idPedido: any, codigo: any) {
-        this.isLoading = true;
+        Swal.showLoading()
 
         const apiUrl = `${API_URL}eliminareg`;
         const formData = new FormData();
@@ -355,6 +359,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
                 this.isLoading = false;
+                Swal.close()
                 if (response.result === true) {
                     // Actualiza productscar
                     this.productscar = this.productscar.filter(product => product.id_pedido !== idPedido && product.codigoa !== codigo);
@@ -373,6 +378,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             },
             error: (error) => {
                 this.isLoading = false;
+                Swal.close()
                 this.alertaerror();
             },
         });
@@ -380,7 +386,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
     //Envia pedidos al servidor
     enviaped(){
-        this.isLoading = true;
+        Swal.showLoading()
         const codCli = this.authService.getCodCli();
 
         const formData = new FormData();
@@ -447,17 +453,19 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.apiService.generate_ped(aux).subscribe({
             next: (data: any) => {
                 this.isLoading = false;
+                Swal.close()
                 this.ocultarLoader();
                 this.generar_pedido_proteo(apiUrl, formData, headers);
             },
             error: () => {
                 this.isLoading = false;
+                Swal.close()
                 this.ocultarLoader();
             }
         });
     }
 /*     enviaped(){
-        this.isLoading = true;
+        Swal.showLoading()
         const codCli = this.authService.getCodCli();
 
         const formData = new FormData();
@@ -525,13 +533,16 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                     this.productscar = [];
                     this.dataSource.data = this.productscar;
                     this.isLoading = false;
+                    Swal.close()
                 } else {
                     Swal.fire(response.message, '', 'error');
                     this.isLoading = false;
+                    Swal.close()
                 }
             },
             error: (error) => {
                 this.isLoading = false;
+                Swal.close()
                 this.ocultarLoader();
                 Swal.fire(error, '', 'error');
                 console.error('Error de la API:', error);
@@ -900,6 +911,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
                 this.isLoading = false;
+                Swal.close()
                 if (response.result == true) {
                     // Actualiza productscar
                     this.revisarCarrito();
@@ -919,6 +931,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             },
             error: (error) => {
                 this.isLoading = false;
+                Swal.close()
                 this.alertaerror();
             },
         });

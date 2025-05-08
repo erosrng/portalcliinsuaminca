@@ -76,15 +76,15 @@ export class ProteoService {
 
 
   //Para obtener el excel de pedido sencillo
-  get_file_simple() : Observable<Blob> {
-    const formData = new FormData();
+  get_file_simple(cliente: any) : Observable<Blob> {
+    const info =  {'cliente': cliente}
     const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
     const apiUrl = this.apiUrl + `post/simplefile`;
-    return this.httpClient.post(apiUrl, '', { headers: headers, responseType: 'blob', })
+    return this.httpClient.post(apiUrl, info, { headers: headers, responseType: 'blob', })
   }
 
   get_client_data(cliente: any) : Observable<any> {
