@@ -194,3 +194,25 @@ tr:hover {
   text-align: left; 
 }
 
+.flex-row {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+}
+
+.box-detail {
+  width: 100%;
+}
+
+.box-ped {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-size: 2rem !important;
+
+  span {
+    font-size: 2.5rem;
+    margin-left: 10px;
+    color: #0084c5 !important;
+  }
+}

@@ -52,14 +52,14 @@ interface DetallePedido {
 
 @Component({
   selector: 'app-historial-pedidos',
-  imports: [
-    MatSidenav,
-    MatSidenavModule,
-    CommonModule,
-    SideBarComponent,
-    NavBarComponent,
-    FooterComponent
-  ],
+    imports: [
+        MatSidenav,
+        MatSidenavModule,
+        CommonModule,
+        SideBarComponent,
+        NavBarComponent,
+        FooterComponent,
+    ],
   templateUrl: './historial-pedidos.component.html',
   styleUrl: './historial-pedidos.component.scss'
 })
@@ -69,6 +69,9 @@ export class HistorialPedidosComponent implements OnInit {
   historialPedidos: Pedido[] = [];
   pedidoActivo: Pedido | null = null;
   detallePedidoActivo: DetallePedido[] = []; // Array para almacenar los detalles del pedido
+  totalPedidos= 0
+  totalUnidades= 0
+  totalValorDolar= 0
 
   constructor(
     private apiService: ApiService,

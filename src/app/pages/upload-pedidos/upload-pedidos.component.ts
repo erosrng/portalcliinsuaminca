@@ -433,7 +433,9 @@ export class UploadPedidosComponent implements OnInit {
 
             pedidosRealizados.forEach((item, index) => {
                 dataRows.forEach((row) => {
+                    console.log(row[11])
                     if (Number(row[11]) > 0) {
+                        console.log(row[11])
                         item.pedido.push({
                             Codigo: row[0],
                             COD_Proveedor: localStorage.getItem('proveed'),
@@ -508,15 +510,24 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getValor(element: any): number {
+
         const aux = element.pedido;
         let valueOfRetur = 0;
         aux.forEach((info: any) => {
-            const stringNumber = info.Precio;
-            const normalizedString = stringNumber.replace(",", "");
-            const precio = parseFloat(normalizedString);
-            const descuento = parseFloat(info.Descuento) / 100; // Convertir el porcentaje a decimal
-            const precioConDescuento = precio * (1 - descuento);
-            valueOfRetur = precioConDescuento + valueOfRetur;
+            let stringNumber = info.Precio;
+            if (info.Descuento !== undefined) {
+                // console.log(info.Descuento, 'VALOR')
+                const normalizedString = stringNumber.replace(",", "");
+                const precio = parseFloat(normalizedString);
+                const descuento = parseFloat(info.Descuento) / 100; // Convertir el porcentaje a decimal
+                const precioConDescuento = precio * (1 - descuento);
+                valueOfRetur = precioConDescuento + valueOfRetur;
+            } else {
+                const normalizedString = stringNumber.replace(",", "");
+                const precio = parseFloat(normalizedString);
+                valueOfRetur = precio
+            }
+
         });
         return valueOfRetur;
     }
@@ -538,10 +549,18 @@ export class UploadPedidosComponent implements OnInit {
 
     calculateDiscount(stringNumber: string, descuentoItem: string): number {
         if (this.typeUpload === 'INDIVIDUAL') {
-            const normalizedString = stringNumber.replace(",", "");
-            const precio = parseFloat(normalizedString);
-            const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
-            return (precio * (1 - descuento));
+            if (descuentoItem !== undefined) {
+                const normalizedString = stringNumber.replace(",", "");
+                const precio = parseFloat(normalizedString);
+                const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
+                return (precio * (1 - descuento));
+            } else {
+                const normalizedString = stringNumber.replace(",", "");
+                const precio = parseFloat(normalizedString);
+                const descuento = parseFloat(descuentoItem) / 100; // Convertir el porcentaje a decimal
+                return precio;
+            }
+
         } else {
             const normalizedString = stringNumber.replace(",", "");
             const precio = parseFloat(normalizedString);
