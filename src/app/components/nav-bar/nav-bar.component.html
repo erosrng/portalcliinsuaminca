@@ -32,11 +32,20 @@
                           <!-- <i class="fas fa-shopping-cart cart-icon" (click)="navigateTo('/carrito')"></i>
                           <span class="fs-4"> {{productosEnCarritoNumber}}</span> -->
 
-                          <mat-icon matBadge="{{productosEnCarritoNumber}}" (click)="navigateTo('/carrito')" style="cursor: pointer;">shopping_cart</mat-icon>
-                            <!-- Include text description of the icon's meaning for screen-readers -->
-                            <span class="cdk-visually-hidden">
-                             {{productosEnCarritoNumber}}
-                            </span>
+<!--                          <mat-icon matBadge="{{productosEnCarritoNumber}}" (click)="navigateTo('/carrito')" style="cursor: pointer;">shopping_cart</mat-icon>-->
+<!--                            &lt;!&ndash; Include text description of the icon's meaning for screen-readers &ndash;&gt;-->
+<!--                            <span class="cdk-visually-hidden">-->
+<!--                             {{productosEnCarritoNumber}}-->
+<!--                            </span>-->
+
+                          <span class="badge-car">
+                               {{ (+productosEnCarritoNumber > 9) ? (productosEnCarritoNumber | slice:0:3) + '...' : productosEnCarritoNumber }}
+                          </span>
+                          <i class="fas fa-cart-plus icon-car" [attr.data-badge]="productosEnCarritoNumber" (click)="navigateTo('/carrito')" >
+                              <span class="cdk-visually-hidden">
+                                {{productosEnCarritoNumber}} productos en el carrito
+                              </span>
+                          </i>
                       </div>
                   </div>
               </div>
