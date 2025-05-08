@@ -123,7 +123,7 @@
                   <tr *ngFor="let detalle of detallePedidoActivo">
                     <td>{{ detalle.codigo }}</td>
                     <td>{{ detalle.desca }}</td>
-                    <td>{{ detalle.cana }}</td>
+                    <td>{{ detalle.cana  | number: '1.2-2' }}</td>
                     <td>{{ detalle.preca | number: '1.2-2'}}</td>
                     <td>{{ detalle.preca / authService.getTasa()| number: '1.2-2'}}</td>
                     <td>{{ detalle.descu3 }}%</td>

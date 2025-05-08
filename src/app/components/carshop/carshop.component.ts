@@ -229,11 +229,11 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 // Recalcular datos y luego mostrar la tabla
                 let recalculationPromises: Promise<void>[] = [];
                 for (const producto of this.productscar) {
-                    console.log('Descripción:', producto.descrip);
+                    /* console.log('Descripción:', producto.descrip);
                     console.log('Precio Total Bs:', producto.preciod);
                     console.log('Codigo', producto.codigoa);
                     console.log('descuento:', producto.descprov);
-                    console.log('cantidad:', producto.cant);
+                    console.log('cantidad:', producto.cant); */
 
                     this.recalculadescud(producto);
                     this.recalculadescubs(producto);
@@ -241,17 +241,17 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                         setTimeout(() => {
                             this.recalcular(parseFloat(producto.cant), producto.codigoa);
                             resolve();
-                        }, 100); // Reduje el tiempo para una respuesta más rápida
+                        }, 1000); // Reduje el tiempo para una respuesta más rápida
                     }));
                 }
 
                 Promise.all(recalculationPromises).then(() => {
                     this.totalizartodo();
                     this.isLoading = false;
-                    Swal.close()
                     // Mostrar la tabla después de la carga y el recálculo
                     if (tableElement) {
                         tableElement.classList.remove('hidden');
+                        Swal.close()
                     }
                 });
             },
@@ -810,7 +810,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         //console.log([this.sumabs.toFixed(2),this.sumausd.toFixed(2)]);
     }
 
-    recalculadescud(product: any): number {
+    /* recalculadescud(product: any): number {
         let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
         let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
         let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
@@ -865,18 +865,105 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             return precio;
         }
     }
+ */
 
-    recalcular(newValue: number, codigo: string) {
-        var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
-        var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
-        var preciod2 = preciod.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
-        totald.innerText=this.formatCurrency((parseFloat(preciod2)*newValue),'USD').toString();
-
-        var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
-        var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
-        var preciobs2 = preciobs.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
-        totalbs.innerText=this.formatCurrency((parseFloat(preciobs2)*newValue),'VES').toString();
+    recalculadescud(product: any): number {
+        let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
+        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.'));
+        let descuentoFichaPorcentaje = parseFloat(String(product.ficha).replace(',', '.')); // Descuento de ficha
+    
+        if (!isNaN(precio)) {
+            let precioConDescuento = precio;
+    
+            // Aplicar descuento del proveedor si es válido y mayor que cero
+            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                const descuentoProveedor = (precioConDescuento * descuentoProveedorPorcentaje) / 100;
+                precioConDescuento -= descuentoProveedor;
+            }
+    
+            // Aplicar descuento de ficha si es válido y mayor que cero
+            if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
+                const descuentoFicha = (precioConDescuento * descuentoFichaPorcentaje) / 100;
+                precioConDescuento -= descuentoFicha;
+            }
+    
+            // Aplicar el otro descuento si es válido y mayor que cero
+            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                const otroDescuento = (precioConDescuento * otroDescuentoPorcentaje) / 100;
+                precioConDescuento -= otroDescuento;
+            }
+    
+            return precioConDescuento;
+        } else {
+            return precio;
+        }
     }
+
+    recalculadescubs(product: any): number {
+        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
+        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
+        let descuentoFichaPorcentaje = parseFloat(String(product.ficha).replace(',', '.')); // Descuento de ficha
+        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+    
+        if (!isNaN(precio)) {
+            let precioConDescuento = precio;
+    
+            // Aplicar descuento del proveedor si es válido y mayor que cero
+            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
+                const descuentoProveedor = (precioConDescuento * descuentoProveedorPorcentaje) / 100;
+                precioConDescuento -= descuentoProveedor;
+            }
+    
+            // Aplicar descuento de ficha si es válido y mayor que cero
+            if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
+                const descuentoFicha = (precioConDescuento * descuentoFichaPorcentaje) / 100;
+                precioConDescuento -= descuentoFicha;
+            }
+    
+            // Aplicar el otro descuento si es válido y mayor que cero
+            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+                const otroDescuento = (precioConDescuento * otroDescuentoPorcentaje) / 100;
+                precioConDescuento -= otroDescuento;
+            }
+    
+            return precioConDescuento;
+        } else {
+            return precio;
+        }
+    }
+
+        recalcular(newValue: number, codigo: string) {
+            var totald = document.getElementById(`totald_${codigo}`) as HTMLElement;
+            var preciod = document.getElementById(`preciod_${codigo}`) as HTMLElement;
+        
+            if (preciod) { // Validamos si el elemento 'preciod' existe
+                var preciod2 = preciod.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
+                totald.innerText=this.formatCurrency((parseFloat(preciod2)*newValue),'USD').toString();
+            } else {
+                console.warn(`No se encontró el elemento preciod_${codigo}`);
+                // Aquí podrías agregar un manejo adicional si el elemento no existe,
+                // como asignar un valor por defecto a totald o simplemente no hacer nada.
+                if (totald) {
+                    totald.innerText = this.formatCurrency(0, 'USD').toString(); // Ejemplo de valor por defecto
+                }
+            }
+        
+            var totalbs = document.getElementById(`totalbs_${codigo}`) as HTMLElement;
+            var preciobs = document.getElementById(`preciobs_${codigo}`) as HTMLElement;
+        
+            if (preciobs) { // Validamos si el elemento 'preciobs' existe
+                var preciobs2 = preciobs.innerText.replace('USD','').replace('Bs.S','').replace('.', '').replace(',', '.') as any
+                totalbs.innerText=this.formatCurrency((parseFloat(preciobs2)*newValue),'VES').toString();
+            } else {
+                console.warn(`No se encontró el elemento preciobs_${codigo}`);
+                // Aquí podrías agregar un manejo adicional si el elemento no existe.
+                if (totalbs) {
+                    totalbs.innerText = this.formatCurrency(0, 'VES').toString(); // Ejemplo de valor por defecto
+                }
+            }
+        }
+
     formatCurrency(value: number | string,moneda:string = 'USD'): string {
 
         const formateador:any = new Intl.NumberFormat('es-VE',{

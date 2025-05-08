@@ -466,6 +466,10 @@ sortData(sortField: string) {
   formatOfertasTooltip(ofertas: any[]): string {
     return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
   }
+
+  /* formatfichasTooltip(fichas: any[]): string {
+    return fichas.map(ficha => `${ficha.lista} (Descuento: ${ficha.descuento}%)`).join('\n');
+  } */
   // Función para aplicar el descuento lineal
     aplicarDescuentoLineal(): void {
       if (this.descuentoLineal > 100) {
@@ -910,9 +914,10 @@ sortData(sortField: string) {
     this.cdr.detectChanges();
   }
 
-  getPriceWDiscount(element: any): number {
+  /* getPriceWDiscount(element: any): number {
     let precio = parseFloat(String(element.opreciod).replace(',', '.'));
     let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
+    let descuentoficha = parseFloat(String(element.ficha).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
       if (!isNaN(precio)) {
@@ -924,13 +929,41 @@ sortData(sortField: string) {
       }
     }
     return precio;
+  } */
+
+    getPriceWDiscount(element: any): number {
+      let precioStr = String(element.opreciod);
+      let precio = parseFloat(precioStr.replace(',', '.'));
+      let descuentoPorcentajeProv = parseFloat(String(element.descprov).replace(',', '.'));
+      let descuentoPorcentajeFicha = parseFloat(String(element.ficha).replace(',', '.'));
+      let precioConDescuento = precio; // Inicializamos con el precio base
+  
+      if (!isNaN(precio)) {
+          // Aplicar descuento por porcentaje del proveedor (descprov) si es válido y mayor que 0
+          if (!isNaN(descuentoPorcentajeProv) && descuentoPorcentajeProv > 0) {
+              const descuentoProv = (precioConDescuento * descuentoPorcentajeProv) / 100;
+              precioConDescuento -= descuentoProv;
+          }
+  
+          // Aplicar descuento por porcentaje de ficha si es válido y mayor que 0
+          if (!isNaN(descuentoPorcentajeFicha) && descuentoPorcentajeFicha > 0) {
+              const descuentoFicha = (precioConDescuento * descuentoPorcentajeFicha) / 100;
+              precioConDescuento -= descuentoFicha;
+          }
+  
+          return parseFloat(precioConDescuento.toFixed(2)); // Formatear a 2 decimales
+      } else {
+          console.warn('Oprecio no es un número válido:', element);
+          return precio; // Devolvemos el precio sin modificar si no es válido
+      }
   }
 
-  getPriceWDiscountBS(element: any): number {
+  /* getPriceWDiscountBS(element: any): number {
     let precioStr = String(element.oprecio);
     precioStr = precioStr.replace(/\./g, ''); // Elimina todos los puntos (asumiendo que son separadores de miles)
     let precio = parseFloat(precioStr.replace(',', '.'));
     let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
+    let descuentoficha = parseFloat(String(element.ficha).replace(',', '.'));
 
     if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
       if (!isNaN(precio)) {
@@ -942,6 +975,34 @@ sortData(sortField: string) {
       }
     }
     return parseFloat(String(precio).replace(',', '.').replace('.',','));
+  } */
+
+    getPriceWDiscountBS(element: any): number {
+      let precioStr = String(element.oprecio);
+      precioStr = precioStr.replace(/\./g, '');
+      let precio = parseFloat(precioStr.replace(',', '.'));
+      let descuentoPorcentajeProv = parseFloat(String(element.descprov).replace(',', '.'));
+      let descuentoPorcentajeFicha = parseFloat(String(element.ficha).replace(',', '.'));
+      let precioConDescuento = precio; // Inicializamos con el precio base
+  
+      if (!isNaN(precio)) {
+          // Aplicar descuento por porcentaje del proveedor (descprov) si es válido y mayor que 0
+          if (!isNaN(descuentoPorcentajeProv) && descuentoPorcentajeProv > 0) {
+              const descuentoProv = (precioConDescuento * descuentoPorcentajeProv) / 100;
+              precioConDescuento -= descuentoProv;
+          }
+  
+          // Aplicar descuento por porcentaje de ficha si es válido y mayor que 0
+          if (!isNaN(descuentoPorcentajeFicha) && descuentoPorcentajeFicha > 0) {
+              const descuentoFicha = (precioConDescuento * descuentoPorcentajeFicha) / 100;
+              precioConDescuento -= descuentoFicha;
+          }
+  
+          return parseFloat(precioConDescuento.toFixed(2)); // Formatear a 2 decimales
+      } else {
+          console.warn('Oprecio no es un número válido:', element);
+          return precio; // Devolvemos el precio sin modificar si no es válido
+      }
   }
 
   goToCard(): void {
