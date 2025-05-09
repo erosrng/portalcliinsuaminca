@@ -124,7 +124,7 @@ export class TomaexcelPageComponent {
             .then((response: any) => {
               if (response.status) {
                 i++;
-                console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
+                //console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
               } else {
                 codigosvacios.push(celdas);
                 console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, response);
@@ -141,7 +141,7 @@ export class TomaexcelPageComponent {
   
       Promise.all(promises).then(() => {
         if (codigosvacios.length > 0) {
-          console.log('Códigos vacíos:', codigosvacios);
+          //console.log('Códigos vacíos:', codigosvacios);
   
           // Construye el contenido de la alerta
           let contenidoAlerta = '';

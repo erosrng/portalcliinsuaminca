@@ -25,21 +25,20 @@ export const API_FAST ='http://172.16.0.255:5020'; */
 
 
 // ACESSO DE SERVER LOCAL
-/*
 export const PROTEO_URL_ALONE = 'http://192.168.1.48/';
 export const API_URL = 'http://192.168.1.48/proteoerp/api/ptprv/post/';
 export const API_URL2 = 'http://192.168.1.48/proteoerp/api/ptprv/';
 export const PROTEO_URL = 'http://192.168.1.48/proteoerp/api/ptprv/';
-export const API_FAST ='http://192.168.1.48:5020';*/
+export const API_FAST ='http://192.168.1.48:5020';
 
 // ACESSO DE EXPO
-
+/*
 export const PROTEO_URL_ALONE = 'http://172.16.0.255/';
 export const API_URL = 'http://172.16.0.255/proteoerp/api/ptprv/post/';
 export const API_URL2 = 'http://172.16.0.255/proteoerp/api/ptprv/';
 export const PROTEO_URL = 'http://172.16.0.255/proteoerp/api/ptprv/';
 export const API_FAST ='http://172.16.0.255:5000';
-
+*/
 // export const API_FAST ='http://0.0.0.0:5000';
 
 export const appConfig: ApplicationConfig = {

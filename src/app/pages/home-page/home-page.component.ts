@@ -28,6 +28,7 @@ export class HomePageComponent {
   isMenuOpen: boolean = true;
   toggleMenu = false;
   adminOptions = false;
+  usuariopadre: string | null | undefined;
 
   constructor(
     public authService: AuthService, 
@@ -47,7 +48,7 @@ export class HomePageComponent {
 
     ngOnInit() {
       // Obtener el token y los datos del usuario
-      console.log(this.authService.getProveed() )
+      this.usuariopadre = this.authService.getUsuarioPadre(); 
       const token = this.authService.getToken();
       //this.userData = this.authService.getUserData(); // Obtener los datos del usuario
   

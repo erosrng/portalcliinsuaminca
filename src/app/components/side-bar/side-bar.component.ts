@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Router } from '@angular/router';
+import { PROTEO_URL_ALONE } from './../../app.config';
 
 @Component({
   selector: 'app-side-bar',
@@ -76,13 +77,13 @@ export class SideBarComponent {
 
   bajareporteunico(){
     const usuario = this.authService.getUsuario();
-    const url = `http://172.16.0.255/proteoerp/reportes/ver/VTPTPRV/${usuario}`;
+    const url = `${PROTEO_URL_ALONE}/proteoerp/reportes/ver/VTPTPRV/${usuario}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
   bajareportemaster(){
     const proveed = this.authService.getProveed();
-    const url = `http://172.16.0.255/proteoerp/reportes/ver/VTASCENTRA/${proveed}`;
+    const url = `${PROTEO_URL_ALONE}/proteoerp/reportes/ver/VTASCENTRA/${proveed}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes,screenx=((screen.availWidth/2)-400),screeny=((screen.availHeight/2)-300)');
   }
 

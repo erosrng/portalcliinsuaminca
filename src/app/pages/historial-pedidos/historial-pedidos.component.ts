@@ -10,6 +10,8 @@ import { HistoricoPedidosModel } from '../../models/model';
 import { AuthService } from '../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { PROTEO_URL_ALONE } from './../../app.config';
+import { MatIconModule } from '@angular/material/icon';
 
 interface Pedido {
   fecha: string;
@@ -55,6 +57,7 @@ interface DetallePedido {
     imports: [
         MatSidenav,
         MatSidenavModule,
+        MatIconModule,
         CommonModule,
         SideBarComponent,
         NavBarComponent,
@@ -82,7 +85,7 @@ export class HistorialPedidosComponent implements OnInit {
   ngOnInit(): void {
     Swal.showLoading();
     const aux = localStorage.getItem('usuario');
-    if (aux) {
+    /* if (aux) {
       this.apiService.get_historial_by_user(aux).subscribe((data: HistoricoPedidosModel[]) => {
         Swal.close();
         // Aquí podrías necesitar mapear los datos si la estructura de HistoricoPedidosModel
@@ -91,8 +94,10 @@ export class HistorialPedidosComponent implements OnInit {
       }, () => {
         Swal.close();
       });
-    }
+    } */
+    this.cargarResumen();
     this.cargarHistorialPedidos();
+    
   }
 
   openMenu(event: any) {
@@ -132,7 +137,7 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   abrirEnlaceExcel(idpedido: string) {
-    const url = `http://172.16.0.255/proteoerp/formatos/ver/PFAC/${idpedido}`;
+    const url = `${PROTEO_URL_ALONE}/proteoerp/formatos/ver/PFAC/${idpedido}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
@@ -164,6 +169,7 @@ export class HistorialPedidosComponent implements OnInit {
         next: (response) => {
           this.historialPedidos = response.data;
           this.isLoading = false;
+          Swal.close();
         },
         error: (error) => {
           this.isLoading = false;
@@ -171,4 +177,38 @@ export class HistorialPedidosComponent implements OnInit {
         },
       });
   }
+
+    cargarResumen() {
+      const proveed = this.authService.getProveed();
+      const token = this.authService.getToken();
+      const formData = new FormData();
+  
+      const headers = new HttpHeaders({
+        'Authorization': `${token}`
+      });
+      formData.append('proveed', proveed ?? '');
+  
+      const apiUrl = `${API_URL}resumen`;
+  
+      this.http.post(apiUrl, formData, { headers: headers })
+        .subscribe({
+          next: (response: any) => {
+            if (response.data) { // La API ya devuelve un objeto, no un array
+              this.totalPedidos = response.data.pedidos;
+              this.totalUnidades = response.data.unidades;
+              this.totalValorDolar = parseFloat((response.data.totalg / this.authService.getTasa()).toFixed(2));
+            } else {
+              this.totalPedidos = 0;
+              this.totalUnidades = 0;
+              this.totalValorDolar = 0;
+              console.warn('La API de resumen devolvió un objeto de datos vacío.');
+            }
+            Swal.close();
+          },
+          error: (error) => {
+            console.error('Error al cargar resumen:', error);
+            Swal.close();
+          },
+        });
+    }
 }

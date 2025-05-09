@@ -13,33 +13,39 @@
           </div>
         </div>
 
-<!--          <div class="row mt-5">-->
-<!--              <div class="col-12 flex-row">-->
-<!--                  <div class="card box-detail">-->
-<!--                      <div class="card-body box-ped">-->
-<!--&lt;!&ndash;                          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>&ndash;&gt;-->
-<!--                          Pedidos Procesados: <span>{{totalPedidos}}</span>-->
-<!--                      </div>-->
-<!--                  </div>-->
+        <div class="col-12 flex-row">
+          <div class="card box-detail">
+              <div class="card-body box-ped">
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>
+                  Pedidos Procesados: <span>{{totalPedidos | number}}</span>
+              </div>
+          </div>
 
-<!--                  <div class="card box-detail">-->
-<!--                      <div class="card-body box-ped">-->
-<!--&lt;!&ndash;                          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="inventory" class="icon"></mat-icon>&ndash;&gt;-->
-<!--                          Unidades vendidas: <span>{{totalUnidades}}</span>-->
-<!--                      </div>-->
-<!--                  </div>-->
+          <div class="card box-detail">
+              <div class="card-body box-ped">
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="inventory" class="icon"></mat-icon>
+                  Unidades vendidas: <span>{{totalUnidades | number}}</span>
+              </div>
+          </div>
 
-<!--                  <div class="card box-detail">-->
-<!--                      <div class="card-body box-ped">-->
-<!--&lt;!&ndash;                          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="attach_money" class="icon"></mat-icon>&ndash;&gt;-->
-<!--                          Valor $: <span>{{totalValorDolar | number: '1.0-3'}}</span>-->
-<!--                      </div>-->
-<!--                  </div>-->
+          <div class="card box-detail">
+              <div class="card-body box-ped">
+                  <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="attach_money" class="icon"></mat-icon>
+                  Valor $: <span>{{totalValorDolar | number: '1.0-3'}}</span>
+              </div>
+          </div>
 
+          <div class="col-2">
+            <div class="card">
+                <div class="card-body box-ped">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="download" class="icon"></mat-icon>
+                    <button class="btn-clear" > Descargar Pedidos </button>
+                </div>
+            </div>
+        </div>
 
-<!--              </div>-->
-
-<!--          </div>-->
+      
+      </div>
 
         <div class="row mt-5" *ngIf="historialPedidos && historialPedidos.length > 0">
           <div class="col-12">
@@ -51,7 +57,6 @@
                   <th scope="col">Fecha</th>
                   <th scope="col">Total</th>
                   <th scope="col">IVA</th>
-                  <th scope="col"  style="text-align: right;">Unidades</th>
                   <th scope="col" style="text-align: right;">Total General</th>
                   <th scope="col" style="text-align: right;">Total General $</th>
                     <th scope="col">Unidades</th>
@@ -66,10 +71,9 @@
                   <td>{{ pedido.fecha }}</td>
                   <td>{{ pedido.totals | number: '1.2-2'}}</td>
                   <td>{{ pedido.iva | number:'1.2-2' }}</td>
-                  <td>{{ pedido.unidades | number:'1.0-0' }}</td>
                   <td>{{ pedido.totalg | number:'1.2-2' }}</td>
                   <td>{{ pedido.totalg / authService.getTasa() | number:'1.2-2'}}</td>
-                    <td>{{ pedido.unidades / authService.getTasa() | number:'1.0-0'}}</td>
+                  <td>{{ pedido.unidades | number:'1.0-0' }}</td>
                     <td>
                   <i class="show__detail fa-solid fa-eye"
                       title="Mostrar detalle"

@@ -11,14 +11,14 @@
                         <div class="card box-detail">
                             <div class="card-body box-ped">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>
-                                Pedidos Procesados: <span>{{totalPedidos}}</span>
+                                Pedidos Procesados: <span>{{totalPedidos | number}}</span>
                             </div>
                         </div>
 
                         <div class="card box-detail">
                             <div class="card-body box-ped">
                                 <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="inventory" class="icon"></mat-icon>
-                                Unidades vendidas: <span>{{totalUnidades}}</span>
+                                Unidades vendidas: <span>{{totalUnidades | number}}</span>
                             </div>
                         </div>
 
@@ -29,43 +29,52 @@
                             </div>
                         </div>
 
+                        <div class="col-2">
+                            <div class="card">
+                                <div class="card-body box-ped">
+                                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="download" class="icon"></mat-icon>
+                                    <button class="btn-clear" > Descargar Pedidos </button>
+                                </div>
+                            </div>
+                        </div>
+    
+
                     
                     </div>
                 
                 </div>
 
-                <div class="row">
-                    <div class="col-6">
+                <div class="">
+                    <div class="col-12">
                         <div class="card h-100">
                             <div class="card-body">
-                                <div style="text-align:center">
+                                <div style="text-align:center;width: 100%;">
                                     <apx-chart
-                                      [series]="ventasPorVendedor.series"
-                                      [chart]="ventasPorVendedor.chart"
-                                      [xaxis]="ventasPorVendedor.xaxis"
-                                      [title]="ventasPorVendedor.title"
+                                      [series]="unidadesVendidasPorVendedorChart.series"
+                                      [chart]="unidadesVendidasPorVendedorChart.chart"
+                                      [xaxis]="unidadesVendidasPorVendedorChart.xaxis"
+                                      [title]="unidadesVendidasPorVendedorChart.title"
                                     ></apx-chart>
                                   </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-6">
+                
+                    <div class="col-12">
                         <div class="card h-100">
                             <div class="card-body">
                                 <div style="text-align:center">
                                     <apx-chart
-                                      [series]="unidadesPorVendedor.series"
-                                      [chart]="unidadesPorVendedor.chart"
-                                      [xaxis]="unidadesPorVendedor.xaxis"
-                                      [title]="unidadesPorVendedor.title"
+                                      [series]="totalVendidoPorVendedorChart.series"
+                                      [chart]="totalVendidoPorVendedorChart.chart"
+                                      [xaxis]="totalVendidoPorVendedorChart.xaxis"
+                                      [title]="totalVendidoPorVendedorChart.title"
                                     ></apx-chart>
                                   </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
               
               </div>
 

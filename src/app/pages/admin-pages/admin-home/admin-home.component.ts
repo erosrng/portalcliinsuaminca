@@ -33,6 +33,13 @@ interface Vendedor {
   usuariopadre: string;
 }
 
+interface ResumenVendedor {
+  totalg: number;
+  us_nombre: string;
+  pedidos: number;
+  unidades: number;
+}
+
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
@@ -62,8 +69,9 @@ export type ChartOptions = {
 })
 export class AdminHomeComponent implements OnInit { // Implementa OnInit
   @ViewChild("chart") chart: ChartComponent | undefined;
-  public ventasPorVendedor: Partial<ChartOptions> | any;
-  public unidadesPorVendedor: Partial<ChartOptions> | any;
+  public unidadesVendidasPorVendedorChart: Partial<ChartOptions> | any; // Gráfico para unidades
+  public totalVendidoPorVendedorChart: Partial<ChartOptions> | any; // Gráfico para el total
+  // ... otras propiedades ...
   toggleMenu = false;
   toppings = new FormControl('');
   // Eliminamos la propiedad estática vededores
@@ -72,22 +80,19 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
   isLoadingVendedores: boolean = false;
   selectedVendedor: Vendedor | null = null;
   pedidos: HistoricoPedidosModel[] | null = []
-  totalPedidos = 0;
-  totalUnidades = 0;
-  totalValorDolar = 0;
+  totalPedidos: number | null = null;
+  totalUnidades: number | null = null;
+  totalValorDolar: number | null = null;
 
   constructor(
     public authService: AuthService,
     public http: HttpClient,
     private apiService: ApiService
   ) {
-
-
-
-  this.ventasPorVendedor = {
+    this.unidadesVendidasPorVendedorChart = {
       series: [
         {
-          name: "Ventas",
+          name: "Unidades Vendidas",
           data: []
         }
       ],
@@ -96,112 +101,139 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
         type: "bar"
       },
       title: {
-        text: "Ventas por vendedor"
+        text: "Unidades Vendidas por Vendedor"
       },
       xaxis: {
         categories: []
       }
     };
 
-  this.unidadesPorVendedor = {
-    series: [
-      {
-        name: "Unidades",
-        data: []
+    this.totalVendidoPorVendedorChart = {
+      series: [
+        {
+          name: "Total Vendido ($)",
+          data: []
+        }
+      ],
+      chart: {
+        height: 350,
+        type: "bar"
+      },
+      title: {
+        text: "Total Vendido por Vendedor ($)"
+      },
+      xaxis: {
+        categories: []
       }
-    ],
-    chart: {
-      height: 350,
-      type: "bar"
-    },
-    title: {
-      text: "Ventas de unidades por vendedor"
-    },
-    xaxis: {
-      categories: []
-    }
-  };
+    };
   }
-
 
   ngOnInit() {
     Swal.showLoading();
-    this.obtenerVendedores().subscribe();
-    const aux = localStorage.getItem('proveed')
-    if (aux) {
-      this.apiService.get_historial_by_prov(aux).subscribe((data: HistoricoPedidosModel[]) => {
-        console.log(data);
-        Swal.close();
-      
-        // 1) Calcular el total de pedidos procesados
-        const totalPedidos = data.length;
-        this.totalPedidos = totalPedidos
-      
-        // 2) Calcular el total de unidades
-        const totalUnidades = data.reduce((sum, pedido) => sum + pedido.unidades, 0);
-        this.totalUnidades = totalUnidades
-       
-      
-        // 3) Calcular el total de valor en dólares
-        const totalValorDolar = data.reduce((sum, pedido) => sum + pedido.valor_dolar, 0);
-        this.totalValorDolar = totalValorDolar
-       
-      
-        // Preparar datos para el gráfico de Ventas por Vendedor
-        const ventasPorVendedorMap = new Map<string, number>();
-        data.forEach(pedido => {
-          ventasPorVendedorMap.set(pedido.usuario, (ventasPorVendedorMap.get(pedido.usuario) || 0) + 1);
-        });
-      
-        this.ventasPorVendedor = {
-          series: [
-            {
-              name: "Ventas",
-              data: Array.from(ventasPorVendedorMap.values())
-            }
-          ],
-          chart: {
-            height: 350,
-            type: "bar"
-          },
-          title: {
-            text: "Ventas por vendedor"
-          },
-          xaxis: {
-            categories: Array.from(ventasPorVendedorMap.keys())
-          }
-        };
-      
-        // Preparar datos para el gráfico de Unidades por Vendedor
-        const unidadesPorVendedorMap = new Map<string, number>();
-        data.forEach(pedido => {
-          unidadesPorVendedorMap.set(pedido.usuario, (unidadesPorVendedorMap.get(pedido.usuario) || 0) + pedido.unidades);
-        });
-      
-        this.unidadesPorVendedor = {
-          series: [
-            {
-              name: "Unidades",
-              data: Array.from(unidadesPorVendedorMap.values())
-            }
-          ],
-          chart: {
-            height: 350,
-            type: "bar"
-          },
-          title: {
-            text: "Ventas de unidades por vendedor"
-          },
-          xaxis: {
-            categories: Array.from(unidadesPorVendedorMap.keys())
-          }
-        };
-      }, () => {
-        Swal.close();
-      });
-    }
-
+    this.obtenerVendedores().subscribe(() => {
+      this.cargarResumen();
+      this.cargarResumenVendedores();
+    });
   }
+
+  cargarResumen() {
+    const proveed = this.authService.getProveed();
+    const token = this.authService.getToken();
+    const formData = new FormData();
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    formData.append('proveed', proveed ?? '');
+
+    const apiUrl = `${API_URL}resumen1`;
+
+    this.http.post(apiUrl, formData, { headers: headers })
+      .subscribe({
+        next: (response: any) => {
+          if (response.data) { // La API ya devuelve un objeto, no un array
+            this.totalPedidos = parseInt(response.data.pedidos);
+            this.totalUnidades = parseInt(response.data.unidades);
+            this.totalValorDolar = parseFloat((response.data.totalg / this.authService.getTasa()).toFixed(2));
+          } else {
+            this.totalPedidos = 0;
+            this.totalUnidades = 0;
+            this.totalValorDolar = 0;
+            console.warn('La API de resumen devolvió un objeto de datos vacío.');
+          }
+          // Swal.close(); // Movemos el Swal.close al final de ngOnInit o después de cargar ambos resúmenes
+        },
+        error: (error) => {
+          console.error('Error al cargar resumen:', error);
+          Swal.close();
+        },
+      });
+  }
+
+cargarResumenVendedores() {
+    const proveed = this.authService.getProveed();
+    const token = this.authService.getToken();
+    const formData = new FormData();
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    formData.append('proveed', proveed ?? '');
+
+    const apiUrl = `${API_URL}resumen2`;
+
+    this.http.post<{ result: boolean, mensaje: string, data: ResumenVendedor[] }>(apiUrl, formData, { headers: headers })
+      .subscribe({
+        next: (response) => {
+          if (response.data && Array.isArray(response.data)) {
+            const topVendedores = response.data.slice(0, 10);
+
+            // Gráfico de Unidades Vendidas
+            this.unidadesVendidasPorVendedorChart.series = [{
+              name: "Unidades Vendidas",
+              data: topVendedores.map((item: ResumenVendedor) => item.unidades)
+            }];
+            this.unidadesVendidasPorVendedorChart.xaxis = {
+              categories: topVendedores.map((item: ResumenVendedor) => item.us_nombre)
+            };
+            this.unidadesVendidasPorVendedorChart.yaxis = {
+              labels: {
+                formatter: (value: number) => {
+                  return value;
+                }
+              }
+            };
+
+            // Gráfico de Total Vendido
+            this.totalVendidoPorVendedorChart.series = [{
+              name: "Total Vendido ($)",
+              data: topVendedores.map((item: ResumenVendedor) => parseFloat((item.totalg / this.authService.getTasa()).toFixed(2)))
+            }];
+            this.totalVendidoPorVendedorChart.xaxis = {
+              categories: topVendedores.map((item: ResumenVendedor) => item.us_nombre)
+            };
+            this.totalVendidoPorVendedorChart.yaxis = {
+              labels: {
+                
+              }
+            };
+
+          } else {
+            this.unidadesVendidasPorVendedorChart.series = [{ name: "Unidades Vendidas", data: [] }];
+            this.unidadesVendidasPorVendedorChart.xaxis = { categories: [] };
+            this.totalVendidoPorVendedorChart.series = [{ name: "Total Vendido ($)", data: [] }];
+            this.totalVendidoPorVendedorChart.xaxis = { categories: [] };
+            console.warn('La API de resumen de vendedores devolvió datos incorrectos o vacíos.');
+          }
+          Swal.close();
+        },
+        error: (error) => {
+          console.error('Error al cargar resumen de vendedores:', error);
+          Swal.close();
+        },
+      });
+  }
+
 
   obtenerVendedores(): Observable<void> {
     this.isLoadingVendedores = true;

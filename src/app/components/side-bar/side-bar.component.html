@@ -33,28 +33,37 @@
         </li>
 
         <li class="nav-item" >
-          <a class="nav-link menu__link"  *ngIf="usuariopadre === 'MASTERPROV'" href="javascript:void(0)" (click)="bajareportemaster()">
-            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> VENTAS DEL LABORATORIO</span>
+          <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
+            <i class="fas fa-chart-line"></i><span *ngIf="isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+          </a>
+          <div class="collapse menu__dropdown-content" id="reportesDropdown">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link menu__link"  *ngIf="usuariopadre === 'MASTERPROV'" href="javascript:void(0)" (click)="bajareportemaster()">
+                  <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen">Ventas totales</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajareporteunico()">
+                  <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen">Ventas del usuario</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+
+        <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin')">
+            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Resumen de ventas</span>
           </a>
         </li>
 
-        <li class="nav-item" >
-          <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajareporteunico()">
-            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> VENTAS DEL USUARIO</span>
+        <!-- <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin/pedidos')">
+            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Detalles por vendedor</span>
           </a>
-        </li>
-
-<!--        <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">-->
-<!--          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin')">-->
-<!--            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Resumen de ventas</span>-->
-<!--          </a>-->
-<!--        </li>-->
-
-<!--        <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">-->
-<!--          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin/pedidos')">-->
-<!--            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Detalles por vendedor</span>-->
-<!--          </a>-->
-<!--        </li>-->
+        </li> -->
   
         <!-- <li class="nav-item" >
           <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
