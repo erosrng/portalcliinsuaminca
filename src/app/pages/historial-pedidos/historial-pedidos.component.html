@@ -7,7 +7,7 @@
     </mat-sidenav>
     <mat-sidenav-content class="w-100">
       <div class="container-fluid container-max">
-        <div class="row">
+        <div class="row mb-5">
           <div class="col-12">
             <h3 class="card-title text-primary"><i class="fas fa-circle-nodes"></i><span> Triangulaciones Efectuadas</span></h3>
           </div>
@@ -17,7 +17,7 @@
           <div class="card box-detail">
               <div class="card-body box-ped">
                   <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="task" class="icon"></mat-icon>
-                  Pedidos Procesados: <span>{{totalPedidos | number}}</span>
+                  Pedidos Procesados: <span>{{historialPedidos.length | number}}</span>
               </div>
           </div>
 
@@ -35,14 +35,14 @@
               </div>
           </div>
 
-          <div class="col-2">
-            <div class="card">
-                <div class="card-body box-ped">
-                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="download" class="icon"></mat-icon>
-                    <button class="btn-clear" > Descargar Pedidos </button>
-                </div>
-            </div>
-        </div>
+<!--          <div class="col-2">-->
+<!--            <div class="card">-->
+<!--                <div class="card-body box-ped">-->
+<!--                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="download" class="icon"></mat-icon>-->
+<!--                    <button class="btn-clear" > Descargar Pedidos </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
 
       
       </div>

@@ -169,6 +169,8 @@ export class HistorialPedidosComponent implements OnInit {
         next: (response) => {
           this.historialPedidos = response.data;
           this.isLoading = false;
+          this.calcularUnidadesHistorial()
+          this.calcularTotalHistorial()
           Swal.close();
         },
         error: (error) => {
@@ -176,6 +178,18 @@ export class HistorialPedidosComponent implements OnInit {
           console.error('Error al cargar historial de triangulatotal:', error);
         },
       });
+  }
+
+  calcularUnidadesHistorial(): void {
+    this.historialPedidos.forEach(pedido => {
+      this.totalUnidades = Number(pedido.unidades) + this.totalUnidades;
+    })
+  }
+
+  calcularTotalHistorial(): void {
+    this.historialPedidos.forEach(pedido => {
+      this.totalValorDolar =(pedido.totalg / this.authService.getTasa()) + this.totalValorDolar;
+    })
   }
 
     cargarResumen() {

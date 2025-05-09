@@ -55,7 +55,6 @@ interface ClienteAutocomplete {
     MatCard,
     MatCardTitle,
     MatCardContent,
-    CurrencyPipe
   ],
   templateUrl: './resumen-cliente.component.html',
   styleUrl: './resumen-cliente.component.scss'
