@@ -108,6 +108,13 @@
                   <div class="">
                       <button class="btn-end" (click)="goToCard();"> Finalizar compra</button>
                       <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
+                      <div class="col-12" *ngIf="showUpload === 'GREIBERG'">
+                          <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>
+                          <button class="btn-upload" (click)="fileInput.click()">
+                              <i class="fas fa-file-upload"></i>
+                              Cargar archivo
+                          </button>
+                      </div>
                       <!--<button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>-->
                   </div>
                 </div>

@@ -149,6 +149,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   cantAddModal = 0
   descprov = 0
 
+  showUpload: string | null = null;
+
   constructor(
     public dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
@@ -163,6 +165,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   diasMontoFactura: number | undefined;
 
   ngOnInit() {
+    this.showUpload = localStorage.getItem('usuario')
     this.diasMontoFactura = this.authService.getDiasMontoFactura();   
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
 
@@ -1008,7 +1011,107 @@ sortData(sortField: string) {
   goToCard(): void {
     this.router.navigate(['/carrito']);
   }
-  
+
+  onFileChangeUnico(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.readFileUnico(file);
+    }
+  }
+
+  readFileUnico(file: File): void {
+    const reader: FileReader = new FileReader();
+    try {
+      reader.onload = (e: any) => {
+        try {
+          const binaryString: string = e.target.result;
+          const workbook: XLSX.WorkBook = XLSX.read(binaryString, {type: 'binary'});
+          const sheetName: string = workbook.SheetNames[0]; // Suponemos que solo hay una hoja
+          const worksheet: XLSX.WorkSheet = workbook.Sheets[sheetName];
+          this.processExcelDataUnico(worksheet);
+        } catch (e) {
+          // this.showError();
+        }
+      };
+
+      reader.onerror = (error) => {
+        console.error('Error al leer el archivo:', error);
+        // this.showError();
+      };
+
+      reader.readAsBinaryString(file);
+    } catch (e) {
+      // this.showError();
+    }
+
+  }
+
+  processExcelDataUnico(worksheet: XLSX.WorkSheet): void {
+    const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
+    const dataRows: any[] = jsonData.slice(1).map(row => {return row})
+    // console.log(dataRows)
+    const dataEve: any =[]
+    dataRows.forEach((row,index) => {
+      dataEve.push(row);
+    })
+
+    // console.log(dataEve)
+
+    dataEve.forEach((row: any, index: any) => {
+      console.log(row);
+      console.log(row[2], row[22], 'item')
+      if (parseInt(row[22], 10) > 0) {
+        this.agg_pedido_ma(row[3], row[22])
+      }
+
+    })
+  }
+
+  agg_pedido_ma(codigo: any, cantidadStr: string) {
+    console.log("entre", )
+    let product: any;
+    const cantidadInput = cantidadStr;
+    const cantidadInput2 = cantidadStr;
+    let cantidad: number;
+    while (codigo.length < 5) {
+      codigo = '0' + codigo; // Añadimos un '0' a la izquierda hasta tener 5 dígitos
+    }
+
+    this.dataSource.filteredData.forEach((element: any) => {
+      if (element.codigo === codigo) {
+        product = element;
+      }
+
+    })
+
+    console.log(product)
+
+    const descprovInput = document.getElementById(`descprov_${product.codigo}`) as HTMLInputElement;
+    const descprovInput2 = document.getElementById(`descprov2_${product.codigo}`) as HTMLInputElement;
+    let descprov: number;
+    cantidad = parseInt(cantidadStr, 10);
+    descprov = parseInt('0', 10);
+
+    this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
+      next: (response: any) => {
+        let mensaje = response.message;
+        if (typeof mensaje === 'object') {
+          mensaje = JSON.stringify(mensaje);
+        }
+        Swal.fire({
+          text: mensaje == 'Producto Agregado' ? 'Producto agregado exitosamente!' : mensaje,
+          icon: mensaje == 'Producto Agregado' ? 'error' : 'success',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'bottom-end',
+        });
+        this.revisarCarrito();
+      },
+    });
+
+
+  }
 
    
 }

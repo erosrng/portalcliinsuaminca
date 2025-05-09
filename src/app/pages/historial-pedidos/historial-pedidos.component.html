@@ -54,7 +54,8 @@
                   <th scope="col"  style="text-align: right;">Unidades</th>
                   <th scope="col" style="text-align: right;">Total General</th>
                   <th scope="col" style="text-align: right;">Total General $</th>
-                  <th scope="col" style="text-align: center;">Detalle</th>
+                    <th scope="col">Unidades</th>
+                    <th scope="col" style="text-align: center;">Detalle</th>
                   <th scope="col" class="border-right-top" style="text-align: center;">Descargar</th>
                 </tr>
               </thead>
@@ -68,7 +69,8 @@
                   <td>{{ pedido.unidades | number:'1.0-0' }}</td>
                   <td>{{ pedido.totalg | number:'1.2-2' }}</td>
                   <td>{{ pedido.totalg / authService.getTasa() | number:'1.2-2'}}</td>
-                  <td>
+                    <td>{{ pedido.unidades / authService.getTasa() | number:'1.0-0'}}</td>
+                    <td>
                   <i class="show__detail fa-solid fa-eye"
                       title="Mostrar detalle"
                       data-bs-toggle="modal"
