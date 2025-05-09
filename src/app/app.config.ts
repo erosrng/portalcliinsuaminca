@@ -44,12 +44,13 @@ export const API_FAST ='http://192.168.1.48:5020';*/
 
 
 // ACCESO FTP EXTER
+/*
 export const PROTEO_URL_ALONE = 'http://Insuaminca.proteoerp.org:50080/evento/';
 export const API_URL = 'http://Insuaminca.proteoerp.org:50080/evento/api/ptprv/post/';
 export const API_URL2 = 'http://Insuaminca.proteoerp.org:50080/evento/api/ptprv/';
 export const PROTEO_URL = 'http://Insuaminca.proteoerp.org:50080/evento/api/ptprv/';
 export const API_FAST ='http://3.143.124.47:5000';
-
+*/
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
