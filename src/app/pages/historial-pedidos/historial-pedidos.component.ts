@@ -27,7 +27,7 @@ interface Pedido {
   rifci: string;
   direccion: string;
   idpedido: string;
-
+  unidades: number;
   factura: null;
   vence: null;
   vd: string;
@@ -84,7 +84,6 @@ export class HistorialPedidosComponent implements OnInit {
     const aux = localStorage.getItem('usuario');
     if (aux) {
       this.apiService.get_historial_by_user(aux).subscribe((data: HistoricoPedidosModel[]) => {
-        console.log(data);
         Swal.close();
         // Aquí podrías necesitar mapear los datos si la estructura de HistoricoPedidosModel
         // es diferente de la estructura de la respuesta de triangulatotal
@@ -133,7 +132,7 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   abrirEnlaceExcel(idpedido: string) {
-    const url = `http://172.16.3.234/proteoerp/formatos/ver/PFAC/${idpedido}`;
+    const url = `http://172.16.0.255/proteoerp/formatos/ver/PFAC/${idpedido}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
@@ -165,7 +164,6 @@ export class HistorialPedidosComponent implements OnInit {
         next: (response) => {
           this.historialPedidos = response.data;
           this.isLoading = false;
-          console.log('Datos de triangulatotal:', this.historialPedidos);
         },
         error: (error) => {
           this.isLoading = false;

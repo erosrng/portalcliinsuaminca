@@ -74,4 +74,16 @@ export class SideBarComponent {
     this.portalcliLogicaService.closeMenu();
   }
 
+  bajareporteunico(){
+    const usuario = this.authService.getUsuario();
+    const url = `http://172.16.0.255/proteoerp/reportes/ver/VTPTPRV/${usuario}`;
+    window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
+  }
+
+  bajareportemaster(){
+    const proveed = this.authService.getProveed();
+    const url = `http://172.16.0.255/proteoerp/reportes/ver/VTASCENTRA/${proveed}`;
+    window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes,screenx=((screen.availWidth/2)-400),screeny=((screen.availHeight/2)-300)');
+  }
+
 }

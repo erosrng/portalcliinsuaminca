@@ -32,6 +32,18 @@
           </a>
         </li>
 
+        <li class="nav-item" >
+          <a class="nav-link menu__link"  *ngIf="usuariopadre === 'MASTERPROV'" href="javascript:void(0)" (click)="bajareportemaster()">
+            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> VENTAS DEL LABORATORIO</span>
+          </a>
+        </li>
+
+        <li class="nav-item" >
+          <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajareporteunico()">
+            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> VENTAS DEL USUARIO</span>
+          </a>
+        </li>
+
 <!--        <li class="nav-item" *ngIf="usuariopadre === 'MASTERPROV'">-->
 <!--          <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/admin')">-->
 <!--            <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen"> Resumen de ventas</span>-->

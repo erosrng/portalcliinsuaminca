@@ -51,8 +51,9 @@
                   <th scope="col">Fecha</th>
                   <th scope="col">Total</th>
                   <th scope="col">IVA</th>
-                  <th scope="col">Total General</th>
-                  <th scope="col">Total General $</th>
+                  <th scope="col"  style="text-align: right;">Unidades</th>
+                  <th scope="col" style="text-align: right;">Total General</th>
+                  <th scope="col" style="text-align: right;">Total General $</th>
                   <th scope="col" style="text-align: center;">Detalle</th>
                   <th scope="col" class="border-right-top" style="text-align: center;">Descargar</th>
                 </tr>
@@ -64,6 +65,7 @@
                   <td>{{ pedido.fecha }}</td>
                   <td>{{ pedido.totals | number: '1.2-2'}}</td>
                   <td>{{ pedido.iva | number:'1.2-2' }}</td>
+                  <td>{{ pedido.unidades | number:'1.0-0' }}</td>
                   <td>{{ pedido.totalg | number:'1.2-2' }}</td>
                   <td>{{ pedido.totalg / authService.getTasa() | number:'1.2-2'}}</td>
                   <td>
