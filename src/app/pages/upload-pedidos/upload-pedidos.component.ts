@@ -134,7 +134,7 @@ export class UploadPedidosComponent implements OnInit {
             this.http.post(apiUrl, formData, { headers: headers }).subscribe({
                 next: (response: any) => {
                     this.listProdutos = response.data.data;
-                    console.log('ENTRE')
+                    //console.log('ENTRE')
                 },
                 error: (error) => {
                     Swal.hideLoading();
@@ -203,7 +203,7 @@ export class UploadPedidosComponent implements OnInit {
                         a.click();
                         document.body.removeChild(a);
                         window.URL.revokeObjectURL(url); // Clean up the URL object
-                        console.log('File downloaded successfully.');
+                        //console.log('File downloaded successfully.');
                         Swal.close();
                     },
                     (error) => {
@@ -240,7 +240,7 @@ export class UploadPedidosComponent implements OnInit {
                         a.click();
                         document.body.removeChild(a);
                         window.URL.revokeObjectURL(url); // Clean up the URL object
-                        console.log('File downloaded successfully.');
+                        //console.log('File downloaded successfully.');
                         Swal.close();
                     },
                     (error) => {
@@ -373,7 +373,7 @@ export class UploadPedidosComponent implements OnInit {
                 }
             });
 
-            console.log(pedidosRealizados)
+            // //console.log(pedidosRealizados)
 
             pedidosRealizados.forEach((item, index) => {
                 dataRows.forEach((row) => {
@@ -385,7 +385,7 @@ export class UploadPedidosComponent implements OnInit {
                             Precio: row[3],
                             Oferta: row[4],
                             Descuento: row[5],
-                            Unidades: row[item.indexPedido]
+                            Unidades: this.formatearCantidad(row[item.indexPedido])
                         });
                     }
                 })
@@ -393,6 +393,7 @@ export class UploadPedidosComponent implements OnInit {
 
             const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
             this.dataSource = pedidoFinales;
+            console.log(this.dataSource)
             Swal.close()
 
         } else {
@@ -407,10 +408,25 @@ export class UploadPedidosComponent implements OnInit {
         }
     }
 
+    formatearCantidad(cantidadString: string): number {
+        console.log(cantidadString, 'VALOR')
+        // Eliminar los puntos que actúan como separadores de miles
+        const sinPuntosMiles = cantidadString.replace(/\./g, '');
+
+        // Verificar si hay una coma decimal
+        if (sinPuntosMiles.includes(',')) {
+            // Si hay una coma, la mantenemos y eliminamos cualquier punto restante (por si acaso)
+            return parseFloat(sinPuntosMiles.replace(/\./g, ''));
+        } else {
+            // Si no hay coma, simplemente devolvemos la cadena sin los puntos de miles
+            return parseFloat(sinPuntosMiles);
+        }
+    }
+
     processExcelDataUnico(worksheet: XLSX.WorkSheet): void {
         Swal.showLoading()
         const jsonData: any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1, raw: false });
-        console.log(jsonData)
+        // //console.log(jsonData)
         if (jsonData && jsonData.length > 2) {
             // const
             const headersNames = jsonData[3].filter(header => header !== null && header !== undefined);
@@ -433,9 +449,9 @@ export class UploadPedidosComponent implements OnInit {
 
             pedidosRealizados.forEach((item, index) => {
                 dataRows.forEach((row) => {
-                    console.log(row[11])
+                    // //console.log(row[11])
                     if (Number(row[11]) > 0) {
-                        console.log(row[11])
+                        // //console.log(row[11])
                         item.pedido.push({
                             Codigo: row[0],
                             COD_Proveedor: localStorage.getItem('proveed'),
@@ -450,11 +466,11 @@ export class UploadPedidosComponent implements OnInit {
                 })
             });
 
-            console.log(pedidosRealizados)
+            // //console.log(pedidosRealizados)
 
             const pedidoFinales: any[] = pedidosRealizados.filter(item => item.pedido.length > 0)
             this.dataSource = pedidoFinales;
-            console.log(this.dataSource)
+            // //console.log(this.dataSource)
             Swal.close()
 
         } else {
@@ -516,7 +532,7 @@ export class UploadPedidosComponent implements OnInit {
         aux.forEach((info: any) => {
             let stringNumber = info.Precio;
             if (info.Descuento !== undefined) {
-                // console.log(info.Descuento, 'VALOR')
+                // //console.log(info.Descuento, 'VALOR')
                 const normalizedString = stringNumber.replace(",", "");
                 const precio = parseFloat(normalizedString);
                 const descuento = parseFloat(info.Descuento) / 100; // Convertir el porcentaje a decimal
@@ -570,7 +586,7 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     openDetail(info: any): void {
-        console.log(info, 'ACA')
+        // //console.log(info, 'ACA')
         this.listActive = info.pedido
     }
 
@@ -629,7 +645,7 @@ export class UploadPedidosComponent implements OnInit {
             }).then((result) => {
                 if (result.isConfirmed) {
                     this.proteoServices.get_client_data(this.controlUnico.value).subscribe((data: any) => {
-                        console.log(data);
+                        // //console.log(data);
                         if (data.data.datcli) {
                            const aux = data.data.datcli;
                            this.emailSendUser = aux.email;
@@ -689,7 +705,7 @@ export class UploadPedidosComponent implements OnInit {
                     element.pedido.forEach((info: any) => {
                         this.listProdutos.forEach((item: any) => {
                             if (info.Codigo === item.codigo) {
-                                console.log('entre')
+                                //console.log('entre')
                                 pedidoApi.push({
                                     cant: Number(info.Unidades),
                                     descuento: info.Descuento,
@@ -856,12 +872,12 @@ export class UploadPedidosComponent implements OnInit {
                                 }
                             });
                             const pedidoApi: any[] = [];
-                            console.log(element)
-                            console.log(this.listProdutos)
+                            //console.log(element)
+                            //console.log(this.listProdutos)
                             element.pedido.forEach((info: any) => {
                                 this.listProdutos.forEach((item: any) => {
                                     if (info.Codigo === item.codigo) {
-                                        console.log(info)
+                                        //console.log(info)
                                         pedidoApi.push({
                                             cant: Number(info.Unidades),
                                             descuento: info.Descuento,
@@ -906,7 +922,7 @@ export class UploadPedidosComponent implements OnInit {
                             });
 
                             this.proteoServices.get_client_data(codigoCliente).subscribe((data: any) => {
-                                console.log(data);
+                                //console.log(data);
                                 if (data.data.datcli) {
                                     const aux2 = data.data.datcli;
                                     this.emailSendUser = aux2.email;
@@ -926,8 +942,8 @@ export class UploadPedidosComponent implements OnInit {
                                         'observa': observacion
                                     }
                                     this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                        console.log('pedido enviado')
-                                        console.log(data)
+                                        //console.log('pedido enviado')
+                                        //console.log(data)
                                         this.clearUpload();
                                     })
                                     Swal.fire({
@@ -951,8 +967,8 @@ export class UploadPedidosComponent implements OnInit {
                                         'observa': observacion
                                     }
                                     this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                        console.log('pedido enviado')
-                                        console.log(data)
+                                        //console.log('pedido enviado')
+                                        //console.log(data)
                                         this.clearUpload();
                                     })
                                     Swal.fire({
@@ -977,8 +993,8 @@ export class UploadPedidosComponent implements OnInit {
                                     'observa': observacion
                                 }
                                 this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                    console.log('pedido enviado')
-                                    console.log(data)
+                                    //console.log('pedido enviado')
+                                    //console.log(data)
                                     this.clearUpload();
                                 })
                                 Swal.fire({
@@ -1049,7 +1065,7 @@ export class UploadPedidosComponent implements OnInit {
 
     getTotalIndividual() {
         let total = 0
-        // console.log(this.dataSource)
+        // //console.log(this.dataSource)
         this.dataSource.forEach((element: any) => {
             total = this.getValor(element) + total
         })
@@ -1058,7 +1074,7 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getEmailIndiv(event: any) {
-       console.log( event)
+       //console.log( event)
     }
 
     getAllPriceGroup(): number {
@@ -1070,7 +1086,7 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getValorTotalGrupo(element: any): number {
-        console.log(element)
+        //console.log(element)
         const aux = element.pedido;
         let totalOferta = 0;
         aux.forEach((info: any) => {
