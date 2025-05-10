@@ -332,3 +332,10 @@
             margin-bottom: 10rem;
         }
     }
+
+.alert {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    background: beige;
+}
