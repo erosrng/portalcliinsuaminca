@@ -181,12 +181,14 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   calcularUnidadesHistorial(): void {
+    this.totalUnidades = 0;
     this.historialPedidos.forEach(pedido => {
       this.totalUnidades = Number(pedido.unidades) + this.totalUnidades;
     })
   }
 
   calcularTotalHistorial(): void {
+    this.totalValorDolar = 0;
     this.historialPedidos.forEach(pedido => {
       this.totalValorDolar =(pedido.totalg / this.authService.getTasa()) + this.totalValorDolar;
     })
