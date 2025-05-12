@@ -98,6 +98,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     montoFactura: number = 0;
     productosEnCarritoCodigos: string[] = [];
     emailSendUser = ''
+    totalAmount = 0
+    totalAmountBS = 0
 
     constructor(
         private route: Router,
@@ -222,6 +224,13 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
                 this.productscar = response.data;
                 this.dataSource.data = this.productscar;
+                let aux = 0
+                this.productscar.forEach(product => {
+                    aux = aux + Number(product.cant)
+                    this.totalAmount = this.totalAmount + this.recalculadescud(product)
+                    this.totalAmountBS = this.totalAmountBS + this.recalculadescubs(product)
+                })
+                console.log('TOTAL UNIDADES: ', aux)
                 this.dataSource.paginator = this.paginator;
                 this.dataSource.sort = this.sort;
                 this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
@@ -1026,4 +1035,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
 
 
 
+    protected readonly parseFloat = parseFloat;
 }
+
+
