@@ -137,7 +137,7 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   abrirEnlaceExcel(idpedido: string) {
-    const url = `${PROTEO_URL_ALONE}formatos/ver/PFAC/${idpedido}`;
+    const url = `${PROTEO_URL_ALONE}formatos/ver/PFAC2/${idpedido}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
