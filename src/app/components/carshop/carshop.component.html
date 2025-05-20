@@ -40,10 +40,50 @@
     <section class="carrito__products">
 
 
+        <div class="row">
 
-        <div class="filtroscar__container">
-            <div class="carrito__search-bar buscador__lista">
-                <div class="d-flex align-items-center">
+            <div class="col-2 offset-6">
+                <mat-form-field appearance="outline" style="width: 100% !important;">
+                    <mat-label>Descuento Lineal (%)</mat-label>
+                    <input
+                            matInput
+                            type="number"
+                            [value]="descuentoLineal"
+                            [(ngModel)]="descuentoLineal"
+                            (input)="aplicarDescuentoLineal($event)" min="0"
+                            max="100"
+                    >
+                </mat-form-field>
+            </div>
+            <div class="col-2">
+                <div class="sort-container">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Ordenar por:</mat-label>
+                        <mat-select [(value)]="sortField" (selectionChange)="onSortChange($event.value)">
+                            <mat-option value="descrip">Descripción</mat-option>
+                            <mat-option value="preciosiniva">Precio Bs.</mat-option>
+                            <mat-option value="preciod">Precio US$</mat-option>
+                            <mat-option value="cant">Cantidad</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button class="btn btn-light" (click)="toggleSortDirection()">
+                        <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+                    </button>
+
+
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="w-100">
+                    <a  (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center search-bar">
                     <input
                             type="text"
                             class="form-control rounded-0"
@@ -62,49 +102,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
-
-<!--            <mat-form-field appearance="outline" class="example-full-width">-->
-<!--                <mat-label>Dias de credito</mat-label>-->
-<!--                <input type="number" matInput placeholder="Dias de credito" min="0" max="100" [(ngModel)]="diasCredito">-->
-<!--            </mat-form-field>-->
-
-<!--            <mat-form-field appearance="outline" class="example-full-width">-->
-<!--                <mat-label>Monto-Factura</mat-label>-->
-<!--                <input type="number" matInput placeholder="Monto-Factura"min="0" max="100" [(ngModel)]="montoFactura">-->
-<!--            </mat-form-field>-->
-
-            <mat-form-field appearance="outline" style="width: 150px;">
-                <mat-label>Descuento Lineal (%)</mat-label>
-                <input
-                        matInput
-                        type="number"
-                        [value]="descuentoLineal"
-                        [(ngModel)]="descuentoLineal"
-                        (input)="aplicarDescuentoLineal($event)" min="0"
-                        max="100"
-                >
-            </mat-form-field>
-
-            <div class="sort-container">
-                <mat-form-field appearance="outline" >
-                    <mat-label>Ordenar por:</mat-label>
-                    <mat-select [(value)]="sortField" (selectionChange)="onSortChange($event.value)">
-                        <mat-option value="descrip">Descripción</mat-option>
-                        <mat-option value="preciosiniva">Precio Bs.</mat-option>
-                        <mat-option value="preciod">Precio US$</mat-option>
-                        <mat-option value="cant">Cantidad</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <button class="btn btn-light" (click)="toggleSortDirection()">
-                    <mat-icon>{{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
-                </button>
-
-
-            </div>
-            <div class="">
-                <a  (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
             </div>
         </div>
 
