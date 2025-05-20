@@ -1113,5 +1113,7 @@ sortData(sortField: string) {
 
   }
 
-   
+
+  protected readonly Number = Number;
+  protected readonly parseInt = parseInt;
 }

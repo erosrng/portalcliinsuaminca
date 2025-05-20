@@ -64,15 +64,15 @@
                 </div>
             </div>
 
-            <mat-form-field appearance="outline" class="example-full-width">
-                <mat-label>Dias de credito</mat-label>
-                <input type="number" matInput placeholder="Dias de credito" min="0" max="100" [(ngModel)]="diasCredito">
-            </mat-form-field>
+<!--            <mat-form-field appearance="outline" class="example-full-width">-->
+<!--                <mat-label>Dias de credito</mat-label>-->
+<!--                <input type="number" matInput placeholder="Dias de credito" min="0" max="100" [(ngModel)]="diasCredito">-->
+<!--            </mat-form-field>-->
 
-            <mat-form-field appearance="outline" class="example-full-width">
-                <mat-label>Monto-Factura</mat-label>
-                <input type="number" matInput placeholder="Monto-Factura"min="0" max="100" [(ngModel)]="montoFactura">
-            </mat-form-field>
+<!--            <mat-form-field appearance="outline" class="example-full-width">-->
+<!--                <mat-label>Monto-Factura</mat-label>-->
+<!--                <input type="number" matInput placeholder="Monto-Factura"min="0" max="100" [(ngModel)]="montoFactura">-->
+<!--            </mat-form-field>-->
 
             <mat-form-field appearance="outline" style="width: 150px;">
                 <mat-label>Descuento Lineal (%)</mat-label>
@@ -175,10 +175,11 @@
             </ng-container>
 
             <ng-container matColumnDef="descprov">
-                <th scope="col" mat-header-cell *matHeaderCellDef> Descuento </th>
+                <th scope="col" mat-header-cell *matHeaderCellDef> Descuento aplicado </th>
                 <td mat-cell *matCellDef="let row">
                     <div class="carrito__quantity">
-                        <input type="" min="0" maxlength="10" [value]="row.descprov" id="descuentocar_{{ row.codigoa }}" class="carrito__quantity-input" readonly>
+<!--                        <input type="" min="0" maxlength="10" [value]="row.descprov" id="descuentocar_{{ row.codigoa }}" class="carrito__quantity-input" readonly>-->
+                        {{row.descprov}}
                     </div>
                 </td>
             </ng-container>

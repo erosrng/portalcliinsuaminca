@@ -108,13 +108,13 @@
                   <div class="">
                       <button class="btn-end" (click)="goToCard();"> Finalizar compra</button>
                       <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
-                      <div class="col-12" *ngIf="showUpload === 'GREIBERG'">
-                          <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>
-                          <button class="btn-upload" (click)="fileInput.click()">
-                              <i class="fas fa-file-upload"></i>
-                              Cargar archivo
-                          </button>
-                      </div>
+<!--                      <div class="col-12" *ngIf="showUpload === 'GREIBERG'">-->
+<!--                          <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>-->
+<!--                          <button class="btn-upload" (click)="fileInput.click()">-->
+<!--                              <i class="fas fa-file-upload"></i>-->
+<!--                              Cargar archivo-->
+<!--                          </button>-->
+<!--                      </div>-->
                       <!--<button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>-->
                   </div>
                 </div>
@@ -250,8 +250,19 @@
                     </td>
                   </ng-container>
 
-                  <ng-container matColumnDef="existen">
-                    <th mat-header-cell *matHeaderCellDef style="width: 80px;" mat-sort-header="existen" (click)="sortData('existen')" >Oferta</th>
+                    <ng-container matColumnDef="existen">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header="existen" (click)="sortData('existen')" class="w-15"> Disponibles </th>
+                        <td mat-cell *matCellDef="let element">
+
+                            <span *ngIf="parseInt(element.existen) > 0" class="green-label">  {{element.existen}} </span>
+                            <span *ngIf="parseInt(element.existen) <= 0" class="red-label">  0 </span>
+
+
+                        </td>
+                    </ng-container>
+
+                  <ng-container matColumnDef="oferta">
+                    <th mat-header-cell *matHeaderCellDef style="width: 80px;" mat-sort-header="oferta" (click)="sortData('oferta')" >Oferta</th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <div *ngIf="element.oferta && element.oferta.length > 0"
                           class="oferta-proveedor-inline"
@@ -299,15 +310,18 @@
                    <ng-container matColumnDef="agregar">
                     <th mat-header-cell *matHeaderCellDef class="border-top-right"> Agregar </th>
                     <td mat-cell *matCellDef="let element">
-                      <button [ngClass]="{
+                        <div  *ngIf="parseInt(element.existen) > 0">
+                            <button [ngClass]="{
                           'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
                           'btn-agg': productosEnCarritoCodigos.includes(element.codigo),
 
                           }"
-                          (click)="agg_pedido(element, '-')">
-                        <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
-                        <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
-                      </button>
+                                    (click)="agg_pedido(element, '-')">
+                                <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
+                                <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
+                            </button>
+                        </div>
+
                      </td>
                   </ng-container>
     
