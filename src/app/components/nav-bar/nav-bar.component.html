@@ -11,73 +11,73 @@
 
         <div class="container content__buscadorprincipal">
             <div class="d-flex align-items-center">
-              <div class="">
-                <button
-                  class="d-flex align-items-center btn dropdown__toggle rounded-0"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style="border: none; padding: 8px 10px; font-size: 14px;"
-                >
-                  {{ categoriaSeleccionadaNombre || 'Categorias' }} <i *ngIf="grup" class="fas fa-solid fa-angle-down"></i>
-                </button>
-                <ul
-                  class="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                  aria-labelledby="categoria"
-                  *ngIf="grup"
-                >
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      href="javascript:void(0)"
-                      [attr.data-value]=""
-                      (click)="onCategoriaSeleccionada()"
-                    >
-                      Todos
-                    </a>
-                  </li>
-                  <li *ngFor="let lgrup of grup">
-                    <a
-                      class="dropdown-item"
-                      href="javascript:void(0)"
-                      [attr.data-value]="lgrup.grupo"
-                      (click)="onCategoriaSeleccionada(lgrup)"
-                    >
-                      {{ lgrup.nom_grup }}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div class="position-relative" style="width: 350px;"> <input
-                  type="text"
-                  class="form-control rounded-0"
-                  placeholder="Buscar productos, marcas y más..."
-                  aria-label="Buscar productos, marcas y más..."
-                  style="padding: 8px 10px; font-size: 1.4rem; border: none; border-right: 1px solid #a3a3a3; width:100%;"
-                  [(ngModel)]="searchTermNavbar"
-                  (keyup.enter)="buscarProductos()"
-                />
-                <button
-                  *ngIf="searchTermNavbar"
-                  class="btn btn-light rounded-circle position-absolute top-50 end-0 translate-middle"
-                  style="border: none; padding: 2px 9px; background-color: transparent; font-size: 20px;"
-                  (click)="limpiarBuscar()"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              <div class="input-group-append">
-                <button
-                  class="btn btn-light rounded-0"
-                  type="button"
-                  style="border: none; padding: 2px 9px; background-color: transparent; font-size: 22px;"
-                  (click)="buscarProductos()"
-                >
-                  <i class="fas fa-search"></i>
-                </button>
-              </div>
+<!--              <div class="">-->
+<!--                <button-->
+<!--                  class="d-flex align-items-center btn dropdown__toggle rounded-0"-->
+<!--                  type="button"-->
+<!--                  id="dropdownMenuButton"-->
+<!--                  data-bs-toggle="dropdown"-->
+<!--                  aria-expanded="false"-->
+<!--                  style="border: none; padding: 8px 10px; font-size: 14px;"-->
+<!--                >-->
+<!--                  {{ categoriaSeleccionadaNombre || 'Categorias' }} <i *ngIf="grup" class="fas fa-solid fa-angle-down"></i>-->
+<!--                </button>-->
+<!--                <ul-->
+<!--                  class="dropdown-menu"-->
+<!--                  aria-labelledby="dropdownMenuButton"-->
+<!--                  aria-labelledby="categoria"-->
+<!--                  *ngIf="grup"-->
+<!--                >-->
+<!--                  <li>-->
+<!--                    <a-->
+<!--                      class="dropdown-item"-->
+<!--                      href="javascript:void(0)"-->
+<!--                      [attr.data-value]=""-->
+<!--                      (click)="onCategoriaSeleccionada()"-->
+<!--                    >-->
+<!--                      Todos-->
+<!--                    </a>-->
+<!--                  </li>-->
+<!--                  <li *ngFor="let lgrup of grup">-->
+<!--                    <a-->
+<!--                      class="dropdown-item"-->
+<!--                      href="javascript:void(0)"-->
+<!--                      [attr.data-value]="lgrup.grupo"-->
+<!--                      (click)="onCategoriaSeleccionada(lgrup)"-->
+<!--                    >-->
+<!--                      {{ lgrup.nom_grup }}-->
+<!--                    </a>-->
+<!--                  </li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--              <div class="position-relative" style="width: 350px;"> <input-->
+<!--                  type="text"-->
+<!--                  class="form-control rounded-0"-->
+<!--                  placeholder="Buscar productos, marcas y más..."-->
+<!--                  aria-label="Buscar productos, marcas y más..."-->
+<!--                  style="padding: 8px 10px; font-size: 1.4rem; border: none; border-right: 1px solid #a3a3a3; width:100%;"-->
+<!--                  [(ngModel)]="searchTermNavbar"-->
+<!--                  (keyup.enter)="buscarProductos()"-->
+<!--                />-->
+<!--                <button-->
+<!--                  *ngIf="searchTermNavbar"-->
+<!--                  class="btn btn-light rounded-circle position-absolute top-50 end-0 translate-middle"-->
+<!--                  style="border: none; padding: 2px 9px; background-color: transparent; font-size: 20px;"-->
+<!--                  (click)="limpiarBuscar()"-->
+<!--                >-->
+<!--                  <i class="fas fa-times"></i>-->
+<!--                </button>-->
+<!--              </div>-->
+<!--              <div class="input-group-append">-->
+<!--                <button-->
+<!--                  class="btn btn-light rounded-0"-->
+<!--                  type="button"-->
+<!--                  style="border: none; padding: 2px 9px; background-color: transparent; font-size: 22px;"-->
+<!--                  (click)="buscarProductos()"-->
+<!--                >-->
+<!--                  <i class="fas fa-search"></i>-->
+<!--                </button>-->
+<!--              </div>-->
             </div>
           </div>
 
