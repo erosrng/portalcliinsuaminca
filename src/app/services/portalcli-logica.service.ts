@@ -25,42 +25,45 @@ export class PortalcliLogicaService {
   encarprod$ = this.encarprodSubject.asObservable();
   private productosEnCarritoCodigosSubject = new BehaviorSubject<string[]>([]);
   productosEnCarritoCodigos$ = this.productosEnCarritoCodigosSubject.asObservable();
-
+  isMenuOpen: boolean = false;
   //Informacion del cliente
   private clienteDataSource = new BehaviorSubject<any>({});
   clienteData$ = this.clienteDataSource.asObservable();
 
 
-  private isMenuOpenSubject = new BehaviorSubject<boolean>(true);
-  isMenuOpen$ = this.isMenuOpenSubject.asObservable();
-  public isButtonOpen = false; 
+  //private isMenuOpenSubject = new BehaviorSubject<boolean>(true);
+  //isMenuOpen$ = this.isMenuOpenSubject.asObservable();
 
     constructor(
       private authService: AuthService, 
       private http: HttpClient, 
       private router: Router
-    ) {} 
+    ) {}
 
-    toggleMenu() {
-      this.isButtonOpen = !this.isButtonOpen;
-      this.isMenuOpenSubject.next(this.isButtonOpen);
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    // this.isMenuOpenSubject.next(this.isMenuOpen); // Si usas un Subject para comunicar el estado del menú
+  }
+
+  // Puedes mantener openMenu y closeMenu si quieres un control más granular,
+  // pero con toggleMenu y el overlay, a menudo no son estrictamente necesarios para la funcionalidad básica.
+  openMenu() {
+    if (!this.isMenuOpen) {
+      this.isMenuOpen = true;
+      // this.isMenuOpenSubject.next(true);
     }
-  
-    openMenu() {
-      if (!this.isButtonOpen) {
-        this.isMenuOpenSubject.next(true);
-      }
+  }
+
+  closeMenu() {
+    if (this.isMenuOpen) { // Asegúrate de cerrar solo si está abierto
+      this.isMenuOpen = false;
+      // this.isMenuOpenSubject.next(false);
     }
-  
-    closeMenu() {
-      if (!this.isButtonOpen) {
-        this.isMenuOpenSubject.next(false);
-      }
-    }
-    
-  /* toggleMenu() {
+  }
+
+  /*toggleMenu() {
     this.isMenuOpenSubject.next(!this.isMenuOpenSubject.value);
-  } */
+  }*/
 
 
   navigateTo(route: string) {

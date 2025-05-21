@@ -1,24 +1,27 @@
 import {
+  _DisposeViewRepeaterStrategy
+} from "./chunk-4BKMHY2Q.js";
+import {
   DataSource,
   ScrollingModule,
   ViewportRuler,
-  _DisposeViewRepeaterStrategy,
   _RecycleViewRepeaterStrategy,
   _VIEW_REPEATER_STRATEGY,
   _ViewRepeaterOperation,
   isDataSource
-} from "./chunk-DUMPXUK6.js";
+} from "./chunk-NXRG2LEX.js";
 import {
   MatCommonModule
-} from "./chunk-WTDHYKYI.js";
-import "./chunk-BENYZ5F5.js";
+} from "./chunk-HTB6ARLV.js";
+import "./chunk-2O4WY5GE.js";
+import {
+  Directionality
+} from "./chunk-LLW5IOA3.js";
+import "./chunk-YV7PVOCW.js";
 import {
   Platform,
   _isNumberValue
-} from "./chunk-BQ7UOWDK.js";
-import {
-  Directionality
-} from "./chunk-ZRJD4M6F.js";
+} from "./chunk-J2BFM4J6.js";
 import {
   DOCUMENT
 } from "./chunk-HRMWXWEU.js";
@@ -1808,12 +1811,12 @@ var CdkTable = class _CdkTable {
     }
     this._isServer = !this._platform.isBrowser;
     this._isNativeHtmlTable = this._elementRef.nativeElement.nodeName === "TABLE";
-  }
-  ngOnInit() {
-    this._setupStickyStyler();
     this._dataDiffer = this._differs.find([]).create((_i, dataRow) => {
       return this.trackBy ? this.trackBy(dataRow.dataIndex, dataRow.data) : dataRow;
     });
+  }
+  ngOnInit() {
+    this._setupStickyStyler();
     this._viewportRuler.change().pipe(takeUntil(this._onDestroy)).subscribe(() => {
       this._forceRecalculateCellWidths = true;
     });
@@ -2034,6 +2037,9 @@ var CdkTable = class _CdkTable {
     const renderRows = [];
     const prevCachedRenderRows = this._cachedRenderRowsMap;
     this._cachedRenderRowsMap = /* @__PURE__ */ new Map();
+    if (!this._data) {
+      return renderRows;
+    }
     for (let i = 0; i < this._data.length; i++) {
       let data = this._data[i];
       const renderRowsForData = this._getRenderRowsForData(data, i, prevCachedRenderRows.get(data));
@@ -2447,7 +2453,7 @@ var CdkTable = class _CdkTable {
       }
     },
     dependencies: [HeaderRowOutlet, DataRowOutlet, NoDataRowOutlet, FooterRowOutlet],
-    styles: [".cdk-table-fixed-layout{table-layout:fixed}"],
+    styles: [".cdk-table-fixed-layout{table-layout:fixed}\n"],
     encapsulation: 2
   });
 };
@@ -2484,7 +2490,7 @@ var CdkTable = class _CdkTable {
         }
       ],
       imports: [HeaderRowOutlet, DataRowOutlet, NoDataRowOutlet, FooterRowOutlet],
-      styles: [".cdk-table-fixed-layout{table-layout:fixed}"]
+      styles: [".cdk-table-fixed-layout{table-layout:fixed}\n"]
     }]
   }], () => [], {
     trackBy: [{

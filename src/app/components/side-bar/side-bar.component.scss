@@ -1,17 +1,61 @@
 @use '../../../styles/variables.scss' as vars;
 
-.menu__general {
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+
+* {
+    transition: all ease-in-out 0.25s;
+}
+
+/*.menu__general {
+    box-shadow: none;
     margin-top: 6rem;
     position: relative;
-    border-right: 1px solid vars.$lineas-separetor;
+    border-right: 1px solid #a3a3a3;
     transition: width 0.3s ease;
-    width: 250px; 
+    width: 25vw;
+    height: auto;
+}*/
+
+.menu__general {
+    //margin-top: 6rem;
+    border-right: 1px solid #a3a3a3;
+    width: 0px;
     height: 100%;
+
+    position: fixed; /* Mantiene el menú en su lugar mientras el contenido se desplaza */
+    top: 0;
+    left: -300px; /* Oculta el menú fuera de la pantalla inicialmente. Ajusta este valor según el ancho de tu menú. */
+    background-color: #f8f9fa; /* Color de fondo del menú */
+    transition: left 0.3s ease-in-out; /* Agrega una transición suave para el deslizamiento */
+    z-index: 4; /* Asegura que el menú esté por encima de otros elementos */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra sutil para un mejor efecto */
+}
+
+.menu__general.open {
+    left: 0;
+    width: 32rem;
+}
+
+/* Opcional: Estilos para el overlay (fondo oscuro) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    z-index: 2; /* Debe estar debajo del menú pero encima del resto del contenido */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 .menu__general.closedmenu {
-    width: 3.4rem; 
+    width: 3.4rem;
 }
 .menu__link.closedmenu {
     width: 0;
@@ -22,6 +66,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    margin: 1rem;
 }
 
 .menu__link {
@@ -33,9 +78,7 @@
     /* width: 80%; */
     width: auto;
 }
-.menu__link:hover {
-    background-color: #e9ecef;
-}
+
 
 .menu__link i {
     margin-right: 10px;
@@ -55,9 +98,6 @@
     display: block;
 }
 
-.menu__dropdown-link:hover {
-    background-color: #e9ecef;
-}
 
 .menu__dropdown-icon {
     transition: transform 0.3s ease-in-out;
@@ -76,4 +116,9 @@
     margin-top: 45rem;
     color: vars.$menu-color;
     text-align: center;
+}
+
+.nav-item:hover {
+    cursor: pointer;
+    background: #6bc32d80;
 }

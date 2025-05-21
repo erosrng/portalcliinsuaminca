@@ -1,6 +1,6 @@
 <app-nav-bar></app-nav-bar>
 
-<div class="principal__pantalla menu-active">
+<div class="principal__pantalla">
     
     <div class="modal fade" id="tuModalID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -82,9 +82,9 @@
                                         <span class="cardinfo__text">CORREO: <span class="title__limit">{{ (portalcliLogicaService.clienteData$ | async)?.emailvd }}</span>                                    
                                       </span>
                                     </p>
-                                    <div class="text-center">
+                                    <!--<div class="text-center">
                                         <a href="#" class="btn btn__showpeds">Exportar mis pedidos</a>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,42 @@
                         <div class="ofertas__carrusel">
                             <h3 class="ofertas-title text-primary">DESTACADOS</h3>
 
-                            <div class="ofertas__layout">
+                            <owl-carousel-o [options]="customOptions">
+
+                                <ng-template carouselSlide *ngFor="let product of products">
+                                    <div class="carousel-cards">
+                                        <div class="card product-card">
+                                            <div *ngIf="product.discount !== '0%'" class="discount-badge">{{ product.discount }}</div>
+
+                                            <div class="product-price">{{ product.price }}</div>
+
+                                            <div class="image-product__container-v2">
+                                                <img [src]="product.imageSrc" data-bs-toggle="modal" data-bs-target="#tuModalID" class="img__product-principal-v2" [alt]="product.name">
+                                            </div>
+
+                                            <span class="exis__text">Disponibles: {{ product.available }}</span>
+
+                                            <div class="product-actions">
+                                                <div class="product-info">
+                                <span class="desca__product">
+                                    {{ product.name }}
+                                </span>
+                                                </div>
+                                                <div class="cana__container-v2">
+<!--
+                                                    <input class="cana__input-v2" type="text" [id]="'cana_' + product.id" (keypress)="eventcant(product.id, $event.target.value, $event)" name="cana" value="">
+-->
+<!--
+                                                    <button class="send__button-v2" title="Carrito" [id]="'aggpedido_' + product.id" (click)="agg_pedido(product.id, ($event.target as HTMLButtonElement).previousElementSibling?.value)"><i class="fa-solid fa-cart-plus"></i></button>
+-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </owl-carousel-o>
+
+                            <!-- <div class="ofertas__layout">
 
                                 
                                 <div id="promotionCarousel" class="carousel slide" data-bs-ride="carousel">
@@ -276,7 +311,7 @@
                                     </div>
                                 </div>
                                 
-                            </div>
+                            </div>-->
 
                         </div>
 
