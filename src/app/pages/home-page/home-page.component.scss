@@ -173,10 +173,6 @@
     display: flex;
     transition: all 0.5s ease;
 }
-/* .principal__pantalla.menu-active .menu__general {
-    width: 250px;
-} */
-
 .principal__pantalla.menu-active .layout__principal {
     width: calc(100% - 250px);
 }
@@ -391,6 +387,7 @@
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
+    font-size: 1rem;
 }
 
 .product-price {
@@ -435,7 +432,6 @@
     justify-content: flex-start;
     align-items: center;
 }
-
 /*.ofertas__carrusel {
     width: auto;
     position: relative;
@@ -474,7 +470,7 @@
     width: fit-content;
 }
 .img__product-principal-v2 {
-    max-width: 80%;
+    max-width: 50%;
 
 }
 
@@ -507,19 +503,26 @@
     justify-content: center;
     gap: 1rem;
     align-items: center;
-    margin-top: 1rem;
+    margin-top: 3rem;
 }
-
+.preca__antes{
+    font-size: 1.9rem;
+    text-decoration: line-through; 
+}
+.preca__antes2{
+    font-size: 1.3rem;
+    text-decoration: line-through; 
+}
 .cana__input-v2 {
     width: 40%;
     border-radius: 0.5rem;
     border: none;
     text-align: center;
-    font-size: 1rem;
-    padding: 1rem;
+    font-size: 2rem;
+    padding: 0.35rem;
     transition: border-color 0.3s ease;
     font-weight: bold;
-    color: vars.$principal-color;
+    color: black;
 }
 
 .cana__input-v2:focus {
@@ -658,35 +661,6 @@
     background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
 }
 
-/* .circle-prv div {
-    flex: 0 0 auto;
-    width: 12vw;
-    height: 12vw;
-    max-width: 18rem;
-    max-height: 18rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 1rem;
-} */
-/* .button-prv {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.5rem;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 1rem;
-    cursor: pointer;
-    z-index: 1;
-}
-.button-prv-left {
-    left: 10px;
-}
-.button-prv-right {
-    right: 10px;
-} */
   .carousel-proveedores {
     display: flex;
     transition: transform 0.5s ease-in-out;

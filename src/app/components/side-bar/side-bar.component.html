@@ -1,5 +1,6 @@
 <section class="menu__general"  id="menu" [class.open]="portalcliLogicaService.isMenuOpen">
     <div class="menu__content">
+        <img src="./../../../assets/images/bannerlogoeros.png" style="width: 20rem;" alt="">
 
         <ul class="nav flex-column menu__nav">
             <li class="nav-item" >
@@ -41,16 +42,17 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/historialpedidos')">
+                    <i class="fas fa-history"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Historial de pedidos</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
                     <i class="fas fa-chart-line"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
                 </a>
                 <div class="collapse menu__dropdown-content" id="reportesDropdown">
                     <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/pedidos')">
-                                <i class="fas fa-history"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Historial de pedidos</span>
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
                                 <i class="fas fa-file-invoice-dollar"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Exportar estado de cuenta</span>

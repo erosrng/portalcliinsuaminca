@@ -1,39 +1,93 @@
+// home-page.component.ts
+
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core'; // `ElementRef` y `ViewChild` no son necesarios para ngx-owl-carousel-o en este caso
+import { Component, OnInit,ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
+
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
-
+import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { PortalcliLogicaService } from '../../services/portalcli-logica.service';
 import { Router } from '@angular/router';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
+import { API_URL } from "../../app.config";
+import { catchError, throwError } from 'rxjs';
+import { Subscription, takeUntil, Subject } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-// *** Importaciones y configuración para ngx-owl-carousel-o ***
-import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o'; // <-- ¡Importación clave!
-// ************************************************************
 
-// Interfaz para la estructura de tus productos
-interface Product {
-  name: string;
-  price: string;
-  discount: string;
-  imageSrc: string;
-  available: string; // Asegúrate de que sea string si manejas "284"
-  description: string;
-  id: string;
+export interface OfertaDetalle {
+  lista: string;
+  descuento: string; // O number si siempre es un número
 }
+
+export interface ApiProductItem {
+  codigo: string;
+  img: string;
+  descrip: string;
+  nomprv: string;
+  dprice: string;
+  dpriced: string;
+  descuento: string;
+  oprecio: string;
+  opreciod: string;
+  existen: string;
+  segmento: number;
+  encar: number;
+  oferta: string | null | OfertaDetalle[];
+  lote: string;
+  vence: string;
+}
+
+export interface ApiResponse {
+  draw: string;
+  recordsTotal: string;
+  recordsFiltered: string;
+  data: ApiProductItem[];
+}
+
+export interface Product {
+  codigo: string;
+  img: string;
+  descrip: string;
+  nomprv: string;
+  dprice: string;
+  dpriced: string;
+  descuento: string;
+  oprecio: string;
+  opreciod: string;
+  existen: string;
+  encar: number;
+  segmento: number;
+  oferta: string | null | OfertaDetalle[]; // Se mantiene el tipo completo aquí
+  lote: string;
+  vence: string;
+  ofertaDisplay?: string; // Para el texto corto en el badge
+}
+
+
+interface Provider {
+  name: string;
+  imageSrc: string;
+}
+
 
 @Component({
   selector: 'app-home-page',
-  standalone: true, // ¡Muy importante que esté como standalone!
+  standalone: true,
   imports: [
     CommonModule,
     NavBarComponent,
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    CarouselModule // <-- ¡Añade CarouselModule a tus imports!
+    CarouselModule,
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
@@ -43,81 +97,287 @@ export class HomePageComponent implements OnInit {
 
   userData: any;
   apiKey: string = '';
-  isMenuOpen: boolean = true;
+  isMenuOpen: boolean = false;
+  products: Product[] = [];
+  isLoading: boolean = false;
+  error: any;
+  selectedProduct: any = null;
 
-  // *** Configuración de ngx-owl-carousel-o para el carrusel de productos ***
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  search: string = '';
+  categoria: string = '';
+  filterMarca: string = '';
+  filterLote: string = '';
+  orderBy: string = '';
+  orderDirection: string = '';
+
+  private subscriptions: Subscription[] = [];
+  productosEnCarrito: any[] = [];
+  unidades: string = '';
+  totalBs: string = '';
+  totalUsd: string = '';
+  encarprod: string = '';
+  productosEnCarritoCodigos: string[] = [];
+
   customOptions: OwlOptions = {
     loop: true,
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
-    dots: false,
-    center:true,
-    navSpeed: 700,
+    dots: true,
+    dotsEach: true,
+    center: true,
+    navSpeed: 800,
     navText: ['<i class="fa-solid fa-chevron-left"></i>', '<i class="fa-solid fa-chevron-right"></i>'],
     responsive: {
-      0: {
-        items: 1 // Para pantallas muy pequeñas, 1 elemento
-      },
-      640: {
-        items: 2 // Para teléfonos más grandes/tabletas pequeñas, 2 elementos
-      },
-      768: {
-        items: 3 // Para tabletas, 3 elementos
-      },
-      1024: {
-        items: 5 // Para escritorios, 4 elementos
-      }
+      0: { items: 1 },
+      640: { items: 2 },
+      768: { items: 3 },
+      1024: { items: 5 }
     },
     nav: true
-  };
-  // *************************************************************************
 
-  // Tus 10 productos de ejemplo (ajustados para que `available` sea string)
-  products: Product[] = [
-    { id: '001', name: 'PANTOPRAZOL 40MG 10 TAB LA SANTE', price: 'US$ 3,66', discount: '20%', available: '284', imageSrc: './assets/images/02268_.png', description: 'Antiácido para el reflujo gástrico.' },
-    { id: '002', name: 'AMOXICILINA 500MG 12 CAP ELFARMA', price: 'US$ 2,50', discount: '10%', available: '150', imageSrc: './assets/images/amoxicilina.png', description: 'Antibiótico de amplio espectro.' },
-    { id: '003', name: 'IBUPROFENO 600MG 20 TAB GENERICO', price: 'US$ 1,99', discount: '5%', available: '300', imageSrc: './assets/images/ibuprofeno.png', description: 'Analgésico y antiinflamatorio.' },
-    { id: '004', name: 'LOSARTÁN 50MG 30 TAB LA SANTE', price: 'US$ 4,10', discount: '15%', available: '100', imageSrc: './assets/images/losartan.png', description: 'Para el control de la presión arterial.' },
-    { id: '005', name: 'METFORMINA 850MG 60 TAB ELFARMA', price: 'US$ 3,00', discount: '25%', available: '200', imageSrc: './assets/images/metformina.png', description: 'Medicamento para la diabetes tipo 2.' },
-    { id: '006', name: 'ATORVASTATINA 20MG 30 TAB FARMA', price: 'US$ 6,50', discount: '10%', available: '90', imageSrc: './assets/images/placeholder.png', description: 'Para reducir el colesterol.' },
-    { id: '007', name: 'OMEPRAZOL 20MG 14 CAP LA SANTE', price: 'US$ 2,80', discount: '0%', available: '350', imageSrc: './assets/images/placeholder.png', description: 'Protector gástrico.' },
-    { id: '008', name: 'DICLOFENAC 50MG 20 TAB GENERICO', price: 'US$ 1,20', discount: '8%', available: '400', imageSrc: './assets/images/placeholder.png', description: 'Antiinflamatorio no esteroideo.' },
-    { id: '009', name: 'CEFALEXINA 500MG 20 CAP ELFARMA', price: 'US$ 3,90', discount: '12%', available: '180', imageSrc: './assets/images/placeholder.png', description: 'Antibiótico cefalosporínico.' },
-    { id: '010', name: 'PARACETAMOL 500MG 100 TAB FARMA', price: 'US$ 1,00', discount: '0%', available: '500', imageSrc: './assets/images/placeholder.png', description: 'Analgésico y antipirético.' }
+  };
+
+  providersCarouselOptions: OwlOptions = {
+    loop: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: true,
+    dotsEach: true,
+    navSpeed: 800,
+    navText: ['<i class="fa-solid fa-chevron-left"></i>', '<i class="fa-solid fa-chevron-right"></i>'],
+    responsive: {
+      0: { items: 3 },
+      480: { items: 4 },
+      768: { items: 5 },
+      992: { items: 6 },
+      1200: { items: 7 }
+    },
+    nav: true,
+    autoplay: true,
+    autoplayTimeout: 6000,
+    autoplayHoverPause: true
+  };
+
+  providers: Provider[] = [
+    { name: 'Aless', imageSrc: './assets/images/logoprv/Aless.png' },
+    { name: 'Calox', imageSrc: './assets/images/logoprv/Calox.png' },
+    { name: 'Dollder', imageSrc: './assets/images/logoprv/Dollder.png' },
+    { name: 'Elmor', imageSrc: './assets/images/logoprv/Elmor.png' },
+    { name: 'Farma', imageSrc: './assets/images/logoprv/Farma.png' },
+    { name: 'Meyer', imageSrc: './assets/images/logoprv/Meyer.png' },
+    { name: 'Cofasa', imageSrc: './assets/images/logoprv/Cofasa.png' },
+    { name: 'Vargas', imageSrc: './assets/images/logoprv/Vargas.png' },
+    { name: 'Megalabs', imageSrc: './assets/images/logoprv/Megalabs.png' },
   ];
 
   constructor(
       private authService: AuthService,
       public portalcliLogicaService: PortalcliLogicaService,
-      private router: Router
-  ) {}
+      private router: Router,
+      private http: HttpClient
+  ) { }
 
   ngOnInit() {
-    // La variable `token` está declarada pero no se usa.
-    // Si necesitas el token para alguna lógica aquí, úsalo.
-    const token = this.authService.getToken();
-
+    this.revisarCarrito();
+    this.fetchProducts();
+  }
+  private handleError(error: HttpErrorResponse) {
+    if (error.status === 0) {
+      console.error('Ocurrió un error del lado del cliente o de la red:', error.error);
+    } else {
+      console.error(
+          `El backend retornó el código ${error.status}, el cuerpo era: `, error.error);
+    }
+    return throwError(() => new Error('Algo malo sucedió; por favor, inténtalo de nuevo más tarde.'));
   }
 
-  // Método para navegar a otras rutas
+  fetchProducts() {
+    this.isLoading = true;
+    const formData = new FormData();
+    const token = this.authService.getToken();
+    const codCli = this.authService.getCodCli();
+
+    formData.append('start', String((this.currentPage - 1) * this.itemsPerPage));
+    formData.append('length', String(this.itemsPerPage));
+
+    formData.append('codCli', codCli ?? '');
+    formData.append('search', this.search);
+    formData.append('categoria', this.categoria);
+    formData.append('marca', '');
+    if (this.userData && this.userData.ubica) {
+      formData.append('almacen', this.userData.ubica);
+    } else {
+      console.warn('userData.ubica no disponible para el parámetro almacen.');
+    }
+    formData.append('proveedor', this.filterMarca);
+    formData.append('lote', this.filterLote);
+    formData.append('orderby', this.orderBy);
+    formData.append('orderDirection', this.orderDirection);
+    formData.append('nuevos', '0');
+
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = `${API_URL}portalcli/inventariocli`;
+
+    this.http.post<ApiResponse>(apiUrl, formData, { headers: headers })
+        .pipe(
+            catchError(this.handleError)
+        )
+        .subscribe({
+          next: (response: ApiResponse) => {
+            this.products = response.data.map(item => {
+              const product: Product = {
+                codigo: item.codigo,
+                img: item.img,
+                descrip: item.descrip,
+                nomprv: item.nomprv,
+                dprice: item.dprice,
+                dpriced: item.dpriced,
+                descuento: item.descuento || '0%',
+                oprecio: item.oprecio,
+                opreciod: item.opreciod,
+                existen: item.existen,
+                encar: item.encar,
+                oferta: item.oferta,
+                lote: item.lote,
+                segmento: item.segmento,
+                vence: item.vence
+              };
+
+              if (Array.isArray(item.oferta) && item.oferta.length > 0) {
+                product.ofertaDisplay = 'Oferta';
+              } else if (typeof item.oferta === 'string' && item.oferta.trim() !== '') {
+                product.ofertaDisplay = item.oferta;
+              } else {
+                product.ofertaDisplay = ''; 
+              }
+
+              return product;
+            });
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.error = err;
+            this.isLoading = false;
+            console.error('Error de la API en subscribe:', err);
+            this.products = [];
+          },
+        });
+  }
+
+  formatOfertasTooltip(ofertas: string | null | OfertaDetalle[] | undefined): string {
+    if (Array.isArray(ofertas) && ofertas.length > 0) {
+      return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
+    } else if (typeof ofertas === 'string' && ofertas.trim() !== '') {
+      return ofertas;
+    }
+    return 'Sin ofertas disponibles';
+  }
+
   navigateTo(route: string) {
     this.router.navigate([route]);
   }
 
-  // Lógica para manejar el ingreso de cantidad en el campo del producto
-  eventcant(id: string, value: string, event: Event): void {
+  eventcant(codigo: string, event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    console.log(`Input para producto ${codigo}: ${value}`);
+
+    const product = this.products.find(p => p.codigo === codigo);
+    if (product) {
+      product.encar = parseInt(value, 10) || 0;
+    }
+
+
     if (event instanceof KeyboardEvent && event.key === 'Enter') {
-      console.log(`Producto ${id}: Cantidad ingresada ${value}`);
-      // Aquí puedes añadir la lógica para, por ejemplo, validar la cantidad
-      // o pre-agregar al carrito al presionar Enter.
+      if (product) {
+        this.agg_pedido(product);
+      }
     }
   }
 
-  // Lógica para añadir el producto al carrito
-  agg_pedido(id: string, quantity: string): void {
-    console.log(`Agregando producto ${id} con cantidad ${quantity} al carrito`);
-    // Aquí es donde debes implementar la lógica real para añadir el producto al carrito.
-    // Esto podría implicar llamar a un servicio de carrito, almacenar en LocalStorage, etc.
+  agg_pedido(product: any) {
+      const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
+      const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
+      let cantidad: number;
+    
+      if (cantidadInput && cantidadInput.value) {
+        cantidad = parseInt(cantidadInput.value, 10);
+      } else if (cantidadInput2 && cantidadInput2.value) {
+        cantidad = parseInt(cantidadInput2.value, 10);
+      } else {
+        Swal.fire({
+          text: 'Cantidad inválida',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'bottom-end',
+        });
+        return;
+      }
+    
+      this.portalcliLogicaService.agregarAlCarrito(product, cantidad).subscribe({
+        next: (response: any) => {
+          let mensaje = response.mensaje;
+          if (typeof mensaje === 'object') {
+            mensaje = JSON.stringify(mensaje);
+          }
+          Swal.fire({
+            text: mensaje == 'Producto Agregado' ? 'Pedido agregado exitosamente!' : mensaje,
+            icon: mensaje == 'Producto Agregado' ? 'success' : 'error',
+            showConfirmButton: false,
+            timer: 3000,
+            toast: true,
+            position: 'bottom-end',
+          });
+          this.revisarCarrito();
+        },
+      });
+    }
+
+    revisarCarrito() {
+      this.portalcliLogicaService.revisarCarrito();
+      this.subscriptions.push(
+        this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
+          this.productosEnCarrito = productos;
+        }),
+        this.portalcliLogicaService.unidades$.subscribe((unidades) => {
+          this.unidades = unidades;
+        }),
+        this.portalcliLogicaService.totalBs$.subscribe((totalBs) => {
+          this.totalBs = totalBs;
+        }),
+        this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
+          this.totalUsd = totalUsd;
+        }),
+        this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
+          this.encarprod = encarprod;
+        }),
+        this.portalcliLogicaService.productosEnCarritoCodigos$.subscribe((codigos) => {
+          this.productosEnCarritoCodigos = codigos;
+        })
+      );
+    }
+
+    imageficha: any;
+
+openProductModal(codigo: string) {
+  this.isLoading = true;
+    this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
+      next: (data) => {
+        this.selectedProduct = data.product;
+        this.imageficha = data.imageUrl;
+        this.isLoading = false; 
+      },
+      error: (error) => {
+        console.error('Error al obtener el producto:', error);
+      },
+    });
   }
 }

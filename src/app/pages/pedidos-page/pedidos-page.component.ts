@@ -5,6 +5,8 @@ import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatButtonModule} from '@angular/material/button';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -36,6 +38,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatTooltipModule,
+    MatButtonModule,
     MatIconModule
   ],
   templateUrl: './pedidos-page.component.html',
@@ -50,7 +54,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   dataSource = new MatTableDataSource<any>(this.products);
-  displayedColumns: string[] = ['img', 'descrip', 'nomprv', 'lote', 'vence', 'oprecio', 'opreciod', 'existen', 'cantidad', 'agregar'];
+  displayedColumns: string[] = ['img', 'descrip','oprecio', 'opreciod', 'existen', 'cantidad', 'agregar']; // 'nomprv', 'lote', 'vence', 
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   private subscriptions: Subscription[] = [];
   private clienteCambiadoSubscription: Subscription | undefined;
@@ -76,6 +80,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   pageInput: string = '';
   minResults: number = 0;
   recordsFiltered: number = 0;
+  diasMontoFactura: number | undefined;
 
   filterDescrip = '';
   filterPrecio = '';
@@ -197,10 +202,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/data`;
+    const apiUrl = `${API_URL}portalcli/inventariocli`;
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
+        this.dataSource.data = response.data; 
         this.pagedProducts = response.data; // Usamos pagedProducts directamente
         this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
         this.isLoading = false; 
@@ -241,7 +247,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     });
   } */
 
-  
+    searchProducts(event: Event): void {
+      const filterValue = (event.target as HTMLInputElement).value;
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
+    
+
+    clear(): void {
+      this.search = '';
+      this.dataSource.filter = '';
+    }    
 
   goToFirstPage() {
     this.currentPage = 1;
@@ -368,6 +383,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           });
         }
       });
+    }
+
+    formatOfertasTooltip(ofertas: any[]): string {
+      return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
     }
 
     enviaped(){

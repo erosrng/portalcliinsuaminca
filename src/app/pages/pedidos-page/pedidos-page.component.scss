@@ -79,9 +79,6 @@
     font-size: 12px;
     color: #002b52 !important;
     font-weight: 500;
-    /* white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;*/
 }
 
 .cel-product-noborder-left {
@@ -140,6 +137,7 @@
 }
 
 .input-cant {
+    width: 13rem;
     border: 1px solid #CCC;
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -175,7 +173,7 @@
 
 .btn-add,
 .btn-agg {
-    width: 100%;
+    width: 80%;
     padding: 1rem;
     margin: 0 1rem;
     border: none;
@@ -231,6 +229,11 @@
     text-align: center;
 }
 
+.preca__antes{
+    font-size: 1.3rem;
+    text-decoration: line-through; 
+}
+
 .clear-car {
     text-align: center;
     color: #ff2f2f;
@@ -254,7 +257,17 @@ h4 {
 .mt-6 {
     margin-top: 6rem;
 }
-
+.oferta-proveedor-inline {
+    background-color: #4960e6; 
+    color: #f0f0f0;
+    font-size: 0.6em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle; 
+    display: inline-block;
+    line-height: 1; 
+  }
 .row-clear-filter {
     background: #ededed;
     height: 5vh;
@@ -284,6 +297,13 @@ h4 {
     border: none;
 }
 
+.pedidos__table th {
+    font-family: "Alexandria", Helvetica, sans-serif !important;
+}
+.pedidos__table td {
+    font-family: "Alexandria", Helvetica, sans-serif !important;
+ }
+ 
 nav[aria-label="Page navigation example"] {
     margin-top: 2rem; /* Ajusta el margen superior según tus necesidades */
   
@@ -316,3 +336,5 @@ nav[aria-label="Page navigation example"] {
   .pagination-info {
     color: vars.$menu-color;
   }
+
+  

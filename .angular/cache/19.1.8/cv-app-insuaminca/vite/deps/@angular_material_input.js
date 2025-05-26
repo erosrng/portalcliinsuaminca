@@ -1,4 +1,8 @@
 import {
+  ErrorStateMatcher,
+  _ErrorStateTracker
+} from "./chunk-LMLFTTYW.js";
+import {
   MAT_FORM_FIELD,
   MatError,
   MatFormField,
@@ -8,22 +12,25 @@ import {
   MatLabel,
   MatPrefix,
   MatSuffix
-} from "./chunk-VVABUNNB.js";
+} from "./chunk-K4XFYZ7I.js";
+import {
+  getSupportedInputTypes
+} from "./chunk-X65CSFTX.js";
 import {
   AutofillMonitor,
   TextFieldModule
 } from "./chunk-5JUK6URG.js";
+import "./chunk-42FJBLFI.js";
 import {
-  ErrorStateMatcher,
+  coerceBooleanProperty
+} from "./chunk-IBYU652R.js";
+import {
   MatCommonModule,
-  _ErrorStateTracker,
-  _IdGenerator,
-  coerceBooleanProperty,
-  getSupportedInputTypes
-} from "./chunk-HTB6ARLV.js";
+  _IdGenerator
+} from "./chunk-OAM4VRI3.js";
+import "./chunk-YV7PVOCW.js";
 import "./chunk-2O4WY5GE.js";
 import "./chunk-LLW5IOA3.js";
-import "./chunk-YV7PVOCW.js";
 import {
   Platform
 } from "./chunk-J2BFM4J6.js";
@@ -62,11 +69,13 @@ import {
 } from "./chunk-P6U2JBMQ.js";
 import "./chunk-WDMUDEB6.js";
 
+// node_modules/@angular/material/fesm2022/input-value-accessor-D1GvPuqO.mjs
+var MAT_INPUT_VALUE_ACCESSOR = new InjectionToken("MAT_INPUT_VALUE_ACCESSOR");
+
 // node_modules/@angular/material/fesm2022/input.mjs
 function getMatInputUnsupportedTypeError(type) {
   return Error(`Input type "${type}" isn't supported by matInput.`);
 }
-var MAT_INPUT_VALUE_ACCESSOR = new InjectionToken("MAT_INPUT_VALUE_ACCESSOR");
 var MAT_INPUT_INVALID_TYPES = ["button", "checkbox", "file", "hidden", "image", "radio", "range", "reset", "submit"];
 var MAT_INPUT_CONFIG = new InjectionToken("MAT_INPUT_CONFIG");
 var MatInput = class _MatInput {

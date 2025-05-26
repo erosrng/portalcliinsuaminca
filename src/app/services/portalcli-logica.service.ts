@@ -110,8 +110,8 @@ export class PortalcliLogicaService {
 
           this.productosEnCarritoSubject.next(productosEnCarrito);
           this.unidadesSubject.next(response.encar.cana);
-          this.totalBsSubject.next(response.encar.preciobs);
-          this.totalUsdSubject.next(response.encar.preciod);
+          this.totalBsSubject.next(response.encar.total);
+          this.totalUsdSubject.next(response.encar.totald);
           this.encarprodSubject.next(response.encar.products);
           this.productosEnCarritoCodigosSubject.next(response.codigos || []);
         } else {
@@ -161,8 +161,10 @@ export class PortalcliLogicaService {
     this.loading = true;
     const formData = new FormData();
     const token = this.authService.getToken();
+    const codCli = this.authService.getCodCli();
 
     formData.append('codigo', codigo);
+    formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
       'Authorization': `${token}`

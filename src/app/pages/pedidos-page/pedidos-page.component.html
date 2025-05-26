@@ -16,10 +16,9 @@
                             <div class="product-header">
                                 <h1>{{ selectedProduct?.descrip }}</h1>
                             </div>
-                            <!-- <a href="#" class="more-products">Ver más productos de {{ selectedProduct?.nomprv }}</a> -->
                             <div class="price">
-                              <p class="usd">US$ {{ portalcliLogicaService.formatCurrency(selectedProduct?.preciod1) }}</p>
-                              <p class="bs">Bs. {{ portalcliLogicaService.formatCurrency(selectedProduct?.precio1) }}</p>
+                              <p class="usd">US$ {{ portalcliLogicaService.formatCurrency(selectedProduct?.opreciod) }} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.preciod1)}}</span></p>
+                              <p class="bs">Bs. {{ portalcliLogicaService.formatCurrency(selectedProduct?.oprecio)}} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.precio1)}}</span></p>
                                 <ul class="product-data">
                                     <li>Modelo: {{ selectedProduct?.modelo ?? ''}}</li>
                                     <li>Origen: {{ selectedProduct?.origen ?? ''}}</li>
@@ -29,7 +28,7 @@
                                 </ul>
                             </div>
                             <div class="quantity">
-                                <input type="text" id="cana2_{{selectedProduct?.codigo}}" value="{{ selectedProduct?.encar }}" placeholder="Cant..." class="quantity-input">
+                                <input min="0" type="number" id="cana2_{{selectedProduct?.codigo}}" value="{{ selectedProduct?.encar }}" placeholder="Cant..." class="quantity-input">
                                 <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>
                             </div>
                             <!-- <button class="carrito__checkout-button">¡Agregar al carrito!</button> -->
@@ -68,30 +67,24 @@
 
 
 
-        <div class=" d-flex flex-row align-items-center justify-content-around">
+        <div class=" d-flex flex-row align-items-center justify-content-between">
           <div class="p-2 text-left">
             <h4>Carrito de compra</h4>
           </div>
 
-          <div class="p-2 text-center">
-            <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
-          </div>
-
-          <div class="p-2 text-center mt-0">
-            <a (click)="vaciacar()" class="clear-car"> Vaciar carrito</a>
-          </div>
+          <button type="button" (click)="vaciacar()" class="btn btn-outline-danger"> Vaciar carrito</button>
         </div>
 
-        <div class=" d-flex flex-row align-items-center justify-content-around">
+        <div class=" d-flex flex-row align-items-center justify-content-between">
 
         
-          <div class="p-2 unid-col mt-0">
+          <div class="p-4 unid-col mt-0">
             <span>Unidades: {{ unidades }}</span>
             <br>
             <span>Productos: {{ encarprod }}</span>
           </div>
         
-          <div class="p-2 unid-col mt-0">
+          <div class="p-4 unid-col mt-0">
             <span>Totales:</span>
             <div class="">
               <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
@@ -101,7 +94,7 @@
           </div>
         
           <div class="p-2 mt-0">
-            <button class="btn-end" (click)="enviaped();"> Finalizar compra</button>
+            <button class="btn-end" (click)="navigateTo('/carrito')"> Finalizar compra</button>
           </div>
         </div>
       
@@ -117,37 +110,6 @@
   </div>
   
   <div class="col-12 p-2">
-      <!-- <div class="row p-0">
-          <div class="col-8">
-              <div id="carouselExample" class="carousel"> 
-                  <div class="carousel-inner">
-                    <div class="carousel-item active">
-                      <div class="box-carusel-img"></div>
-                      
-                    </div>
-                    <div class="carousel-item">
-                      <div class="box-carusel-img"></div>
-                    </div>
-                    <div class="carousel-item">
-                      <div class="box-carusel-img"></div>
-                    </div>
-                  </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                  </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                  </button>
-                </div>
-          </div>
-          <div class="col-4">
-              <div class="d-block w-100  box-banner-individual"></div>
-              <div class="d-block w-100  box-banner-individual"></div>
-          </div>
-      </div> -->
-
       <div class="row">    
           <div class="col-12 mt-4">
 
@@ -157,48 +119,23 @@
                 </div>
               </div>
           
-            
-            <!-- <div *ngIf="!loading">
-              <div *ngFor="let product of products">
-                </div>
-            </div> -->
-
-            <!-- FIN DE FUNCIONAL CON PURO -->
             <div class="container-fluid w-100">
 
               <div class="row">
-                <!-- 
-                <div class="col-md-3">
-                  <mat-form-field appearance="outline" style="width: 100%;">
-                    <mat-label>Buscar</mat-label>
-                    <input matInput type="text" [(ngModel)]="search" (input)="applyFilters()">
-                  </mat-form-field>
-                </div>
-                <div class="col-md-3">
-                  <mat-form-field appearance="outline" style="width: 100%;">
-                    <mat-label>Proveedor</mat-label>
-                    <mat-select [(ngModel)]="filterMarca" (selectionChange)="applyFilters()">
-                      <mat-option value="">Todos</mat-option>
-                      <mat-option *ngFor="let proveedor of marcas" [value]="proveedor.proveed">
-                        {{ proveedor.nombre }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-3">
-                  <mat-form-field appearance="outline" style="width: 100%;">
-                    <mat-label>Lote</mat-label>
-                    <mat-select [(ngModel)]="filterLote" (selectionChange)="applyFilters()">
-                      <mat-option value="">Todos</mat-option>
-                      <mat-option *ngFor="let lote of lotes" [value]="lote">
-                        {{ lote }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div> 
-                ---->
 
-                <div class="col-md-3 order-container">
+                <div class="row order-container">
+
+                  <mat-form-field appearance="outline" style="flex-grow: 1;">
+                    <mat-label>Buscar producto</mat-label>
+                    <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
+                    @if (search) {
+                      <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    }
+                  </mat-form-field>
+  
+
                   <mat-form-field appearance="outline" style="width: calc(100% - 32px);">
                     <mat-label>Ordenar por</mat-label>
                     <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
@@ -215,47 +152,97 @@
                 </div>
               </div>
           
-              <div class="row row-header">
-                <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ categoria ? 'Buscando por Categoria: '+categorianombre : '' }}</span>
-                <span class="rounded px-3 py-2 bg-light text-primary fw-semibold">{{ search ? 'Buscando por: '+search : '' }}</span>
-
-                  <div class="col-1 header-table border-left-top">Ver</div>
-                  <div class="col-3 header-table">Descripción</div>
-                  <div class="col-1 header-table">Proveedor</div>
-                  <div class="col-1 header-table">Lote</div>
-                  <div class="col-1 header-table">Vence</div>
-                  <div class="col-1 header-table">Bs.</div>
-                  <div class="col-1 header-table">US$</div>
-                  <div class="col-1 header-table">Inventario</div>
-                  <div class="col-1 header-table">Cantidad</div>
-                  <div class="col-1 header-table border-right-top">Agregar</div>
-              </div>
-          
-              <div class="container-fluid p-0 m-0 w-100 container-products">
-                    <div class="row row-products p-0" *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
-                        <div class="col-1 cel-product p-0">
-                            <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)"></div>
-                      <div class="col-3 cel-product p-0">{{product.descrip}}</div>
-                      <div class="col-1 cel-product p-0">{{product.nomprv}}</div>
-                      <div class="col-1 cel-product p-0">{{product.lote}}</div>
-                      <div class="col-1 cel-product p-0">{{product.vence}}</div>
-                      <div class="col-1 cel-product p-0">{{product.oprecio}}</div>
-                      <div class="col-1 cel-product p-0">{{product.opreciod}}$</div>
-                      <div class="col-1 cel-product p-0">{{product.existen}}</div>
-                      <div class="col-1 cel-product-noborder-left p-0">
-                          <input type="text" min="0" maxlength="10" [value]="product.encar ? product.encar : ''" (input)="validateInput(product, $event)" id="cana_{{product.codigo}}" 
-                          placeholder="Cantidad" class="w-100 input-cant" (keyup.enter)="agg_pedido(product)">
-                      </div>
-                      <div class="col-1 cel-product-noborder-right p-0">
-                          <button [ngClass]="{ 'btn-add': !productosEnCarritoCodigos.includes(product.codigo), 'btn-agg': productosEnCarritoCodigos.includes(product.codigo), 'even-row': i % 2 !== 0, 'odd-row': i % 2 === 0 }" (click)="agg_pedido(product)">
-                              <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                              <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+              <div class="mat-elevation-z2">
+                  <table class="table table-bordered table-striped pedidos__table">
+                    <thead>
+                      <tr class="text-center">
+                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'img' && orderDirection === 'asc'" [class.desc]="orderBy === 'img' && orderDirection === 'desc'" (click)="sortData('img')">Ver</th>
+                
+                        <th scope="col" class="align-middle text-start" [class.asc]="orderBy === 'descrip' && orderDirection === 'asc'" [class.desc]="orderBy === 'descrip' && orderDirection === 'desc'" (click)="sortData('descrip')">Descripción</th>
+                
+                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'oprecio' && orderDirection === 'asc'" [class.desc]="orderBy === 'oprecio' && orderDirection === 'desc'" (click)="sortData('oprecio')">Precio Bs.</th>
+                
+                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'opreciod' && orderDirection === 'asc'" [class.desc]="orderBy === 'opreciod' && orderDirection === 'desc'" (click)="sortData('opreciod')">Precio US$</th>
+                
+                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'existen' && orderDirection === 'asc'" [class.desc]="orderBy === 'existen' && orderDirection === 'desc'" (click)="sortData('existen')">Inventario</th>
+                
+                        <th scope="col" class="align-middle">Cantidad</th>
+                
+                        <th scope="col" class="align-middle">Agregar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                        <td class="align-middle text-center">
+                          <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)">
+                        </td>
+                
+                        <td class="align-middle text-start">{{product.descrip}}
+                          <br>
+                          <div *ngIf="product.oferta && product.oferta.length > 0"
+                            class="oferta-proveedor-inline"
+                            [matTooltip]="formatOfertasTooltip(product.oferta)"
+                            matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta Proveedor
+                        </div>
+  
+  
+                            <div *ngIf="product.ficha  > 0"
+                              class="ficha-proveedor-inline"
+                              
+                              matTooltipPosition="above"> DESC.FICHA <br>{{product.ficha}} %
+                          </div>
+                        </td>
+                
+                        <td class="align-middle" style="text-align: right;">
+                          <div>
+                            <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dprice}}</span>
+                              <br *ngIf="product.segmento > 0">
+                              <span style="color: rgb(28, 123, 36);">{{product.oprecio}}</span>
+                          </div>
+                        
+                        </td>
+                
+                        <td class="align-middle" style="text-align: right;">
+                          <div>
+                            <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dpriced}}$</span>
+                            <br *ngIf="product.segmento > 0">
+                            <span style="color: rgb(28, 123, 36);">{{product.opreciod}}$</span>
+                          </div>
+                        </td>
+                
+                        <td class="align-middle" style="text-align: center;">{{product.existen}}</td>
+                
+                        <td style="text-align: center;">
+                          <input
+                            type="number"
+                            min="0"
+                            maxlength="10"
+                            [value]="product.encar ? product.encar : ''"
+                            (input)="validateInput(product, $event)"
+                            id="cana_{{product.codigo}}"
+                            placeholder="Cantidad"
+                            class="input-cant"
+                            (keyup.enter)="agg_pedido(product)"
+                          >
+                        </td>
+                
+                        <td class="align-middle">
+                          <button
+                            [ngClass]="{
+                              'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
+                              'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
+                            }"
+                            (click)="agg_pedido(product)"
+                          >
+                            <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                            <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
                           </button>
-                      </div>
-                  </div>
-              </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
           
-              <!-- <mat-paginator [length]="totalPages * itemsPerPage" [pageSize]="itemsPerPage" (page)="pageChanged($event)"></mat-paginator> -->
               <mat-paginator
               [length]="totalPages * itemsPerPage"
               [pageSize]="itemsPerPage"
@@ -267,23 +254,18 @@
             
 
           </div>
-      </div>
+      
+      
+         
 
-      <!-- <div class="row mt-5">
-        <div class="col-6">
-          <div class="d-block w-100  box-banner-individual-footer"></div>
+      
         </div>
-        <div class="col-6">
-          <div class="d-block w-100 box-banner-individual-footer"></div>
-        </div>
-      </div> -->
   </div>
 
 
 </div>
-
+<app-footer></app-footer>
 </div>
 
 
 
-<app-footer></app-footer>

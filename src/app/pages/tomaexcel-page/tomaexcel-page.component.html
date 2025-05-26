@@ -16,12 +16,6 @@
             <div class="card mt-4 card__info">
                 <div class="card-body ">
                     <h3 class="card-title text-primary">Baje su listado e importelo</h3>
-                    <!-- <p class="card-text">
-                        <span class="cardinfo__text">NOMBRE: <b>NOMBRE EJEMPLO</b></span><br>
-                        <span class="cardinfo__text">TELÉFONO: <b>123456789</b></span><br>
-                        <span class="cardinfo__text">CORREO: <span class="title__limit">correoorreo.com</span>                                    </span>
-                    </p> -->
-
                     <div class="row mt-5">    
                       
                         <div class="col-12 mb-3">
@@ -29,13 +23,13 @@
                         </div>
                         
                         <div class="col-12 upload-container">
-                            <label for="excelUpload" class="upload-label">
+                            <label for="excelUpload" class="upload-label" [class.error-highlight]="showErrorHighlight">
                               <i class="fas fa-file-upload"></i>
                               <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
                               <span *ngIf="fileName">{{ fileName }}</span>
                               <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
                             </label>
-                            <button class="busca__pedido" [disabled]="!habilitarCargar" (click)="cargarArchivo();">Cargar archivo</button>
+                            <button class="busca__pedido" (click)="cargarArchivo();">Cargar archivo</button>
                         </div>
 
                     </div>
@@ -49,11 +43,11 @@
 
           </div>
   
-          <div class="mi-perfil__right">
+          <!-- <div class="mi-perfil__right">
               <app-historialped></app-historialped>
 
 
-          </div>
+          </div> -->
   
         </main>
       </div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input'; // Importa MatInputModule
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
@@ -45,6 +46,7 @@ export interface Product {
     MatFormFieldModule, 
     MatInputModule,
     MatIconModule,
+    MatDialogModule,
     MatPaginatorModule,
     MatSelectModule
   ],
@@ -64,19 +66,24 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   productosEnCarritoNumber: string = '';
   productscar: Product[] = [];
   dataSource = new MatTableDataSource<Product>(this.productscar);
-  displayedColumns: string[] = ['img', 'descrip', 'preciosiniva', 'ivabs', 'preciod', 'ivad', 'totalbs', 'totald', 'cant', 'actions']; // Ajusta las columnas según tus necesidades
+  displayedColumns: string[] = ['img', 'descrip', 'oprecio', 'opreciod','total', 'totald', 'cant', 'actions']; // Ajusta las columnas según tus necesidades
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   totalBs: string = '';
   totalUsd: string = '';
   unidades: string = '';
+  encarprod: string = '';
+
+  search: string | null = null;
+  productosEnCarritoCodigos: string[] = [];
 
   constructor(
     private route: Router, 
     private http: HttpClient, 
-    private authService: AuthService,
-    public portalcliLogicaService: PortalcliLogicaService
+    public authService: AuthService,
+    public portalcliLogicaService: PortalcliLogicaService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit() { 
@@ -89,6 +96,10 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
 
   }
+
+  @ViewChild('productModalTemplate')
+  productModalTemplate!: TemplateRef<any>;
+
     
   openCar() {
     const codCli = this.authService.getCodCli();
@@ -120,6 +131,10 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
         console.error('Error de la API:', error);
       },
     });
+  }
+
+  navigateTo(route: string) {
+    this.portalcliLogicaService.navigateTo(route);
   }
 
   eliminareg(caller: any, idPedido: any, codigo: any) {
@@ -189,11 +204,11 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       cancelButtonText: 'Cancelar'
       }).then((result) => {
       if (result.isConfirmed) {
-          this.mostrarLoader;
+          Swal.showLoading();
           this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
               if (response.status) {
-                this.ocultarLoader;
+                Swal.close();
                 this.revisarCarrito();
                 Swal.fire(response.mensaje, '', 'success');
                 this.productscar = [];
@@ -206,7 +221,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
             },
             error: (error) => {
               this.isLoading = false;  
-              this.ocultarLoader;
+              Swal.close();
               Swal.fire(error, '', 'error');
               console.error('Error de la API:', error);
             },
@@ -277,6 +292,9 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
         this.totalUsd = totalUsd;
       }),
+      this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
+        this.encarprod = encarprod;
+      }),
     );
   }
 
@@ -295,6 +313,17 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   ocultarLoader(){
     this.portalcliLogicaService.ocultarLoader();
   }
+
+  imageficha: any;
+  selectedProduct: any = null;
+
+openDialog() {
+  this.dialog.open(this.productModalTemplate, {
+      width: '80%',
+      maxWidth: '1200px',
+      data: { product: this.selectedProduct, imageUrl: this.imageficha } // Puedes pasar datos si es necesario
+  });
+}
 
   sortData(sortField: keyof Product) {
     this.sortField = sortField;
@@ -327,6 +356,10 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     this.sortData(this.sortField as keyof Product);
 }
 
+clear(): void {
+  this.search = '';
+  this.dataSource.filter = '';
+}    
 
   // Agrega la función applyFilter
   applyFilter(event: Event) {
@@ -375,6 +408,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
               this.isLoading = false;
               if (response.status == true) {
                   // Actualiza productscar
+                  this.openCar();
                   this.revisarCarrito();
                   Swal.fire({
                       text: 'Producto Actualizado',
@@ -407,6 +441,20 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     });
     retotalbs(codigo); */
 }  
+
+openProductModal(codigo: string) {
+  this.isLoading = true;
+    this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
+      next: (data) => {
+        this.selectedProduct = data.product;
+        this.imageficha = data.imageUrl;
+        this.isLoading = false; 
+      },
+      error: (error) => {
+        console.error('Error al obtener el producto:', error);
+      },
+    });
+  }
 
 
 }
