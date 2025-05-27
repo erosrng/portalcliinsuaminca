@@ -15,8 +15,7 @@ import { PortalcliLogicaService } from './../../services/portalcli-logica.servic
 import { API_URL } from './../../app.config';
 import Swal from 'sweetalert2';
 import { Subscription, takeUntil, Subject } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms'; // Importar ReactiveFormsModule y FormControl
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
@@ -24,8 +23,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 
+// --- Importaciones para el Stepper ---
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'; // Para el autocompletado del cliente
+
+
 @Component({
   selector: 'app-pedidos-page',
+  standalone: true, // Asegúrate de que tu componente es standalone
   imports: [
     CommonModule,
     NavBarComponent,
@@ -33,6 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
     SideBarComponent,
     ClicardComponent,
     FormsModule,
+    ReactiveFormsModule, // <-- Añadir ReactiveFormsModule
     MatTableModule,
     MatPaginatorModule,
     MatInputModule,
@@ -40,7 +46,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatTooltipModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatStepperModule,      // <-- Añadir MatStepperModule
+    MatAutocompleteModule, // <-- Añadir MatAutocompleteModule
   ],
   templateUrl: './pedidos-page.component.html',
   styleUrl: './pedidos-page.component.scss'
@@ -49,6 +57,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   products: any[] = [];
   categoria: string | null = null;
   categorianombre: string | null = null;
+  proveedselect: string | null = null;
+
   search: string | null = null;
 
   private destroy$ = new Subject<void>();
@@ -101,11 +111,12 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
+      this.proveedselect = params['proveedselect'];
       this.search = params['search'];
       this.categorianombre = params['categorianombre'];
       this.fetchPedidos(); 
     });
-
+    console.log(this.proveedselect)
     /* this.clienteCambiadoSubscription = this.portalcliLogicaService.clienteCambiado$.subscribe(() => {
       this.clienteDataSubscription = this.portalcliLogicaService.clienteData$.subscribe(data => {
         this.clienteData = data;
@@ -120,7 +131,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.fetchPedidos();
     });
 
-    this.fetchPedidos();
+    //this.fetchPedidos();
     this.revisarCarrito();
   }
 
@@ -186,7 +197,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     if (this.clienteData && this.clienteData.ubica) {
       formData.append('almacen', this.clienteData.ubica);
     }
-    formData.append('proveedor', this.filterMarca);
+    formData.append('proveedor', this.proveedselect ?? '');
     formData.append('lote', this.filterLote);
     formData.append('orderby', this.orderBy);
     formData.append('orderDirection', this.orderDirection);
@@ -207,7 +218,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         this.dataSource.data = response.data; 
-        this.pagedProducts = response.data; // Usamos pagedProducts directamente
+        this.pagedProducts = response.data;
         this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
         this.isLoading = false; 
       },

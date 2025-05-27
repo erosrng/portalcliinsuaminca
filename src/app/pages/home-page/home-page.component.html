@@ -269,23 +269,23 @@
                                           </span>
                                         </div>
                                         <div class="cana__container-v2">
-                                          <input
-                                            class="cana__input-v2"
-                                            type="number"
-                                            min="0"
-                                            [id]="'cana_' + product.codigo"
-                                            [value]="product.encar ? product.encar : ''"
-                                            (input)="eventcant(product.codigo, $event)"
-                                            name="cana"
-                                          >
-                                          <button
-                                            class="send__button-v2"
-                                            title="Carrito"
-                                            [id]="'aggpedido_' + product.codigo"
-                                            (click)="agg_pedido(product)"
+                                            <input
+                                                class="cana__input-v2"
+                                                type="number"
+                                                min="0"
+                                                [id]="'cana_' + product.codigo"
+                                                [value]="product.encar ? product.encar : ''"
+                                                (input)="eventcant(product.codigo, $event)"
+                                                name="cana"
                                             >
-                                            <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                                            <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                                            <button
+                                                class="send__button-v2"
+                                                title="Carrito"
+                                                [id]="'aggpedido_' + product.codigo"
+                                                (click)="agg_pedido(product)"
+                                                >
+                                                <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                                                <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
                                             </button>
                                         </div>
                                       </div>
@@ -296,64 +296,22 @@
                         </div>
     
                         <!-- Carrusel de proveedores -->
-                        <!--<div class="carousel-prv-container">
-                            <div class="carousel-prv">
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Aless.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Calox.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Dollder.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Elmor.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Farma.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Meyer.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Cofasa.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Vargas.png" alt="">
-                                    </div>
-                                </div>
-                                <div class="circle-prv">
-                                    <div class="carousel-proveedor">
-                                        <img src="./assets/images/logoprv/Megalabs.png" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
                         <div class="product-carousel-section">
                             <h3 class="ofertas-title text-primary">NUESTROS PROVEEDORES</h3>
-                            <owl-carousel-o [options]="providersCarouselOptions">
+        
+                            <mat-progress-bar mode="indeterminate" *ngIf="isLoadingProviders"></mat-progress-bar>
+                        
+                            <owl-carousel-o *ngIf="!isLoading && providers.length > 0" [options]="providersCarouselOptions">
                                 <ng-template carouselSlide *ngFor="let provider of providers">
-                                    <div class="carousel-proveedor-item">
+                                    <div class="carousel-proveedor-item" [title]="provider.proveed" (click)="Proveedselect(provider.proveed)">
                                         <img [src]="provider.imageSrc" [alt]="provider.name">
                                     </div>
                                 </ng-template>
                             </owl-carousel-o>
+                        
+                            <div *ngIf="!isLoading && providers.length === 0" class="text-center my-4">
+                                <p>No hay proveedores disponibles en este momento.</p>
+                            </div>
                         </div>
                     </div>
 

@@ -82,6 +82,17 @@ export class HistorialPedidosComponent implements OnInit {
 
   ngOnInit(): void {
     Swal.showLoading();
+    const aux = localStorage.getItem('usuario');
+    /* if (aux) {
+      this.apiService.get_historial_by_user(aux).subscribe((data: HistoricoPedidosModel[]) => {
+        Swal.close();
+        // Aquí podrías necesitar mapear los datos si la estructura de HistoricoPedidosModel
+        // es diferente de la estructura de la respuesta de triangulatotal
+        // this.historialPedidos = data.map(item => ({ ... }));
+      }, () => {
+        Swal.close();
+      });
+    } */
     //this.cargarResumen();
     this.cargarHistorialPedidos();
     
@@ -106,13 +117,14 @@ export class HistorialPedidosComponent implements OnInit {
       'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/trianguladeta`;
+    const apiUrl = `${API_URL}trianguladeta`; // Usamos la API para los detalles
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: DetallePedido[]; message: string }>(apiUrl, formData, { headers: headers })
       .subscribe({
         next: (response) => {
           this.detallePedidoActivo = response.data; // Asignamos los detalles a la variable
           this.isLoading = false;
+          // No es necesario abrir el modal aquí, ya que el clic en el ojo ya lo abre
         },
         error: (error) => {
           this.isLoading = false;
@@ -139,17 +151,18 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   cargarHistorialPedidos() {
+    const codCli = this.authService.getCodCli();
     this.isLoading = true;
     const token = this.authService.getToken();
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      Authorization: `${token}`,
+      'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/historialped`;
+    const apiUrl = `${API_URL}triangulatotal`;
 
-   /*  this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: Pedido[] }>(apiUrl, formData, { headers: headers })
+    this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: Pedido[] }>(apiUrl, formData, { headers: headers })
       .subscribe({
         next: (response) => {
           this.historialPedidos = response.data;
@@ -161,27 +174,6 @@ export class HistorialPedidosComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           console.error('Error al cargar historial de triangulatotal:', error);
-        },
-      });
- */
-      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-        next: (response: any) => {
-          this.isLoading = false;
-          if (response && response.data) {
-            this.historialPedidos = response.data;
-            this.isLoading = false;
-            this.calcularUnidadesHistorial()
-            this.calcularTotalHistorial()
-            Swal.close();
-          } else {
-            Swal.close();
-            console.error('Respuesta de la API sin datos:', response);
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          Swal.close();
-          console.error('Error de la API:', error);
         },
       });
   }

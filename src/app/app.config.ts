@@ -10,8 +10,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 // ***********************************************
 
-export const API_URL = 'http://10.0.100.2/practica/api/';
-
+//export const API_URL = 'http://10.0.100.2/practica/api/';
+export const API_URL = 'http://insuaminca.proteoerp.org:50080/practica/api/';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

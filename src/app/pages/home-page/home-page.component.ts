@@ -1,5 +1,3 @@
-// home-page.component.ts
-
 import { CommonModule } from '@angular/common';
 import { Component, OnInit,ViewEncapsulation, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 
@@ -10,14 +8,15 @@ import { ClicardComponent } from "../../components/clicard/clicard.component";
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { PortalcliLogicaService } from '../../services/portalcli-logica.service';
-import { Router } from '@angular/router';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { API_URL } from "../../app.config";
-import { catchError, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs'; // Asegúrate de importar Observable y throwError
+import { catchError, map, finalize } from 'rxjs/operators'; // Importa map y finalize
 import { Subscription, takeUntil, Subject } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 export interface OfertaDetalle {
@@ -69,12 +68,23 @@ export interface Product {
   ofertaDisplay?: string; // Para el texto corto en el badge
 }
 
-
-interface Provider {
+// --- Nuevas Interfaces para Proveedores ---
+export interface Provider {
+  proveed: string; // Añadido para el nombre del archivo de imagen
   name: string;
   imageSrc: string;
 }
 
+export interface ApiResponseProviders {
+  status: boolean;
+  data: {
+    cana_total: number;
+    proveed: string; // El código del proveedor que usaremos para la imagen
+    nombre: string;  // El nombre del proveedor para el 'alt'
+    rif: string;
+  }[];
+}
+// --- Fin Nuevas Interfaces ---
 
 @Component({
   selector: 'app-home-page',
@@ -85,7 +95,7 @@ interface Provider {
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    CarouselModule,
+    CarouselModule, // Necesario para ngx-owl-carousel-o
     MatTooltipModule,
     MatProgressBarModule
   ],
@@ -98,8 +108,11 @@ export class HomePageComponent implements OnInit {
   userData: any;
   apiKey: string = '';
   isMenuOpen: boolean = false;
+
   products: Product[] = [];
-  isLoading: boolean = false;
+  isLoading: boolean = false; // Para la carga de productos
+  isLoadingProviders: boolean = false; // Para la carga de proveedores del carrusel
+
   error: any;
   selectedProduct: any = null;
 
@@ -140,6 +153,9 @@ export class HomePageComponent implements OnInit {
 
   };
 
+  // Carrusel de Proveedores: ya no tiene datos quemados
+  providers: Provider[] = []; // Se inicializa vacío, se llenará desde la API
+
   providersCarouselOptions: OwlOptions = {
     loop: true,
     mouseDrag: true,
@@ -162,35 +178,71 @@ export class HomePageComponent implements OnInit {
     autoplayHoverPause: true
   };
 
-  providers: Provider[] = [
-    { name: 'Aless', imageSrc: './assets/images/logoprv/Aless.png' },
-    { name: 'Calox', imageSrc: './assets/images/logoprv/Calox.png' },
-    { name: 'Dollder', imageSrc: './assets/images/logoprv/Dollder.png' },
-    { name: 'Elmor', imageSrc: './assets/images/logoprv/Elmor.png' },
-    { name: 'Farma', imageSrc: './assets/images/logoprv/Farma.png' },
-    { name: 'Meyer', imageSrc: './assets/images/logoprv/Meyer.png' },
-    { name: 'Cofasa', imageSrc: './assets/images/logoprv/Cofasa.png' },
-    { name: 'Vargas', imageSrc: './assets/images/logoprv/Vargas.png' },
-    { name: 'Megalabs', imageSrc: './assets/images/logoprv/Megalabs.png' },
-  ];
-
   constructor(
       private authService: AuthService,
       public portalcliLogicaService: PortalcliLogicaService,
+      private route: ActivatedRoute,
       private router: Router,
-      private http: HttpClient
+      private http: HttpClient // HttpClient ya está inyectado
   ) { }
 
   ngOnInit() {
     this.revisarCarrito();
     this.fetchProducts();
+    this.loadCarouselProviders(); // <-- ¡Llamada para cargar los proveedores!
   }
+
+  // --- Método para cargar los proveedores del carrusel ---
+  loadCarouselProviders(): void {
+    this.isLoadingProviders = true; // Activa el loader del carrusel
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    const apiUrl = `${API_URL}portalcli/carruselaliado`; // Tu endpoint de PHP para proveedores
+
+    this.http.post<ApiResponseProviders>(apiUrl, {}, { headers: headers }).pipe(
+      map(response => {
+        if (response.status && response.data) {
+          console.log('Datos de proveedores de la API:', response.data); // Log de la data bruta
+          return response.data.map(item => ({
+            proveed: item.proveed, // Asegúrate de que esta propiedad exista en la API
+            name: item.nombre,    // Asegúrate de que esta propiedad exista en la API
+            imageSrc: `./assets/images/logoprv/${item.proveed}.png`, // Construye la ruta de la imagen
+          }));
+        } else {
+          console.warn('API de proveedores no devolvió datos o el estado es false:', response);
+          return []; // Devuelve un array vacío si no hay datos o el estado es falso
+        }
+      }),
+      // Reutiliza tu handleError para los errores de la petición
+      catchError(this.handleError),
+      finalize(() => {
+        this.isLoadingProviders = false;
+      })
+    ).subscribe({
+      next: (data: Provider[]) => {
+        this.providers = data;
+        console.log('Proveedores mapeados para el carrusel:', this.providers); // Log de la data mapeada
+      },
+      error: (error) => {
+        console.error('Error al cargar los proveedores del carrusel:', error);
+        // El handleError ya muestra el mensaje general, podrías añadir algo específico aquí si lo necesitas
+      }
+    });
+  }
+
+  // --- Tu método handleError existente, se reutiliza para proveedores ---
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('Ocurrió un error del lado del cliente o de la red:', error.error);
+      Swal.fire('Error de Conexión', 'No se pudo conectar con el servidor. Revisa tu conexión a internet.', 'error');
     } else {
       console.error(
           `El backend retornó el código ${error.status}, el cuerpo era: `, error.error);
+      // Puedes ser más específico aquí si el error 401/403 significa token inválido
+      Swal.fire('Error del Servidor', 'Ocurrió un problema al obtener los datos. Por favor, inténtalo de nuevo.', 'error');
     }
     return throwError(() => new Error('Algo malo sucedió; por favor, inténtalo de nuevo más tarde.'));
   }
@@ -264,7 +316,7 @@ export class HomePageComponent implements OnInit {
           error: (err) => {
             this.error = err;
             this.isLoading = false;
-            console.error('Error de la API en subscribe:', err);
+            console.error('Error de la API en subscribe (fetchProducts):', err);
             this.products = [];
           },
         });
@@ -380,4 +432,34 @@ openProductModal(codigo: string) {
       },
     });
   }
+
+  Proveedselect(proveedselect: any) {
+    let currentSearch = '';
+    this.route.queryParams.subscribe((params) => {
+      currentSearch = params['search'] || '';
+      currentSearch = params['categoria'] || '';
+      currentSearch = params['categorianombre'] || '';
+
+    });
+
+    if (proveedselect) {
+      this.router.navigate(['/pedidos'], {
+        queryParams: {
+          search: currentSearch, 
+          proveedselect: proveedselect,
+          categorianombre: currentSearch,
+          categoria: currentSearch,
+        },
+      });
+    } else {
+      this.router.navigate(['/pedidos'], {
+        queryParams: {
+          search: currentSearch, 
+          categoria: '',
+          proveedselect: '',
+        },
+      });
+    }
+  }
+
 }
