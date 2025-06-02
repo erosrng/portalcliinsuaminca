@@ -207,25 +207,4 @@ export class NavBarComponent implements OnInit {
       : `(${codCli}) ${this.authService.getNombre()}`;
 
   }
-
-  /* buscaalmacen(){
-    const formData = new FormData();
-    const token = this.authService.getToken();
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-    const apiUrl = `${API_URL}portalcli/buscaalmacen`;
-
-    formData.append('codCli', this.codCli ?? '');
-
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-          this.clienteData = response.datcli;
-      },
-      error: (error) => {
-        console.error('Error de la API:', error);
-      },
-    });
-  } */
 }

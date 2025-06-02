@@ -667,26 +667,36 @@
     will-change: transform;
   }
 
-  .carousel-proveedor {
-    flex: 0 0 auto;
-    width: 12vw;
-    height: 12vw;
-    max-width: 18rem;
-    max-height: 18rem;
+  .carousel-proveedor-item img {
+    width: 91% !important;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+    /* ¡Importante! Añadir una transición para un efecto suave */
+    transition: all 0.3s ease-in-out; 
+  }
+  
+  /* Opcional: Centrar el contenedor del ítem si es necesario */
+  .carousel-proveedor-item {
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 1rem;
+    height: 120px;
   }
-
-  .carousel-proveedor img {
-    width: 35rem;
-    height: 80%;
-    object-fit: contain;
-    border-radius: 50%;
+  
+  /* --- Resaltado de la imagen al pasar el mouse --- */
+  .carousel-proveedor-item img:hover { /* ¡CORRECCIÓN AQUÍ! */
+    /* Opción 1: Brillo y ligera escala (Ideal para logos) */
+    filter: brightness(1.2) contrast(1.1); /* Aumenta el brillo y el contraste */
+    transform: scale(1.05); /* Ligeramente más grande */
+    
+    /* Opción 2 (alternativa): Sombra alrededor de la imagen */
+    /* Puedes usar esta en lugar del filtro si prefieres una sombra */
+    /* box-shadow: 0 0 15px rgba(0, 123, 255, 0.6); */ /* Una sombra azul sutil */
   }
-
-
+  
 @keyframes scroll {
     0% {
       transform: translateX(0);

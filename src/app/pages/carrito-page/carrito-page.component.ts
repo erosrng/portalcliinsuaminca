@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location  } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
@@ -83,7 +83,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     private http: HttpClient, 
     public authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private location: Location,
   ) {}
 
   ngOnInit() { 
@@ -181,53 +182,59 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   }
 
   //Envia pedidos al servidor
-  enviaped(){
-    this.isLoading = true; 
+  enviaped() {
     const codCli = this.authService.getCodCli();
-
-      const formData = new FormData();
-      const token = this.authService.getToken();
-
-      formData.append('codCli', codCli ?? '');
-
-      const headers = new HttpHeaders({
-        'Authorization': `${token}`
-      });
-      const apiUrl = `${API_URL}portalcli/enviaped`;
-    
-      Swal.fire({
+    const formData = new FormData();
+    const token = this.authService.getToken();
+  
+    formData.append('codCli', codCli ?? '');
+  
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = `${API_URL}portalcli/enviaped`;
+  
+    Swal.fire({
       title: '¿Desea enviar el pedido?',
       text: "Esta acción no se puede deshacer.",
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar'
-      }).then((result) => {
+      cancelButtonText: 'Cancelar',
+      // Allow outside clicks to close the confirmation, but not the loader
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
       if (result.isConfirmed) {
-          Swal.showLoading();
-          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-            next: (response: any) => {
-              if (response.status) {
-                Swal.close();
-                this.revisarCarrito();
-                Swal.fire(response.mensaje, '', 'success');
-                this.productscar = [];
-                this.dataSource.data = this.productscar;
-                this.isLoading = false;  
-              } else {
-                Swal.fire(response.mensaje, '', 'error');
-                this.isLoading = false;  
-              }
-            },
-            error: (error) => {
-              this.isLoading = false;  
-              Swal.close();
-              Swal.fire(error, '', 'error');
-              console.error('Error de la API:', error);
-            },
-          });
+        // --- Display the loader HERE, immediately after confirmation ---
+        Swal.fire({
+          title: 'Enviando pedido...',
+          text: 'Por favor, espere.',
+          allowOutsideClick: false, // Prevent closing by clicking outside
+          didOpen: () => {
+            Swal.showLoading(); // Show the actual loading spinner
+          }
+        });
+  
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+          next: (response: any) => {
+            Swal.close(); // Close the loader whether success or error
+            if (response.status) {
+              this.revisarCarrito();
+              Swal.fire(response.mensaje, '', 'success');
+              this.productscar = [];
+              this.dataSource.data = this.productscar;
+            } else {
+              Swal.fire(response.mensaje, '', 'error');
+            }
+          },
+          error: (error) => {
+            Swal.close(); // Close the loader on error
+            Swal.fire('Error al enviar el pedido', 'Por favor, intente de nuevo. Detalles: ' + error.message, 'error');
+            console.error('Error de la API:', error);
+          },
+        });
       }
-      });
+    });
   }
 
   //Vacia carrito
@@ -375,7 +382,7 @@ clear(): void {
     if (input) {
         const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
 
-        if (cantidadInput > existenNum) { // Comparar el valor del input con existen
+        if (cantidadInput > existenNum && change!="-") { 
             Swal.fire('Cantidad mayor a existencia', '', 'error');
             return;
         }
@@ -443,17 +450,22 @@ clear(): void {
 }  
 
 openProductModal(codigo: string) {
-  this.isLoading = true;
+  Swal.showLoading();
     this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
       next: (data) => {
         this.selectedProduct = data.product;
         this.imageficha = data.imageUrl;
-        this.isLoading = false; 
+        Swal.close();
       },
       error: (error) => {
+        Swal.close();
         console.error('Error al obtener el producto:', error);
       },
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
 

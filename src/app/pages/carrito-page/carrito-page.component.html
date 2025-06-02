@@ -16,7 +16,6 @@
                             <div class="product-header">
                                 <h1>{{ selectedProduct?.descrip }}</h1>
                             </div>
-                            <!-- <a href="#" class="more-products">Ver más productos de {{ selectedProduct?.nomprv }}</a> -->
                             <div class="price">
                               <p class="usd">US$ {{ portalcliLogicaService.formatCurrency(selectedProduct?.opreciod) }} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.preciod1)}}</span></p>
                               <p class="bs">Bs. {{ portalcliLogicaService.formatCurrency(selectedProduct?.oprecio)}} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.precio1)}}</span></p>
@@ -44,47 +43,25 @@
 </div>
 
   <div class="carrito">
-    <h1 class="ofertas-title carrito__title">Carrito de compra</h1>
+    <h1 class="ofertas-title carrito__title">Carrito de compra por cliente</h1>
 
       <header class="carrito__header">
         
-          <button type="button" class="btn btn-outline-secondary" (click)="navigateTo('/pedidos')">Volver al catalogo</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="goBack()">Pagina Anterior</button>
 
 
-          <button type="button" (click)="vaciacar()" class="btn btn-outline-danger"> Vaciar carrito</button>
+          <button type="button" style="font-size: 1.3rem;font-weight: bold;" (click)="vaciacar()" class="btn btn-outline-danger"> Vaciar carrito</button>
 
       </header>
     
       <section class="carrito__products">
-        <h2 class="text-primary">Productos en el carrito: ({{this.authService.getCodCli()}})-{{this.authService.getNombre()}}</h2>
+        <h2 class="text-primary">Productos en el carrito de: ({{this.authService.getCodCli()}})-{{this.authService.getNombre()}}</h2>
         <h3 style="color: rgb(219, 47, 47);">Los precios listados son referenciales</h3>
         <div class="d-flex align-items-center search-bar gap-4">
-          <!-- <div class="d-flex align-items-center">
-              <input
-                type="text"
-                class="form-control rounded-0"
-                placeholder="Buscar en mi lista..."
-                aria-label="Buscar en mi carrito..."
-                style="padding: 8px 10px; font-size: 1.4rem; border: none; border-right: 1px solid #a3a3a3;"
-                (keyup)="applyFilter($event)"
-              />
-              <div class="input-group-append">
-                <button
-                  class="btn btn-light rounded-0"
-                  type="button"
-                  style="border: none; padding: 2px 9px; background-color: transparent; font-size: 22px;"
-                >
-                  <i class="fas fa-search"></i>
-                </button>
-              </div> -->
-
               <mat-form-field appearance="outline" style="flex-grow: 1;">
                 <mat-label>Búsqueda:</mat-label>
                 <input matInput type="text" (keyup)="applyFilter($event)">
               </mat-form-field>
-
-            <!-- </div> -->
-  
 
           <div class="sort-container">
               <mat-form-field appearance="outline" >

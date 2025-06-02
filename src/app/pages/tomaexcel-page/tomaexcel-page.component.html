@@ -12,42 +12,99 @@
         <main class="mi-perfil__main">
           <div class="mi-perfil__left">
 
+            <div *ngIf="esgrupo" class="material-type-selector-container">
+                <span>Tipo de Carga:</span>
+                <mat-button-toggle-group [(ngModel)]="tipoCarga" aria-label="Seleccionar tipo de carga">
+                    <mat-button-toggle value="individual">Individual</mat-button-toggle>
+                    <mat-button-toggle value="grupo">Casa Matriz</mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+
+            <div *ngIf="esgrupo" class="load-type-description">
+                <ng-container *ngIf="tipoCarga === 'individual'">
+                    <p style="color:red">
+                        La carga individual asignará los productos a la farmacia de su usuario actual.
+                    </p>
+                </ng-container>
+                <ng-container *ngIf="tipoCarga === 'grupo'">
+                    <p style="color:red">
+                        La carga por grupo (Excel) le permitirá asignar productos al grupo de farmacias al que pertenece.
+                    </p>
+                </ng-container>
+            </div>
+
+            <div *ngIf="tipoCarga === 'grupo'">
+                <div class="card mt-4 card__info">
+                    <div class="card-body ">
+                        <h3 class="card-title text-primary">Baje su listado e impórtelo</h3>
+            
+                        <div class="row mt-5">    
                           
-            <div class="card mt-4 card__info">
-                <div class="card-body ">
-                    <h3 class="card-title text-primary">Baje su listado e importelo</h3>
-                    <div class="row mt-5">    
-                      
-                        <div class="col-12 mb-3">
-                            <button class="row-clear-filter" (click)="bajaexcel()">Bajar listado</button>
+                            <div class="col-12 mb-3">
+                                <button class="row-clear-filter" (click)="bajaexcelgrupo()">Bajar listado de grupo</button>
+                            </div>
+                            
+                            <div class="col-12 upload-container">
+                                <label for="excelUpload" class="upload-label">
+                                  <i class="fas fa-file-upload"></i>
+                                  <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
+                                  <span *ngIf="fileName">{{ fileName }}</span>
+                                  <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
+                                </label>
+                                <button class="busca__pedido"(click)="cargarArchivo();">Cargar archivo</button>
+                            </div>
+            
                         </div>
-                        
-                        <div class="col-12 upload-container">
-                            <label for="excelUpload" class="upload-label" [class.error-highlight]="showErrorHighlight">
-                              <i class="fas fa-file-upload"></i>
-                              <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
-                              <span *ngIf="fileName">{{ fileName }}</span>
-                              <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
-                            </label>
-                            <button class="busca__pedido" (click)="cargarArchivo();">Cargar archivo</button>
-                        </div>
-
+            
                     </div>
-
+                </div>
+                <div class="card card__info mt-5">
+                    <app-clicard></app-clicard>
                 </div>
             </div>
-  
-            <div class="card card__info  mt-5">
-                <app-clicard></app-clicard>
+            
+            <div *ngIf="tipoCarga === 'individual'">
+                <div class="card mt-4 card__info">
+                    <div class="card-body">
+                        <h3 class="card-title text-primary">Baje su listado e impórtelo</h3>
+                        <div class="row mt-2">    
+                          
+                          <div class="col-12 mb-3">
+                            <p >Los productos cargados por este metodo se iran al carrito</p>
+                              <button class="row-clear-filter" (click)="bajaexcel()">Bajar listado</button>
+                          </div>
+                          
+                          <div class="col-12 upload-container">
+                              <label for="excelUpload" class="upload-label">
+                                <i class="fas fa-file-upload"></i>
+                                <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
+                                <span *ngIf="fileName">{{ fileName }}</span>
+                                <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
+                              </label>
+                              <button class="busca__pedido"(click)="cargarArchivo();">Cargar archivo</button>
+                          </div>
+          
+                      </div>
+                    </div>
+                    
+                    <div class="card card__info mt-5">
+                      <app-clicard></app-clicard>
+                  </div>
+                </div>
+            </div>
+            
+            <div *ngIf="loading" class="loader-overlay">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </div>
 
           </div>
   
-          <!-- <div class="mi-perfil__right">
-              <app-historialped></app-historialped>
+          <div class="mi-perfil__right">
 
 
-          </div> -->
+          </div>
   
         </main>
       </div>

@@ -61,17 +61,18 @@ export class PortalcliLogicaService {
     }
   }
 
-  /*toggleMenu() {
-    this.isMenuOpenSubject.next(!this.isMenuOpenSubject.value);
-  }*/
-
-
   navigateTo(route: string) {
     this.router.navigate([route]);
   }
 
-  agregarAlCarrito(producto: any, cantidad: number) {
-    const codCli = this.authService.getCodCli();
+  agregarAlCarrito(producto: any, cantidad: number, cliente: any) {
+    let codCli;
+    if(cliente){  
+      codCli=cliente;
+    }else{
+      codCli = this.authService.getCodCli();
+    }
+
     const token = this.authService.getToken();
     const formData = new FormData();
 
@@ -79,7 +80,7 @@ export class PortalcliLogicaService {
       'Authorization': `${token}`
     });
 
-    formData.append('codigo', producto.codigo); // Asume que el producto tiene una propiedad 'codigo'
+    formData.append('codigo', producto.codigo);
     formData.append('cana', cantidad.toString());
     formData.append('codCli', codCli ?? '');
 

@@ -38,7 +38,7 @@
                                 'carrito__checkout-button': !productosEnCarritoCodigos.includes(selectedProduct?.codigo), 
                                 'carrito__checkout-button-agg': productosEnCarritoCodigos.includes(selectedProduct?.codigo)
                               }" 
-                              (click)="agg_pedido(selectedProduct)"
+                              (click)="agg_pedido(selectedProduct,'')"
                             >
                               <span *ngIf="!productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Agregar al carrito</span>
                               <span *ngIf="productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Producto agregado</span>
@@ -57,212 +57,313 @@
   <app-side-bar></app-side-bar>
 
 <div class="container-fluid mt-6 row inventario__container">
-  <!-- <div class="col-12">
-      <h4>Toma de pedidos</h4>
-  </div> -->
 
-  <div class="row col-12 d-flex flex-row justify-content-around mt-5">
-    <div class="col-7"> 
-      <div class="card p-5">
+<div class="container-fluid mt-1 row inventario__container" style="min-height: 70rem;">
+  <div class="row">
+    <mat-stepper linear #stepper (selectionChange)="onStepChange($event)"> 
+      <mat-step *ngIf="this.authService.getCmatriz()" [stepControl]="tipoCargaControl" errorMessage="Seleccione un tipo de carga">
 
-
-
-        <div class=" d-flex flex-row align-items-center justify-content-between">
-          <div class="p-2 text-left">
-            <h4>Carrito de compra</h4>
-          </div>
-
-          <button type="button" (click)="vaciacar()" class="btn btn-outline-danger"> Vaciar carrito</button>
-        </div>
-
-        <div class=" d-flex flex-row align-items-center justify-content-between">
-
-        
-          <div class="p-4 unid-col mt-0">
-            <span>Unidades: {{ unidades }}</span>
-            <br>
-            <span>Productos: {{ encarprod }}</span>
-          </div>
-        
-          <div class="p-4 unid-col mt-0">
-            <span>Totales:</span>
-            <div class="">
-              <span>Bs.  {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
-              <br>
-              <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
-            </div>
-          </div>
-        
-          <div class="p-2 mt-0">
-            <button class="btn-end" (click)="navigateTo('/carrito')"> Finalizar compra</button>
+        <!-- Contenido del paso 1
+        <button mat-button matStepperNext>Siguiente</button> -->
+        <ng-template matStepLabel>
+          <span class="stepper-indicator">Tipo de Pedido</span>
+          
+        </ng-template>
+        <div class="mt-4">
+          <div class="card p-4 shadow text-center">
+            <h3>¿Cómo deseas cargar el pedido?</h3>
+            <mat-radio-group aria-label="Tipo de Carga" [formControl]="tipoCargaControl" class="mt-3">
+              <mat-radio-button value="individual" class="me-3">Individual</mat-radio-button>
+              <mat-radio-button value="casa_matriz">Casa Matriz</mat-radio-button>
+            </mat-radio-group>
           </div>
         </div>
-      
+        <div class="stepper-navigation mt-3">
+          <button mat-button [disabled]="!tipoCargaControl.value" matStepperNext (click)="iniciarCargaDeInventario()">Siguiente</button>
+        </div>
+      </mat-step>
 
-      </div>
-    </div>
-  
-    <div class="col-4"> 
-      <div class="card card__info">
-        <app-clicard></app-clicard>
-      </div>
-    </div>
-  </div>
-  
-  <div class="col-12 p-2">
-      <div class="row">    
-          <div class="col-12 mt-4">
-
+      <mat-step label="Inventario">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12 d-flex">
               <div class="d-flex justify-content-center align-items-center" *ngIf="isLoading">
                 <div class="spinner-border text-success" role="status">
                   <span class="visually-hidden">Cargando...</span>
                 </div>
               </div>
-          
-            <div class="container-fluid w-100">
-
-              <div class="row">
-
+    
+              <div class="container-fluid w-100">
+    
                 <div class="row order-container">
-
-                  <mat-form-field appearance="outline" style="flex-grow: 1;">
-                    <mat-label>Buscar producto</mat-label>
-                    <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
-                    @if (search) {
-                      <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                        <mat-icon>close</mat-icon>
-                      </button>
-                    }
-                  </mat-form-field>
-  
-
-                  <mat-form-field appearance="outline" style="width: calc(100% - 32px);">
-                    <mat-label>Ordenar por</mat-label>
-                    <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
-                      <mat-option value="descrip">Descripción</mat-option>
-                      <mat-option value="nomprv">Proveedor</mat-option>
-                      <mat-option value="oprecio">Precio</mat-option>
-                      <mat-option value="existen">Existencia</mat-option>
-                      <mat-option value="fecha">Fecha</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)">
-                    {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                  </mat-icon>
+                  <div class="col-7">
+                    <div class="card p-5">
+                      <div class=" d-flex flex-row align-items-center justify-content-between">
+                        <div class="p-2 text-left">
+                          <h4>Carrito de compra</h4>
+                        </div>
+                        <button type="button" (click)="vaciacar()" style="font-size: 1.3rem;font-weight: bold;" class="btn btn-outline-danger"> Vaciar carrito</button>
+                      </div>
+                      <div class=" d-flex flex-row align-items-center justify-content-between">
+                        <div class="p-4 unid-col mt-0">
+                          <span>Unidades: {{ unidades }}</span>
+                          <br>
+                          <span>Productos: {{ encarprod }}</span>
+                        </div>
+                        <div class="p-4 unid-col mt-0">
+                          <span>Totales:</span>
+                          <div class="">
+                            <span>Bs. {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
+                            <br>
+                            <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
+                          </div>
+                        </div>
+                        <div class="p-2 mt-0">
+                          <button class="btn-end" (click)="navigateTo('/carrito')"> Finalizar compra</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="col-4">
+                    <div class="card card__info">
+                      <app-clicard></app-clicard>
+                    </div>
+                  </div>
                 </div>
-              </div>
-          
-              <div class="mat-elevation-z2">
-                  <table class="table table-bordered table-striped pedidos__table">
+    
+                <div class="row">
+                  <div class="col-12 mt-4">
+                    <div class="d-flex align-items-center gap-3">
+                      <mat-form-field appearance="outline" style="flex-grow: 1;">
+                        <mat-label>Buscar producto</mat-label>
+                        <input matInput type="text" [(ngModel)]="search" >
+                        @if (search) {
+                          <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                            <mat-icon>close</mat-icon>
+                          </button>
+                        }
+                      </mat-form-field>
+    
+                      <mat-form-field appearance="outline" style="width: 200px;">
+                        <mat-label>Ordenar por</mat-label>
+                        <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                          <mat-option value="descrip">Descripción</mat-option>
+                          <mat-option value="nomprv">Proveedor</mat-option>
+                          <mat-option value="oprecio">Precio</mat-option>
+                          <mat-option value="existen">Existencia</mat-option>
+                          <mat-option value="fecha">Fecha</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+
+                      <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" style="cursor: pointer;">
+                        {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                      </mat-icon>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <div class="col-12">
+                    <div class="d-flex justify-content-between">
+                      <h3>Buscando por:....</h3>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="mat-elevation-z2 mt-3">
+                  <table class="table table-bordered table-striped table-hover pedidos__table">
                     <thead>
-                      <tr class="text-center">
-                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'img' && orderDirection === 'asc'" [class.desc]="orderBy === 'img' && orderDirection === 'desc'" (click)="sortData('img')">Ver</th>
-                
-                        <th scope="col" class="align-middle text-start" [class.asc]="orderBy === 'descrip' && orderDirection === 'asc'" [class.desc]="orderBy === 'descrip' && orderDirection === 'desc'" (click)="sortData('descrip')">Descripción</th>
-                
-                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'oprecio' && orderDirection === 'asc'" [class.desc]="orderBy === 'oprecio' && orderDirection === 'desc'" (click)="sortData('oprecio')">Precio Bs.</th>
-                
-                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'opreciod' && orderDirection === 'asc'" [class.desc]="orderBy === 'opreciod' && orderDirection === 'desc'" (click)="sortData('opreciod')">Precio US$</th>
-                
-                        <th scope="col" class="align-middle" [class.asc]="orderBy === 'existen' && orderDirection === 'asc'" [class.desc]="orderBy === 'existen' && orderDirection === 'desc'" (click)="sortData('existen')">Inventario</th>
-                
-                        <th scope="col" class="align-middle">Cantidad</th>
-                
-                        <th scope="col" class="align-middle">Agregar</th>
-                      </tr>
+                        <tr class="text-center">
+                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'img' && orderDirection === 'asc'" [class.desc]="orderBy === 'img' && orderDirection === 'desc'" (click)="sortData('img')">Ver</th>
+                            <th scope="col" class="align-middle text-start" [class.asc]="orderBy === 'descrip' && orderDirection === 'asc'" [class.desc]="orderBy === 'descrip' && orderDirection === 'desc'" (click)="sortData('descrip')">Descripción</th>
+                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'oprecio' && orderDirection === 'asc'" [class.desc]="orderBy === 'oprecio' && orderDirection === 'desc'" (click)="sortData('oprecio')">Precio Bs.</th>
+                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'opreciod' && orderDirection === 'asc'" [class.desc]="orderBy === 'opreciod' && orderDirection === 'desc'" (click)="sortData('opreciod')">Precio US$</th>
+                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'existen' && orderDirection === 'asc'" [class.desc]="orderBy === 'existen' && orderDirection === 'desc'" (click)="sortData('existen')">Inventario</th>
+                            <th scope="col" class="align-middle">Cantidad</th>
+                            <th scope="col" class="align-middle">Agregar</th>
+                        </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
-                        <td class="align-middle text-center">
-                          <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)">
-                        </td>
+                        <tr *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
+                            <td class="align-middle text-center">
+                                <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)">
+                            </td>
+                            <td class="align-middle text-start">{{product.descrip}}
+                                <br>
+                                <div *ngIf="product.oferta && product.oferta.length > 0"
+                                    class="oferta-proveedor-inline"
+                                    [matTooltip]="formatOfertasTooltip(product.oferta)"
+                                    matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta Proveedor
+                                </div>
+                                <div *ngIf="product.ficha > 0"
+                                    class="ficha-proveedor-inline"
+                                    matTooltipPosition="above"> DESC.FICHA <br>{{product.ficha}} %
+                                </div>
+                            </td>
+                            <td class="align-middle text-end">
+                                <div>
+                                    <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dprice}}</span>
+                                    <br *ngIf="product.segmento > 0">
+                                    <span style="color: rgb(28, 123, 36);">{{product.oprecio}}</span>
+                                </div>
+                            </td>
+                            <td class="align-middle text-end">
+                                <div>
+                                    <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dpriced}}$</span>
+                                    <br *ngIf="product.segmento > 0">
+                                    <span style="color: rgb(28, 123, 36);">{{product.opreciod}}$</span>
+                                </div>
+                            </td>
+                            <td class="align-middle text-center">{{product.existen}}</td>
+                            <td class="text-center">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    maxlength="10"
+                                    [value]="product.encar ? product.encar : ''"
+                                    (input)="validateInput(product, $event)"
+                                    id="cana_{{product.codigo}}"
+                                    placeholder="Cantidad"
+                                    class="input-cant"
+                                    (keyup.enter)="tipoCargaControl.value == 'casa_matriz' ? agg_all(product) : agg_pedido(product,'')"
+                                >
+                            </td>
+                            <td class="align-middle">
+                                <button *ngIf="tipoCargaControl.value != 'casa_matriz'"
+                                    [ngClass]="{
+                                      'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
+                                      'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
+                                    }"
+                                    (click)="agg_pedido(product,'')"
+                                >
+                                    <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                                    <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                                </button>
                 
-                        <td class="align-middle text-start">{{product.descrip}}
-                          <br>
-                          <div *ngIf="product.oferta && product.oferta.length > 0"
-                            class="oferta-proveedor-inline"
-                            [matTooltip]="formatOfertasTooltip(product.oferta)"
-                            matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta Proveedor
-                        </div>
-  
-  
-                            <div *ngIf="product.ficha  > 0"
-                              class="ficha-proveedor-inline"
-                              
-                              matTooltipPosition="above"> DESC.FICHA <br>{{product.ficha}} %
-                          </div>
-                        </td>
-                
-                        <td class="align-middle" style="text-align: right;">
-                          <div>
-                            <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dprice}}</span>
-                              <br *ngIf="product.segmento > 0">
-                              <span style="color: rgb(28, 123, 36);">{{product.oprecio}}</span>
-                          </div>
-                        
-                        </td>
-                
-                        <td class="align-middle" style="text-align: right;">
-                          <div>
-                            <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dpriced}}$</span>
-                            <br *ngIf="product.segmento > 0">
-                            <span style="color: rgb(28, 123, 36);">{{product.opreciod}}$</span>
-                          </div>
-                        </td>
-                
-                        <td class="align-middle" style="text-align: center;">{{product.existen}}</td>
-                
-                        <td style="text-align: center;">
-                          <input
-                            type="number"
-                            min="0"
-                            maxlength="10"
-                            [value]="product.encar ? product.encar : ''"
-                            (input)="validateInput(product, $event)"
-                            id="cana_{{product.codigo}}"
-                            placeholder="Cantidad"
-                            class="input-cant"
-                            (keyup.enter)="agg_pedido(product)"
-                          >
-                        </td>
-                
-                        <td class="align-middle">
-                          <button
-                            [ngClass]="{
-                              'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
-                              'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
-                            }"
-                            (click)="agg_pedido(product)"
-                          >
-                            <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                            <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
-                          </button>
-                        </td>
-                      </tr>
+                                <button *ngIf="tipoCargaControl.value == 'casa_matriz'"
+                                    [ngClass]="{
+                                      'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
+                                      'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
+                                    }"
+                                    (click)="agg_all(product)"
+                                >
+                                    <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-circle-arrow-up"></i>
+                                    <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-circle-check"></i>
+                                </button>
+                            </td>
+                        </tr>
                     </tbody>
-                  </table>
-                
-          
-              <mat-paginator
-              [length]="totalPages * itemsPerPage"
-              [pageSize]="itemsPerPage"
-              [pageSizeOptions]="[5, 10, 20]"
-              showFirstLastButtons
-              (page)="pageChanged($event)"
-            ></mat-paginator>
+                </table>
+                </div>
+    
+                <mat-paginator
+                  [length]="totalPages * itemsPerPage"
+                  [pageSize]="itemsPerPage"
+                  [pageSizeOptions]="[5, 10, 20]"
+                  showFirstLastButtons
+                  (page)="pageChanged($event)"
+                ></mat-paginator>
+              </div>
             </div>
-            
-
           </div>
-      
-      
-         
-
-      
         </div>
+
+        <div class="stepper-navigation">
+          <button mat-button matStepperPrevious *ngIf="esgrupo">Atrás</button>
+          <button mat-button [disabled]="!tipoCargaControl.value" matStepperNext (click)="Procesarpedido()">Siguiente</button>
+        </div>
+      </mat-step>
+
+      <mat-step  *ngIf="esgrupo && tipoCargaControl.value === 'casa_matriz'">
+        <ng-template matStepLabel>
+          <span class="stepper-indicator">Procesar Pedido</span> 
+        </ng-template>
+
+        <div class="mt-4">
+          <div class="card p-4 shadow">
+            <div class="d-flex justify-content-between">
+              <h3>Carrito de grupo: {{authService.getCmatriz()}} para Enviar</h3>
+              <button type="button" style="font-size: 1.3rem;font-weight: bold;" (click)="vaciacarcm()" class="btn btn-outline-danger"> Vaciar carrito</button>
+
+            </div>
+
+            <div *ngIf="groupedClientData.length === 0" class="alert alert-warning text-center mt-3">
+              No hay productos en el carrito para revisar. Por favor, agrega algunos en el paso anterior.
+            </div>
+        
+            <div *ngIf="groupedClientData.length > 0" class="mt-3">
+              <mat-accordion multi="true"> 
+                <mat-expansion-panel *ngFor="let clientGroup of groupedClientData; let i = index" [expanded]="true"> 
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <i class="fas fa-user-circle client-icon"></i>
+                      <span class="client-name">({{clientGroup.clienteId}}) {{clientGroup.clienteNombre}}</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      <span class="client-summary-header">
+                        {{clientGroup.totalUnidades}} unidades | Bs. {{portalcliLogicaService.formatCurrency(clientGroup.subtotalBs)}} | US$ {{portalcliLogicaService.formatCurrency(clientGroup.subtotalUsd)}}
+                      </span>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+        
+                  <div class="table-responsive">
+                    <table class="table client-products-table">
+                      <thead>
+                        <tr class="header-row">
+                          <th class="text-center product-col-img">Ver</th>
+                          <th class="text-left product-col-desc">Descripción</th>
+                          <th class="text-center product-col-qty">Cantidad</th>
+                          <th class="text-right product-col-price">Precio Bs.</th>
+                          <th class="text-right product-col-price">Precio US$</th>
+                          <th class="text-center product-col-actions">Acciones</th> </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let product of clientGroup.productos; let j = index"
+                            [ngClass]="{'even-row': j % 2 === 0, 'odd-row': j % 2 !== 0, 'product-row-item': true}">
+                          <td class="text-center">
+                            <img [src]="product.img" style="width: 6rem;" class="img-product-small" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigoa)">
+                          </td>
+                          <td>{{product.descrip}}</td>
+                          <td class="text-center">
+                            <input
+                              type="number"
+                              min="1"
+                              [value]="product.cant"
+                              (change)="onQuantityChange(product, $event)" class="form-control form-control-sm quantity-input"
+                            >
+                          </td>
+                          <td class="text-right">Bs. {{ portalcliLogicaService.formatCurrency(product.total) }}</td>
+                          <td class="text-right">US$ {{ portalcliLogicaService.formatCurrency(product.totald) }}</td>
+                          <td class="text-center">
+                            <button class="btn btn-danger btn-sm" (click)="eliminarItem(product)">
+                              <i class="fas fa-trash-alt"></i> </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+        
+            <div class="mt-4 text-end">
+                <h4>Resumen Total del Pedido</h4>
+                <p>Unidades Totales: <strong>{{ unidadescm }}</strong></p>
+                <p>Productos Diferentes: <strong>{{ encarprodcm }}</strong></p>
+                <p>Total en Bolívares: <strong>Bs. {{ portalcliLogicaService.formatCurrency(totalBscm) }}</strong></p>
+                <p>Total en Dólares: <strong>US$ {{ portalcliLogicaService.formatCurrency(totalUsdcm) }}</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stepper-navigation mt-3">
+          <button mat-button matStepperPrevious>Atrás</button>
+          <button mat-raised-button color="primary" (click)="enviapedcm()" >Enviar Pedido</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
   </div>
-
-
 </div>
 <app-footer></app-footer>
 </div>

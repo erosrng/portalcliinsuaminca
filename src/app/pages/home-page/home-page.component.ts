@@ -79,8 +79,8 @@ export interface ApiResponseProviders {
   status: boolean;
   data: {
     cana_total: number;
-    proveed: string; // El código del proveedor que usaremos para la imagen
-    nombre: string;  // El nombre del proveedor para el 'alt'
+    proveed: string; 
+    nombre: string;  
     rif: string;
   }[];
 }
@@ -95,7 +95,7 @@ export interface ApiResponseProviders {
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    CarouselModule, // Necesario para ngx-owl-carousel-o
+    CarouselModule,
     MatTooltipModule,
     MatProgressBarModule
   ],
@@ -110,8 +110,8 @@ export class HomePageComponent implements OnInit {
   isMenuOpen: boolean = false;
 
   products: Product[] = [];
-  isLoading: boolean = false; // Para la carga de productos
-  isLoadingProviders: boolean = false; // Para la carga de proveedores del carrusel
+  isLoading: boolean = false; 
+  isLoadingProviders: boolean = false; 
 
   error: any;
   selectedProduct: any = null;
@@ -154,7 +154,7 @@ export class HomePageComponent implements OnInit {
   };
 
   // Carrusel de Proveedores: ya no tiene datos quemados
-  providers: Provider[] = []; // Se inicializa vacío, se llenará desde la API
+  providers: Provider[] = [];
 
   providersCarouselOptions: OwlOptions = {
     loop: true,
@@ -183,40 +183,38 @@ export class HomePageComponent implements OnInit {
       public portalcliLogicaService: PortalcliLogicaService,
       private route: ActivatedRoute,
       private router: Router,
-      private http: HttpClient // HttpClient ya está inyectado
+      private http: HttpClient
   ) { }
 
   ngOnInit() {
     this.revisarCarrito();
     this.fetchProducts();
-    this.loadCarouselProviders(); // <-- ¡Llamada para cargar los proveedores!
+    this.loadCarouselProviders(); 
   }
 
   // --- Método para cargar los proveedores del carrusel ---
   loadCarouselProviders(): void {
-    this.isLoadingProviders = true; // Activa el loader del carrusel
+    this.isLoadingProviders = true; 
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/carruselaliado`; // Tu endpoint de PHP para proveedores
+    const apiUrl = `${API_URL}portalcli/carruselaliado`; 
 
     this.http.post<ApiResponseProviders>(apiUrl, {}, { headers: headers }).pipe(
       map(response => {
         if (response.status && response.data) {
-          console.log('Datos de proveedores de la API:', response.data); // Log de la data bruta
           return response.data.map(item => ({
-            proveed: item.proveed, // Asegúrate de que esta propiedad exista en la API
-            name: item.nombre,    // Asegúrate de que esta propiedad exista en la API
-            imageSrc: `./assets/images/logoprv/${item.proveed}.png`, // Construye la ruta de la imagen
+            proveed: item.proveed,
+            name: item.nombre,   
+            imageSrc: `./assets/images/logoprv/${item.proveed}.png`, 
           }));
         } else {
           console.warn('API de proveedores no devolvió datos o el estado es false:', response);
-          return []; // Devuelve un array vacío si no hay datos o el estado es falso
+          return []; 
         }
       }),
-      // Reutiliza tu handleError para los errores de la petición
       catchError(this.handleError),
       finalize(() => {
         this.isLoadingProviders = false;
@@ -224,16 +222,14 @@ export class HomePageComponent implements OnInit {
     ).subscribe({
       next: (data: Provider[]) => {
         this.providers = data;
-        console.log('Proveedores mapeados para el carrusel:', this.providers); // Log de la data mapeada
       },
       error: (error) => {
         console.error('Error al cargar los proveedores del carrusel:', error);
-        // El handleError ya muestra el mensaje general, podrías añadir algo específico aquí si lo necesitas
       }
     });
   }
 
-  // --- Tu método handleError existente, se reutiliza para proveedores ---
+  //método handleError existente, se reutiliza para proveedores ---
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       console.error('Ocurrió un error del lado del cliente o de la red:', error.error);
@@ -241,7 +237,6 @@ export class HomePageComponent implements OnInit {
     } else {
       console.error(
           `El backend retornó el código ${error.status}, el cuerpo era: `, error.error);
-      // Puedes ser más específico aquí si el error 401/403 significa token inválido
       Swal.fire('Error del Servidor', 'Ocurrió un problema al obtener los datos. Por favor, inténtalo de nuevo.', 'error');
     }
     return throwError(() => new Error('Algo malo sucedió; por favor, inténtalo de nuevo más tarde.'));
@@ -338,7 +333,6 @@ export class HomePageComponent implements OnInit {
   eventcant(codigo: string, event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const value = inputElement.value;
-    console.log(`Input para producto ${codigo}: ${value}`);
 
     const product = this.products.find(p => p.codigo === codigo);
     if (product) {
@@ -374,7 +368,7 @@ export class HomePageComponent implements OnInit {
         return;
       }
     
-      this.portalcliLogicaService.agregarAlCarrito(product, cantidad).subscribe({
+      this.portalcliLogicaService.agregarAlCarrito(product, cantidad,'').subscribe({
         next: (response: any) => {
           let mensaje = response.mensaje;
           if (typeof mensaje === 'object') {
@@ -420,14 +414,15 @@ export class HomePageComponent implements OnInit {
     imageficha: any;
 
 openProductModal(codigo: string) {
-  this.isLoading = true;
+  Swal.showLoading();
     this.portalcliLogicaService.openProductModal(codigo).subscribe({ // Suscríbete al Observable
       next: (data) => {
         this.selectedProduct = data.product;
         this.imageficha = data.imageUrl;
-        this.isLoading = false; 
+        Swal.close();
       },
       error: (error) => {
+        Swal.close();
         console.error('Error al obtener el producto:', error);
       },
     });
