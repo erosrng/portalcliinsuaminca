@@ -30,6 +30,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete'; // Para 
 
 import { MatRadioModule } from '@angular/material/radio'; 
 
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 interface GrupoCliente {
   clienteId: string;
   clienteNombre: string;
@@ -138,7 +140,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   recordsFiltered: number = 0;
   diasMontoFactura: number | undefined;
 
-  filterDescrip = '';
   filterPrecio = '';
   clienteData: any;
   private clienteDataSubscription: Subscription | undefined;
@@ -159,6 +160,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef 
   ) { }
 
+  private searchSubject = new Subject<string>();
+  filterDescrip = '';
+
   ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
@@ -178,6 +182,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.portalcliLogicaService.clienteCambiado$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       //this.clienteData = this.portalcliLogicaService.clienteData$.getValue(); // Obtén el valor actual
       this.fetchPedidos();
+    });
+
+    this.searchSubject.pipe(
+      debounceTime(300), // Espera 300ms después de la última pulsación
+      distinctUntilChanged() // Solo emite si el valor actual es diferente al último
+    ).subscribe(searchText => {
+      this.fetchPedidos(); // Llama a la función de búsqueda
     });
 
     //this.fetchPedidos();
@@ -242,8 +253,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     formData.append('length', length.toString());
   
     formData.append('codCli', codCli ?? '');
-    //formData.append('search', this.filterDescrip); 
-    formData.append('search', this.search ?? ''); 
+    formData.append('search', this.filterDescrip); 
     formData.append('categoria', this.categoria ?? '');
     formData.append('marca', '');
     if (this.clienteData && this.clienteData.ubica) {
@@ -321,8 +331,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     
 
     clear(): void {
-      this.search = '';
+      this.filterDescrip = '';
       this.dataSource.filter = '';
+      this.fetchPedidos();
     }    
 
   goToFirstPage() {
