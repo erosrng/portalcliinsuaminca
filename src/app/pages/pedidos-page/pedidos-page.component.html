@@ -136,9 +136,8 @@
                   <div class="col-12 mt-4">
                     <div class="d-flex align-items-center gap-3">
                       <mat-form-field appearance="outline" style="flex-grow: 1;">
-                        <mat-label>Buscar producto</mat-label>
-                        <input matInput type="text" [(ngModel)]="search" >
-                        @if (search) {
+                        <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
+                        @if (filterDescrip) {
                           <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
                             <mat-icon>close</mat-icon>
                           </button>
@@ -165,8 +164,8 @@
     
                 <div class="row">
                   <div class="col-12">
-                    <div class="d-flex justify-content-between">
-                      <h3>Buscando por:....</h3>
+                    <div *ngIf="filterDescrip" class="d-flex justify-content-between">
+                      <h3>Buscando por: {{filterDescrip}}</h3>
                     </div>
                   </div>
                 </div>

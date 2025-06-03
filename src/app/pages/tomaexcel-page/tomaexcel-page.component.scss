@@ -6,7 +6,18 @@
 .mi-perfil__main {
     width: 94%;
 }
-
+.btn-upload {
+  margin-top: 0.5vh !important;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  height: 4vh;
+  border-radius: 1rem;
+  border: none;
+  color: #FFF;
+  background: vars.$menu-color;
+  font-size: 1.5rem;
+}
 .row-clear-filter {
     background: #ededed;
     height: 5vh;

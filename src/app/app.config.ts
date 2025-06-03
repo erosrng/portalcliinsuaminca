@@ -10,11 +10,16 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 // ***********************************************
 
-export const API_URL = 'http://insuaminca.proteoerp.org:50080/practica/api/';
-export const URLSOLA = 'http://insuaminca.proteoerp.org:50080/';
-export const PROTEO_URL_ALONE = 'http://insuaminca.proteoerp.org:50080/practica/';
+//URL INTERNA 
+export const API_URL = 'http://10.0.100.2/practica/api/';
+export const URLSOLA = 'http://10.0.100.2/';
+export const PROTEO_URL_ALONE = 'http://10.0.100.2/practica/';
 
-
+//URL EXTERNA
+/* export const API_URL = 'http://Insuaminca.proteoerp.org:50080/proteoerp/api/';
+export const URLSOLA = 'http://Insuaminca.proteoerp.org:50080/';
+export const PROTEO_URL_ALONE = 'http://Insuaminca.proteoerp.org:50080/proteoerp/';
+ */
 //export const API_URL = 'http://insuaminca.proteoerp.org:50080/practica/api/';
 export const appConfig: ApplicationConfig = {
   providers: [
