@@ -341,7 +341,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  agg_pedido(product: any,cliente: any) {
+  agg_pedido(product: any,cliente: any,masivo=false) {
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
     let cantidad: number;
@@ -388,7 +388,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           toast: true,
           position: 'bottom-end',
         });
-        this.revisarCarrito();
+        if(!masivo){
+          this.revisarCarrito();
+        }
       },
     });
   }
@@ -590,9 +592,10 @@ private mostrarSweetAlertClientes(product: any, cantidad: number) {
 
       selectedClientes.forEach(cli => {
         //console.log(`Agregando pedido para cliente: (${cli.cliente}) ${cli.nombre}`);
-        this.agg_pedido(product,cli.cliente)
+        this.agg_pedido(product,cli.cliente,true)
       });
       Swal.close();
+      this.revisarCarrito();
       Swal.fire({
         text: `Pedido agregado para ${selectedClientes.length} cliente(s).`,
         icon: 'success',
@@ -792,8 +795,6 @@ private mostrarSweetAlertClientes(product: any, cantidad: number) {
     }
 
     enviapedcm(){
-      this.isLoading = true; 
-  
         const formData = new FormData();
         const token = this.authService.getToken();
     
@@ -814,22 +815,32 @@ private mostrarSweetAlertClientes(product: any, cantidad: number) {
       
         }).then((result) => {
         if (result.isConfirmed) {
+            Swal.fire({
+                      title: 'Enviando pedido...',
+                      text: 'Por favor, espere.',
+                      allowOutsideClick: false, // Prevent closing by clicking outside
+                      didOpen: () => {
+                        Swal.showLoading(); // Show the actual loading spinner
+                      }
+                    });
+              
             this.http.post(apiUrl, formData, { headers: headers }).subscribe({
               next: (response: any) => {
+                console.log(response)
                 if (response.status) {
                   Swal.close();
                   this.revisarCarrito();
+                  this.Procesarpedido(); 
+
                   Swal.fire(response.mensaje, '', 'success');
                   this.productosEnCarrito = [];
                   this.dataSource.data = this.productosEnCarrito;
-                  this.isLoading = false;  
                 } else {
                   Swal.fire(response.mensaje, '', 'error');
-                  this.isLoading = false;  
+                  Swal.close();
                 }
               },
               error: (error) => {
-                this.isLoading = false;  
                 Swal.close();
                 Swal.fire(error, '', 'error');
                 console.error('Error de la API:', error);
