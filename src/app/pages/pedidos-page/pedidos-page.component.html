@@ -138,6 +138,7 @@
                   <div class="col-12 mt-4">
                     <div class="d-flex align-items-center gap-3">
                       <mat-form-field appearance="outline" style="flex-grow: 1;">
+                        <mat-label>Buscar articulo</mat-label>
                         <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
                         @if (filterDescrip) {
                           <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
