@@ -1,0 +1,17 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    # This is the key part!
+    baseDirectory: /dist/cv-app-insuaminca # <--- **CHANGE THIS** to where index.html is
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
