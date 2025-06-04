@@ -346,6 +346,7 @@ nav[aria-label="Page navigation example"] {
     border-radius: 0.25rem; 
     border: 1px solid #ced4da;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    margin: auto !important;
 }
 
 .quantity-input:focus {
@@ -370,10 +371,15 @@ nav[aria-label="Page navigation example"] {
 }
 
 .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 1.5rem;
     line-height: 1.5;
     border-radius: 0.2rem;
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
 }
 
 /* Alineación de la nueva columna de acciones */
@@ -401,4 +407,9 @@ nav[aria-label="Page navigation example"] {
   .mat-mdc-button.mat-mdc-snack-bar-action {
     color: white !important; /* Asegura que el texto del botón sea blanco */
   }
-  
+
+  .mr-4 {
+      margin-right: 1rem !important;
+      font-size: 2rem !important;
+  }
+
