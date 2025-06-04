@@ -116,7 +116,7 @@
                             DCT.VOLUMEN<br>
                             {{ (portalcliLogicaService.clienteData$ | async)?.descvol }}
                         </div>
-                        <div class="col details__cli">
+                        <div *ngIf="authService.getCmatriz()" class="col details__cli">
                             GRUPO<br>
                             {{ authService.getCmatriz() }}
                         </div>

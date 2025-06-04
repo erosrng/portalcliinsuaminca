@@ -119,7 +119,9 @@
                           </div>
                         </div>
                         <div class="p-2 mt-0">
-                          <button class="btn-end" (click)="navigateTo('/carrito')"> Finalizar compra</button>
+                          <button *ngIf="tipoCargaControl.value != 'casa_matriz'" class="btn-end" (click)="navigateTo('/carrito')">Procesar pedido</button>
+                          <button *ngIf="tipoCargaControl.value == 'casa_matriz'" class="btn-end" matStepperNext (click)="Procesarpedido()">Procesar pedido</button>
+
                         </div>
                       </div>
                     </div>

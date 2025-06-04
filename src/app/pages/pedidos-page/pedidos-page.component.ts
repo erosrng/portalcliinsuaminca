@@ -910,7 +910,6 @@ private mostrarSweetAlertClientes(product: any, cantidad: number) {
     if (event.selectedIndex == 1) { 
       this.iniciarCargaDeInventario();
     } else if (event.selectedIndex === 2 && this.esgrupo && this.tipoCargaControl.value === 'casa_matriz') { 
-      // El tercer paso es el de "Procesar Pedido" (índice 2)
       this.Procesarpedido(); 
     }
     // Si tienes lógica para otros pasos, puedes añadir más `else if`

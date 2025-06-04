@@ -49,16 +49,16 @@
       <div class="mi-perfil__content">
         <main class="mi-perfil__main" style="width: 100%;">
           <div class="mi-perfil__left">
-            <!-- *ngIf="esgrupo" -->
-            <div  class="material-type-selector-container">
+            
+            <div *ngIf="esgrupo" class="material-type-selector-container">
                 <span>Tipo de Carga:</span>
                 <mat-button-toggle-group [(ngModel)]="tipoCarga" aria-label="Seleccionar tipo de carga">
                     <mat-button-toggle value="individual">Individual</mat-button-toggle>
                     <mat-button-toggle value="grupo">Casa Matriz</mat-button-toggle>
                 </mat-button-toggle-group>
             </div>
-            <!-- *ngIf="esgrupo" -->
-            <div  class="load-type-description">
+            
+            <div *ngIf="esgrupo" class="load-type-description">
                 <ng-container *ngIf="tipoCarga === 'individual'">
                     <p style="color:red">
                         La carga individual asignará los productos a la farmacia de su usuario actual.
