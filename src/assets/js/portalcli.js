@@ -344,6 +344,9 @@ function startTimer(callback=null, timeout=1000) {
                 var descripseg = response.descrip;
                 var descvol = response.descvol;
 
+                localStorage.removeItem('nameFarmaActiva')
+                localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
+
                 if (almacen) {
                     $('#almacli').text(almacen);
                     $('#almacli').attr('data-almacen', ubica);

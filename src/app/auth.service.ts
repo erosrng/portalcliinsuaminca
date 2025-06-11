@@ -63,6 +63,10 @@ export class AuthService {
     return this.decodedToken ? this.decodedToken.nombre : null;
   }
 
+  getNombreFarmaciaActiva() {
+    return localStorage.getItem('nameFarmaActiva')
+  }
+
   isLoggedIn(): boolean {
     return !!this.decodedToken && this.decodedToken.logged_in;
   }

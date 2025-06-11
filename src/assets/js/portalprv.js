@@ -862,6 +862,9 @@ if (table !== null && $.fn.DataTable.isDataTable('#car-table')) {
                     data: { codCli: codCli },
                     success: function(response) {
                         var almacen = response.ubica;
+
+                        localStorage.removeItem('nameFarmaActiva')
+                        localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
             
                         if (almacen) {
                             $('#idAlma').val(almacen);

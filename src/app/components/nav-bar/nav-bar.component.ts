@@ -202,6 +202,12 @@ export class NavBarComponent implements OnInit {
       return `(${codCli}) ${this.authService.getNombre()}`;
     }
     const clienteSeleccionado = this.clientes.find((cliente) => cliente.cliente === codCli);
+
+    const value = clienteSeleccionado ? `${clienteSeleccionado.nombre}`
+        : `${this.authService.getNombre()}`;
+    localStorage.removeItem('nameFarmaActiva')
+    localStorage.setItem('nameFarmaActiva', value)
+
     return clienteSeleccionado
       ? `(${clienteSeleccionado.cliente}) ${clienteSeleccionado.nombre}`
       : `(${codCli}) ${this.authService.getNombre()}`;
