@@ -12,6 +12,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 
 import { API_URL } from '../../app.config';
+import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 
 @Component({
   selector: 'app-login-page',
@@ -46,11 +47,16 @@ export class LoginPageComponent implements AfterViewInit {
     private route: Router,
     private http: HttpClient,
     public authService: AuthService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    public portalcliLogicaService: PortalcliLogicaService,  
   ) {}
 
   ngAfterViewInit() {
     this.userInput.nativeElement.focus(); // Enfoca el input de usuario al cargar la página
+  }
+
+  navigateTo(route: string){
+    this.portalcliLogicaService.navigateTo(route);
   }
 
   onSubmit() {

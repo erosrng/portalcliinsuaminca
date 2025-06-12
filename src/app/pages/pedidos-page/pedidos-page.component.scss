@@ -413,3 +413,19 @@ nav[aria-label="Page navigation example"] {
       font-size: 2rem !important;
   }
 
+.indexado-inline{
+    display: inline-flex; 
+    align-items: center;  
+    justify-content: center;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.60em; 
+    font-weight: 600; 
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #fff; 
+    background-color: #3c965e; 
+    margin-top: 5px; 
+    margin-left: 8px;
+}
+
