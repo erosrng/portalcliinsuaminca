@@ -146,21 +146,39 @@
                             </button>
                           }
                         </mat-form-field>
-                
-
                     </div>
                 
                     <div class="row mb-3">
                       <div class="col-md-4 mb-3 mb-md-0">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                           <mat-label>Marca</mat-label>
                           <mat-select [(ngModel)]="filterMarca" (selectionChange)="fetchPedidos()">
                             <mat-option value="">Todas</mat-option>
                             @for (marca of filterMarcaOptions; track marca.proveed) {
-                              <mat-option [value]="marca.proveed">{{ marca.nombre }}</mat-option>
+                              <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
                             }
                           </mat-select>
+                        </mat-form-field> -->
+
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Marca</mat-label>
+                          <input type="text"
+                                 placeholder="Selecciona una Marca"
+                                 aria-label="Marca"
+                                 matInput
+                                 [formControl]="marcaControl"
+                                 [matAutocomplete]="auto"
+                                 (keydown.enter)="fetchPedidos()"
+                                 (focus)="onMarcaFocus()"> <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMarcaSelected($event)">
+                                  <mat-option value="">Todas</mat-option>
+
+                            @for (marca of filteredMarcaOptions | async; track marca.marca) {
+                              <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
+                            }
+                          </mat-autocomplete>
                         </mat-form-field>
+
+                      
                       </div>
                 
                       <div class="col-md-4 mb-3 mb-md-0">
@@ -168,9 +186,9 @@
                           <mat-label>Categoría</mat-label>
                           <mat-select [(ngModel)]="filterCategoria" (selectionChange)="fetchPedidos()">
                             <mat-option value="">Todas</mat-option>
-                            <mat-option value="categoria1">Categoría Ejemplo 1</mat-option>
-                            <mat-option value="categoria2">Categoría Ejemplo 2</mat-option>
-                            <mat-option value="categoria3">Categoría Ejemplo 3</mat-option>
+                            @for (categoria of filterCategoriaOptions; track categoria.grupo) {
+                              <mat-option [value]="categoria.grupo">{{ categoria.nom_grup }}</mat-option>
+                            }
                           </mat-select>
                         </mat-form-field>
                       </div>
@@ -309,7 +327,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                  </table>
                 </div>
     
                 <mat-paginator

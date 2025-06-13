@@ -15,7 +15,8 @@ import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
 import Swal from 'sweetalert2';
-import { Subscription, takeUntil, Subject } from 'rxjs';
+import { Observable, Subscription, takeUntil, Subject } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule, FormControl,Validators } from '@angular/forms'; // Importar ReactiveFormsModule y FormControl
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -68,8 +69,12 @@ interface ProductData {
 }
 
 interface Marca {
-  proveed: string;
-  nombre: string;
+  marca: string;
+}
+
+interface Categoria {
+  grupo: string;
+  nom_grup: string;
 }
 
 
@@ -157,7 +162,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   esgrupo: any;
 
-  filterMarca: string = '';
   filterCategoria: string = '';
   filterOfertasActivas: string = '';
   filterNuevasEntradas: boolean = false;
@@ -175,8 +179,19 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   filterDescrip = '';
 
+  marcaControl = new FormControl('');
+  filterMarcaOptions: Marca[] = [];
+  filteredMarcaOptions: Observable<Marca[]> | undefined;
+  filterMarca: string = '';
+
   ngOnInit() {
     this.traeMarcas();
+    this.traeCategorias();
+
+    this.filteredMarcaOptions = this.marcaControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
@@ -265,10 +280,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     formData.append('codCli', codCli ?? '');
     formData.append('search', this.filterDescrip);
     formData.append('categoria', this.filterCategoria ?? this.categoria ?? ''); // Usar filterCategoria, si no existe, usar la de la URL
-    formData.append('proveedor', this.filterMarca); // Añadido el filtro de marca
+    //formData.append('proveedor', this.filterMarca);
     if (this.clienteData && this.clienteData.ubica) {
       formData.append('almacen', this.clienteData.ubica);
     }
+    formData.append('marca', this.filterMarca);
     formData.append('lote', this.filterLote);
     formData.append('orderby', this.orderBy);
     formData.append('orderDirection', this.orderDirection);
@@ -1148,8 +1164,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Llama a tu función para modificar la cantidad
     this.modificarCantidad(product, newQuantity);
   }
+  
+  onMarcaFocus(): void {
+    // Esto fuerza al FormControl a emitir su valor actual,
+    // lo que a su vez activa el filtro y muestra las opciones.
+    this.marcaControl.setValue(this.marcaControl.value);
+  }
 
-  filterMarcaOptions: Marca[] = [];
   traeMarcas() {
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -1176,5 +1197,45 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private _filter(value: string): Marca[] {
+    const filterValue = value.toLowerCase();
+    return this.filterMarcaOptions.filter(marca =>
+      marca.marca.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onMarcaSelected(event: any): void {
+    this.filterMarca = event.option.value;
+    //this.cdr.detectChanges();
+    this.fetchPedidos(); // Call your fetchPedidos method when an option is selected
+  }
+
+  filterCategoriaOptions: Categoria[] = [];
+
+  traeCategorias() {
+    const formData = new FormData();
+    const token = this.authService.getToken();
+    const apiUrl = `${API_URL}portalcli/buscacategorias`;
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.status) {
+          this.filterCategoriaOptions = response.data; // Asigna las marcas al array
+        } else {
+          console.error('Error al cargar marcas:', response);
+          this.filterCategoriaOptions = [];
+        }
+        this.cdr.detectChanges(); // Detecta los cambios para actualizar la vista
+      },
+      error: (error) => {
+        console.error('Error de la API:', error);
+        this.filterCategoriaOptions = [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
 
 }
