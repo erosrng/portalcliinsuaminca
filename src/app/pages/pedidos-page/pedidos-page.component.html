@@ -172,9 +172,9 @@
                                  (focus)="onMarcaFocus()"> <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMarcaSelected($event)">
                                   <mat-option value="">Todas</mat-option>
 
-                            @for (marca of filteredMarcaOptions | async; track marca.marca) {
-                              <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
-                            }
+                              @for (marca of filteredMarcaOptions | async; track marca.marca) {
+                                <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
+                              }
                           </mat-autocomplete>
                         </mat-form-field>
 
