@@ -2,7 +2,24 @@
 @import './../miperfil-page/miperfil-page.component.scss';
 .mi-perfil{
     width: 100%;
+  min-height: 75vh;
 }
+
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  background: #6bc32d;
+  color: #FFF;
+}
+
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard .mat-pseudo-checkbox, .mat-button-toggle-group-appearance-standard .mat-pseudo-checkbox {
+  --mat-minimal-pseudo-checkbox-selected-checkmark-color: #FFF !important;
+}
+
+.border-box {
+  border: 1px solid #CCC;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
 .mi-perfil__main {
     width: 94%;
 }
@@ -62,9 +79,12 @@
     cursor: pointer;
     margin-right: 10px;
     font-size: 1rem;
+
+    span {
+      margin-left: 10px !important;
+    }
   }
   
   .upload-input {
     display: none; /* Oculta el input de archivo original */
   }
-  

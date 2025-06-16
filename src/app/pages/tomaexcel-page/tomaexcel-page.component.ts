@@ -82,7 +82,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
 
   loading: boolean = false;
   // --- Mantenemos esta variable, ngModel se enlazará a ella ---
-  tipoCarga: 'individual' | 'grupo' = 'individual'; 
+  tipoCarga = '';
   groupedClientData: GrupoCliente[] = [];
 
   constructor(
@@ -247,7 +247,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
             allowOutsideClick: false, 
             allowEscapeKey: false, 
           });          
-  
+          this.route.navigate(['/carrito']);
         } else {
           Swal.fire({
             title: '¡Carga completa!',
@@ -256,6 +256,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
             timer: 3000,
             showConfirmButton: false
           });
+            this.route.navigate(['/carrito']);
         }
         this.loading = false;
         this.revisarCarrito();

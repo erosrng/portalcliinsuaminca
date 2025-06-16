@@ -252,7 +252,7 @@
     margin: 0 auto;
     padding: 3rem;
     display: flex;
-    align-items: center;
+    align-items: start;
 }
 .card-title {
     border-bottom: 1px solid vars.$lineas-separetor;
@@ -276,7 +276,7 @@
     border-right: none;
 }
 .ficha__content {
-    width: 40%;
+    width: 30%;
 }
 .cardinfo__text{
     color: vars.$menu-color;
@@ -287,6 +287,7 @@
 
 .card__info{
     border-radius: 1rem;
+    padding: 1rem;
 }
 .slide {
     width: 400px;

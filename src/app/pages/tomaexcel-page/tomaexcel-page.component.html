@@ -45,100 +45,97 @@
       <header class="mi-perfil__header">
         <h1 class="ofertas-title mi-perfil__title">Cargar pedido por listado (Excel)</h1>
       </header>
+
+      <div class="row border-box">
+          <div class="col-12">
+              <app-clicard></app-clicard>
+          </div>
+      </div>
+
+
     
-      <div class="mi-perfil__content">
+      <div class="row mt-4 mb-5">
         <main class="mi-perfil__main" style="width: 100%;">
           <div class="mi-perfil__left">
-            
-            <div *ngIf="esgrupo" class="material-type-selector-container">
-                <span>Tipo de Carga:</span>
-                <mat-button-toggle-group [(ngModel)]="tipoCarga" aria-label="Seleccionar tipo de carga">
-                    <mat-button-toggle value="individual">Individual</mat-button-toggle>
-                    <mat-button-toggle value="grupo">Casa Matriz</mat-button-toggle>
-                </mat-button-toggle-group>
-            </div>
-            
-            <div *ngIf="esgrupo" class="load-type-description">
-                <ng-container *ngIf="tipoCarga === 'individual'">
-                    <p style="color:red">
-                        La carga individual asignará los productos a la farmacia de su usuario actual.
-                    </p>
-                </ng-container>
-                <ng-container *ngIf="tipoCarga === 'grupo'">
-                    <p style="color:red">
-                        La carga por grupo (Excel) le permitirá asignar productos al grupo de farmacias al que pertenece. <br>
-                        <span style="color: #053354;">-Carga el archivo en el boton</span>
-                    </p>
-                </ng-container>
+
+            <div *ngIf="esgrupo" class="material-type-selector-container ">
+                <div class="row border-box">
+                    <div class="col-12">
+                        <span>Paso 1: Seleccione el tipo de carga que desea realizar:</span>
+                    </div>
+
+                    <div class="col-12">
+                        <mat-button-toggle-group [(ngModel)]="tipoCarga" aria-label="Seleccionar tipo de carga" class="w-100 mt-2">
+                            <mat-button-toggle value="individual" class="w-50">Individual</mat-button-toggle>
+                            <mat-button-toggle value="grupo" class="w-50">Casa Matriz</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                </div>
             </div>
 
             <div *ngIf="tipoCarga === 'grupo'">
-                <div class="card mt-4 card__info">
-                    <div class="card-body ">
-                        <h3 class="card-title text-primary">Baje su listado e impórtelo</h3>
-            
-                        <div class="row mt-5">    
-                          
-                            <div class="col-12 mb-3">
-                                <button class="row-clear-filter" (click)="bajaexcelgrupo()">Bajar listado de grupo</button>
-                            </div>
-                            
-                            <div class="col-12 upload-container">
-                                <!-- <label for="excelUpload" class="upload-label">
-                                  <i class="fas fa-file-upload"></i>
-                                  <span *ngIf="!fileName">Seleccione archivo de GRUPO .xlsx</span>
-                                  <span *ngIf="fileName">{{ fileName }}</span>
-                                  <input type="file" id="excelUpload" class="upload-input" (change)="onFileChange($event)" />
-                                </label>
-                                <button class="busca__pedido"(click)="cargarArchivoGrupo();">Cargar archivo de Grupo</button> -->
-                                <div class="col-12" >
-                                  <input type="file" (change)="onFileChange($event)" style="display: none;" #fileInput>
-                                  <button class="btn-upload" (click)="fileInput.click()">
-                                      <i class="fas fa-file-upload"></i>
-                                      Cargar archivo de Grupo
-                                  </button>
-                              </div>
-                            </div>
-            
-                        </div>
-            
+                <div class="row mt-4 border-box">
+                    <div class="col-12">
+                        <span>Paso 2: Descargue el listado y realice su pedido</span>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="row-clear-filter mt-2" (click)="bajaexcelgrupo()">Bajar listado de grupo</button>
                     </div>
                 </div>
-                <div class="card card__info mt-5">
-                    <app-clicard></app-clicard>
+
+                <div class="row mt-4 border-box">
+                    <div class="col-12">
+                        <span>Paso 3: Seleccione el archivo y realiza la carga al sistema</span>
+                    </div>
+                    <div class="col-12">
+                        <input type="file" (change)="onFileChange($event)" style="display: none;" #fileInput>
+                        <button class="btn-upload" (click)="fileInput.click()">
+                            <i class="fas fa-file-upload"></i>
+                            Cargar archivo de Grupo
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <div *ngIf="tipoCarga === 'individual'">
-                <div class="card mt-4 card__info">
-                    <div class="card-body">
-                        <h3 class="card-title text-primary">Baje su listado e impórtelo</h3>
-                        <div class="row mt-2">    
-                          
-                          <div class="col-12 mb-3">
-                            <p >Los productos cargados por este metodo se iran al carrito</p>
-                              <button class="row-clear-filter" (click)="bajaexcel()">Bajar listado</button>
-                          </div>
-                          
-                          <div class="col-12 upload-container">
-                              <label for="excelUpload" class="upload-label">
-                                <i class="fas fa-file-upload"></i>
-                                <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
-                                <span *ngIf="fileName">{{ fileName }}</span>
-                                <input type="file" id="excelUpload" class="upload-input" (change)="onFileChangeIndividual($event)" />
-                              </label>
-                              <button class="busca__pedido"(click)="cargarArchivo();">Cargar archivo</button>
-                          </div>
-          
-                      </div>
+                <div class="row mt-4 border-box">
+                    <div class="col-12">
+                        <span>Paso 2: Descargue el listado y realice su pedido</span>
                     </div>
-                    
-                    <div class="card card__info mt-5">
-                      <app-clicard></app-clicard>
-                  </div>
+
+                    <div class="col-12">
+                        <button class="row-clear-filter" (click)="bajaexcel()">Bajar listado</button>
+                    </div>
                 </div>
+
+                <div class="row mt-4 border-box">
+                    <div class="col-12">
+                        <span>Paso 3: Seleccione el archivo y realiza la carga al sistema</span>
+                    </div>
+                    <div class="col-12">
+                        <label for="excelUpload" class="upload-label w-100 mt-3">
+                            <i class="fas fa-file-upload"></i>
+                            <span *ngIf="!fileName">Seleccione archivo .xlsx</span>
+                            <span *ngIf="fileName">{{ fileName }}</span>
+                            <input type="file" id="excelUpload" class="upload-input" (change)="onFileChangeIndividual($event)" />
+                        </label>
+
+                    </div>
+                </div>
+
+                <div class="row mt-4 border-box">
+                    <div class="col-12">
+                        <span>Paso 4: Pulse el boton de cargar pedido para ir a la pantalla de resumen de pedido y finalizar</span>
+                    </div>
+                    <div class="col-12">
+                        <button class="busca__pedido w-100 mt-4 p-2" (click)="cargarArchivo();">Cargar pedido</button>
+
+                    </div>
+                </div>
+
             </div>
-            
+
             <div *ngIf="loading" class="loader-overlay">
               <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Cargando...</span>
@@ -146,95 +143,110 @@
             </div>
 
           </div>
-  
-          <div class="mi-perfil__right">
-            <div class="container-fluid mt-4"  *ngIf="tipoCarga === 'grupo'">
-              <div class="card p-4 shadow">
-                <div class="d-flex justify-content-between">
-                  <h3>Carrito de grupo: {{authService.getCmatriz()}} para Enviar</h3>
-                  <button type="button" style="font-size: 1.3rem; font-weight: bold;margin: 1rem;" (click)="vaciacarcm()" class="btn btn-outline-danger"> Vaciar carrito</button>
-    
-                </div>
-    
-                <div *ngIf="groupedClientData.length === 0" class="alert alert-warning text-center mt-3">
-                  No hay productos en el carrito para revisar. Por favor, agrega algunos en el paso anterior.
-                </div>
-            
-                <div *ngIf="groupedClientData.length > 0" class="mt-3">
-                  <button type="button" style="font-size: 1.3rem;font-weight: bold;" class="btn btn-success"(click)="enviapedcm()" >Enviar pedidos</button>
 
-                  <mat-accordion multi="true"> 
-                    <mat-expansion-panel *ngFor="let clientGroup of groupedClientData; let i = index" [expanded]="true"> 
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          <i class="fas fa-user-circle client-icon"></i>
-                          <span class="client-name">({{clientGroup.clienteId}}) {{clientGroup.clienteNombre}}</span>
-                        </mat-panel-title>
-                        <mat-panel-description>
+          <div class="mi-perfil__right">
+              <div *ngIf="esgrupo" class="load-type-description border-box">
+                  <p style="color:red; font-size: 12px">
+                      "Indivudual": Se refiere a la carga de una sola sede, la que tenga seleccionada en el buscador superior,
+                      esta carga se vera reflejada automaticamente en el carrito
+                  </p>
+                  <p style="color:red; font-size: 12px">
+                      "Casa Matriz": Se refiere a la carga de pedido por grupo, con esto puede realizar pedidos de
+                      distintas sedes con un solo documento  <br>
+                  </p>
+              </div>
+            <div class="container-fluid mt-4"  *ngIf="tipoCarga === 'grupo'">
+                <div class="row border-box">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <h3>Carrito de grupo: {{authService.getCmatriz()}} para Enviar</h3>
+                        </div>
+
+                        <div *ngIf="groupedClientData.length === 0" class="alert alert-warning text-center mt-3">
+                            No hay productos en el carrito para revisar. Por favor, agrega algunos en el paso anterior.
+                        </div>
+
+                        <div >
+                            <button type="button" style="font-size: 1.3rem; font-weight: bold;margin: 1rem;" (click)="vaciacarcm()" class="btn btn-outline-danger"> Vaciar carrito</button>
+                            <button type="button" *ngIf="groupedClientData.length > 0" style="font-size: 1.3rem;font-weight: bold;" class="btn btn-success"(click)="enviapedcm()" >Enviar pedidos</button>
+                        </div>
+
+                        <div *ngIf="groupedClientData.length > 0" class="mt-3">
+
+
+                            <mat-accordion multi="true">
+                                <mat-expansion-panel *ngFor="let clientGroup of groupedClientData; let i = index" [expanded]="true">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            <i class="fas fa-user-circle client-icon"></i>
+                                            <span class="client-name">({{clientGroup.clienteId}}) {{clientGroup.clienteNombre}}</span>
+                                        </mat-panel-title>
+                                        <mat-panel-description>
                           <span class="client-summary-header">
                             {{clientGroup.totalUnidades}} unidades | Bs. {{portalcliLogicaService.formatCurrency(clientGroup.subtotalBs)}} | US$ {{portalcliLogicaService.formatCurrency(clientGroup.subtotalUsd)}}
                           </span>
-                        </mat-panel-description>
-                      </mat-expansion-panel-header>
-            
-                      <div class="table-responsive">
-                        <table class="table client-products-table">
-                          <thead>
-                            <tr class="header-row">
-                              <th class="text-center product-col-img">Ver</th>
-                              <th class="text-left product-col-desc">Descripción</th>
-                              <th class="text-center product-col-qty">Cantidad</th>
-                              <th class="text-right product-col-price">Precio Bs.</th>
-                              <th class="text-right product-col-price">Precio US$</th>
-                              <th class="text-center product-col-actions">Acciones</th> </tr>
-                          </thead>
-                          <tbody>
-                            <tr *ngFor="let product of clientGroup.productos; let j = index"
-                                [ngClass]="{'even-row': j % 2 === 0, 'odd-row': j % 2 !== 0, 'product-row-item': true}">
-                              <td class="text-center">
-                                <img [src]="product.img" style="width: 6rem;" class="img-product-small" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigoa)">
-                              </td>
-                              <td>{{product.descrip}}</td>
-                              <td class="text-center">
-                                <input
-                                  type="number"
-                                  min="1"
-                                  [value]="product.cant"
-                                  (change)="onQuantityChange(product, $event)" class="form-control form-control-sm quantity-input"
-                                >
-                              </td>
-                              <td class="text-right">Bs. {{ portalcliLogicaService.formatCurrency(product.total) }}</td>
-                              <td class="text-right">US$ {{ portalcliLogicaService.formatCurrency(product.totald) }}</td>
-                              <td class="text-center">
-                                <button class="btn btn-danger btn-sm" (click)="eliminarItem(product)">
-                                  <i class="fas fa-trash-alt"></i> </button>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </mat-expansion-panel>
-                  </mat-accordion>
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+
+                                    <div class="table-responsive">
+                                        <table class="table client-products-table">
+                                            <thead>
+                                            <tr class="header-row">
+                                                <th class="text-center product-col-img">Ver</th>
+                                                <th class="text-left product-col-desc">Descripción</th>
+                                                <th class="text-center product-col-qty">Cantidad</th>
+                                                <th class="text-right product-col-price">Precio Bs.</th>
+                                                <th class="text-right product-col-price">Precio US$</th>
+                                                <th class="text-center product-col-actions">Acciones</th> </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let product of clientGroup.productos; let j = index"
+                                                [ngClass]="{'even-row': j % 2 === 0, 'odd-row': j % 2 !== 0, 'product-row-item': true}">
+                                                <td class="text-center">
+                                                    <img [src]="product.img" style="width: 6rem;" class="img-product-small" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigoa)">
+                                                </td>
+                                                <td>{{product.descrip}}</td>
+                                                <td class="text-center">
+                                                    <input
+                                                            type="number"
+                                                            min="1"
+                                                            [value]="product.cant"
+                                                            (change)="onQuantityChange(product, $event)" class="form-control form-control-sm quantity-input"
+                                                    >
+                                                </td>
+                                                <td class="text-right">Bs. {{ portalcliLogicaService.formatCurrency(product.total) }}</td>
+                                                <td class="text-right">US$ {{ portalcliLogicaService.formatCurrency(product.totald) }}</td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-danger btn-sm" (click)="eliminarItem(product)">
+                                                        <i class="fas fa-trash-alt"></i> </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+
+                        <div class="mt-4 text-end">
+                            <h4>Resumen Total del Pedido</h4>
+                            <p>Unidades Totales: <strong>{{ unidadescm }}</strong></p>
+                            <p>Productos Diferentes: <strong>{{ encarprodcm }}</strong></p>
+                            <p>Total en Bolívares: <strong>Bs. {{ portalcliLogicaService.formatCurrency(totalBscm) }}</strong></p>
+                            <p>Total en Dólares: <strong>US$ {{ portalcliLogicaService.formatCurrency(totalUsdcm) }}</strong></p>
+                        </div>
+                    </div>
                 </div>
-            
-                <div class="mt-4 text-end">
-                    <h4>Resumen Total del Pedido</h4>
-                    <p>Unidades Totales: <strong>{{ unidadescm }}</strong></p>
-                    <p>Productos Diferentes: <strong>{{ encarprodcm }}</strong></p>
-                    <p>Total en Bolívares: <strong>Bs. {{ portalcliLogicaService.formatCurrency(totalBscm) }}</strong></p>
-                    <p>Total en Dólares: <strong>US$ {{ portalcliLogicaService.formatCurrency(totalUsdcm) }}</strong></p>
-                </div>
-              </div>
             </div>
-    
+
 
           </div>
-  
+
         </main>
       </div>
-  
+
       <div class="pre__footer"></div>
-  
+
   </div>
 </div>
 

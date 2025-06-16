@@ -117,26 +117,34 @@
                         </div>
 
                         <div class="container ficha__content">
+                            <div class="container-fluid">
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <h3 class="text-primary">Informacion del cliente</h3>
+                                    </div>
 
-                            <div class="card card__info">
-                                <app-clicard></app-clicard>
-                            </div>
-                        
-                            <div class="card mt-4 card__info">
-                                <div class="card-body ">
-                                    <h3 class="card-title text-primary">Asesor Comercial</h3>
-                                    <p class="card-text">
-                                        <span class="cardinfo__text">NOMBRE: <b>{{ (portalcliLogicaService.clienteData$ | async)?.nombrevd }}</b></span><br>
-                                        <span class="cardinfo__text">TELÉFONO: <b>{{ (portalcliLogicaService.clienteData$ | async)?.telefonovd }}</b></span><br>
-                                        <span class="cardinfo__text">CORREO: <span class="title__limit">{{ (portalcliLogicaService.clienteData$ | async)?.emailvd }}</span>                                    
+                                    <div class="col-12 mt-4">
+                                        <div class="card card__info">
+                                            <app-clicard></app-clicard>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mt-2">
+                                        <div class="card mt-4 card__info">
+                                            <div class="card-body ">
+                                                <h3 class="card-title text-primary">Asesor Comercial</h3>
+                                                <p class="card-text">
+                                                    <span class="cardinfo__text">NOMBRE: <b>{{ (portalcliLogicaService.clienteData$ | async)?.nombrevd }}</b></span><br>
+                                                    <span class="cardinfo__text">TELÉFONO: <b>{{ (portalcliLogicaService.clienteData$ | async)?.telefonovd }}</b></span><br>
+                                                    <span class="cardinfo__text">CORREO: <span class="title__limit">{{ (portalcliLogicaService.clienteData$ | async)?.emailvd }}</span>
                                       </span>
-                                    </p>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-
                     </div>
 
 
@@ -301,6 +309,7 @@
                                                 class="cana__input-v2"
                                                 type="number"
                                                 min="0"
+                                                placeholder="1"
                                                 [id]="'cana_' + product.codigo"
                                                 [value]="product.encar ? product.encar : ''"
                                                 (input)="eventcant(product.codigo, $event)"
