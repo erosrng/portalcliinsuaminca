@@ -15,7 +15,8 @@ import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
 import Swal from 'sweetalert2';
-import { Subscription, takeUntil, Subject } from 'rxjs';
+import { Observable, Subscription, takeUntil, Subject } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule, FormControl,Validators } from '@angular/forms'; // Importar ReactiveFormsModule y FormControl
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -31,6 +32,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete'; // Para 
 import { MatRadioModule } from '@angular/material/radio'; 
 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 interface GrupoCliente {
   clienteId: string;
@@ -65,6 +68,15 @@ interface ProductData {
   descu: number;
 }
 
+interface Marca {
+  marca: string;
+}
+
+interface Categoria {
+  grupo: string;
+  nom_grup: string;
+}
+
 
 @Component({
   selector: 'app-pedidos-page',
@@ -89,7 +101,8 @@ interface ProductData {
     MatStepperModule,      // <-- Añadir MatStepperModule
     MatAutocompleteModule, // <-- Añadir MatAutocompleteModule
     MatSnackBarModule,
-    MatRadioModule
+    MatRadioModule,
+    MatCheckboxModule 
   ],
   changeDetection: ChangeDetectionStrategy.OnPush, 
   templateUrl: './pedidos-page.component.html',
@@ -143,13 +156,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filterPrecio = '';
   clienteData: any;
   private clienteDataSubscription: Subscription | undefined;
-  filterMarca: string = '';
   filterLote: string = '';
   orderBy: string = 'descrip';
   orderDirection: string = 'asc';
 
   esgrupo: any;
 
+  filterCategoria: string = '';
+  filterOfertasActivas: string = '';
+  filterNuevasEntradas: boolean = false;
+  filterOfertas: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -163,14 +179,25 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   filterDescrip = '';
 
+  marcaControl = new FormControl('');
+  filterMarcaOptions: Marca[] = [];
+  filteredMarcaOptions: Observable<Marca[]> | undefined;
+  filterMarca: string = '';
+
   ngOnInit() {
+    this.traeMarcas();
+    this.traeCategorias();
+
+    this.filteredMarcaOptions = this.marcaControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
+
     this.activatedRoute.queryParams.subscribe(params => {
       this.categoria = params['categoria'];
       this.proveedselect = params['proveedselect'];
       this.search = params['search'];
       this.categorianombre = params['categorianombre'];
-
-      //this.fetchPedidos(); 
     });
     this.esgrupo = this.authService.getCmatriz();
     this.clientes = this.authService.getClientes();
@@ -237,9 +264,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.pagedProducts = this.filteredProducts.slice(start, end);
   }
 
-  
   fetchPedidos() {
-    //this.isLoading = true;
     Swal.showLoading();
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -248,22 +273,25 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Parámetros de paginación
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const length = this.itemsPerPage;
-  
+
     formData.append('start', start.toString());
     formData.append('length', length.toString());
-  
+
     formData.append('codCli', codCli ?? '');
-    formData.append('search', this.filterDescrip); 
-    formData.append('categoria', this.categoria ?? '');
-    formData.append('marca', '');
+    formData.append('search', this.filterDescrip);
+    formData.append('categoria', this.filterCategoria ?? this.categoria ?? ''); // Usar filterCategoria, si no existe, usar la de la URL
+    //formData.append('proveedor', this.filterMarca);
     if (this.clienteData && this.clienteData.ubica) {
       formData.append('almacen', this.clienteData.ubica);
     }
-    formData.append('proveedor', this.proveedselect ?? '');
+    formData.append('marca', this.filterMarca);
     formData.append('lote', this.filterLote);
     formData.append('orderby', this.orderBy);
     formData.append('orderDirection', this.orderDirection);
-    formData.append('nuevos', '0');
+    formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
+    formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
+    formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
+
     formData.append('columns', JSON.stringify([
       { data: 'codigo' },
       { data: 'descrip' },
@@ -271,58 +299,28 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       { data: 'oprecio' },
       { data: 'existen' },
     ]));
-  
+
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/inventariocli`;
-  
+
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
-        this.dataSource.data = response.data; 
+        this.dataSource.data = response.data;
         this.pagedProducts = response.data;
         this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
         Swal.close();
       },
       error: (error) => {
         console.error('Error de la API:', error);
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
         Swal.close();
       },
     });
   }
 
-
-
-  /* traeMarcas() {
-    this.isLoading = true;
-    const formData = new FormData();
-    const token = this.authService.getToken();
-
-    const apiUrl = `${API_URL}portalcli/buscamarcas`;
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        if (response.status) {
-          this.marcas = response.data;
-        } else {
-          console.error('Error al cargar marcas:', response);
-          this.marcas = [];
-        }
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Error de la API:', error);
-        this.marcas = [];
-      },
-    });
-  } */
 
     searchProducts(event: Event): void {
       const filterValue = (event.target as HTMLInputElement).value;
@@ -440,193 +438,193 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   
 
     this.mostrarSweetAlertClientes(product, cantidad);
-}
-
-private mostrarSweetAlertClientes(product: any, cantidad: number) {
-  if (!this.clientes || this.clientes.length === 0) {
-    Swal.fire({
-      title: 'Error',
-      text: 'No se encontraron clientes para seleccionar.',
-      icon: 'warning',
-      confirmButtonText: 'Ok'
-    });
-    return;
   }
 
-  // Aquí se guardarán los clientes seleccionados
-  let selectedClientes: { cliente: string, nombre: string }[] = [];
+  private mostrarSweetAlertClientes(product: any, cantidad: number) {
+    if (!this.clientes || this.clientes.length === 0) {
+      Swal.fire({
+        title: 'Error',
+        text: 'No se encontraron clientes para seleccionar.',
+        icon: 'warning',
+        confirmButtonText: 'Ok'
+      });
+      return;
+    }
 
-  const tableHtml = `
-    <style>
-      .swal2-table-container {
-        max-height: 300px;
-        overflow-y: auto;
-        margin-top: 15px;
-        border: 1px solid #eee;
-        border-radius: 5px;
-      }
-      .swal2-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9em;
-      }
-      .swal2-table th, .swal2-table td {
-        padding: 8px 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-      }
-      .swal2-table th {
-        background-color: #f2f2f2;
-      }
-      .swal2-table tr:hover {
-        background-color: #f5f5f5;
-      }
-      /* Estilos para los checkboxes */
-      .swal2-table input[type="checkbox"] {
-        margin-right: 8px;
-        cursor: pointer;
-      }
-      .select-all-container {
-          margin-bottom: 10px;
-          padding: 5px;
-          background-color: #f9f9f9;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-      }
-      .select-all-container label {
-          font-weight: bold;
-          margin-left: 5px;
+    // Aquí se guardarán los clientes seleccionados
+    let selectedClientes: { cliente: string, nombre: string }[] = [];
+
+    const tableHtml = `
+      <style>
+        .swal2-table-container {
+          max-height: 300px;
+          overflow-y: auto;
+          margin-top: 15px;
+          border: 1px solid #eee;
+          border-radius: 5px;
+        }
+        .swal2-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.9em;
+        }
+        .swal2-table th, .swal2-table td {
+          padding: 8px 12px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        .swal2-table th {
+          background-color: #f2f2f2;
+        }
+        .swal2-table tr:hover {
+          background-color: #f5f5f5;
+        }
+        /* Estilos para los checkboxes */
+        .swal2-table input[type="checkbox"] {
+          margin-right: 8px;
           cursor: pointer;
-      }
-    </style>
-    <div class="select-all-container">
-      <input type="checkbox" id="selectAllClients" class="select-all-checkbox">
-      <label for="selectAllClients">Seleccionar todos</label>
-    </div>
-    <div class="swal2-table-container">
-      <table class="swal2-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Código</th>
-            <th>Nombre del Cliente</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${this.clientes.map(cliente => `
+        }
+        .select-all-container {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .select-all-container label {
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+      </style>
+      <div class="select-all-container">
+        <input type="checkbox" id="selectAllClients" class="select-all-checkbox">
+        <label for="selectAllClients">Seleccionar todos</label>
+      </div>
+      <div class="swal2-table-container">
+        <table class="swal2-table">
+          <thead>
             <tr>
-              <td>
-                <input type="checkbox" name="clienteSeleccionado" value="${cliente.cliente}" data-nombre="${cliente.nombre}" id="checkbox-${cliente.cliente}" class="client-checkbox">
-              </td>
-              <td><label for="checkbox-${cliente.cliente}">(${cliente.cliente})</label></td>
-              <td><label for="checkbox-${cliente.cliente}">${cliente.nombre}</label></td>
+              <th></th>
+              <th>Código</th>
+              <th>Nombre del Cliente</th>
             </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
+          </thead>
+          <tbody>
+            ${this.clientes.map(cliente => `
+              <tr>
+                <td>
+                  <input type="checkbox" name="clienteSeleccionado" value="${cliente.cliente}" data-nombre="${cliente.nombre}" id="checkbox-${cliente.cliente}" class="client-checkbox">
+                </td>
+                <td><label for="checkbox-${cliente.cliente}">(${cliente.cliente})</label></td>
+                <td><label for="checkbox-${cliente.cliente}">${cliente.nombre}</label></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
 
-  Swal.fire({
-    title: 'Selecciona Clientes',
-    html: tableHtml,
-    width: '800px', 
-    icon: 'info',
-    showCancelButton: true,
-    confirmButtonText: 'Confirmar Selección',
-    cancelButtonText: 'Cancelar',
-    didOpen: () => {
-      // Lógica para "Seleccionar todos"
-      const selectAllCheckbox = Swal.getPopup()?.querySelector('#selectAllClients') as HTMLInputElement;
-      const clientCheckboxes = Swal.getPopup()?.querySelectorAll('.client-checkbox') as NodeListOf<HTMLInputElement>;
+    Swal.fire({
+      title: 'Selecciona Clientes',
+      html: tableHtml,
+      width: '800px', 
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar Selección',
+      cancelButtonText: 'Cancelar',
+      didOpen: () => {
+        // Lógica para "Seleccionar todos"
+        const selectAllCheckbox = Swal.getPopup()?.querySelector('#selectAllClients') as HTMLInputElement;
+        const clientCheckboxes = Swal.getPopup()?.querySelectorAll('.client-checkbox') as NodeListOf<HTMLInputElement>;
 
-      if (selectAllCheckbox && clientCheckboxes) {
-        selectAllCheckbox.addEventListener('change', () => {
+        if (selectAllCheckbox && clientCheckboxes) {
+          selectAllCheckbox.addEventListener('change', () => {
+            clientCheckboxes.forEach(checkbox => {
+              checkbox.checked = selectAllCheckbox.checked;
+            });
+          });
+
+          //se desmarca un cliente, desmarcar "Seleccionar todos"
           clientCheckboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
+            checkbox.addEventListener('change', () => {
+              if (!checkbox.checked) {
+                selectAllCheckbox.checked = false;
+              } else {
+                const allChecked = Array.from(clientCheckboxes).every(cb => cb.checked);
+                selectAllCheckbox.checked = allChecked;
+              }
+            });
           });
-        });
+        }
+      },
+      preConfirm: () => {
+        const checkedCheckboxes = Swal.getPopup()?.querySelectorAll('input[name="clienteSeleccionado"]:checked') as NodeListOf<HTMLInputElement>;
+        if (checkedCheckboxes.length === 0) {
+          Swal.showValidationMessage('Por favor, selecciona al menos un cliente.');
+          return false;
+        }
+        selectedClientes = Array.from(checkedCheckboxes).map(checkbox => ({
+          cliente: checkbox.value,
+          nombre: checkbox.dataset['nombre'] || ''
+        }));
+        return true;
+      }
+    }).then((result) => {
+      Swal.showLoading();
 
-        //se desmarca un cliente, desmarcar "Seleccionar todos"
-        clientCheckboxes.forEach(checkbox => {
-          checkbox.addEventListener('change', () => {
-            if (!checkbox.checked) {
-              selectAllCheckbox.checked = false;
-            } else {
-              const allChecked = Array.from(clientCheckboxes).every(cb => cb.checked);
-              selectAllCheckbox.checked = allChecked;
-            }
+      if (result.isConfirmed && selectedClientes.length > 0) {
+        const cantidadtotal = selectedClientes.length*cantidad;
+        const existen = product.existen;
+
+        /* console.log('Clientes seleccionados longitud '+selectedClientes.length);
+        console.log('Existencia total '+product.existen);
+        console.log('Cantidad por cliente'+cantidad);
+        console.log('Cantidad a pedir'+cantidadtotal); */
+
+        if(cantidadtotal>existen){
+          Swal.fire({
+            title: '¡Cantidad Solicitada Excede la Existencia!',
+            html: `
+              La **cantidad total** que intentas enviar a los ${selectedClientes.length} clientes seleccionados es de
+              **${cantidadtotal} unidades**, lo cual es **superior** a la existencia disponible en tu almacén, que es de
+              **${existen} unidades**.
+              <br><br>
+              Para poder procesar este pedido, por favor, ajusta la cantidad por cliente o deselecciona algunos clientes hasta que el total solicitado sea menor o igual a la existencia.
+            `,
+            icon: 'warning', 
+            confirmButtonText: 'Entendido',
           });
+          return;
+        }
+
+        selectedClientes.forEach(cli => {
+          //console.log(`Agregando pedido para cliente: (${cli.cliente}) ${cli.nombre}`);
+          this.agg_pedido(product,cli.cliente,true)
         });
-      }
-    },
-    preConfirm: () => {
-      const checkedCheckboxes = Swal.getPopup()?.querySelectorAll('input[name="clienteSeleccionado"]:checked') as NodeListOf<HTMLInputElement>;
-      if (checkedCheckboxes.length === 0) {
-        Swal.showValidationMessage('Por favor, selecciona al menos un cliente.');
-        return false;
-      }
-      selectedClientes = Array.from(checkedCheckboxes).map(checkbox => ({
-        cliente: checkbox.value,
-        nombre: checkbox.dataset['nombre'] || ''
-      }));
-      return true;
-    }
-  }).then((result) => {
-    Swal.showLoading();
-
-    if (result.isConfirmed && selectedClientes.length > 0) {
-      const cantidadtotal = selectedClientes.length*cantidad;
-      const existen = product.existen;
-
-      /* console.log('Clientes seleccionados longitud '+selectedClientes.length);
-      console.log('Existencia total '+product.existen);
-      console.log('Cantidad por cliente'+cantidad);
-      console.log('Cantidad a pedir'+cantidadtotal); */
-
-      if(cantidadtotal>existen){
+        Swal.close();
+        this.revisarCarrito();
         Swal.fire({
-          title: '¡Cantidad Solicitada Excede la Existencia!',
-          html: `
-            La **cantidad total** que intentas enviar a los ${selectedClientes.length} clientes seleccionados es de
-            **${cantidadtotal} unidades**, lo cual es **superior** a la existencia disponible en tu almacén, que es de
-            **${existen} unidades**.
-            <br><br>
-            Para poder procesar este pedido, por favor, ajusta la cantidad por cliente o deselecciona algunos clientes hasta que el total solicitado sea menor o igual a la existencia.
-          `,
-          icon: 'warning', 
-          confirmButtonText: 'Entendido',
+          text: `Pedido agregado para ${selectedClientes.length} cliente(s).`,
+          icon: 'success',
+          showConfirmButton: false,
+          timer: 2000,
+          toast: true,
+          position: 'bottom-end',
         });
-        return;
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+          text: 'Selección de clientes cancelada.',
+          icon: 'info',
+          showConfirmButton: false,
+          timer: 1500,
+          toast: true,
+          position: 'bottom-end',
+        });
       }
-
-      selectedClientes.forEach(cli => {
-        //console.log(`Agregando pedido para cliente: (${cli.cliente}) ${cli.nombre}`);
-        this.agg_pedido(product,cli.cliente,true)
-      });
-      Swal.close();
-      this.revisarCarrito();
-      Swal.fire({
-        text: `Pedido agregado para ${selectedClientes.length} cliente(s).`,
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 2000,
-        toast: true,
-        position: 'bottom-end',
-      });
-    } else if (result.dismiss === Swal.DismissReason.cancel) {
-      Swal.fire({
-        text: 'Selección de clientes cancelada.',
-        icon: 'info',
-        showConfirmButton: false,
-        timer: 1500,
-        toast: true,
-        position: 'bottom-end',
-      });
-    }
-  });
-}
+    });
+  }
 
   validateInput(product: any, event: any) {
     product.cant = this.portalcliLogicaService.validateCant(event);
@@ -1166,7 +1164,78 @@ private mostrarSweetAlertClientes(product: any, cantidad: number) {
     // Llama a tu función para modificar la cantidad
     this.modificarCantidad(product, newQuantity);
   }
+  
+  onMarcaFocus(): void {
+    // Esto fuerza al FormControl a emitir su valor actual,
+    // lo que a su vez activa el filtro y muestra las opciones.
+    this.marcaControl.setValue(this.marcaControl.value);
+  }
 
+  traeMarcas() {
+    const formData = new FormData();
+    const token = this.authService.getToken();
+    const apiUrl = `${API_URL}portalcli/buscamarcas`;
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
 
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.status) {
+          this.filterMarcaOptions = response.data; // Asigna las marcas al array
+        } else {
+          console.error('Error al cargar marcas:', response);
+          this.filterMarcaOptions = [];
+        }
+        this.cdr.detectChanges(); // Detecta los cambios para actualizar la vista
+      },
+      error: (error) => {
+        console.error('Error de la API:', error);
+        this.filterMarcaOptions = [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private _filter(value: string): Marca[] {
+    const filterValue = value.toLowerCase();
+    return this.filterMarcaOptions.filter(marca =>
+      marca.marca.toLowerCase().includes(filterValue)
+    );
+  }
+
+  onMarcaSelected(event: any): void {
+    this.filterMarca = event.option.value;
+    //this.cdr.detectChanges();
+    this.fetchPedidos(); // Call your fetchPedidos method when an option is selected
+  }
+
+  filterCategoriaOptions: Categoria[] = [];
+
+  traeCategorias() {
+    const formData = new FormData();
+    const token = this.authService.getToken();
+    const apiUrl = `${API_URL}portalcli/buscacategorias`;
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        if (response.status) {
+          this.filterCategoriaOptions = response.data; // Asigna las marcas al array
+        } else {
+          console.error('Error al cargar marcas:', response);
+          this.filterCategoriaOptions = [];
+        }
+        this.cdr.detectChanges(); // Detecta los cambios para actualizar la vista
+      },
+      error: (error) => {
+        console.error('Error de la API:', error);
+        this.filterCategoriaOptions = [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
 
 }

@@ -133,38 +133,102 @@
                     </div>
                   </div>
                 </div>
-    
-                <div class="row">
-                  <div class="col-12 mt-4">
-                    <div class="d-flex align-items-center gap-3">
-                      <mat-form-field appearance="outline" style="flex-grow: 1;">
-                        <mat-label>Buscar articulo</mat-label>
-                        <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
-                        @if (filterDescrip) {
-                          <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                            <mat-icon>close</mat-icon>
-                          </button>
-                        }
-                      </mat-form-field>
-    
-                      <mat-form-field appearance="outline" style="width: 200px;">
-                        <mat-label>Ordenar por</mat-label>
-                        <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
-                          <mat-option value="descrip">Descripción</mat-option>
-                          <!-- <mat-option value="nomprv">Proveedor</mat-option> -->
-                          <mat-option value="oprecio">Precio</mat-option>
-                          <mat-option value="existen">Existencia</mat-option>
-                          <!-- <mat-option value="fecha">Fecha</mat-option> -->
-                        </mat-select>
-                      </mat-form-field>
 
-                      <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" style="cursor: pointer;">
-                        {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                      </mat-icon>
+                <div class="card mt-4 filter-card-bootstrap">
+                  <div class="card-body">
+                    <div class="row align-items-center mb-3">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Buscar artículo</mat-label>
+                          <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
+                          @if (filterDescrip) {
+                            <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                          }
+                        </mat-form-field>
                     </div>
+                
+                    <div class="row mb-3">
+                      <div class="col-md-4 mb-3 mb-md-0">
+                        <!-- <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Marca</mat-label>
+                          <mat-select [(ngModel)]="filterMarca" (selectionChange)="fetchPedidos()">
+                            <mat-option value="">Todas</mat-option>
+                            @for (marca of filterMarcaOptions; track marca.proveed) {
+                              <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
+                            }
+                          </mat-select>
+                        </mat-form-field> -->
+
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Marca</mat-label>
+                          <input type="text"
+                                 placeholder="Selecciona una Marca"
+                                 aria-label="Marca"
+                                 matInput
+                                 [formControl]="marcaControl"
+                                 [matAutocomplete]="auto"
+                                 (keydown.enter)="fetchPedidos()"
+                                 (focus)="onMarcaFocus()"> <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMarcaSelected($event)">
+                                  <mat-option value="">Todas</mat-option>
+
+                              @for (marca of filteredMarcaOptions | async; track marca.marca) {
+                                <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
+                              }
+                          </mat-autocomplete>
+                        </mat-form-field>
+
+                      
+                      </div>
+                
+                      <div class="col-md-4 mb-3 mb-md-0">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Categoría</mat-label>
+                          <mat-select [(ngModel)]="filterCategoria" (selectionChange)="fetchPedidos()">
+                            <mat-option value="">Todas</mat-option>
+                            @for (categoria of filterCategoriaOptions; track categoria.grupo) {
+                              <mat-option [value]="categoria.grupo">{{ categoria.nom_grup }}</mat-option>
+                            }
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                
+                      <div class="col-md-4 mb-3 mb-md-0">
+                        <mat-form-field appearance="outline" class="w-100">
+                          <mat-label>Ofertas Activas</mat-label>
+                          <mat-select [(ngModel)]="filterOfertasActivas" (selectionChange)="fetchPedidos()">
+                            <mat-option value="">Todas</mat-option>
+                            <mat-option value="categoria1">Categoría Ejemplo 1</mat-option>
+                            <mat-option value="categoria2">Categoría Ejemplo 2</mat-option>
+                            <mat-option value="categoria3">Categoría Ejemplo 3</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                
+                    <div class="row align-items-center">
+                      <div class="col-md-6 d-flex gap-4 mb-3 mb-md-0">
+                        <mat-checkbox [(ngModel)]="filterNuevasEntradas" (change)="fetchPedidos()">Nuevas Entradas</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="filterOfertas" (change)="fetchPedidos()">Ofertas</mat-checkbox>
+                      </div>
+                      <div class="col-md-6 d-flex justify-content-md-end align-items-center gap-3">
+                        <mat-form-field appearance="outline" class="order-by-select">
+                          <mat-label>Ordenar por</mat-label>
+                          <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                            <mat-option value="descrip">Descripción</mat-option>
+                            <mat-option value="oprecio">Precio</mat-option>
+                            <mat-option value="existen">Existencia</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" class="sort-icon-bootstrap">
+                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </mat-icon>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-    
+
                 <div class="row">
                   <div class="col-12">
                     <div *ngIf="filterDescrip" class="d-flex justify-content-between">
@@ -181,6 +245,7 @@
                             <th scope="col" class="align-middle text-start" [class.asc]="orderBy === 'descrip' && orderDirection === 'asc'" [class.desc]="orderBy === 'descrip' && orderDirection === 'desc'" (click)="sortData('descrip')">Descripción</th>
                             <th scope="col" class="align-middle" [class.asc]="orderBy === 'oprecio' && orderDirection === 'asc'" [class.desc]="orderBy === 'oprecio' && orderDirection === 'desc'" (click)="sortData('oprecio')">Precio Bs.</th>
                             <th scope="col" class="align-middle" [class.asc]="orderBy === 'opreciod' && orderDirection === 'asc'" [class.desc]="orderBy === 'opreciod' && orderDirection === 'desc'" (click)="sortData('opreciod')">Precio US$</th>
+                            <th scope="col" class="align-middle">Fecha/Lote</th>
                             <th scope="col" class="align-middle" [class.asc]="orderBy === 'existen' && orderDirection === 'asc'" [class.desc]="orderBy === 'existen' && orderDirection === 'desc'" (click)="sortData('existen')">Inventario</th>
                             <th scope="col" class="align-middle">Cantidad</th>
                             <th scope="col" class="align-middle">Agregar</th>
@@ -202,6 +267,10 @@
                                     class="ficha-proveedor-inline"
                                     matTooltipPosition="above"> DESC.FICHA <br>{{product.ficha}} %
                                 </div>
+                                <div *ngIf="product.indexado"
+                                  class="indexado-inline"
+                                  matTooltipPosition="above">{{product.indexado}}
+                              </div>
                             </td>
                             <td class="align-middle text-end">
                                 <div>
@@ -217,6 +286,8 @@
                                     <span style="color: rgb(28, 123, 36);">{{product.opreciod}}$</span>
                                 </div>
                             </td>
+                            <td class="align-middle text-center">{{product.vence}}</td>
+
                             <td class="align-middle text-center">{{product.existen}}</td>
                             <td class="text-center">
                                 <input
@@ -256,7 +327,7 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                  </table>
                 </div>
     
                 <mat-paginator
