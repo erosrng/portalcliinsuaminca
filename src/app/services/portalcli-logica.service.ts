@@ -245,9 +245,14 @@ export class PortalcliLogicaService {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
           console.log('entre')
-          localStorage.removeItem('nameFarmaActiva')
-          localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
-          this.clienteDataSource.next(response.datcli.datcli);
+          try {
+            localStorage.removeItem('nameFarmaActiva')
+            localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
+            this.clienteDataSource.next(response.datcli.datcli);
+          } catch (error) {
+            console.log(error);
+            this.clienteDataSource.next(response.datcli.datcli);
+          }
         },
         error: (error) => {
           console.error('Error de la API:', error);

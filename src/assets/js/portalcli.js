@@ -343,16 +343,27 @@ function startTimer(callback=null, timeout=1000) {
                 var ubica   = response.ubica;
                 var descripseg = response.descrip;
                 var descvol = response.descvol;
+                try {
+                    localStorage.removeItem('nameFarmaActiva')
+                    localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
 
-                localStorage.removeItem('nameFarmaActiva')
-                localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
-
-                if (almacen) {
-                    $('#almacli').text(almacen);
-                    $('#almacli').attr('data-almacen', ubica);
-                    $('#condicli').text(descripseg);
-                    $('#segmecli').text(descvol);
+                    if (almacen) {
+                        $('#almacli').text(almacen);
+                        $('#almacli').attr('data-almacen', ubica);
+                        $('#condicli').text(descripseg);
+                        $('#segmecli').text(descvol);
+                    }
+                } catch (e) {
+                    if (almacen) {
+                        $('#almacli').text(almacen);
+                        $('#almacli').attr('data-almacen', ubica);
+                        $('#condicli').text(descripseg);
+                        $('#segmecli').text(descvol);
+                    }
                 }
+
+
+
             },
             error: function(error) {
                 console.error('Error in AJAX request:', error);
