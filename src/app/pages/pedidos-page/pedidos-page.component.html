@@ -137,10 +137,19 @@
                 <div class="card mt-4 filter-card-bootstrap">
                   <div class="card-body">
                     <div class="row align-items-center mb-3">
-                        <mat-form-field appearance="outline" class="w-100">
+                        <!-- <mat-form-field appearance="outline" class="w-100">
                           <mat-label>Buscar artículo</mat-label>
                           <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
                           @if (filterDescrip) {
+                            <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                          }
+                        </mat-form-field> -->
+                        <mat-form-field appearance="outline" style="flex-grow: 1;">
+                          <mat-label>Buscar producto</mat-label>
+                          <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
+                          @if (search) {
                             <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
                               <mat-icon>close</mat-icon>
                             </button>
@@ -192,8 +201,22 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                
+
                       <div class="col-md-4 mb-3 mb-md-0">
+                        <mat-form-field appearance="outline" class="order-by-select">
+                          <mat-label>Ordenar por</mat-label>
+                          <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
+                            <mat-option value="descrip">Descripción</mat-option>
+                            <mat-option value="oprecio">Precio</mat-option>
+                            <mat-option value="existen">Existencia</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" class="sort-icon-bootstrap">
+                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                        </mat-icon>
+                      </div>
+                
+                      <!-- <div class="col-md-4 mb-3 mb-md-0">
                         <mat-form-field appearance="outline" class="w-100">
                           <mat-label>Ofertas Activas</mat-label>
                           <mat-select [(ngModel)]="filterOfertasActivas" (selectionChange)="fetchPedidos()">
@@ -203,10 +226,10 @@
                             <mat-option value="categoria3">Categoría Ejemplo 3</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </div>
+                      </div> -->
                     </div>
                 
-                    <div class="row align-items-center">
+                    <!-- <div class="row align-items-center">
                       <div class="col-md-6 d-flex gap-4 mb-3 mb-md-0">
                         <mat-checkbox [(ngModel)]="filterNuevasEntradas" (change)="fetchPedidos()">Nuevas Entradas</mat-checkbox>
                         <mat-checkbox [(ngModel)]="filterOfertas" (change)="fetchPedidos()">Ofertas</mat-checkbox>
@@ -224,7 +247,7 @@
                           {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
                         </mat-icon>
                       </div>
-                    </div>
+                    </div> -->
 
                   </div>
                 </div>
@@ -238,7 +261,7 @@
                 </div>
     
                 <div class="mat-elevation-z2 mt-3">
-                  <table class="table table-bordered table-striped table-hover pedidos__table">
+                  <!-- <table class="table table-bordered table-striped table-hover pedidos__table">
                     <thead>
                         <tr class="text-center">
                             <th scope="col" class="align-middle" [class.asc]="orderBy === 'img' && orderDirection === 'asc'" [class.desc]="orderBy === 'img' && orderDirection === 'desc'" (click)="sortData('img')">Ver</th>
@@ -327,16 +350,128 @@
                             </td>
                         </tr>
                     </tbody>
+                  </table> -->
+
+                  <table mat-table [dataSource]="dataSource" matSort class="pedidos__table">
+
+                    <ng-container matColumnDef="img">
+                      <th mat-header-cell *matHeaderCellDef class="border-top-left"> Ver </th>
+                      <td mat-cell *matCellDef="let element">
+                        <img [src]="element.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(element.codigo)">
+                      </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="descrip">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" class="w-15"> Descripción </th>
+                      <td mat-cell *matCellDef="let element"> {{element.descrip}}
+                        <br>
+                                <div *ngIf="element.oferta && element.oferta.length > 0"
+                                    class="oferta-proveedor-inline"
+                                    [matTooltip]="formatOfertasTooltip(element.oferta)"
+                                    matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta Proveedor
+                                </div>
+                                <div *ngIf="element.ficha > 0"
+                                    class="ficha-proveedor-inline"
+                                    matTooltipPosition="above"> DESC.FICHA <br>{{element.ficha}} %
+                                </div>
+                                <div *ngIf="element.indexado"
+                                  class="indexado-inline"
+                                  matTooltipPosition="above">{{element.indexado}}
+                              </div>
+                      </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="oprecio" class="w-10">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header="oprecio"> Precio </th>
+                      <td mat-cell *matCellDef="let element" class="text-aling-center">
+                        <div>
+                          <span *ngIf="element.segmento > 0" class="preca__antes">{{element.dprice}}</span>
+                          <br *ngIf="element.segmento > 0">
+                          <span style="color: rgb(28, 123, 36);">{{element.oprecio}}</span>
+                      </div>
+                      </td>
+                    </ng-container>
+                  
+                    <ng-container matColumnDef="opreciod">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header="opreciod" > Precio $ </th>
+                      <td mat-cell *matCellDef="let element" class="text-aling-center">
+                        <div>
+                          <span *ngIf="element.segmento > 0" class="preca__antes">{{element.dpriced}}$</span>
+                          <br *ngIf="element.segmento > 0">
+                          <span style="color: rgb(28, 123, 36);">{{element.opreciod}}$</span>
+                      </div>
+                      </td>
+                    </ng-container>
+                  
+                      <ng-container matColumnDef="existen">
+                          <th mat-header-cell *matHeaderCellDef mat-sort-header="existen" class="w-15"> Disponibles </th>
+                          <td mat-cell *matCellDef="let element">
+                              <span *ngIf="element.existen > 0" class="green-label">  {{element.existen}} </span>
+                              <span *ngIf="element.existen <= 0" class="red-label">  0 </span>
+                          </td>
+                      </ng-container>
+                  
+                    <ng-container matColumnDef="cantidad">
+                      <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+                      <td mat-cell *matCellDef="let element">
+                        <input type="number" min="1" maxlength="10"
+                            [value]="element.encar ? element.encar : ''"
+                            (input)="validateInput(element, $event)"
+                            id="cana_{{element.codigo}}"
+                            placeholder="0"
+                            class="w-100 input-cant"
+                            (keyup.enter)="agg_pedido(element, '-')"
+                          >
+                      </td>
+                    </ng-container>
+                  
+                     <ng-container matColumnDef="agregar">
+                      <th mat-header-cell *matHeaderCellDef class="border-top-right"> Agregar </th>
+                      <td mat-cell *matCellDef="let element">
+                        <button *ngIf="tipoCargaControl.value != 'casa_matriz'"
+                        [ngClass]="{
+                          'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
+                          'btn-agg': productosEnCarritoCodigos.includes(element.codigo)
+                        }"
+                        (click)="agg_pedido(element,'')"
+                    >
+                        <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
+                        <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
+                    </button>
+                  
+                    <button *ngIf="tipoCargaControl.value == 'casa_matriz'"
+                        [ngClass]="{
+                          'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
+                          'btn-agg': productosEnCarritoCodigos.includes(element.codigo)
+                        }"
+                        (click)="agg_all(element)"
+                    >
+                        <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-circle-arrow-up"></i>
+                        <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-circle-check"></i>
+                    </button>
+                  
+                       </td>
+                    </ng-container>
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                   [ngClass]="{'fila-con-oferta': row.oferta && row.oferta.length > 0}"></tr>
+                  
                   </table>
+                
+                  <mat-paginator [pageSizeOptions]="[20, 50, 100]"
+                                 showFirstLastButtons
+                                 aria-label="Select page of periodic elements">
+                  </mat-paginator>
                 </div>
     
-                <mat-paginator
+                <!-- <mat-paginator
                   [length]="totalPages * itemsPerPage"
                   [pageSize]="itemsPerPage"
                   [pageSizeOptions]="[5, 10, 20]"
                   showFirstLastButtons
                   (page)="pageChanged($event)"
-                ></mat-paginator>
+                ></mat-paginator> -->
               </div>
             </div>
           </div>

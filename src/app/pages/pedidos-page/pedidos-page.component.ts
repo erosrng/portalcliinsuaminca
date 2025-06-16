@@ -34,7 +34,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { MatSort, Sort,MatSortModule } from '@angular/material/sort'; // Importa Sort
 interface GrupoCliente {
   clienteId: string;
   clienteNombre: string;
@@ -51,9 +51,9 @@ interface ProductData {
   codigoa: string;
   barras: string;
   descrip: string;
-  existen: string;
-  oprecio: string; 
-  opreciod: string;
+  existen: number;
+  oprecio: number; 
+  opreciod: number;
   total: string; 
   totald: string;
   precio: string; 
@@ -102,7 +102,8 @@ interface Categoria {
     MatAutocompleteModule, // <-- Añadir MatAutocompleteModule
     MatSnackBarModule,
     MatRadioModule,
-    MatCheckboxModule 
+    MatCheckboxModule,
+    MatSortModule, 
   ],
   changeDetection: ChangeDetectionStrategy.OnPush, 
   templateUrl: './pedidos-page.component.html',
@@ -134,7 +135,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filteredProducts: any[] = [];
   pagedProducts: any[] = [];
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 20000;
   totalPages = 1;
   pages: number[] = [];
   productosEnCarrito: any[] = [];
@@ -166,6 +167,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filterOfertasActivas: string = '';
   filterNuevasEntradas: boolean = false;
   filterOfertas: boolean = false;
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -227,6 +230,14 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.cdr.detectChanges();
+  }
+
+
+
   applyFilters() {
       this.currentPage = 1; // Reset to first page when applying filters
       this.fetchPedidos();
@@ -254,7 +265,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     pageChanged(event: PageEvent) {
       this.currentPage = event.pageIndex + 1;
       this.itemsPerPage = event.pageSize;
-      this.fetchPedidos();
+      //this.fetchPedidos();
     }
   
 
@@ -264,7 +275,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.pagedProducts = this.filteredProducts.slice(start, end);
   }
 
-  fetchPedidos() {
+  /* fetchPedidos() {
     Swal.showLoading();
     const formData = new FormData();
     const token = this.authService.getToken();
@@ -319,14 +330,142 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         Swal.close();
       },
     });
-  }
+  } */
 
+    /* fetchPedidos2222222() {
+      Swal.showLoading();
+      this.isLoading = true;
+      const formData = new FormData();
+      const token = this.authService.getToken();
+      const codCli = this.authService.getCodCli();
+  
+        // Parámetros de paginación
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const length = this.itemsPerPage;
+      
+        formData.append('start', start.toString());
+        formData.append('length', length.toString());
+      
+        formData.append('codCli', codCli ?? '');
+        formData.append('search', this.search ?? ''); 
+        formData.append('categoria', this.categoria ?? '');
+  
+        if (this.clienteData && this.clienteData.ubica) {
+          formData.append('almacen', this.clienteData.ubica);
+        }else{
+          formData.append('almacen', '');
+        }
+        formData.append('lote', this.filterLote);
+        formData.append('orderby', this.orderBy);
+        formData.append('orderDirection', this.orderDirection);
+        formData.append('nuevos', '0');
+        formData.append('columns', JSON.stringify([
+          { data: 'codigo' },
+          { data: 'descrip' },
+          { data: 'nomprv' },
+          { data: 'oprecio' },
+          { data: 'existen' },
+        ]));
+      
+        const headers = new HttpHeaders({
+          'Authorization': `${token}`
+        });
+        const apiUrl = `${API_URL}inventarioprv`;
+      
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+          next: (response: any) => {
+            this.pagedProducts = response.data.data;
+            this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
+            this.dataSource.paginator = this.paginator;
+            this.cdr.detectChanges();
+            this.isLoading = false; 
+            Swal.close();
+  
+          },
+          error: (error) => {
+            this.isLoading = false; 
+            Swal.hideLoading();
+            Swal.fire({
+              title: 'Error',
+              text: 'Error al cargar inventario',
+            })
+            console.error('Error al cargar inventario:', error);
+          },
+        });
+        
+    }
+   */
+  
 
     searchProducts(event: Event): void {
       const filterValue = (event.target as HTMLInputElement).value;
       this.dataSource.filter = filterValue.trim().toLowerCase();
     }
     
+    fetchPedidos() {
+      Swal.showLoading();
+      const formData = new FormData();
+      const token = this.authService.getToken();
+      const codCli = this.authService.getCodCli();
+  
+      // Parámetros de paginación
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const length = this.itemsPerPage;
+  
+      formData.append('start', start.toString());
+      formData.append('length', length.toString());
+  
+      formData.append('codCli', codCli ?? '');
+      formData.append('search', this.filterDescrip);
+      formData.append('categoria', this.filterCategoria ?? this.categoria ?? ''); // Usar filterCategoria, si no existe, usar la de la URL
+      //formData.append('proveedor', this.filterMarca);
+      if (this.clienteData && this.clienteData.ubica) {
+        formData.append('almacen', this.clienteData.ubica);
+      }
+      formData.append('marca', this.filterMarca);
+      formData.append('lote', this.filterLote);
+      formData.append('orderby', this.orderBy);
+      formData.append('orderDirection', this.orderDirection);
+      formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
+      formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
+      formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
+  
+      formData.append('columns', JSON.stringify([
+        { data: 'codigo' },
+        { data: 'descrip' },
+        { data: 'nomprv' },
+        { data: 'oprecio' },
+        { data: 'existen' },
+      ]));
+  
+      const headers = new HttpHeaders({
+        'Authorization': `${token}`
+      });
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
+  
+      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+        next: (response: any) => {
+          /* this.dataSource.data = response.data;
+          this.pagedProducts = response.data;
+          this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
+          this.cdr.detectChanges();
+          Swal.close(); */
+
+          this.dataSource.data = response.data;
+          this.pagedProducts = response.data;
+            this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
+            this.dataSource.paginator = this.paginator;
+            this.cdr.detectChanges();
+            Swal.close();
+  
+        },
+        error: (error) => {
+          console.error('Error de la API:', error);
+          this.cdr.detectChanges();
+          Swal.close();
+        },
+      });
+    }
 
     clear(): void {
       this.filterDescrip = '';
@@ -1129,7 +1268,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   onQuantityChange(product: ProductData, event: Event) {
     const inputElement = event.target as HTMLInputElement;
     let newQuantity = parseInt(inputElement.value);
-    const existenciaDisponible = parseInt(product.existen || '0', 10); 
+    const existenciaDisponible = product.existen; 
 
     // Validación para asegurarse de que sea un número válido y no esté vacío
     if (isNaN(newQuantity) || inputElement.value.trim() === '') {
