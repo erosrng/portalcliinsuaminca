@@ -127,7 +127,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   dataSource = new MatTableDataSource<any>(this.products);
-  displayedColumns: string[] = ['img', 'descrip','vence','oprecio', 'opreciod', 'existen', 'cantidad', 'agregar']; // 'nomprv', 'lote', 'vence',
+  displayedColumns: string[] = ['img', 'descrip','vence', 'opreciod', 'existen', 'cantidad', 'agregar']; // 'nomprv', 'lote', 'vence',
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   private subscriptions: Subscription[] = [];
   private clienteCambiadoSubscription: Subscription | undefined;
