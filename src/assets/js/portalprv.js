@@ -863,18 +863,10 @@ if (table !== null && $.fn.DataTable.isDataTable('#car-table')) {
                     success: function(response) {
                         var almacen = response.ubica;
 
-                      try {
-                          localStorage.removeItem('nameFarmaActiva')
-                          localStorage.setItem('nameFarmaActiva', response.datacli.nombre)
 
-                          if (almacen) {
-                              $('#idAlma').val(almacen);
-                          }
-                      } catch (e) {
-                          if (almacen) {
-                              $('#idAlma').val(almacen);
-                          }
-                      }
+                        if (almacen) {
+                            $('#idAlma').val(almacen);
+                        }
                     },
                     error: function(error) {
                         console.error('Error in AJAX request:', error);

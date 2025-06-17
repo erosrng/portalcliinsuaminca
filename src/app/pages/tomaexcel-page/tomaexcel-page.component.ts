@@ -22,7 +22,8 @@ import { Subscription } from 'rxjs';
 
 import {MatExpansionModule} from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; 
-import { MatSnackBar } from '@angular/material/snack-bar'; 
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {CarritoPageComponent} from "../carrito-page/carrito-page.component";
 
 interface GrupoCliente {
   clienteId: string;
@@ -60,18 +61,19 @@ interface ProductData {
 @Component({
   selector: 'app-tomaexcel-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    NavBarComponent,
-    FooterComponent,
-    SideBarComponent,
-    ClicardComponent,
-    FormsModule,
-    ReactiveFormsModule,
-    MatButtonToggleModule,
-    MatExpansionModule,
-    MatSnackBarModule,
-],
+    imports: [
+        CommonModule,
+        NavBarComponent,
+        FooterComponent,
+        SideBarComponent,
+        ClicardComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatButtonToggleModule,
+        MatExpansionModule,
+        MatSnackBarModule,
+        CarritoPageComponent,
+    ],
   templateUrl: './tomaexcel-page.component.html',
   styleUrl: './tomaexcel-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -84,6 +86,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
   // --- Mantenemos esta variable, ngModel se enlazará a ella ---
   tipoCarga = '';
   groupedClientData: GrupoCliente[] = [];
+  mostrarSoloIndividual = false;
 
   constructor(
     public authService: AuthService,
@@ -106,6 +109,9 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     this.esgrupo = this.authService.getCmatriz();
     if(this.esgrupo){
       this.Procesarpedido();
+    }else {
+        this.tipoCarga = 'individual'
+        this.mostrarSoloIndividual = true;
     }
     this.revisarCarrito();
   }

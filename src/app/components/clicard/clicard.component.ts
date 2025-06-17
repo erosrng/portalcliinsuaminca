@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
 
@@ -12,6 +12,7 @@ import { AuthService } from './../../auth.service';
 })
 export class ClicardComponent {
   tasa: number=0;
+  @Input() minimal: boolean = false;
 
   constructor(
     public authService: AuthService, 
