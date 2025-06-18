@@ -70,12 +70,30 @@
           
         </ng-template>
         <div class="mt-4">
-          <div class="card p-4 shadow text-center">
+          <div class="card p-5 shadow text-center">
             <h3>¿Cómo deseas cargar el pedido?</h3>
-            <mat-radio-group aria-label="Tipo de Carga" [formControl]="tipoCargaControl" class="mt-3">
+            <div class="row">
+              <div class="col-6">
+                <div class="card card-selector" (click)="selectOption('individual')">
+                  <img src="../../../assets/images/caja-simple.png" alt="caja-simple">
+                  <label class="title-box">Individual</label>
+                  <span class="informacion">La carga de pedidos individual hace referencia a la carga de pedidos solo de la Farmacia que tiene seleccionada en la parte superior</span>
+                </div>
+               
+              </div>
+              <div class="col-6">
+                <div class="card card-selector" (click)="selectOption('casa_matriz')">
+                  <img src="../../../assets/images/cajas-varias.png" alt="caja-simple">
+                  <label class="title-box">Casa Matriz</label>
+                  <span class="informacion">La carga de pedidos por Casa Matriz hace referencia a la carga de pedidos hacia multiples sedes que pertenezcan a su grupo</span>
+                </div>
+                 
+              </div>
+            </div>
+            <!-- <mat-radio-group aria-label="Tipo de Carga" [formControl]="tipoCargaControl" class="mt-3">
               <mat-radio-button value="individual" class="me-3">Individual</mat-radio-button>
               <mat-radio-button value="casa_matriz">Casa Matriz</mat-radio-button>
-            </mat-radio-group>
+            </mat-radio-group> -->
           </div>
         </div>
         <div class="stepper-navigation mt-3">
@@ -96,13 +114,14 @@
               <div class="container-fluid w-100">
     
                 <div class="row order-container">
-                  <div class="col-7">
-                    <div class="card p-5">
+                  <div class="col-8">
+                    <div class="card p-4">
                       <div class=" d-flex flex-row align-items-center justify-content-between">
-                        <div class="p-2 text-left">
+                        <div class="p-2 text-left flex-row align-items-center justify-content-between center-box">
                           <h4>Carrito de compra</h4>
+                          <button type="button" (click)="vaciacar()" style="font-size: 1.3rem;font-weight: bold;" class="btn btn-outline-danger"> Vaciar carrito</button>
                         </div>
-                        <button type="button" (click)="vaciacar()" style="font-size: 1.3rem;font-weight: bold;" class="btn btn-outline-danger"> Vaciar carrito</button>
+                       
                       </div>
                       <div class=" d-flex flex-row align-items-center justify-content-between">
                         <div class="p-4 unid-col mt-0">
@@ -128,37 +147,17 @@
                   </div>
     
                   <div class="col-4">
-                    <div class="card card__info">
+                    <div class="card card__info w-100">
                       <app-clicard></app-clicard>
                     </div>
                   </div>
                 </div>
 
-                <div class="card mt-4 filter-card-bootstrap">
+                <div class=" mt-4 filter-card-bootstrap">
                   <div class="card-body">
-                    <div class="row align-items-center mb-3">
-                        <!-- <mat-form-field appearance="outline" class="w-100">
-                          <mat-label>Buscar artículo</mat-label>
-                          <input matInput type="text" [(ngModel)]="filterDescrip" (keyup.enter)="fetchPedidos()">
-                          @if (filterDescrip) {
-                            <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                              <mat-icon>close</mat-icon>
-                            </button>
-                          }
-                        </mat-form-field> -->
-                        <mat-form-field appearance="outline" style="flex-grow: 1;">
-                          <mat-label>Buscar producto</mat-label>
-                          <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
-                          @if (search) {
-                            <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
-                              <mat-icon>close</mat-icon>
-                            </button>
-                          }
-                        </mat-form-field>
-                    </div>
-                
-                    <div class="row mb-3">
-                      <div class="col-md-4 mb-3 mb-md-0">
+                     <div class="row mb-3 border-box">
+                      <label class="label-filtro">Filtros de busqueda</label>
+                      <div class="col-3 mb-3 mb-md-0">
                         <!-- <mat-form-field appearance="outline" class="w-100">
                           <mat-label>Marca</mat-label>
                           <mat-select [(ngModel)]="filterMarca" (selectionChange)="fetchPedidos()">
@@ -190,7 +189,7 @@
                       
                       </div>
                 
-                      <div class="col-md-4 mb-3 mb-md-0">
+                      <div class="col-3 mb-3 mb-md-0">
                         <mat-form-field appearance="outline" class="w-100">
                           <mat-label>Categoría</mat-label>
                           <mat-select [(ngModel)]="filterCategoria" (selectionChange)="fetchPedidos()">
@@ -202,8 +201,8 @@
                         </mat-form-field>
                       </div>
 
-                      <div class="col-md-4 mb-3 mb-md-0">
-                        <mat-form-field appearance="outline" class="order-by-select">
+                      <div class="col-3 mb-3 mb-md-0">
+                        <mat-form-field appearance="outline" class="order-by-select w-100">
                           <mat-label>Ordenar por</mat-label>
                           <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
                             <mat-option value="descrip">Descripción</mat-option>
@@ -211,44 +210,32 @@
                             <mat-option value="existen">Existencia</mat-option>
                           </mat-select>
                         </mat-form-field>
-                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" class="sort-icon-bootstrap">
-                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                        </mat-icon>
                       </div>
-                
-                      <!-- <div class="col-md-4 mb-3 mb-md-0">
+
+                      <div class="col-3 mb-3 mb-md-0">
                         <mat-form-field appearance="outline" class="w-100">
-                          <mat-label>Ofertas Activas</mat-label>
-                          <mat-select [(ngModel)]="filterOfertasActivas" (selectionChange)="fetchPedidos()">
-                            <mat-option value="">Todas</mat-option>
-                            <mat-option value="categoria1">Categoría Ejemplo 1</mat-option>
-                            <mat-option value="categoria2">Categoría Ejemplo 2</mat-option>
-                            <mat-option value="categoria3">Categoría Ejemplo 3</mat-option>
+                          <mat-label>Indexados</mat-label>
+                          <mat-select [(ngModel)]="filterIndexados" (selectionChange)="filterIndexadosFunc()">
+                            <mat-option value="">Todos</mat-option>
+                              <mat-option [value]="'INDEXADO'">Productos Indexados</mat-option>
+                              <mat-option [value]="'INDEXADO A PARTIR'">Productos a parti de</mat-option>
                           </mat-select>
                         </mat-form-field>
-                      </div> -->
+                      </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                    
+                        <mat-form-field appearance="outline" style="flex-grow: 1;">
+                          <mat-label>Buscar producto</mat-label>
+                          <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
+                          @if (search) {
+                            <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                          }
+                        </mat-form-field>
                     </div>
                 
-                    <!-- <div class="row align-items-center">
-                      <div class="col-md-6 d-flex gap-4 mb-3 mb-md-0">
-                        <mat-checkbox [(ngModel)]="filterNuevasEntradas" (change)="fetchPedidos()">Nuevas Entradas</mat-checkbox>
-                        <mat-checkbox [(ngModel)]="filterOfertas" (change)="fetchPedidos()">Ofertas</mat-checkbox>
-                      </div>
-                      <div class="col-md-6 d-flex justify-content-md-end align-items-center gap-3">
-                        <mat-form-field appearance="outline" class="order-by-select">
-                          <mat-label>Ordenar por</mat-label>
-                          <mat-select [(ngModel)]="orderBy" (selectionChange)="applyFilters()">
-                            <mat-option value="descrip">Descripción</mat-option>
-                            <mat-option value="oprecio">Precio</mat-option>
-                            <mat-option value="existen">Existencia</mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                        <mat-icon *ngIf="orderBy" (click)="sortData(orderBy)" class="sort-icon-bootstrap">
-                          {{ orderDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
-                        </mat-icon>
-                      </div>
-                    </div> -->
-
                   </div>
                 </div>
 
@@ -261,97 +248,7 @@
                 </div>
     
                 <div class="mat-elevation-z2 mt-3">
-                  <!-- <table class="table table-bordered table-striped table-hover pedidos__table">
-                    <thead>
-                        <tr class="text-center">
-                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'img' && orderDirection === 'asc'" [class.desc]="orderBy === 'img' && orderDirection === 'desc'" (click)="sortData('img')">Ver</th>
-                            <th scope="col" class="align-middle text-start" [class.asc]="orderBy === 'descrip' && orderDirection === 'asc'" [class.desc]="orderBy === 'descrip' && orderDirection === 'desc'" (click)="sortData('descrip')">Descripción</th>
-                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'oprecio' && orderDirection === 'asc'" [class.desc]="orderBy === 'oprecio' && orderDirection === 'desc'" (click)="sortData('oprecio')">Precio Bs.</th>
-                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'opreciod' && orderDirection === 'asc'" [class.desc]="orderBy === 'opreciod' && orderDirection === 'desc'" (click)="sortData('opreciod')">Precio US$</th>
-                            <th scope="col" class="align-middle">Fecha/Lote</th>
-                            <th scope="col" class="align-middle" [class.asc]="orderBy === 'existen' && orderDirection === 'asc'" [class.desc]="orderBy === 'existen' && orderDirection === 'desc'" (click)="sortData('existen')">Inventario</th>
-                            <th scope="col" class="align-middle">Cantidad</th>
-                            <th scope="col" class="align-middle">Agregar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let product of pagedProducts; let i = index" [ngClass]="{'even-row': i % 2 === 0, 'odd-row': i % 2 !== 0, 'discount-row': product.descuento}">
-                            <td class="align-middle text-center">
-                                <img [src]="product.img" class="img-product" data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(product.codigo)">
-                            </td>
-                            <td class="align-middle text-start">{{product.descrip}}
-                                <br>
-                                <div *ngIf="product.oferta && product.oferta.length > 0"
-                                    class="oferta-proveedor-inline"
-                                    [matTooltip]="formatOfertasTooltip(product.oferta)"
-                                    matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'"> Oferta Proveedor
-                                </div>
-                                <div *ngIf="product.ficha > 0"
-                                    class="ficha-proveedor-inline"
-                                    matTooltipPosition="above"> DESC.FICHA <br>{{product.ficha}} %
-                                </div>
-                                <div *ngIf="product.indexado"
-                                  class="indexado-inline"
-                                  matTooltipPosition="above">{{product.indexado}}
-                              </div>
-                            </td>
-                            <td class="align-middle text-end">
-                                <div>
-                                    <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dprice}}</span>
-                                    <br *ngIf="product.segmento > 0">
-                                    <span style="color: rgb(28, 123, 36);">{{product.oprecio}}</span>
-                                </div>
-                            </td>
-                            <td class="align-middle text-end">
-                                <div>
-                                    <span *ngIf="product.segmento > 0" class="preca__antes">{{product.dpriced}}$</span>
-                                    <br *ngIf="product.segmento > 0">
-                                    <span style="color: rgb(28, 123, 36);">{{product.opreciod}}$</span>
-                                </div>
-                            </td>
-                            <td class="align-middle text-center">{{product.vence}}</td>
-
-                            <td class="align-middle text-center">{{product.existen}}</td>
-                            <td class="text-center">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    maxlength="10"
-                                    [value]="product.encar ? product.encar : ''"
-                                    (input)="validateInput(product, $event)"
-                                    id="cana_{{product.codigo}}"
-                                    placeholder="Cantidad"
-                                    class="input-cant"
-                                    (keyup.enter)="tipoCargaControl.value == 'casa_matriz' ? agg_all(product) : agg_pedido(product,'')"
-                                >
-                            </td>
-                            <td class="align-middle">
-                                <button *ngIf="tipoCargaControl.value != 'casa_matriz'"
-                                    [ngClass]="{
-                                      'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
-                                      'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
-                                    }"
-                                    (click)="agg_pedido(product,'')"
-                                >
-                                    <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                                    <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
-                                </button>
-                
-                                <button *ngIf="tipoCargaControl.value == 'casa_matriz'"
-                                    [ngClass]="{
-                                      'btn-add': !productosEnCarritoCodigos.includes(product.codigo),
-                                      'btn-agg': productosEnCarritoCodigos.includes(product.codigo)
-                                    }"
-                                    (click)="agg_all(product)"
-                                >
-                                    <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-circle-arrow-up"></i>
-                                    <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-circle-check"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                  </table> -->
-
+                 
                   <table mat-table [dataSource]="dataSource" matSort class="pedidos__table">
 
                     <ng-container matColumnDef="img">

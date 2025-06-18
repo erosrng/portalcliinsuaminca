@@ -431,3 +431,62 @@ nav[aria-label="Page navigation example"] {
     margin-left: 8px;
 }
 
+.center-box {
+    width: 100%;
+    display: flex;
+    align-items: center !important;
+}
+
+.card {
+    border-radius: 10px !important;
+    height: 100%;
+}
+
+.col-md-4 {
+    border: none !important;
+}
+
+.border-box {
+    border: 1px solid #CCC;
+    padding: 1rem;
+    width: 100%;
+    margin-left: 1px;
+    border-radius: 10px;
+}
+
+.label-filtro {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.card-selector {
+    img {
+        width: 200px;
+    }
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #CCC;
+    padding: 3rem;
+    transform: scale(0.91);
+    cursor: pointer;
+}
+
+.card-selector:hover {
+    transform: scale(0.99);
+    border: 1px solid #0084c5;
+}
+
+.title-box {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.informacion {
+    color: #ff4081;
+    font-weight: bold;
+}
+

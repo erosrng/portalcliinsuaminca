@@ -112,7 +112,7 @@ interface Categoria {
 
 
 export class PedidosPageComponent implements OnInit, OnDestroy {
-  tipoCargaControl = new FormControl('', Validators.required); 
+  tipoCargaControl = new FormControl(''); 
   clienteControl = new FormControl(); 
   tipoCarga: 'individual' | 'casa_matriz' | null = null;
   products: any[] = [];
@@ -127,6 +127,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   dataSource = new MatTableDataSource<any>(this.products);
+  originalDataSourceData: any[] = [];
   displayedColumns: string[] = ['img', 'descrip','vence', 'opreciod', 'existen', 'cantidad', 'agregar']; // 'nomprv', 'lote', 'vence',
   @ViewChild(MatPaginator) paginator!: MatPaginator; 
   private subscriptions: Subscription[] = [];
@@ -164,6 +165,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   esgrupo: any;
 
   filterCategoria: string = '';
+  filterIndexados: string = '';
   filterOfertasActivas: string = '';
   filterNuevasEntradas: boolean = false;
   filterOfertas: boolean = false;
@@ -223,6 +225,17 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
     //this.fetchPedidos();
     this.revisarCarrito();
+
+    this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
+      // Normaliza el término de búsqueda y el contenido del campo para la comparación
+      const searchTerms = filter.trim().toLowerCase().split(' ');
+
+      // El campo único de tu producto que contiene todo el texto para buscar
+      const dataStr = data.descrip.toLowerCase(); 
+
+      // Verifica si TODOS los términos de búsqueda están presentes en la cadena de datos
+      return searchTerms.every(term => dataStr.includes(term));
+    };
     
   }
 
@@ -275,126 +288,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.pagedProducts = this.filteredProducts.slice(start, end);
   }
 
-  /* fetchPedidos() {
-    Swal.showLoading();
-    const formData = new FormData();
-    const token = this.authService.getToken();
-    const codCli = this.authService.getCodCli();
-
-    // Parámetros de paginación
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const length = this.itemsPerPage;
-
-    formData.append('start', start.toString());
-    formData.append('length', length.toString());
-
-    formData.append('codCli', codCli ?? '');
-    formData.append('search', this.filterDescrip);
-    formData.append('categoria', this.filterCategoria ?? this.categoria ?? ''); // Usar filterCategoria, si no existe, usar la de la URL
-    //formData.append('proveedor', this.filterMarca);
-    if (this.clienteData && this.clienteData.ubica) {
-      formData.append('almacen', this.clienteData.ubica);
-    }
-    formData.append('marca', this.filterMarca);
-    formData.append('lote', this.filterLote);
-    formData.append('orderby', this.orderBy);
-    formData.append('orderDirection', this.orderDirection);
-    formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
-    formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
-    formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
-
-    formData.append('columns', JSON.stringify([
-      { data: 'codigo' },
-      { data: 'descrip' },
-      { data: 'nomprv' },
-      { data: 'oprecio' },
-      { data: 'existen' },
-    ]));
-
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-    const apiUrl = `${API_URL}portalcli/inventariocli`;
-
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        this.dataSource.data = response.data;
-        this.pagedProducts = response.data;
-        this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
-        this.cdr.detectChanges();
-        Swal.close();
-      },
-      error: (error) => {
-        console.error('Error de la API:', error);
-        this.cdr.detectChanges();
-        Swal.close();
-      },
-    });
-  } */
-
-    /* fetchPedidos2222222() {
-      Swal.showLoading();
-      this.isLoading = true;
-      const formData = new FormData();
-      const token = this.authService.getToken();
-      const codCli = this.authService.getCodCli();
-  
-        // Parámetros de paginación
-        const start = (this.currentPage - 1) * this.itemsPerPage;
-        const length = this.itemsPerPage;
-      
-        formData.append('start', start.toString());
-        formData.append('length', length.toString());
-      
-        formData.append('codCli', codCli ?? '');
-        formData.append('search', this.search ?? ''); 
-        formData.append('categoria', this.categoria ?? '');
-  
-        if (this.clienteData && this.clienteData.ubica) {
-          formData.append('almacen', this.clienteData.ubica);
-        }else{
-          formData.append('almacen', '');
-        }
-        formData.append('lote', this.filterLote);
-        formData.append('orderby', this.orderBy);
-        formData.append('orderDirection', this.orderDirection);
-        formData.append('nuevos', '0');
-        formData.append('columns', JSON.stringify([
-          { data: 'codigo' },
-          { data: 'descrip' },
-          { data: 'nomprv' },
-          { data: 'oprecio' },
-          { data: 'existen' },
-        ]));
-      
-        const headers = new HttpHeaders({
-          'Authorization': `${token}`
-        });
-        const apiUrl = `${API_URL}inventarioprv`;
-      
-        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-          next: (response: any) => {
-            this.pagedProducts = response.data.data;
-            this.totalPages = Math.ceil(parseInt(response.data.recordsTotal) / this.itemsPerPage);
-            this.dataSource.paginator = this.paginator;
-            this.cdr.detectChanges();
-            this.isLoading = false; 
-            Swal.close();
-  
-          },
-          error: (error) => {
-            this.isLoading = false; 
-            Swal.hideLoading();
-            Swal.fire({
-              title: 'Error',
-              text: 'Error al cargar inventario',
-            })
-            console.error('Error al cargar inventario:', error);
-          },
-        });
-        
-    }
-   */
   
 
     searchProducts(event: Event): void {
@@ -452,6 +345,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           Swal.close(); */
 
           this.dataSource.data = response.data;
+          this.originalDataSourceData = response.data
           this.pagedProducts = response.data;
             this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
             this.dataSource.paginator = this.paginator;
@@ -1377,4 +1271,28 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     });
   }
 
+    filterIndexadosFunc() {
+       this.dataSource.data = [...this.originalDataSourceData];
+      if (this.filterIndexados === 'INDEXADO') {
+        this.dataSource.data = this.originalDataSourceData.filter((item: any) =>
+          item.indexado === 'INDEXADO'
+        );
+        }
+     if (this.filterIndexados === 'INDEXADO A PARTIR') {
+        this.dataSource.data = this.originalDataSourceData.filter((item: any) =>
+          item.indexado.includes('INDEXADO A PARTIR')
+        );
+      }
+
+    // After filtering, it's a good practice to reset the paginator to the first page
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  selectOption(type: string) {
+    this.tipoCargaControl.setValue(type);
+    this.stepper.next()
+    this.iniciarCargaDeInventario(); 
+  }
 }
