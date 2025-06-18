@@ -299,11 +299,11 @@ h4 {
 
 .pedidos__table th {
     font-family: "Alexandria", Helvetica, sans-serif !important;
-    font-size: 13px;
+    font-size: 15px;
 }
 .pedidos__table td {
     font-family: "Alexandria", Helvetica, sans-serif !important;
-     font-size: 11px;
+     font-size: 14px;
  }
  
 nav[aria-label="Page navigation example"] {
@@ -427,6 +427,23 @@ nav[aria-label="Page navigation example"] {
     white-space: nowrap;
     color: #fff; 
     background-color: #3c965e; 
+    margin-top: 5px; 
+    margin-left: 8px;
+}
+
+
+.indexado-inline-black {
+    display: inline-flex; 
+    align-items: center;  
+    justify-content: center;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.60em; 
+    font-weight: 600; 
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #fff; 
+    background-color: #000; 
     margin-top: 5px; 
     margin-left: 8px;
 }

@@ -218,7 +218,7 @@
                           <mat-select [(ngModel)]="filterIndexados" (selectionChange)="filterIndexadosFunc()">
                             <mat-option value="">Todos</mat-option>
                               <mat-option [value]="'INDEXADO'">Productos Indexados</mat-option>
-                              <mat-option [value]="'INDEXADO A PARTIR'">Productos a parti de</mat-option>
+                              <mat-option [value]="'INDEXADO A PARTIR'">Monto factura</mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>
@@ -271,10 +271,14 @@
                                     class="ficha-proveedor-inline"
                                     matTooltipPosition="above"> DESC.FICHA <br>{{element.ficha}} %
                                 </div>
-                                <div *ngIf="element.indexado"
+                                <div *ngIf="element.indexado === 'INDEXADO'"
                                   class="indexado-inline"
                                   matTooltipPosition="above">{{element.indexado}}
-                              </div>
+                                </div>
+
+                                <div *ngIf="element.indexado !== 'INDEXADO'"
+                                  class="indexado-inline-black"
+                                  matTooltipPosition="above">{{element.indexado}}</div>
                       </td>
                     </ng-container>
                       <ng-container matColumnDef="vence" class="w-10">
