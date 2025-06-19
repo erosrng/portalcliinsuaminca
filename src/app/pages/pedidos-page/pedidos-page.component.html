@@ -433,7 +433,7 @@
                           'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
                           'btn-agg': productosEnCarritoCodigos.includes(element.codigo)
                         }"
-                        (click)="agg_pedido(element,'')"
+                        (keyup.enter)="tipoCargaControl.value == 'casa_matriz' ? agg_all(element) : agg_pedido(element, '')"
                     >
                         <i *ngIf="!productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-cart-plus"></i>
                         <i *ngIf="productosEnCarritoCodigos.includes(element.codigo)" class="fa-solid fa-square-check"></i>
