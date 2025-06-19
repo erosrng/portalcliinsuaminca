@@ -240,7 +240,7 @@
     border: none;
     color: #FFF;
     background: #0377bf;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .btn-clear {
@@ -253,7 +253,7 @@
     border: none;
     color: #FFF;
     background: #ff2f2f;
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .btn-download {
@@ -414,6 +414,7 @@ nav[aria-label="Page navigation example"] {
     flex-direction: column;
     align-content: center;
     justify-content: center;
+    font-size: 14px !important;
   }
 
   .text-blue {
@@ -460,7 +461,7 @@ th {
 }
 
 td {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 tr:hover {
@@ -496,12 +497,12 @@ tr:hover {
 .green {
     color: #2e5b0d;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .blue {
     color: #ff4081;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .container-text {
@@ -530,4 +531,12 @@ tr:hover {
 
 .red-label {
   color: #f44336;
+}
+
+.w-30 {
+    width: 30% !important;
+}
+
+.w-20 {
+      width: 20% !important;
 }

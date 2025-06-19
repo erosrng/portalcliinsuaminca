@@ -108,21 +108,13 @@
                   <div class="">
                       <button class="btn-end" (click)="goToCard();"> Finalizar compra</button>
                       <button class="btn-clear" (click)="vaciacar();">Vaciar carrito</button>
-<!--                      <div class="col-12" *ngIf="showUpload === 'GREIBERG'">-->
-<!--                          <input type="file" (change)="onFileChangeUnico($event)" style="display: none;" #fileInput>-->
-<!--                          <button class="btn-upload" (click)="fileInput.click()">-->
-<!--                              <i class="fas fa-file-upload"></i>-->
-<!--                              Cargar archivo-->
-<!--                          </button>-->
-<!--                      </div>-->
-                      <!--<button class="btn-download" (click)="bajaexcel();"> <i class="fas fa-file-excel"></i> Bajar listado</button>-->
                   </div>
                 </div>
 
               </div>
 
               <div class="row w-100">
-                <div class="col-5 col-custom-6">
+                <div class="col-4">
 
                   <form class="example-form">
                     <mat-form-field class="example-full-width h-custom" style="width: 100%;" appearance="outline">
@@ -138,25 +130,34 @@
                     </mat-form-field>
                   </form>
                 </div>
-
-                <div class="col-3 offset-3">
+                
+                <div class="col-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Seleccione un almacen</mat-label>
+                    <mat-select [(ngModel)]="almacen" (selectionChange)="applyFilters()">
+                      <mat-option value="0001">Maturin</mat-option>
+                      <mat-option value="0002">Guarenas</mat-option>
+                      <!--<mat-option value="existen">Existencia</mat-option>-->
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                
+                <div class="col-4">
                   <mat-form-field appearance="outline" class="w-100 h-custom">
                     <mat-label>Aplicar Descuento Lineal (%)</mat-label>
                     <input matInput type="number" max="100" [(ngModel)]="descuentoLineal" (input)="aplicarDescuentoLineal()">
                   </mat-form-field>
 
                 </div>
+              </div>
 
-                <div class="col-3">
-                  <div class="d-grid gap-2 d-md-flex align-items-center justify-content-md-end">
-
-<!--                    <button mat-raised-button color="primary" class="upload-btn" (click)="openCargarArchivoModal()">-->
-<!--                      <i class="fas fa-file-excel mr-1"></i>Cargar-->
-<!--                    </button>-->
-
-                  </div>
+              <div class="row">
+                <div class="col-12">
+                  <span>Alamacen Seleccionado: 
+                    <span *ngIf="almacen === '0001'">Maturin (0001)</span>
+                    <span *ngIf="almacen === '0002'">Guarenas (0002)</span>
+                  </span>
                 </div>
-
               </div>
             </div>
           </div>
@@ -198,7 +199,8 @@
                   <ng-container matColumnDef="img">
                     <th mat-header-cell *matHeaderCellDef class="border-top-left"> Ver </th>
                     <td mat-cell *matCellDef="let element">
-                       <img src="{{element.img}}"
+                       <img 
+                        [src]="getUrlImg(element.img)"
                         class="img-product"
                         data-bs-toggle="modal"
                         data-bs-target="#productModal"
@@ -212,26 +214,17 @@
                     </ng-container>
 
                   <ng-container matColumnDef="descrip">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" (click)="sortData('descrip')" class="w-15"> Descripción </th>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="descrip" (click)="sortData('descrip')" class="w-30"> Descripción </th>
                     <td mat-cell *matCellDef="let element"> {{element.descrip}} </td>
                   </ng-container>
 
-                 <!--  <ng-container matColumnDef="opreciod" class="w-10">
-                    <th mat-header-cell *matHeaderCellDef  mat-sort-header="oprecio" (click)="sortData('oprecio')" > Precio </th>
-                    <td mat-cell *matCellDef="let element" class="text-aling-center">
-                      <span class="green">{{element.dpriced}} US$</span>
-                      <br>
-                      <span class="blue"> {{element.dprice}} Bs.</span>
-
-                    </td>
-                  </ng-container> -->
 
                   <ng-container matColumnDef="opreciod" class="w-10">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header="oprecio" (click)="sortData('oprecio')"> Precio </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
                       <span class="green">
 
-                        <ng-container *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">{{element.dpriced}} US$</ng-container>
+                        <ng-container>{{element.dpriced}} US$</ng-container>
                       </span>
                       <br *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0">
                       <span [ngClass]="{'green': diasMontoFactura !== undefined && diasMontoFactura > 0, 'blue': diasMontoFactura === undefined || diasMontoFactura <= 0}">
@@ -240,15 +233,22 @@
                   </ng-container>
 
                   <ng-container matColumnDef="apliDiscount">
-                    <th mat-header-cell *matHeaderCellDef class="w-10" > Precio con descuento </th>
+                    <th mat-header-cell *matHeaderCellDef class="w-20" > Precio con descuento </th>
                     <td mat-cell *matCellDef="let element" class="text-aling-center">
-                      <ng-container *ngIf="diasMontoFactura === undefined || diasMontoFactura === 0"> {{getPriceWDiscount(element) | number:'1.2-2'}} US$</ng-container>
+                      <ng-container > {{getPriceWDiscount(element) | number:'1.2-2'}} US$</ng-container>
                       <br>
                       <span [ngClass]="{'green': diasMontoFactura !== undefined && diasMontoFactura > 0, 'blue': diasMontoFactura === undefined || diasMontoFactura <= 0}">
                        {{getPriceWDiscountBS(element) | number:'1.2-2'}} Bs.</span>
 
                     </td>
                   </ng-container>
+
+                  <ng-container matColumnDef="vence">
+                        <th mat-header-cell *matHeaderCellDef > Fecha de vencimiento </th>
+                        <td mat-cell *matCellDef="let element">
+                            <span>  {{element.vence}} </span>
+                        </td>
+                    </ng-container>
 
                     <ng-container matColumnDef="existen">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header="existen" (click)="sortData('existen')" class="w-15"> Disponibles </th>

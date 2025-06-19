@@ -81,7 +81,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = 
   [
     'img', 'codigo', 'descrip',
-    'opreciod', 'apliDiscount', 'existen','cantidad',
+    'opreciod', 'apliDiscount','vence', 'existen','cantidad',
     'descuento', 'agregar'
   ];
 
@@ -125,6 +125,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   filterLote: string = '';
   orderBy: string = 'descrip'; // Valor por defecto
   orderDirection: string = 'asc';
+  almacen: string = '0001'
 
   escalaActiva = ''
 
@@ -165,6 +166,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   diasMontoFactura: number | undefined;
 
   ngOnInit() {
+    localStorage.setItem('almacenn', '')
     this.showUpload = localStorage.getItem('usuario')
     this.diasMontoFactura = this.authService.getDiasMontoFactura();   
     this.rutaActual = this.activatedRoute.snapshot.url.join('/');
@@ -172,6 +174,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.codCli = this.authService.getCodCli();
     if (this.codCli) {
       this.subscribeToClienteData(() => { // Pasar un callback a subscribeToClienteData
+        
         if (this.stepper) {
           this.stepper.next(); // Avanza al siguiente paso si ya hay cliente
         }
@@ -228,6 +231,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     if(this.codCli){
       this.subscribeToClienteData();
     }
+    if (this.clienteData && this.clienteData.ubica) {
+          this.almacen = this.clienteData.ubica;
+          localStorage.setItem('almacenn', this.almacen)
+      }
     // Cambiar a la pestaña del inventario (índice 1)
     /* if (this.stepper) {
       this.stepper.next();
@@ -327,6 +334,9 @@ sortData(sortField: string) {
     this.portalcliLogicaService.clienteData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.clienteData = data;
       this.clienteControl.setValue(this.clienteData);
+      this.almacen = this.clienteData.ubica;
+      localStorage.setItem('almacenn', this.almacen)
+
       this.applyFilters(); // Recargar productos al cambiar de cliente (opcional)
       this.revisarCarrito();
       if (callback) {
@@ -407,12 +417,8 @@ sortData(sortField: string) {
       formData.append('codCli', codCli ?? '');
       formData.append('search', this.search ?? ''); 
       formData.append('categoria', this.categoria ?? '');
-
-      if (this.clienteData && this.clienteData.ubica) {
-        formData.append('almacen', this.clienteData.ubica);
-      }else{
-        formData.append('almacen', '');
-      }
+      formData.append('almacen', this.almacen);
+      localStorage.setItem('almacenn', this.almacen)
       formData.append('lote', this.filterLote);
       formData.append('orderby', this.orderBy);
       formData.append('orderDirection', this.orderDirection);
@@ -517,6 +523,7 @@ sortData(sortField: string) {
   }
 
   agg_pedido(product: any, type: string) {
+    Swal.showLoading();
     console.log(this.seclectElement)
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
@@ -548,13 +555,14 @@ sortData(sortField: string) {
         return;
       }
     }
-
-    this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov,this.clienteData.ubica).subscribe({
+    localStorage.setItem('almacenn', this.almacen)
+    this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov, this.almacen).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
         if (typeof mensaje === 'object') {
           mensaje = JSON.stringify(mensaje);
         }
+        
         Swal.fire({
           text: mensaje == 'Producto Agregado' ? 'Producto agregado exitosamente!' : mensaje,
           icon: mensaje == 'Producto Agregado' ? 'error' : 'success',
@@ -1111,6 +1119,19 @@ sortData(sortField: string) {
     });
 
 
+  }
+
+  getUrlImg(url: string) {
+    const oldPrefix = 'http://insuaminca.proteoerp.org:50080/';
+    const newPrefix = 'https://d2wnvkodoh477y.cloudfront.net/';
+
+    if (url.startsWith(oldPrefix)) {
+      return url.replace(oldPrefix, newPrefix);
+    } else {
+      // If the URL doesn't start with the expected prefix, return it as is
+      // or handle the case as per your application's logic.
+      return url;
+    }
   }
 
 

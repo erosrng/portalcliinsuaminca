@@ -93,3 +93,8 @@ body { margin: 0;}
 .mat-button-toggle-standalone.mat-button-toggle-appearance-standard .mat-pseudo-checkbox, .mat-button-toggle-group-appearance-standard .mat-pseudo-checkbox {
   --mat-minimal-pseudo-checkbox-selected-checkmark-color: rgb(255 255 255) !important;
 }
+
+.mat-sort-header-arrow {
+    opacity: 1 !important;
+    color: #FFF !important;
+}

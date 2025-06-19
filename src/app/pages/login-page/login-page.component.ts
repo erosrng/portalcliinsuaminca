@@ -73,11 +73,7 @@ export class LoginPageComponent implements AfterViewInit {
 
     const apiUrl = `${API_URL2}logincli/logincli`;
 
-    this.apiService.setLogUser(this.userData.user).subscribe((info: any) => {
-      this.login(apiUrl, formData)
-    }, () => {
-      this.login(apiUrl, formData)
-    })
+    this.login(apiUrl, formData)
 
     
   }
