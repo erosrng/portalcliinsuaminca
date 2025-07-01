@@ -137,7 +137,7 @@
 }
 
 .input-cant {
-    width: 13rem;
+    width: 10rem;
     border: 1px solid #CCC;
     padding: 0.5rem;
     border-radius: 0.5rem;
@@ -213,11 +213,23 @@
     border-radius: 1rem;
 }
 
-.btn-end {
-    width: 23rem;
+.btn-clear {
+    width: 100%;
     padding: 0;
     margin: 0;
-    height: 7vh;
+    height: 5vh;
+    border-radius: 1rem;
+    border: none;
+    color: #FFF;
+    background: #ff2f2f;
+    font-size: 2rem;
+}
+
+.btn-end {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    height: 5vh;
     border-radius: 1rem;
     border: none;
     color: #FFF;
@@ -303,7 +315,8 @@ h4 {
 }
 .pedidos__table td {
     font-family: "Alexandria", Helvetica, sans-serif !important;
-     font-size: 14px;
+    font-size: 12px;
+    padding: 5px;
  }
  
 nav[aria-label="Page navigation example"] {
@@ -507,3 +520,69 @@ nav[aria-label="Page navigation example"] {
     font-weight: bold;
 }
 
+.col-flex {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.grey-flex {
+    width: 100%;
+    display: flex;
+    background: #ededed;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 1rem;
+    flex-direction: column;
+}
+
+.img-banner {
+    width: 100%;
+    margin-bottom: 1rem;
+    height: 100%;
+}
+
+.banner-insua {
+    width: 75%;
+    height: 400px;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+}
+
+.slide {
+    width: 24% !important;
+    height: 400px !important;
+    background-color: black !important;
+    border-radius: 1rem !important;
+    display: flex !important;
+    margin: auto !important;
+    overflow: hidden !important;
+    position: relative !important;
+    margin-top: 0 !important;
+}
+
+.publi {
+    display: flex !important;
+}
+.order-container {
+    transition: all ease-in-out 0.25s;
+
+    .col-12 > .card-cli {
+        opacity: 1;
+    }
+}
+.banner-fixed {
+    position: fixed;
+    width: 15.5%;
+    top: 8rem;
+    z-index: 99999;
+
+    .col-12 > .card-cli {
+        opacity: 0;
+    }
+}
+
+.selector-card {
+    width: 50%;
+    margin: auto;
+}

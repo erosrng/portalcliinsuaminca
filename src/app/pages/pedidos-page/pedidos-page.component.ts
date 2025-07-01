@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy, signal, OnDestroy, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, OnDestroy, ViewChild, ChangeDetectorRef, HostListener  } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; 
 import { MatSnackBar } from '@angular/material/snack-bar'; // Importa MatSnackBar
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
@@ -112,6 +112,7 @@ interface Categoria {
 
 
 export class PedidosPageComponent implements OnInit, OnDestroy {
+  scrolled30Percent = false;
   tipoCargaControl = new FormControl(''); 
   clienteControl = new FormControl(); 
   tipoCarga: 'individual' | 'casa_matriz' | null = null;
@@ -119,6 +120,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   categoria: string | null = null;
   categorianombre: string | null = null;
   proveedselect: string | null = null;
+  filterValue = ''
 
   clientes: { cliente: string; nombre: string; rifci: string }[] | null = null;
 
@@ -291,8 +293,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   
 
     searchProducts(event: Event): void {
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+      this.filterValue = (event.target as HTMLInputElement).value;
+      this.dataSource.filter = this.filterValue.trim().toLowerCase();
     }
     
     fetchPedidos() {
@@ -1291,8 +1293,24 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   }
 
   selectOption(type: string) {
+    Swal.showLoading();
     this.tipoCargaControl.setValue(type);
     this.stepper.next()
     this.iniciarCargaDeInventario(); 
+  }
+
+  // Listen for scroll events on the window
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event: Event) {
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const viewportHeight = window.innerHeight;
+    const scrollPercentage = (scrollPosition / viewportHeight) * 100;
+
+    // Check if the user has scrolled 30% or more
+    if (scrollPercentage >= 30) {
+      this.scrolled30Percent = true;
+    } else {
+      this.scrolled30Percent = false;
+    }
   }
 }
