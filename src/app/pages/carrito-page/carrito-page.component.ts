@@ -19,7 +19,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
-import { MatFormFieldModule } from '@angular/material/form-field'; // Importa MatFormFieldModule
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {TableModule} from "primeng/table"; // Importa MatFormFieldModule
 
 
 export interface Product {
@@ -38,18 +39,19 @@ export interface Product {
 
 @Component({
   selector: 'app-carrito-page',
-  imports: [
-    CommonModule,
-    NavBarComponent,
-    SideBarComponent,
-    MatTableModule,
-    MatFormFieldModule, 
-    MatInputModule,
-    MatIconModule,
-    MatDialogModule,
-    MatPaginatorModule,
-    MatSelectModule
-  ],
+    imports: [
+        CommonModule,
+        NavBarComponent,
+        SideBarComponent,
+        MatTableModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatDialogModule,
+        MatPaginatorModule,
+        MatSelectModule,
+        TableModule
+    ],
   templateUrl: './carrito-page.component.html',
   styleUrl: './carrito-page.component.scss'
 })

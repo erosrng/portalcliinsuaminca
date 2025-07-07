@@ -231,7 +231,8 @@
     border: none;
     padding: 5px 12px;
     cursor: pointer;
-    border-radius: 1.3rem; 
+    border-radius: 1.3rem;
+    display: flex;
 }
 
 .carrito__remove-button:hover {
@@ -311,5 +312,39 @@
   }
   &__checkout-button:hover {
     background-color: vars.$text-color2-hover;
+  }
+}
+
+@media screen and (max-width: 768px) {
+
+  .carrito__totals{
+    width: 100% !important;
+
+  }
+
+  .carrito__totals-title {
+    width: 100% !important;
+  }
+
+  .carrito {
+    margin-top: 15rem !important;
+
+    mat-form-field {
+      position: relative;
+      z-index: 15;
+      width: 100% !important;
+      margin-top: 10px !important;
+    }
+  }
+
+  .sort-container{
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .d-flex {
+    display: flex !important;
+    flex-direction: column;
   }
 }
