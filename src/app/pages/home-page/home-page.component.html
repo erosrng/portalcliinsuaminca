@@ -70,75 +70,65 @@
 
             <div class="content__general">
                 <main class="main__general">
-                    <div class="caja c1">
+                    <div class="container mt-5">
+                        <div class="row mt-3">
+                            <div class="col-8">
+                                <h3 class="text-primary">¡Bienvenido a Insuanet!</h3>
+                                <div class="carrusel1__container main-carousel mt-5">
 
-                        <div class="container-fluid">
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <h3 class="text-primary">¡Bienvenido a Insuanet!</h3>
-                                </div>
+                                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
 
-                                <div class="col-12 mt-2 p-4">
-                                    <div class="carrusel1__container">
-
-                                        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
-
-                                            <div class="carousel-indicators">
-                                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                            </div>
-
-                                            <div class="carousel-inner">
-
-                                                <div class="carousel-item active">
-                                                    <img src="./../../../assets/images/Publicidad Diamante/banner1.jpg" class="d-block w-100" alt="Banner 1">
-                                                </div>
-                                                <div class="carousel-item">
-                                                    <img src="./../../../assets/images/Publicidad Diamante/banner3.jpg" class="d-block w-100" alt="Banner 3">
-                                                </div>
-                                                <div class="carousel-item">
-                                                    <img src="./../../../assets/images/Publicidad Diamante/banner7.jpg" class="d-block w-100" alt="Banner 7">
-                                                </div>
-                                            </div>
-
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Previous</span>
-                                            </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span class="visually-hidden">Next</span>
-                                            </button>
+                                        <div class="carousel-indicators">
+                                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                                         </div>
+
+                                        <div class="carousel-inner">
+
+                                            <div class="carousel-item active">
+                                                <img src="./../../../assets/images/Publicidad Diamante/banner1.jpg" class="d-block w-100 main-img" alt="Banner 1">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="./../../../assets/images/Publicidad Diamante/banner3.jpg" class="d-block w-100 main-img" alt="Banner 3">
+                                            </div>
+                                            <div class="carousel-item">
+                                                <img src="./../../../assets/images/Publicidad Diamante/banner7.jpg" class="d-block w-100 main-img" alt="Banner 7">
+                                            </div>
+                                        </div>
+
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="container ficha__content">
-                            <div class="container-fluid">
-                                <div class="row mt-4">
-                                    <div class="col-12">
-                                        <h3 class="text-primary">Informacion del cliente</h3>
-                                    </div>
-
-                                    <div class="col-12 mt-4">
-                                        <div class="card card__info">
-                                            <app-clicard></app-clicard>
+                            <div class="col-4">
+                                <h3 class="text-primary">Informacion del cliente</h3>
+                                <div class="container-fluid mt-5">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="card card__info">
+                                                <app-clicard></app-clicard>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-12 mt-2">
-                                        <div class="card mt-4 card__info">
-                                            <div class="card-body ">
-                                                <h3 class="card-title text-primary">Asesor Comercial</h3>
-                                                <p class="card-text">
-                                                    <span class="cardinfo__text">NOMBRE: <b>{{ (portalcliLogicaService.clienteData$ | async)?.nombrevd }}</b></span><br>
-                                                    <span class="cardinfo__text">TELÉFONO: <b>{{ (portalcliLogicaService.clienteData$ | async)?.telefonovd }}</b></span><br>
-                                                    <span class="cardinfo__text">CORREO: <span class="title__limit">{{ (portalcliLogicaService.clienteData$ | async)?.emailvd }}</span>
+                                        <div class="col-12 mt-2">
+                                            <div class="card mt-4 card__info">
+                                                <div class="card-body ">
+                                                    <h3 class="card-title text-primary">Asesor Comercial</h3>
+                                                    <p class="card-text">
+                                                        <span class="cardinfo__text">NOMBRE: <b>{{ (portalcliLogicaService.clienteData$ | async)?.nombrevd }}</b></span><br>
+                                                        <span class="cardinfo__text">TELÉFONO: <b>{{ (portalcliLogicaService.clienteData$ | async)?.telefonovd }}</b></span><br>
+                                                        <span class="cardinfo__text">CORREO: <span class="title__limit">{{ (portalcliLogicaService.clienteData$ | async)?.emailvd }}</span>
                                       </span>
-                                                </p>
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -147,68 +137,72 @@
                         </div>
                     </div>
 
+                    <div class="container mt-5">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="ofertas__carrusel">
+                                    <h3 class="ofertas-title text-primary">DESTACADOS</h3>
+                                    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+                                    <owl-carousel-o [options]="customOptions">
+                                        <ng-template carouselSlide *ngFor="let product of products">
+                                            <div class="carousel-cards">
+                                                <div class="card product-card">
+                                                    <div class="discount-badge"
+                                                         *ngIf="product.ofertaDisplay"
+                                                         [matTooltip]="formatOfertasTooltip(product.oferta)"
+                                                         matTooltipPosition="above">
+                                                        {{ product.ofertaDisplay }}
+                                                    </div>
 
-                    <div class="caja c2">
+                                                    <div class="product-price">US$ {{ product.opreciod }} <span *ngIf="product.segmento > 0"class="preca__antes2">{{ product.dpriced }}</span></div>
 
-                        <div class="ofertas__carrusel">
-                            <h3 class="ofertas-title text-primary">DESTACADOS</h3>
-                            <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
-                            <owl-carousel-o [options]="customOptions">
-                                <ng-template carouselSlide *ngFor="let product of products">
-                                  <div class="carousel-cards">
-                                    <div class="card product-card">
-                                      <div class="discount-badge"
-                                           *ngIf="product.ofertaDisplay"
-                                           [matTooltip]="formatOfertasTooltip(product.oferta)"
-                                           matTooltipPosition="above">
-                                        {{ product.ofertaDisplay }} 
-                                        </div>
-                              
-                                      <div class="product-price">US$ {{ product.opreciod }} <span *ngIf="product.segmento > 0"class="preca__antes2">{{ product.dpriced }}</span></div>
-                              
-                                      <div class="image-product__container-v2">
-                                        <img src="{{ product.img}}" 
-                                        data-bs-toggle="modal" data-bs-target="#productModal" 
-                                        (click)="openProductModal(product.codigo)"
-                                        class="img__product-principal-v2" alt="{{ product.codigo }}">
-                                      </div>
-                              
-                                      <span class="exis__text">Disponibles: {{ product.existen }}</span>
-                                      <div class="product-actions">
-                                        <div class="product-info">
+                                                    <div class="image-product__container-v2">
+                                                        <img src="{{ product.img}}"
+                                                             data-bs-toggle="modal" data-bs-target="#productModal"
+                                                             (click)="openProductModal(product.codigo)"
+                                                             class="img__product-principal-v2" alt="{{ product.codigo }}">
+                                                    </div>
+
+                                                    <span class="exis__text">Disponibles: {{ product.existen }}</span>
+                                                    <div class="product-actions">
+                                                        <div class="product-info">
                                           <span class="desca__product">
                                             {{ product.descrip }}
                                           </span>
-                                        </div>
-                                        <div class="cana__container-v2">
-                                          <input
-                                            class="cana__input-v2"
-                                            type="number"
-                                            [id]="'cana_' + product.codigo"
-                                            [value]="product.encar ? product.encar : ''"
-                                            (input)="eventcant(product.codigo, $event)"
-                                            name="cana"
-                                            placeholder="1"
-                                          >
-                                          <button
-                                            class="send__button-v2"
-                                            title="Carrito"
-                                            [id]="'aggpedido_' + product.codigo"
-                                            (click)="agg_pedido(product)"
-                                          >
-                                            <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                                            <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
-                                          </button>
+                                                        </div>
+                                                        <div class="cana__container-v2">
+                                                            <input
+                                                                    class="cana__input-v2"
+                                                                    type="number"
+                                                                    [id]="'cana_' + product.codigo"
+                                                                    [value]="product.encar ? product.encar : ''"
+                                                                    (input)="eventcant(product.codigo, $event)"
+                                                                    name="cana"
+                                                                    placeholder="1"
+                                                            >
+                                                            <button
+                                                                    class="send__button-v2"
+                                                                    title="Carrito"
+                                                                    [id]="'aggpedido_' + product.codigo"
+                                                                    (click)="agg_pedido(product)"
+                                                            >
+                                                                <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                                                                <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                                                            </button>
 
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </ng-template>
-                              </owl-carousel-o>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </owl-carousel-o>
 
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
+                    <div class="container mt-5">
                         <!-- Carrusel de dos  -->
                         <div class="ofertas__carrusel-low">
                             <div id="promotionCarousel3" class="carousel slide-lown" data-bs-ride="carousel">
@@ -221,13 +215,13 @@
                                 <div class="carousel-inner">
 
                                     <div class="carousel-item active">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-790.jpg" class="d-block w-100" alt="Banner 1">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-790.jpg" class="d-block w-100 slide-min" alt="Banner 1">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-KMPlus-1080x520.png" class="d-block w-100" alt="Banner 3">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-KMPlus-1080x520.png" class="d-block w-100 slide-min" alt="Banner 3">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-KMPLUS-1440x600.png" class="d-block w-100" alt="Banner 7">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner-KMPLUS-1440x600.png" class="d-block w-100 slide-min" alt="Banner 7">
                                     </div>
                                 </div>
 
@@ -242,119 +236,172 @@
                             </div>
 
                             <div id="promotionCarousel4" class="carousel slide-lown" data-bs-ride="carousel">
-                                    <div class="carousel-indicators">
-                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                    </div>
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#promotionCarousel4" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
 
 
                                 <div class="carousel-inner">
 
                                     <div class="carousel-item active">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/BANNER%20WEB%201.png" class="d-block w-100" alt="Banner 1">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/BANNER%20WEB%201.png" class="d-block w-100 slide-min" alt="Banner 1">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner%20clavumox%20plus.png" class="d-block w-100" alt="Banner 3">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/Banner%20clavumox%20plus.png" class="d-block w-100 slide-min" alt="Banner 3">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="./../../../assets/images/Publicidad%20Standard/banne-walifer-insumica%20(2).png" class="d-block w-100" alt="Banner 7">
+                                        <img src="./../../../assets/images/Publicidad%20Standard/banne-walifer-insumica%20(2).png" class="d-block w-100 slide-min" alt="Banner 7">
                                     </div>
                                 </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
-                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#promotionCarousel4" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
                         </div>
-    
+                    </div>
 
+                    <div class="container mt-5">
                         <!-- Ofertas recomendadas -->
                         <div class="ofertas__carrusel">
                             <h3 class="ofertas-title text-primary">TE RECOMENDAMOS</h3>
                             <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
                             <owl-carousel-o [options]="customOptions">
-                                <ng-template carouselSlide *ngFor="let product of products">
-                                  <div class="carousel-cards">
-                                    <div class="card product-card">
-                                      <div class="discount-badge"
-                                           *ngIf="product.ofertaDisplay"
-                                           [matTooltip]="formatOfertasTooltip(product.oferta)"
-                                           matTooltipPosition="above">
-                                        {{ product.ofertaDisplay }}
-                                        </div>
-                              
-                                        <div class="product-price">US$ {{ product.opreciod }} <span *ngIf="product.segmento > 0"class="preca__antes2">{{ product.dpriced }}</span></div>
-                              
-                                      <div class="image-product__container-v2">
-                                        <img src="{{ product.img}}" 
-                                        data-bs-toggle="modal" data-bs-target="#productModal" 
-                                        (click)="openProductModal(product.codigo)"
-                                        class="img__product-principal-v2" alt="{{ product.codigo }}">
+                                <ng-template carouselSlide *ngFor="let product of products_2">
+                                    <div class="carousel-cards">
+                                        <div class="card product-card">
+                                            <div class="discount-badge"
+                                                 *ngIf="product.ofertaDisplay"
+                                                 [matTooltip]="formatOfertasTooltip(product.oferta)"
+                                                 matTooltipPosition="above">
+                                                {{ product.ofertaDisplay }}
+                                            </div>
 
-                                      </div>
-                              
-                                      <span class="exis__text">Disponibles: {{ product.existen }}</span>
-                                      <div class="product-actions">
-                                        <div class="product-info">
+                                            <div class="product-price">US$ {{ product.opreciod }} <span *ngIf="product.segmento > 0"class="preca__antes2">{{ product.dpriced }}</span></div>
+
+                                            <div class="image-product__container-v2">
+                                                <img src="{{ product.img}}"
+                                                     data-bs-toggle="modal" data-bs-target="#productModal"
+                                                     (click)="openProductModal(product.codigo)"
+                                                     class="img__product-principal-v2" alt="{{ product.codigo }}">
+
+                                            </div>
+
+                                            <span class="exis__text">Disponibles: {{ product.existen }}</span>
+                                            <div class="product-actions">
+                                                <div class="product-info">
                                           <span class="desca__product">
                                             {{ product.descrip }}
                                           </span>
+                                                </div>
+                                                <div class="cana__container-v2">
+                                                    <input
+                                                            class="cana__input-v2"
+                                                            type="number"
+                                                            min="0"
+                                                            placeholder="1"
+                                                            [id]="'cana_' + product.codigo"
+                                                            [value]="product.encar ? product.encar : ''"
+                                                            (input)="eventcant(product.codigo, $event)"
+                                                            name="cana"
+                                                    >
+                                                    <button
+                                                            class="send__button-v2"
+                                                            title="Carrito"
+                                                            [id]="'aggpedido_' + product.codigo"
+                                                            (click)="agg_pedido(product)"
+                                                    >
+                                                        <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
+                                                        <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="cana__container-v2">
-                                            <input
-                                                class="cana__input-v2"
-                                                type="number"
-                                                min="0"
-                                                placeholder="1"
-                                                [id]="'cana_' + product.codigo"
-                                                [value]="product.encar ? product.encar : ''"
-                                                (input)="eventcant(product.codigo, $event)"
-                                                name="cana"
-                                            >
-                                            <button
-                                                class="send__button-v2"
-                                                title="Carrito"
-                                                [id]="'aggpedido_' + product.codigo"
-                                                (click)="agg_pedido(product)"
-                                                >
-                                                <i *ngIf="!productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-cart-plus"></i>
-                                                <i *ngIf="productosEnCarritoCodigos.includes(product.codigo)" class="fa-solid fa-square-check"></i>
-                                            </button>
-                                        </div>
-                                      </div>
                                     </div>
-                                  </div>
                                 </ng-template>
                             </owl-carousel-o>
                         </div>
-    
+                    </div>
+
+                    <div class="container mt-5">
                         <!-- Carrusel de proveedores -->
                         <div class="product-carousel-section">
                             <h3 class="ofertas-title text-primary">NUESTROS PROVEEDORES</h3>
-        
+
                             <mat-progress-bar mode="indeterminate" *ngIf="isLoadingProviders"></mat-progress-bar>
-                        
-                            <owl-carousel-o *ngIf="!isLoading && providers.length > 0" [options]="providersCarouselOptions">
-                                <ng-template carouselSlide *ngFor="let provider of providers">
-                                    <div class="carousel-proveedor-item" [title]="provider.proveed" (click)="Proveedselect(provider.proveed)">
-                                        <img [src]="provider.imageSrc" [alt]="provider.name">
+
+                            <owl-carousel-o [options]="providersCarouselOptions">
+<!--                                <ng-template carouselSlide *ngFor="let provider of providers">-->
+<!--                                    <div class="carousel-proveedor-item" [title]="provider.proveed" (click)="Proveedselect(provider.proveed)">-->
+<!--                                        <img [src]="provider.imageSrc" [alt]="provider.name">-->
+<!--                                    </div>-->
+<!--                                </ng-template>-->
+
+                                <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00023.png" alt="00023">
                                     </div>
                                 </ng-template>
+                                <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00036.png" alt="00036">
+                                    </div>
+                                </ng-template>
+                                <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00066.png" alt="00066">
+                                    </div>
+                                </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00076.png" alt="00076">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00077.png" alt="00077">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00089.png" alt="00089">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00205.png" alt="00205">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00226.png" alt="00226">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00290.png" alt="00290">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00233.png" alt="00233">
+                                    </div>
+                                 </ng-template>
+                                 <ng-template carouselSlide >
+                                    <div class="carousel-proveedor-item" >
+                                        <img src="../../../assets/images/logoprv/00302.png" alt="00302">
+                                    </div>
+                                 </ng-template>
                             </owl-carousel-o>
                         </div>
                     </div>
 
-                    <div class="pre__footer">
-
-                    </div>
-
-                    <!-- '
-                    $body .=' -->
                 </main>
             </div>
 

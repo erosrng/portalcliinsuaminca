@@ -34,7 +34,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSort, Sort,MatSortModule } from '@angular/material/sort'; // Importa Sort
+import { MatSort, Sort,MatSortModule } from '@angular/material/sort';
+import {Table, TableModule} from "primeng/table";
+import {InputText} from "primeng/inputtext";
+import {Button} from "primeng/button";
+import {IconField} from "primeng/iconfield";
+import {InputIcon} from "primeng/inputicon";
+import {Listbox} from "primeng/listbox"; // Importa Sort
 interface GrupoCliente {
   clienteId: string;
   clienteNombre: string;
@@ -103,7 +109,13 @@ interface Categoria {
     MatSnackBarModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatSortModule, 
+    MatSortModule,
+    TableModule,
+    InputText,
+    Button,
+    IconField,
+    InputIcon,
+    Listbox
   ],
   changeDetection: ChangeDetectionStrategy.OnPush, 
   templateUrl: './pedidos-page.component.html',
@@ -112,15 +124,18 @@ interface Categoria {
 
 
 export class PedidosPageComponent implements OnInit, OnDestroy {
+  @ViewChild('dt') dt: Table | undefined;
   scrolled30Percent = false;
   tipoCargaControl = new FormControl(''); 
   clienteControl = new FormControl(); 
   tipoCarga: 'individual' | 'casa_matriz' | null = null;
   products: any[] = [];
+  productsMarcas: any[] = [];
   categoria: string | null = null;
   categorianombre: string | null = null;
   proveedselect: string | null = null;
   filterValue = ''
+  searchValue: string | undefined;
 
   clientes: { cliente: string; nombre: string; rifci: string }[] | null = null;
 
@@ -166,7 +181,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   esgrupo: any;
 
-  filterCategoria: string = '';
+  filterCategoria: string = "";
   filterIndexados: string = '';
   filterOfertasActivas: string = '';
   filterNuevasEntradas: boolean = false;
@@ -188,6 +203,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   marcaControl = new FormControl('');
   filterMarcaOptions: Marca[] = [];
+  selectedMarca!: Marca;
   filteredMarcaOptions: Observable<Marca[]> | undefined;
   filterMarca: string = '';
 
@@ -290,12 +306,31 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.pagedProducts = this.filteredProducts.slice(start, end);
   }
 
-  
 
-    searchProducts(event: Event): void {
-      this.filterValue = (event.target as HTMLInputElement).value;
-      this.dataSource.filter = this.filterValue.trim().toLowerCase();
+
+  searchProducts(event: Event): void {
+    this.filterValue = (event.target as HTMLInputElement).value;
+    const searchText = this.filterValue.trim().toLowerCase();
+
+    // Si el campo de búsqueda está vacío, muestra todos los productos
+    if (!searchText) {
+      this.filteredProducts = [...this.products];
+      return;
     }
+
+    // Dividimos el texto de búsqueda en palabras individuales
+    // Filtramos para asegurar que no haya cadenas vacías de múltiples espacios
+    const searchTerms = searchText.split(' ').filter(term => term.length > 0);
+
+    this.filteredProducts = this.products.filter(product => {
+      // Convertimos la descripción del producto a minúsculas
+      const productDescription = product.descrip ? String(product.descrip).toLowerCase() : '';
+
+      // Verificamos si CADA palabra del término de búsqueda está incluida en la descripción del producto
+      // Esto significa que si buscas "aceta 125", la descripción debe contener "aceta" Y "125".
+      return searchTerms.every(term => productDescription.includes(term));
+    });
+  }
     
     fetchPedidos() {
       Swal.showLoading();
@@ -346,6 +381,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
           Swal.close(); */
 
+          this.products = response.data;
+          this.filteredProducts = [...this.products];
           this.dataSource.data = response.data;
           this.originalDataSourceData = response.data
           this.pagedProducts = response.data;
@@ -364,9 +401,12 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     }
 
     clear(): void {
+      this.search = ''
+      this.filterValue = '';
       this.filterDescrip = '';
       this.dataSource.filter = '';
-      this.fetchPedidos();
+      this.filteredProducts = [...this.products];
+      // this.fetchPedidos();
     }    
 
   goToFirstPage() {
@@ -1273,22 +1313,92 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  onProviderSelectionChange(): void {
+    this.resetPaginator();
+    if (!this.selectedMarca) {
+      this.filteredProducts = [...this.products]
+    } else {
+      Swal.showLoading();
+      const formData = new FormData();
+      const token = this.authService.getToken();
+      const codCli = this.authService.getCodCli();
+
+      // Parámetros de paginación
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const length = this.itemsPerPage;
+
+      formData.append('start', start.toString());
+      formData.append('length', length.toString());
+
+      formData.append('codCli', codCli ?? '');
+      formData.append('search', this.filterDescrip);
+      formData.append('categoria', this.filterCategoria ?? this.categoria ?? ''); // Usar filterCategoria, si no existe, usar la de la URL
+      //formData.append('proveedor', this.filterMarca);
+      if (this.clienteData && this.clienteData.ubica) {
+        formData.append('almacen', this.clienteData.ubica);
+      }
+      formData.append('marca', this.selectedMarca.marca);
+      formData.append('lote', this.filterLote);
+      formData.append('orderby', this.orderBy);
+      formData.append('orderDirection', this.orderDirection);
+      formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
+      formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
+      formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
+
+      formData.append('columns', JSON.stringify([
+        { data: 'codigo' },
+        { data: 'descrip' },
+        { data: 'nomprv' },
+        { data: 'oprecio' },
+        { data: 'existen' },
+      ]));
+
+      const headers = new HttpHeaders({
+        'Authorization': `${token}`
+      });
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
+
+      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+        next: (response: any) => {
+          this.filteredProducts = [...response.data];
+          this.cdr.detectChanges();
+          Swal.close();
+
+        },
+        error: (error) => {
+          console.error('Error de la API:', error);
+          this.cdr.detectChanges();
+          Swal.close();
+        },
+      });
+    }
+
+  }
+
     filterIndexadosFunc() {
-       this.dataSource.data = [...this.originalDataSourceData];
+      this.filteredProducts = [...this.products];
       if (this.filterIndexados === 'INDEXADO') {
-        this.dataSource.data = this.originalDataSourceData.filter((item: any) =>
+        this.filteredProducts = this.originalDataSourceData.filter((item: any) =>
           item.indexado === 'INDEXADO'
         );
         }
      if (this.filterIndexados === 'INDEXADO A PARTIR') {
-        this.dataSource.data = this.originalDataSourceData.filter((item: any) =>
+       this.filteredProducts  = this.originalDataSourceData.filter((item: any) =>
           item.indexado.includes('INDEXADO A PARTIR')
         );
       }
 
     // After filtering, it's a good practice to reset the paginator to the first page
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    this.resetPaginator();
+  }
+
+  // --- Función para resetear el paginador ---
+  resetPaginator(): void {
+    // Si usas ViewChild para acceder al componente p-table:
+    if (this.dt) {
+      this.dt.first = 0; // También resetea la propiedad 'first' directamente en el componente
+      // Opcional: También resetea el número de filas
+      // this.dt.rows = 10;
     }
   }
 
@@ -1312,5 +1422,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     } else {
       this.scrolled30Percent = false;
     }
+  }
+
+  clearTable(table: Table) {
+    table.clear();
+    this.searchValue = ''
   }
 }

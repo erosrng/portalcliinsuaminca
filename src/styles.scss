@@ -62,3 +62,35 @@ body { margin: 0;}
     color: white !important;
   }
 }
+
+.p-listbox-header {
+  padding: 1rem !important;
+}
+
+.p-paginator {
+  padding: 3rem !important;
+  margin-bottom: 8rem !important;
+}
+
+.p-inputtext {
+  font-size: 1.4rem !important;
+}
+
+.p-listbox .p-listbox-list .p-listbox-option.p-listbox-option-selected {
+  background: #6bc32c !important;
+  color: #ffffff !important;
+}
+
+@media screen and (max-width: 1400px) {
+  .mat-horizontal-content-container {
+    overflow: hidden;
+    padding: 0 !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .mat-horizontal-content-container {
+    overflow: hidden;
+    padding: 0 !important;
+  }
+}

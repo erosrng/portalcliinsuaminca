@@ -256,7 +256,7 @@
 }
 
 h4 {
-    font-size: 2.5rem;
+    font-size: 1.75rem;
 }
 
 .show-text-car {
@@ -272,7 +272,7 @@ h4 {
 .oferta-proveedor-inline {
     background-color: #4960e6; 
     color: #f0f0f0;
-    font-size: 0.6em;
+    font-size: 1em;
     padding: 2px 5px;
     border-radius: 3px;
     margin-left: 5px;
@@ -309,11 +309,11 @@ h4 {
     border: none;
 }
 
-.pedidos__table th {
+th {
     font-family: "Alexandria", Helvetica, sans-serif !important;
     font-size: 15px;
 }
-.pedidos__table td {
+td {
     font-family: "Alexandria", Helvetica, sans-serif !important;
     font-size: 12px;
     padding: 5px;
@@ -432,33 +432,30 @@ nav[aria-label="Page navigation example"] {
     display: inline-flex; 
     align-items: center;  
     justify-content: center;
-    padding: 2px 4px;
+    padding: 5px;
     border-radius: 3px;
-    font-size: 0.60em; 
+    font-size: 1em;
     font-weight: 600; 
     text-transform: uppercase;
     white-space: nowrap;
     color: #fff; 
-    background-color: #3c965e; 
-    margin-top: 5px; 
-    margin-left: 8px;
+    background-color: #3c965e;
 }
 
 
 .indexado-inline-black {
-    display: inline-flex; 
-    align-items: center;  
+    display: inline-flex
+;
+    align-items: center;
     justify-content: center;
-    padding: 2px 4px;
+    padding: 5px;
     border-radius: 3px;
-    font-size: 0.60em; 
-    font-weight: 600; 
+    font-size: 1em;
+    font-weight: 600;
     text-transform: uppercase;
     white-space: nowrap;
-    color: #fff; 
-    background-color: #000; 
-    margin-top: 5px; 
-    margin-left: 8px;
+    color: #fff;
+    background-color: #006ca1;
 }
 
 .center-box {
@@ -543,14 +540,14 @@ nav[aria-label="Page navigation example"] {
 }
 
 .banner-insua {
-    width: 75%;
+    width: 70%;
     height: 400px;
     margin-bottom: 2rem;
     border-radius: 1rem;
 }
 
 .slide {
-    width: 24% !important;
+    width: 29% !important;
     height: 400px !important;
     background-color: black !important;
     border-radius: 1rem !important;
@@ -585,4 +582,117 @@ nav[aria-label="Page navigation example"] {
 .selector-card {
     width: 50%;
     margin: auto;
+}
+
+.img-product {
+    cursor: pointer;
+}
+
+@media screen and (max-width: 1400px) {
+    td {
+        font-family: "Alexandria", Helvetica, sans-serif !important;
+        font-size: 11px;
+        padding: 2px;
+    }
+    td {
+        font-family: "Alexandria", Helvetica, sans-serif !important;
+        font-size: 10px;
+        padding: 2px;
+    }
+    .banner-insua {
+        width: 70%;
+        height: 300px;
+        margin-bottom: 2rem;
+        border-radius: 1rem;
+    }
+
+    .slide {
+        width: 29% !important;
+        height: 300px !important;
+        background-color: black !important;
+        border-radius: 1rem !important;
+        display: flex !important;
+        margin: auto !important;
+        overflow: hidden !important;
+        position: relative !important;
+        margin-top: 0 !important;
+    }
+    .mat-horizontal-content-container {
+        overflow: hidden;
+        padding: 0;
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .mat-horizontal-content-container {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .col-2 {
+        width: 100%;
+    }
+
+    .col-10 {
+        width: 100%;
+    }
+
+    .mat-horizontal-content-container {
+        overflow: hidden;
+        padding: 0;
+        margin-top: 1rem;
+    }
+
+    .banner-fixed{
+        position: relative;
+        width: 100%;
+        top: 0rem;
+        z-index: 99999;
+
+        .col-12 > .card-cli {
+            opacity: 1;
+        }
+    }
+
+    .publi {
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .banner-insua{
+        margin-top: 1rem;
+        width: 100%;
+        height: 180px;
+        margin-bottom: 2rem;
+        border-radius: 1rem;
+        display: none;
+    }
+
+    .slide {
+        width: 100% !important;
+        height: 320px !important;
+        background-color: black !important;
+        border-radius: 1rem !important;
+        margin: auto !important;
+        overflow: hidden !important;
+        position: relative !important;
+        margin-top: 0 !important;
+        margin-bottom: 2rem !important;
+        display: none !important;
+    }
+
+    .col-3 {
+        width:  100%;
+    }
+
+    .selector-card {
+        width: 100%;
+        margin: auto;
+    }
+
+    .col-marcas {
+        display: none;
+    }
+
 }
