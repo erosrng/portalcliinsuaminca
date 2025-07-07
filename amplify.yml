@@ -6,7 +6,7 @@ frontend:
         - npm ci
     build:
       commands:
-        - npm run build
+        - npm run build --force
   artifacts:
     # This is the key part!
     baseDirectory: /dist/cv-app-insuaminca/browser # <--- **CHANGE THIS** to where index.html is
