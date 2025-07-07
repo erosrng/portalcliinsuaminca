@@ -16,8 +16,7 @@
     background-color: vars.$principal-color;
     color: vars.$background-fondo;
     padding-top: 5rem;
-    position: relative;
-    overflow: hidden;
+    min-height: 25vh;
 }
 
 /* Contenido del footer */
@@ -93,9 +92,15 @@
 /* Estilos para los iconos de redes sociales */
 .social-icons {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     gap: 2rem;
     margin-top: 2rem;
+    margin-left: 3rem;
+}
+
+.text {
+    margin-top: 2rem;
+    margin-left: 3rem;
 }
 
 .social-icon {

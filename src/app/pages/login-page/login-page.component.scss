@@ -275,3 +275,10 @@
             margin-bottom: 10rem;
         }
     }
+
+@media screen and (max-width: 768px) {
+    .login__container {
+        width: 85%;
+        margin-top: 3rem;
+    }
+}

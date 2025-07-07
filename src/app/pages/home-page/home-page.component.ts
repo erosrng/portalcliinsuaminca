@@ -110,6 +110,7 @@ export class HomePageComponent implements OnInit {
   isMenuOpen: boolean = false;
 
   products: Product[] = [];
+  products_2: Product[] = [];
   isLoading: boolean = false; 
   isLoadingProviders: boolean = false; 
 
@@ -117,7 +118,7 @@ export class HomePageComponent implements OnInit {
   selectedProduct: any = null;
 
   currentPage: number = 1;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 20;
   search: string = '';
   categoria: string = '';
   filterMarca: string = '';
@@ -138,8 +139,8 @@ export class HomePageComponent implements OnInit {
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
-    dots: true,
-    dotsEach: true,
+    dots: false,
+    dotsEach: false,
     center: true,
     navSpeed: 800,
     navText: ['<i class="fa-solid fa-chevron-left"></i>', '<i class="fa-solid fa-chevron-right"></i>'],
@@ -161,8 +162,8 @@ export class HomePageComponent implements OnInit {
     mouseDrag: true,
     touchDrag: true,
     pullDrag: true,
-    dots: true,
-    dotsEach: true,
+    dots: false,
+    dotsEach: false,
     navSpeed: 800,
     navText: ['<i class="fa-solid fa-chevron-left"></i>', '<i class="fa-solid fa-chevron-right"></i>'],
     responsive: {
@@ -189,7 +190,7 @@ export class HomePageComponent implements OnInit {
   ngOnInit() {
     this.revisarCarrito();
     this.fetchProducts();
-    this.loadCarouselProviders(); 
+    // this.loadCarouselProviders();
   }
 
   // --- Método para cargar los proveedores del carrusel ---
@@ -265,6 +266,8 @@ export class HomePageComponent implements OnInit {
     formData.append('orderby', this.orderBy);
     formData.append('orderDirection', this.orderDirection);
     formData.append('nuevos', '0');
+    formData.append('ofertas', '0'); // Añadido el filtro de ofertas
+    formData.append('ofertasActivas', '1'); // Añadido el filtro de ofertas activas
 
     const headers = new HttpHeaders({
       'Authorization': `${token}`
@@ -277,7 +280,18 @@ export class HomePageComponent implements OnInit {
         )
         .subscribe({
           next: (response: ApiResponse) => {
-            this.products = response.data.map(item => {
+            // Asegúrate de que response.data tenga al menos 20 elementos antes de intentar dividirlos
+            if (!response.data || response.data.length < 20) {
+              console.warn('La API no devolvió al menos 20 productos. No se realizará la división.');
+              // Puedes decidir cómo manejar esto:
+              this.products = [];
+              this.products_2 = []; // O manejarlo de otra forma si necesitas un comportamiento específico
+              this.isLoading = false;
+              return;
+            }
+
+            // Mapea *todos* los datos recibidos una sola vez
+            const allMappedProducts: Product[] = response.data.map(item => {
               const product: Product = {
                 codigo: item.codigo,
                 img: item.img,
@@ -296,16 +310,24 @@ export class HomePageComponent implements OnInit {
                 vence: item.vence
               };
 
+              // Lógica para 'ofertaDisplay'
               if (Array.isArray(item.oferta) && item.oferta.length > 0) {
                 product.ofertaDisplay = 'Oferta';
               } else if (typeof item.oferta === 'string' && item.oferta.trim() !== '') {
                 product.ofertaDisplay = item.oferta;
               } else {
-                product.ofertaDisplay = ''; 
+                product.ofertaDisplay = '';
               }
-
               return product;
             });
+
+            // Asigna los primeros 10 productos a 'products'
+            this.products = allMappedProducts.slice(0, 10);
+
+            // Asigna los siguientes 10 productos a 'products_2'
+            // Esto toma desde el índice 10 (el undécimo elemento) hasta el final (índice 19, si hay 20 en total)
+            this.products_2 = allMappedProducts.slice(10, 20);
+
             this.isLoading = false;
           },
           error: (err) => {
@@ -313,6 +335,7 @@ export class HomePageComponent implements OnInit {
             this.isLoading = false;
             console.error('Error de la API en subscribe (fetchProducts):', err);
             this.products = [];
+            this.products_2 = []; // Limpia también products_2 en caso de error
           },
         });
   }
