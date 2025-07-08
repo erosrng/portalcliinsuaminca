@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClient, HttpClientModule } from '@angular/common/http'; // Asegúrate de importar HttpClientModule aquí
-
+import { API_URLINTER } from '../../app.config';
 import { API_URL } from '../../app.config';
 import { AuthService } from '../../auth.service';
 import { Router } from '@angular/router'; 
@@ -135,7 +135,7 @@ export class RegistrocliPageComponent implements OnInit {
     const tipo = idTypeControl?.value;
     const rif = rifControl?.value;
 
-    const apiUrl = `${API_URL}logincli/buscacliente`; // Asegúrate de que API_URL esté configurada correctamente
+    const apiUrl = `${API_URLINTER}logincli/buscacliente`; // Asegúrate de que API_URL esté configurada correctamente
 
     // Crear FormData para enviar los datos por separado
     const formData = new FormData();
@@ -195,7 +195,7 @@ export class RegistrocliPageComponent implements OnInit {
       formData.append('phoneNumber', formDataToSend.phoneNumber);
       //console.log('Datos del formulario a enviar a la API de registro:', formDataToSend);
 
-      const apiUrl = `${API_URL}logincli/guardar_usuario`; 
+      const apiUrl = `${API_URLINTER}logincli/guardar_usuario`; 
 
       this.http.post(apiUrl, formData).subscribe({
         next: (response: any) => {

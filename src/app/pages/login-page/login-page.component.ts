@@ -12,6 +12,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 
 import { API_URL } from '../../app.config';
+import { API_URLINTER } from '../../app.config';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 
 @Component({
@@ -73,7 +74,7 @@ export class LoginPageComponent implements AfterViewInit {
     formData.append('user', this.userData.user);
     formData.append('password', this.userData.password);
 
-    const apiUrl = `${API_URL}logincli/logincli`;
+    const apiUrl = `${API_URLINTER}logincli/logincli`;
 
     this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {

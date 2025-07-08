@@ -10,17 +10,18 @@ import { AuthService } from './../../auth.service';
 import Swal from 'sweetalert2';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'; 
 import { MatSort } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input'; // Importa MatInputModule
+import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
+import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import {TableModule} from "primeng/table"; // Importa MatFormFieldModule
+import {TableModule} from "primeng/table"; 
 
 
 export interface Product {
@@ -116,7 +117,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/opencardb`;
+    const apiUrl = `${API_URLINTER}portalcli/opencardb`;
     formData.append('codCli', codCli ?? '');
 
     this.http.post(apiUrl,formData, { headers: headers }).subscribe({
@@ -143,7 +144,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   eliminareg(caller: any, idPedido: any, codigo: any) {
       this.isLoading = true;
   
-      const apiUrl = `${API_URL}portalcli/eliminareg`;
+      const apiUrl = `${API_URLINTER}portalcli/eliminareg`;
       const formData = new FormData();
       const token = this.authService.getToken();
   
@@ -194,7 +195,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/enviaped`;
+    const apiUrl = `${API_URLINTER}portalcli/enviaped`;
   
     Swal.fire({
       title: '¿Desea enviar el pedido?',
@@ -400,7 +401,7 @@ clear(): void {
 
 
   totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-      const apiUrl = `${API_URL}portalcli/totalizacampo`;
+      const apiUrl = `${API_URLINTER}portalcli/totalizacampo`;
       const formData = new FormData();
       const token = this.authService.getToken();
   

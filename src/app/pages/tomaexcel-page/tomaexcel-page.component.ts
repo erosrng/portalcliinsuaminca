@@ -12,7 +12,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 import { URLSOLA } from './../../app.config';
+import { URLSOLAINTER } from './../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -316,7 +318,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/getfile`;
+    const apiUrl = `${API_URLINTER}portalcli/getfile`;
   
     this.http.post(apiUrl, formData, { 
       headers: headers,
@@ -497,6 +499,7 @@ formatearCantidad(cantidadString: string): number {
   }
 }
 
+//CONECTADA AL PROTEO
 agg_pedido(codigo: any, cantidad: number, cliente: any) {
 
   const token = this.authService.getToken();
@@ -510,7 +513,7 @@ agg_pedido(codigo: any, cantidad: number, cliente: any) {
   formData.append('cana', cantidad.toString());
   formData.append('codCli', cliente);
 
-  const apiUrl = `${API_URL}agg_pedido/agg_pedido`;
+  const apiUrl = `${API_URLINTER}agg_pedido/agg_pedido`;
 
   //return this.http.post(apiUrl, formData, { headers: headers });
 
@@ -571,7 +574,7 @@ showError() {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URL}portalcli/carritocm`;
+    const apiUrl = `${API_URLINTER}portalcli/carritocm`;
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
@@ -638,7 +641,7 @@ showError() {
   }
 
       vaciacarcm(): void {
-        const apiUrl = `${API_URL}portalcli/vaciacarcm`;
+        const apiUrl = `${API_URLINTER}portalcli/vaciacarcm`;
         const formData = new FormData();
         const token = this.authService.getToken();
     
@@ -756,7 +759,7 @@ showError() {
           const headers = new HttpHeaders({
             'X-Auth-Token': `${token}`
           });
-          const apiUrl = `${API_URL}portalcli/totalizacampo`; 
+          const apiUrl = `${API_URLINTER}portalcli/totalizacampo`; 
         
           this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
@@ -808,7 +811,7 @@ showError() {
                 const headers = new HttpHeaders({
                   'X-Auth-Token': `${token}`
                 });
-                const apiUrl = `${API_URL}portalcli/eliminareg`; 
+                const apiUrl = `${API_URLINTER}portalcli/eliminareg`; 
               
                 this.http.post(apiUrl, formData, { headers: headers }).subscribe({
                   next: (response: any) => {
@@ -876,7 +879,7 @@ showError() {
                       const headers = new HttpHeaders({
                         'X-Auth-Token': `${token}`
                       });
-                      const apiUrl = `${API_URL}portalcli/enviacm`;
+                      const apiUrl = `${API_URLINTER}portalcli/enviacm`;
                     
                       Swal.fire({
                         

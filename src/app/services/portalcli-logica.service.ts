@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../auth.service';
 import { Router } from '@angular/router';
 import { API_URL } from '../app.config';
+import { API_URLINTER } from '../app.config';
 import Swal from 'sweetalert2';
 import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
@@ -84,7 +85,7 @@ export class PortalcliLogicaService {
     formData.append('cana', cantidad.toString());
     formData.append('codCli', codCli ?? '');
 
-    const apiUrl = `${API_URL}agg_pedido/agg_pedido`;
+    const apiUrl = `${API_URLINTER}agg_pedido/agg_pedido`;
 
     return this.http.post(apiUrl, formData, { headers: headers });
   }
@@ -100,7 +101,7 @@ export class PortalcliLogicaService {
     });
     formData.append('codCli', codCli ?? '');
 
-    this.http.post(`${API_URL}carrito/revisacar`, formData, { headers: headers } ).subscribe({
+    this.http.post(`${API_URLINTER}carrito/revisacar`, formData, { headers: headers } ).subscribe({
       next: (response: any) => {
         this.loading = false;
         if (response && response.encar) {
@@ -143,7 +144,7 @@ export class PortalcliLogicaService {
   //Vacia carrito
   vaciacar(): Observable<any> {
     const codCli = this.authService.getCodCli();
-    const apiUrl = `${API_URL}portalcli/vaciacar`;
+    const apiUrl = `${API_URLINTER}portalcli/vaciacar`;
     const formData = new FormData();
     const token = this.authService.getToken();
     formData.append('codCli', codCli ?? '');
