@@ -76,7 +76,7 @@ export class MiperfilPageComponent implements OnInit {
     formData.append('old_pws', old_pws);
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     this.http.post(`${API_URL}portalcli/buscaopws`, formData, { headers: headers }).subscribe({
@@ -119,7 +119,7 @@ export class MiperfilPageComponent implements OnInit {
     }
 
     const headers = new HttpHeaders({
-      Authorization: `${this.authService.getToken()}`,
+      'X-Auth-Token': `${this.authService.getToken()}`,
     });
     const apiUrl = `${API_URL}portalcli/actualizar_perfil`;
 

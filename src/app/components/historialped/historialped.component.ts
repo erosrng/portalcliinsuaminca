@@ -31,7 +31,7 @@ export class HistorialpedComponent {
     formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
-      Authorization: `${token}`,
+      'X-Auth-Token': `${token}`,
     });
     const apiUrl = `${API_URL}portalcli/historialped`;
 
@@ -56,7 +56,7 @@ export class HistorialpedComponent {
     this.pedidoSeleccionado = pedido; // Guardar el pedido seleccionado
 
     const headers = new HttpHeaders({
-      Authorization: `${this.authService.getToken()}`,
+      'X-Auth-Token': `${this.authService.getToken()}`,
     });
     const apiUrl = `${API_URL}portalcli/detalle_pedido/${pedido.pedido}`;
 

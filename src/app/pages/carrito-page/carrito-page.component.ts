@@ -113,7 +113,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}portalcli/opencardb`;
@@ -148,7 +148,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
       });
   
       formData.append('id', idPedido);
@@ -192,7 +192,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     formData.append('codCli', codCli ?? '');
   
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/enviaped`;
   
@@ -405,7 +405,7 @@ clear(): void {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
       });
   
       formData.append('id', idPedido);

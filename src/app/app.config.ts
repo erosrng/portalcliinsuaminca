@@ -18,9 +18,13 @@ export const URLSOLA = 'http://10.0.100.2/';
 export const PROTEO_URL_ALONE = 'http://10.0.100.2/practica/'; */
 
 //URL EXTERNA
-export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+/* export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
 export const URLSOLA = 'https://d2wnvkodoh477y.cloudfront.net/';
-export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/';
+export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; */
+
+export const API_URL = 'https://insuaminca.org/insuaminca/api/';
+export const URLSOLA = 'https://insuaminca.org/';
+export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/'; 
 
 //export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/';
 export const appConfig: ApplicationConfig = {

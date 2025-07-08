@@ -198,7 +198,7 @@ export class HomePageComponent implements OnInit {
     this.isLoadingProviders = true; 
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}portalcli/carruselaliado`; 
@@ -270,7 +270,7 @@ export class HomePageComponent implements OnInit {
     formData.append('ofertasActivas', '1'); // Añadido el filtro de ofertas activas
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/inventariocli`;
 

@@ -369,7 +369,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       ]));
   
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       const apiUrl = `${API_URL}portalcli/inventariocli`;
   
@@ -784,7 +784,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
 
       Swal.fire({
@@ -838,7 +838,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         formData.append('codCli', codCli ?? '');
   
         const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
         });
         const apiUrl = `${API_URL}portalcli/enviaped`;
       
@@ -883,7 +883,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const token = this.authService.getToken();
     
         const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
         });
         const apiUrl = `${API_URL}portalcli/enviacm`;
       
@@ -1009,7 +1009,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     }
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}portalcli/carritocm`;
@@ -1105,7 +1105,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     formData.append('cantidad', newQuantity.toString());
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/totalizacampo`; 
   
@@ -1158,7 +1158,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         formData.append('codigo', product.codigoa);
   
         const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
         });
         const apiUrl = `${API_URL}portalcli/eliminareg`; 
       
@@ -1251,7 +1251,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const token = this.authService.getToken();
     const apiUrl = `${API_URL}portalcli/buscamarcas`;
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
@@ -1292,7 +1292,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const token = this.authService.getToken();
     const apiUrl = `${API_URL}portalcli/buscacategorias`;
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
@@ -1354,7 +1354,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       ]));
 
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       const apiUrl = `${API_URL}portalcli/inventariocli`;
 

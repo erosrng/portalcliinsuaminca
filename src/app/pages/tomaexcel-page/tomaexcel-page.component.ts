@@ -291,7 +291,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/traesegme`;
   
@@ -314,7 +314,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/getfile`;
   
@@ -503,7 +503,7 @@ agg_pedido(codigo: any, cantidad: number, cliente: any) {
   const formData = new FormData();
 
   const headers = new HttpHeaders({
-    'Authorization': `${token}`
+    'X-Auth-Token': `${token}`
   });
 
   formData.append('codigo', codigo);
@@ -568,7 +568,7 @@ showError() {
     formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}portalcli/carritocm`;
@@ -643,7 +643,7 @@ showError() {
         const token = this.authService.getToken();
     
         const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
         });
   
         Swal.fire({
@@ -754,7 +754,7 @@ showError() {
           formData.append('cantidad', newQuantity.toString());
       
           const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
           });
           const apiUrl = `${API_URL}portalcli/totalizacampo`; 
         
@@ -806,7 +806,7 @@ showError() {
                 formData.append('codigo', product.codigoa);
           
                 const headers = new HttpHeaders({
-                  'Authorization': `${token}`
+                  'X-Auth-Token': `${token}`
                 });
                 const apiUrl = `${API_URL}portalcli/eliminareg`; 
               
@@ -874,7 +874,7 @@ showError() {
                       const token = this.authService.getToken();
                   
                       const headers = new HttpHeaders({
-                        'Authorization': `${token}`
+                        'X-Auth-Token': `${token}`
                       });
                       const apiUrl = `${API_URL}portalcli/enviacm`;
                     

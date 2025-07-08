@@ -122,7 +122,7 @@ export class PagosPageComponent implements OnInit {
     const apiUrl = `${API_URL}portalcli/buscabanco`;
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     formData.append('fpago', this.metodoPagoSeleccionado);
@@ -248,7 +248,7 @@ export class PagosPageComponent implements OnInit {
     const apiUrl = `${API_URL}portalcli/facturaspago`;
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const start = (this.currentPage - 1) * this.itemsPerPage;

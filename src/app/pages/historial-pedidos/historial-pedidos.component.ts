@@ -115,7 +115,7 @@ export class HistorialPedidosComponent implements OnInit {
     formData.append('numero', numeroPedido); // Pasamos el número del pedido
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}/portalcli/trianguladeta`; // Usamos la API para los detalles
@@ -153,7 +153,7 @@ export class HistorialPedidosComponent implements OnInit {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     const apiUrl = `${API_URL}/portalcli/triangulatotal`;
@@ -199,7 +199,7 @@ export class HistorialPedidosComponent implements OnInit {
       const formData = new FormData();
   
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       formData.append('proveed', proveed ?? '');
   

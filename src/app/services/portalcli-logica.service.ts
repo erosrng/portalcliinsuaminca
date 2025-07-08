@@ -77,7 +77,7 @@ export class PortalcliLogicaService {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     formData.append('codigo', producto.codigo);
@@ -96,7 +96,7 @@ export class PortalcliLogicaService {
 
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`,
+      'X-Auth-Token': `${token}`,
     });
     formData.append('codCli', codCli ?? '');
 
@@ -149,7 +149,7 @@ export class PortalcliLogicaService {
     formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     return this.http.post(apiUrl, formData, { headers: headers }); // Devuelve el observable
@@ -168,7 +168,7 @@ export class PortalcliLogicaService {
     formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}portalcli/traeficha`;
 
@@ -236,7 +236,7 @@ export class PortalcliLogicaService {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       const apiUrl = `${API_URL}portalcli/buscaalmacen`;
   
