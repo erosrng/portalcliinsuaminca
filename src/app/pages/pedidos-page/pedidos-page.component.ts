@@ -845,7 +845,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const apiUrl = `${API_URL}portalcli/enviaped`;
       
         Swal.fire({
-          
         title: '¿Desea enviar el pedido?',
         text: "Esta acción no se puede deshacer.",
         icon: 'question',

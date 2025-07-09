@@ -381,11 +381,10 @@ clear(): void {
     const input = document.getElementById(`cantidad_${codigo}`) as HTMLInputElement;
 
     const existenNum = parseInt(existen); // Convertir a número correctamente
-
     if (input) {
         const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
 
-        if (cantidadInput > existenNum && change!="-") { 
+        if (cantidadInput >= existenNum && change!="-") { 
             Swal.fire('Cantidad mayor a existencia', '', 'error');
             return;
         }
