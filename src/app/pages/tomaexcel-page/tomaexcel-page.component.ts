@@ -340,7 +340,10 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     Swal.showLoading();    
     const formData = new FormData();
     const token = this.authService.getToken();
+    const codCli = this.authService.getCodCli();
 
+    formData.append('codCli', codCli ?? '');
+    
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
