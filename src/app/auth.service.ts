@@ -163,7 +163,7 @@ export class AuthService {
   }
 
   private validateAndLoadToken(): void {
-    console.log('AuthService: validateAndLoadToken() ejecutado.');
+    //console.log('AuthService: validateAndLoadToken() ejecutado.');
     const storedToken = localStorage.getItem('token');
 
     // Obtener la URL actual para verificar si es la ruta de login
@@ -200,21 +200,21 @@ export class AuthService {
 
       this.token = storedToken;
       this.decodedToken = decoded;
-      console.log('AuthService: Token válido cargado y decodificado en memoria.');
+      //console.log('AuthService: Token válido cargado y decodificado en memoria.');
     } catch (error) {
-      console.error('AuthService: Error CRÍTICO durante la validación de token (decodificación o expiración):', error);
+      //console.error('AuthService: Error CRÍTICO durante la validación de token (decodificación o expiración):', error);
       this.token = null;
       this.decodedToken = null;
 
       // Solo llama a handleSessionExpired si NO estamos en la página de login
       if (!isLoginPage) {
-        console.log('AuthService: Token inválido/expirado y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
+        //console.log('AuthService: Token inválido/expirado y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(storedToken); // Pasa el token problemático
       } else {
-        console.log('AuthService: Token inválido/expirado, pero estamos en la página de login. No se muestra alerta ni se redirige.');
+        //console.log('AuthService: Token inválido/expirado, pero estamos en la página de login. No se muestra alerta ni se redirige.');
       }
     }
-    console.log('AuthService: Fin de validateAndLoadToken().');
+    //console.log('AuthService: Fin de validateAndLoadToken().');
   }
 
 
@@ -320,7 +320,7 @@ export class AuthService {
   }
 
   getCodCli(): string | null {
-    if (!this._codCli) {
+    //if (!this._codCli) {
       this._codCli = localStorage.getItem('codCli');
       if (!this._codCli) {
         if (this.isLoggedIn()) {
@@ -330,7 +330,8 @@ export class AuthService {
             this._codCli = null;
         }
       }
-    }
+    //}
+    console.log(this._codCli);
     return this._codCli;
   }
 
