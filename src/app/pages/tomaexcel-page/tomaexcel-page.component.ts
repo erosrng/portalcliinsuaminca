@@ -98,6 +98,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
   ) {}
 
   jsonData: any;
+  jsonExcel: any;
   fileName: string = '';
   habilitarCargar: boolean = false; 
   private subscriptions: Subscription[] = []; 
@@ -134,6 +135,8 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
           const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
           this.jsonData = XLSX.utils.sheet_to_json(ws);
+          this.jsonExcel = XLSX.utils.sheet_to_json(ws, {header: 1});
+
           Swal.fire({
             text: 'Presione cargar archivo para procesar pedido',
             icon: 'info',
@@ -172,120 +175,166 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  cargarArchivo(): void {
-    Swal.showLoading();    
-    if (!this.jsonData || this.jsonData.length === 0) {
-      Swal.fire({
-        text: 'No hay datos de archivo para cargar. Por favor, seleccione un archivo .xlsx válido.',
-        icon: 'warning',
-        confirmButtonText: 'Entendido'
-      });
-      this.loading = false;
-      return;
-    }
+    cargarArchivo(): void {
+        Swal.showLoading();
+        this.loading = true; // Indicar que la carga ha comenzado
 
-    const columnas = Object.keys(this.jsonData[0] || {});
-    let i = 0;
-    const filasFiltradas: any[][] = [];
-    const codigosvacios: any[][] = [];
-  
-    if (this.jsonData  && this.jsonData.length > 0) {
-      Swal.fire({
-        title: 'Procesando archivo...',
-        text: 'Agregando productos al carrito. Por favor, espere.',
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-
-      const promises: Promise<any>[] = this.jsonData.map((fila: any) => {
-        const celdas = Object.values(fila);
-        const canaexcel: number = Number(celdas[11]);
-  
-        if (!isNaN(canaexcel) && canaexcel > 0) {
-          let codigoProducto: string = String(celdas[0]);
-          codigoProducto = codigoProducto.trim().replace(/[^a-zA-Z0-9]/g, '');
-  
-          filasFiltradas.push(celdas);
-  
-          return this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, Number(celdas[11]),'').toPromise()
-            .then((response: any) => {
-              if (response.status) {
-                i++;
-                //console.log(`Producto ${codigoProducto} agregado al carrito. Respuesta:`, response);
-              } else {
-                codigosvacios.push(celdas);
-                //console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, response);
-              }
-            })
-            .catch((error) => {
-             // console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, error);
+        // 1. Validar que tenemos datos para procesar
+        if (!this.jsonExcel || this.jsonExcel.length === 0) {
+            Swal.fire({
+                text: 'No hay datos en el archivo para cargar. Por favor, seleccione un archivo .xlsx válido.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido'
             });
+            this.loading = false;
+            return;
         }
-        
-        return Promise.resolve(celdas);
-      });
-  
-      Promise.all(promises).then(() => {
-        Swal.close();
 
-        if (codigosvacios.length > 0) {
-          console.log('Códigos vacíos:', codigosvacios);
-  
-          let contenidoAlerta = '';
-          codigosvacios.forEach((fila) => {
-            const codigo = fila[0]; 
-            const descripcion = fila[2]; 
-            contenidoAlerta += `- (${codigo})${descripcion}<br><br>`;
-          });
-  
-          Swal.fire({
-            title: 'Algunos productos no se cargaron',
-            html: 'Los siguientes productos no se agregaron al carrito, posiblemente por falta de existencia o porque ya estan en el carrito:<br><br>' + contenidoAlerta,
-            icon: 'warning',
-            width: '600px',
-            heightAuto: false,
-            scrollbarPadding: false,
-            customClass: {
-              container: 'swal-container',
-            },
-            allowOutsideClick: false, 
-            allowEscapeKey: false, 
-          });          
-          this.route.navigate(['/carrito']);
-        } else {
-          Swal.fire({
-            title: '¡Carga completa!',
-            text: 'Todos los productos del archivo se agregaron correctamente al carrito.',
-            icon: 'success',
-            timer: 3000,
-            showConfirmButton: false
-          });
-            this.route.navigate(['/carrito']);
+        // 2. Encontrar los índices de "Codigo" y "Pedido" y la fila de encabezados
+        let codigoIndex: number = -1;
+        let pedidoIndex: number = -1;
+        let headerRowIndex: number = -1;
+
+        // Iterar solo en las primeras filas para encontrar los encabezados (ej. primeras 20 filas para mayor flexibilidad)
+        for (let i = 0; i < Math.min(this.jsonExcel.length, 20); i++) {
+            const currentRow = this.jsonExcel[i];
+
+            if (Array.isArray(currentRow) && currentRow.some(cell => typeof cell === 'string')) {
+                const foundCodigo = currentRow.indexOf("Codigo");
+                const foundPedido = currentRow.indexOf("Pedido");
+
+                if (foundCodigo !== -1 && foundPedido !== -1) {
+                    codigoIndex = foundCodigo;
+                    pedidoIndex = foundPedido;
+                    headerRowIndex = i;
+                    break;
+                }
+            }
         }
-        this.loading = false;
-        this.revisarCarrito();
-        this.fileName = '';
-        this.jsonData = null;
-      }).catch(error => {
-        Swal.close();
-        Swal.fire('Error en la carga', 'Hubo un problema al procesar el archivo. Por favor, intente de nuevo.', 'error');
-        this.loading = false;
-        console.error('Error al procesar el archivo completo:', error);
-      });
-    } else {
-      console.error('No hay datos para cargar');
-      this.loading = false;
-      Swal.fire({
-        text: 'No hay datos de archivo para cargar. Por favor, seleccione un archivo .xlsx válido.',
-        icon: 'warning',
-        confirmButtonText: 'Entendido'
-      });
+
+        // 3. Validar que se encontraron las columnas y la fila de encabezados
+        if (codigoIndex === -1 || pedidoIndex === -1 || headerRowIndex === -1) {
+            Swal.fire({
+                title: 'Columnas no encontradas',
+                text: 'No se pudieron encontrar las columnas **"Codigo"** y **"Pedido"** en el archivo. Asegúrese de que existen y están bien escritas.',
+                icon: 'error',
+                confirmButtonText: 'Entendido'
+            });
+            this.loading = false;
+            return;
+        }
+
+        console.log("Índice de 'Codigo':", codigoIndex);
+        console.log("Índice de 'Pedido':", pedidoIndex);
+        console.log("Fila de encabezados encontrada en el índice:", headerRowIndex);
+
+        const codigosVaciosOInvalidos: any[][] = []; // Renombrado para reflejar que incluye cantidades inválidas
+        const promises: Promise<any>[] = [];
+
+        Swal.fire({
+            title: 'Procesando archivo...',
+            text: 'Agregando productos al carrito. Por favor, espere.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // 4. Procesar las filas de datos reales (empezando DESPUÉS de la fila de encabezados)
+        for (let i = headerRowIndex + 1; i < this.jsonExcel.length; i++) {
+            const row = this.jsonExcel[i];
+
+            // Validar que la fila es un array y tiene suficientes columnas
+            if (Array.isArray(row) && row.length > Math.max(codigoIndex, pedidoIndex)) {
+                let codigoProducto: string = String(row[codigoIndex] || '').trim().replace(/[^a-zA-Z0-9]/g, '');
+                const cantidadPedido: number = Number(row[pedidoIndex]); // Obtener la cantidad del pedido
+
+                // **Nueva verificación: Cantidad válida y mayor a 0, y código existente**
+                if (codigoProducto && !isNaN(cantidadPedido) && cantidadPedido > 0) {
+                    promises.push(
+                        this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, cantidadPedido, '').toPromise()
+                            .then((response: any) => {
+                                if (!response.status) {
+                                    // Si la respuesta no es exitosa, guardamos la fila completa
+                                    codigosVaciosOInvalidos.push(row);
+                                }
+                            })
+                            .catch((error: any) => {
+                                console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, error);
+                                // También agregamos la fila si hay un error en la llamada
+                                codigosVaciosOInvalidos.push(row);
+                            })
+                    );
+                } else {
+                    // Si el código no existe, o la cantidad es NaN o menor/igual a 0
+                    console.warn(`Producto no procesado: Código '${codigoProducto}' o cantidad '${cantidadPedido}' inválida. Fila:`, row);
+                    // codigosVaciosOInvalidos.push(row);
+                }
+            } else {
+                // En caso de que la fila no sea un array o no tenga suficientes columnas
+                console.warn(`Fila ${i} es inválida o no tiene suficientes columnas para 'Codigo' o 'Pedido'. Fila:`, row);
+                codigosVaciosOInvalidos.push(row); // También registramos estas filas para el reporte
+            }
+        }
+
+        // 5. Esperar que todas las promesas se resuelvan
+        Promise.all(promises)
+            .then(() => {
+                Swal.close();
+
+                if (codigosVaciosOInvalidos.length > 0) {
+                    console.log('Productos no procesados o con errores:', codigosVaciosOInvalidos);
+
+                    let contenidoAlerta = '';
+                    codigosVaciosOInvalidos.forEach((fila) => {
+                        const codigo = fila[codigoIndex] || 'N/A';
+                        const cantidad = fila[pedidoIndex]; // Obtenemos la cantidad original
+                        contenidoAlerta += `- Código: ${codigo} (Pedido: ${cantidad || 'N/A'})<br>`;
+                    });
+
+                    Swal.fire({
+                        title: 'Algunos productos no se cargaron',
+                        html: 'Los siguientes productos no se agregaron al carrito, posiblemente por falta de existencia, **cantidad inválida (<= 0)** o porque ya están en el carrito:<br><br>' + contenidoAlerta,
+                        icon: 'warning',
+                        width: '600px',
+                        heightAuto: false,
+                        scrollbarPadding: false,
+                        customClass: {
+                            container: 'swal-container',
+                        },
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                    }).then(() => {
+                        this.route.navigate(['/carrito']);
+                    });
+                } else {
+                    Swal.fire({
+                        title: '¡Carga completa!',
+                        text: 'Todos los productos válidos del archivo se agregaron correctamente al carrito.',
+                        icon: 'success',
+                        timer: 3000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        this.route.navigate(['/carrito']);
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                Swal.fire('Error en la carga', 'Hubo un problema inesperado al procesar el archivo. Por favor, intente de nuevo.', 'error');
+                console.error('Error al procesar el archivo completo:', error);
+            })
+            .finally(() => {
+                this.loading = false;
+                this.revisarCarrito(); // Si tienes un método para actualizar el carrito global
+                this.fileName = '';
+                this.jsonData = null;
+                this.jsonExcel = []; // Limpiar el array de arrays
+            });
     }
-  }
 
-  bajaexcel() {
+
+    bajaexcel() {
     Swal.showLoading();    
     const formData = new FormData();
     const token = this.authService.getToken();

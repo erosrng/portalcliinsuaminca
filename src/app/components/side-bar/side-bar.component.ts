@@ -57,6 +57,8 @@ export class SideBarComponent {
 
   logout() {
     this.authService.logout();
+    localStorage.clear()
+    sessionStorage.clear()
     this.router.navigate(['/login']);
   }
 
