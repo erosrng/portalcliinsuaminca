@@ -210,7 +210,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
           codigoProducto = codigoProducto.trim().replace(/[^a-zA-Z0-9]/g, '');
   
           filasFiltradas.push(celdas);
-  
+          console.log('CANTIDAD: '+canaexcel+' CODIGO '+celdas[0]+' CELDAS: '+celdas)
           return this.portalcliLogicaService.agregarAlCarrito({ codigo: codigoProducto }, Number(celdas[11]),'').toPromise()
             .then((response: any) => {
               if (response.status) {
@@ -233,7 +233,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
         Swal.close();
 
         if (codigosvacios.length > 0) {
-          console.log('Códigos vacíos:', codigosvacios);
+          //console.log('Códigos vacíos:', codigosvacios);
   
           let contenidoAlerta = '';
           codigosvacios.forEach((fila) => {
@@ -264,7 +264,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
             timer: 3000,
             showConfirmButton: false
           });
-            this.route.navigate(['/carrito']);
+            //this.route.navigate(['/carrito']);
         }
         this.loading = false;
         this.revisarCarrito();
