@@ -332,7 +332,17 @@
                                            class="indexado-inline-black"
                                            matTooltipPosition="above">{{product.indexado}}</div>
                                   </td>
-                                  <td>{{product.vence}}</td>
+                                  <td style="text-align: center;">
+                                    <div style="background-color: #e0f7fa; 
+                                              color: #00796b; 
+                                              padding: 5px 12px; 
+                                              border-radius: 6px; 
+                                              border-left: 4px solid #4fc3f7;
+                                              font-weight: 600;
+                                              display: inline-block;">
+                                      {{product.vence}}
+                                  </div>
+                                  </td>
                                   <td>{{product.opreciod}}</td>
                                   <td>
                                       <span *ngIf="product.existenmat > 0" class="green-label">Maturin:  {{product.existenmat}} </span>
