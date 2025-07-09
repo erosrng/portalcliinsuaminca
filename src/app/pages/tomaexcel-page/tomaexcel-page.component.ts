@@ -12,6 +12,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
 import { API_URL } from './../../app.config';
+import { URLSOLAINTER } from './../../app.config';
 import { URLSOLA } from './../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -347,7 +348,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         Swal.close();
-        window.location.href = `${URLSOLA}generador/${response.archivo}`;
+        window.location.href = `${URLSOLAINTER}generador/${response.archivo}`;
       },
       error: (error) => {
         console.error('Error de la API:', error);
