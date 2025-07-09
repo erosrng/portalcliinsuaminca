@@ -12,6 +12,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 import { URLSOLAINTER } from './../../app.config';
 import { URLSOLA } from './../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -343,7 +344,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/traesegme`;
+    const apiUrl = `${API_URLINTER}portalcli/traesegme`;
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
