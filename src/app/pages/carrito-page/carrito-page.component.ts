@@ -14,14 +14,13 @@ import { API_URLINTER } from './../../app.config';
 
 import { MatTableDataSource, MatTableModule } from '@angular/material/table'; 
 import { MatSort } from '@angular/material/sort';
-import { MatInputModule } from '@angular/material/input'; 
+import { MatInputModule } from '@angular/material/input'; // Importa MatInputModule
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import {TableModule} from "primeng/table"; 
+import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
+import { MatFormFieldModule } from '@angular/material/form-field'; // Importa MatFormFieldModule
 
 
 export interface Product {
@@ -40,19 +39,18 @@ export interface Product {
 
 @Component({
   selector: 'app-carrito-page',
-    imports: [
-        CommonModule,
-        NavBarComponent,
-        SideBarComponent,
-        MatTableModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatIconModule,
-        MatDialogModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        TableModule
-    ],
+  imports: [
+    CommonModule,
+    NavBarComponent,
+    SideBarComponent,
+    MatTableModule,
+    MatFormFieldModule, 
+    MatInputModule,
+    MatIconModule,
+    MatDialogModule,
+    MatPaginatorModule,
+    MatSelectModule
+  ],
   templateUrl: './carrito-page.component.html',
   styleUrl: './carrito-page.component.scss'
 })
@@ -114,7 +112,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'X-Auth-Token': `${token}`
+      'Authorization': `${token}`
     });
 
     const apiUrl = `${API_URLINTER}portalcli/opencardb`;
@@ -149,7 +147,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'X-Auth-Token': `${token}`
+          'Authorization': `${token}`
       });
   
       formData.append('id', idPedido);
@@ -193,7 +191,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     formData.append('codCli', codCli ?? '');
   
     const headers = new HttpHeaders({
-      'X-Auth-Token': `${token}`
+      'Authorization': `${token}`
     });
     const apiUrl = `${API_URLINTER}portalcli/enviaped`;
   
@@ -381,10 +379,11 @@ clear(): void {
     const input = document.getElementById(`cantidad_${codigo}`) as HTMLInputElement;
 
     const existenNum = parseInt(existen); // Convertir a número correctamente
+
     if (input) {
         const cantidadInput = parseInt(input.value); // Obtener el valor del input y convertirlo a número
 
-        if (cantidadInput >= existenNum && change!="-") { 
+        if (cantidadInput > existenNum && change!="-") { 
             Swal.fire('Cantidad mayor a existencia', '', 'error');
             return;
         }
@@ -405,7 +404,7 @@ clear(): void {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'X-Auth-Token': `${token}`
+          'Authorization': `${token}`
       });
   
       formData.append('id', idPedido);

@@ -55,7 +55,7 @@
       </header>
     
       <section class="carrito__products">
-        <h2 class="text-primary">Productos en el carrito de: ({{this.authService.getCodCli()}})-{{this.authService.getNombreFarmaciaActiva()}}</h2>
+        <h2 class="text-primary">Productos en el carrito de: ({{this.authService.getCodCli()}})-{{this.authService.getNombre()}}</h2>
         <h3 style="color: rgb(219, 47, 47);">Los precios listados son referenciales</h3>
         <div class="d-flex align-items-center search-bar gap-4">
               <mat-form-field appearance="outline" style="flex-grow: 1;">
@@ -87,58 +87,101 @@
             </div>
           </div>
         </div>
-
-          <p-table [value]="productscar" [tableStyle]="{ 'min-width': '50rem' }">
-              <ng-template #header>
-                  <tr>
-                      <th>Producto</th>
-                      <th>Descripción</th>
-                      <th>Bs.</th>
-                      <th>US$</th>
-                      <th>Total Bs.</th>
-                      <th>Total US$</th>
-                      <th>Cantidad</th>
-                      <th></th>
-                  </tr>
-              </ng-template>
-              <ng-template #body let-product>
-                  <tr>
-                      <td>
-                          <img
-                                  [src]="product.img"
-                                  alt="Producto"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#productModal"
-                                  (click)="openProductModal(product.codigoa)"
-                                  class="carrito__product-image">
-                      </td>
-                      <td>{{product.descrip}}</td>
-                      <td>{{ portalcliLogicaService.formatCurrency(product.oprecio) }}</td>
-                      <td>{{ portalcliLogicaService.formatCurrency(product.opreciod)}}</td>
-                      <td>{{ portalcliLogicaService.formatCurrency(product.total)}}</td>
-                      <td>{{ portalcliLogicaService.formatCurrency(product.totald)}}</td>
-                      <td>
-                          <div class="carrito__quantity">
-                              <button (click)="updatecant(product.id_pedido, product.codigoa, product.existen, '-') " class="carrito__quantity-button">
-                                  <i class="fa-solid fa-minus"></i>
-                              </button>
-                              <input type="text" min="0" maxlength="10" [value]="product.cant" id="cantidad_{{ product.codigoa }}" class="carrito__quantity-input" readonly>
-                              <button (click)="updatecant(product.id_pedido, product.codigoa, product.existen, '+')" class="carrito__quantity-button">
-                                  <i class="fa-solid fa-plus"></i>
-                              </button>
-                          </div>
-                      </td>
-                      <td>
-                          <button class="carrito__remove-button" mat-icon-button (click)="eliminareg(this, product.id_pedido, product.codigoa)">
-                              <mat-icon>close</mat-icon>
-                          </button>
-                      </td>
-                  </tr>
-              </ng-template>
-          </p-table>
+  
+      <table mat-table [dataSource]="dataSource" matSort class="carrito__table table table-striped table-bordered">
+        <ng-container matColumnDef="img">
+          <th scope="col" mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row"><img [src]="row.img" alt="Producto" 
+             data-bs-toggle="modal" data-bs-target="#productModal" (click)="openProductModal(row.codigoa)" class="carrito__product-image"></td>
+        </ng-container>
+      
+        <ng-container matColumnDef="descrip">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-name"> {{row.descrip}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="oprecio">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Bs. </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-price">{{ portalcliLogicaService.formatCurrency(row.oprecio) }}</td>
+        </ng-container>
+      
+        <!-- <ng-container matColumnDef="ivabs">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA Bs. </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-iva"> {{ portalcliLogicaService.formatCurrency(row.ivabs) }} </td>
+        </ng-container> -->
+      
+        <ng-container matColumnDef="opreciod">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> US$ </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-usd"> {{ portalcliLogicaService.formatCurrency(row.opreciod)}} </td>
+        </ng-container>
+      
+        <!-- <ng-container matColumnDef="ivad">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> IVA US$ </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-iva-usd">  {{ portalcliLogicaService.formatCurrency(row.ivad)}}</td>
+        </ng-container> -->
+      
+        <ng-container matColumnDef="total">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total Bs. </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-total">  {{ portalcliLogicaService.formatCurrency(row.total)}}</td>
+        </ng-container>
+      
+        <ng-container matColumnDef="totald">
+          <th scope="col" mat-header-cell *matHeaderCellDef mat-sort-header> Total US$ </th>
+          <td mat-cell *matCellDef="let row" class="carrito__product-total-usd">  {{ portalcliLogicaService.formatCurrency(row.totald)}}</td>
+        </ng-container>
+      
+        <ng-container matColumnDef="cant">
+          <th scope="col" mat-header-cell *matHeaderCellDef> Cantidad </th>
+          <td mat-cell *matCellDef="let row">
+              <div class="carrito__quantity">
+                <button (click)="updatecant(row.id_pedido, row.codigoa, row.existen, '-') " class="carrito__quantity-button">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="text" min="0" maxlength="10" [value]="row.cant" id="cantidad_{{ row.codigoa }}" class="carrito__quantity-input" readonly>
+                <button (click)="updatecant(row.id_pedido, row.codigoa, row.existen, '+')" class="carrito__quantity-button">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+          </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="actions">
+          <th scope="col" mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <button class="carrito__remove-button" mat-icon-button (click)="eliminareg(this, row.id_pedido, row.codigoa)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>   
     
       </section>
-
+    
+      <!-- <section class="carrito__totals">
+        <div class="carrito__totals-container">
+          <div class="carrito__totals-item">
+            <h3 class="carrito__totals-title">US$</h3>
+            <p class="carrito__totals-info">Subtotal US$: <span>2.834,25</span></p>
+            <p class="carrito__totals-info">IVA US$: <span>2.834,25</span></p>
+            <p class="carrito__totals-info">Total US$: <span>2.834,25</span></p>
+          </div>
+          <div class="carrito__totals-item">
+            <h3 class="carrito__totals-title">Bs.</h3>
+            <p class="carrito__totals-info">Subtotal Bs: <span>{{ portalcliLogicaService.formatCurrency(totalBs) }}</span></p>
+            <p class="carrito__totals-info">IVA Bs: <span>2.834,25</span></p>
+            <p class="carrito__totals-info">Total Bs: <span>2.834,25</span></p>
+          </div>
+        </div>    
+        
+        <footer class="carrito__footer">
+          <button class="carrito__checkout-button" (click)="enviaped();">Finalizar compra</button>
+        </footer>
+      </section> -->
 
       <div class="container d-flex gap-3">
         <section class="carrito__totals mt-5">
