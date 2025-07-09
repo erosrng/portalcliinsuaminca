@@ -9,8 +9,10 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 import { MatIconModule } from '@angular/material/icon';
 import { PROTEO_URL_ALONE } from './../../app.config';
+import { PROTEO_URL_ALONEINTER } from './../../app.config';
 
 interface Pedido {
   fecha: string;
@@ -118,7 +120,7 @@ export class HistorialPedidosComponent implements OnInit {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URL}/portalcli/trianguladeta`; // Usamos la API para los detalles
+    const apiUrl = `${API_URLINTER}/portalcli/trianguladeta`; // Usamos la API para los detalles
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: DetallePedido[]; message: string }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -156,7 +158,7 @@ export class HistorialPedidosComponent implements OnInit {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URL}/portalcli/triangulatotal`;
+    const apiUrl = `${API_URLINTER}/portalcli/triangulatotal`;
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: Pedido[] }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -182,7 +184,7 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   abrirEnlaceExcel(idpedido: string) {
-    const url = `${PROTEO_URL_ALONE}formatos/ver/PFAC/${idpedido}`;
+    const url = `${PROTEO_URL_ALONEINTER}formatos/ver/PFAC/${idpedido}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 

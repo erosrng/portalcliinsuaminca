@@ -163,6 +163,7 @@ export class AuthService {
   }
 
   private validateAndLoadToken(): void {
+    //console.log('AuthService: validateAndLoadToken() ejecutado.');
     const storedToken = localStorage.getItem('token');
 
     // Obtener la URL actual para verificar si es la ruta de login
@@ -170,16 +171,22 @@ export class AuthService {
     const isLoginPage = currentUrl === '/login';
 
     if (!storedToken) {
+      console.log('AuthService: No hay token en localStorage.');
       this.token = null;
       this.decodedToken = null;
 
+      // Solo llama a handleSessionExpired si NO estamos en la página de login
       if (!isLoginPage) {
+        console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(null);
-      } 
+      } else {
+        console.log('AuthService: No hay token, pero estamos en la página de login. No se muestra alerta ni se redirige.');
+      }
       return;
     }
 
     try {
+      console.log('AuthService: Intentando decodificar token:', storedToken);
       const decoded = this.jwtHelper.decodeToken(storedToken);
       if (!decoded) {
         //console.error('AuthService: Decodificación de token fallida (malformado).');
@@ -187,6 +194,7 @@ export class AuthService {
       }
 
       if (this.jwtHelper.isTokenExpired(storedToken)) {
+        console.error('AuthService: Token expirado.');
         throw new Error('Token is expired.');
       }
 
@@ -202,10 +210,11 @@ export class AuthService {
       if (!isLoginPage) {
         //console.log('AuthService: Token inválido/expirado y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(storedToken); // Pasa el token problemático
-      }/*  else {
-        console.log('AuthService: Token inválido/expirado, pero estamos en la página de login. No se muestra alerta ni se redirige.');
-      } */
+      } else {
+        //console.log('AuthService: Token inválido/expirado, pero estamos en la página de login. No se muestra alerta ni se redirige.');
+      }
     }
+    //console.log('AuthService: Fin de validateAndLoadToken().');
   }
 
 
@@ -311,7 +320,7 @@ export class AuthService {
   }
 
   getCodCli(): string | null {
-    if (!this._codCli) {
+    //if (!this._codCli) {
       this._codCli = localStorage.getItem('codCli');
       if (!this._codCli) {
         if (this.isLoggedIn()) {
@@ -321,7 +330,8 @@ export class AuthService {
             this._codCli = null;
         }
       }
-    }
+    //}
+    console.log(this._codCli);
     return this._codCli;
   }
 

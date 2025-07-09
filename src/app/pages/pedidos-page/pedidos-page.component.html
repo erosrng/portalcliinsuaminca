@@ -335,18 +335,20 @@
                                   <td>{{product.vence}}</td>
                                   <td>{{product.opreciod}}</td>
                                   <td>
-                                      <span *ngIf="product.existen > 0" class="green-label">  {{product.existen}} </span>
-                                      <span *ngIf="product.existen <= 0" class="red-label">  0 </span>
+                                      <span *ngIf="product.existenmat > 0" class="green-label">Maturin:  {{product.existenmat}} </span>
+                                      <span *ngIf="product.existenmat <= 0" class="red-label"> Maturin: 0 </span>
+
+                                      <span *ngIf="product.existengua > 0" class="green-label">Guarenas:  {{product.existengua}} </span>
+                                      <span *ngIf="product.existengua <= 0" class="red-label">  Guarenas: 0 </span>
                                   </td>
                                   <td>
-                                      <input type="number" min="1" maxlength="10"
-                                             [value]="product.encar ? product.encar : ''"
-                                             (input)="validateInput(product, $event)"
-                                             id="cana_{{product.codigo}}"
-                                             placeholder="0"
-                                             class="input-cant"
-                                             (keyup.enter)="agg_pedido(product, '')"
-                                      >
+                                    <input type="number" min="1" maxlength="10"
+                                    [value]="product.encar ? product.encar : ''"
+                                    (input)="validateInput(product, $event)"
+                                    id="cana_{{product.codigo}}"
+                                    placeholder="0"
+                                    class="input-cant"
+                                    (keyup.enter)="tipoCargaControl.value != 'casa_matriz' ? agg_pedido(product, '') : agg_all(product)">
                                   </td>
                                   <td>
                                       <button *ngIf="tipoCargaControl.value != 'casa_matriz'"
