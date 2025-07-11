@@ -88,3 +88,9 @@
   .upload-input {
     display: none; /* Oculta el input de archivo original */
   }
+
+  .spinner {
+    margin: auto;
+    width: 100%;
+    display: flex;
+  }

@@ -323,13 +323,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Filtramos para asegurar que no haya cadenas vacías de múltiples espacios
     const searchTerms = searchText.split(' ').filter(term => term.length > 0);
 
-    this.filteredProducts = this.products.filter(product => {
-      // Convertimos la descripción del producto a minúsculas
+    this.filteredProducts = this.products.filter(product => { // Importante: Filtrar siempre sobre this.products original
+      // Convertimos la descripción del producto y el código de barras a minúsculas
       const productDescription = product.descrip ? String(product.descrip).toLowerCase() : '';
+      const productBarras = product.barras ? String(product.barras).toLowerCase() : '';
 
-      // Verificamos si CADA palabra del término de búsqueda está incluida en la descripción del producto
-      // Esto significa que si buscas "aceta 125", la descripción debe contener "aceta" Y "125".
-      return searchTerms.every(term => productDescription.includes(term));
+      // Verificamos si CADA palabra del término de búsqueda está incluida en la descripción O en el código de barras
+      // Esto significa que si buscas "aceta 125", la descripción O el código de barras deben contener "aceta" Y "125".
+      return searchTerms.every(term =>
+          productDescription.includes(term) || productBarras.includes(term)
+      );
     });
   }
     
@@ -1361,7 +1364,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
-          this.filteredProducts = [...response.data];
+          this.filteredProducts = [];
+              this.filteredProducts = [...response.data];
           this.cdr.detectChanges();
           Swal.close();
 
