@@ -152,6 +152,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   private clienteCambiadoSubscription: Subscription | undefined;
 
   filteredProducts: any[] = [];
+  filteredProductsComplete: any[] = [];
   pagedProducts: any[] = [];
   currentPage = 1;
   itemsPerPage = 20000;
@@ -315,7 +316,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
     // Si el campo de búsqueda está vacío, muestra todos los productos
     if (!searchText) {
-      this.filteredProducts = [...this.products];
+      this.filteredProducts = [...this.filteredProductsComplete];
       return;
     }
 
@@ -386,6 +387,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           Swal.close(); */
 
           this.products = response.data;
+          this.filteredProductsComplete = [...this.products];
           this.filteredProducts = [...this.products];
           this.dataSource.data = response.data;
           this.originalDataSourceData = response.data
@@ -1365,7 +1367,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
           this.filteredProducts = [];
-              this.filteredProducts = [...response.data];
+          this.filteredProductsComplete = [];
+          this.filteredProducts = [...response.data];
+          this.filteredProductsComplete = [...response.data];
           this.cdr.detectChanges();
           Swal.close();
 
