@@ -323,7 +323,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Filtramos para asegurar que no haya cadenas vacías de múltiples espacios
     const searchTerms = searchText.split(' ').filter(term => term.length > 0);
 
-    this.filteredProducts = this.products.filter(product => { // Importante: Filtrar siempre sobre this.products original
+    this.filteredProducts = this.filteredProducts.filter(product => { // Importante: Filtrar siempre sobre this.products original
       // Convertimos la descripción del producto y el código de barras a minúsculas
       const productDescription = product.descrip ? String(product.descrip).toLowerCase() : '';
       const productBarras = product.barras ? String(product.barras).toLowerCase() : '';
