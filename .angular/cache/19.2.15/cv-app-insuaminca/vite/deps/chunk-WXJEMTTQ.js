@@ -2376,7 +2376,7 @@ function transferCacheInterceptorFn(req, next) {
     method: requestMethod
   } = req;
   if (!isCacheActive || requestOptions === false || // POST requests are allowed either globally or at request level
-  requestMethod === "POST" && !globalOptions.includePostRequests && !requestOptions || requestMethod !== "POST" && !ALLOWED_METHODS.includes(requestMethod) || // Do not cache request that require X-Auth-Token when includeRequestsWithAuthHeaders is falsey
+  requestMethod === "POST" && !globalOptions.includePostRequests && !requestOptions || requestMethod !== "POST" && !ALLOWED_METHODS.includes(requestMethod) || // Do not cache request that require authorization when includeRequestsWithAuthHeaders is falsey
   !globalOptions.includeRequestsWithAuthHeaders && hasAuthHeaders(req) || globalOptions.filter?.(req) === false) {
     return next(req);
   }
@@ -2438,7 +2438,7 @@ function transferCacheInterceptorFn(req, next) {
   }));
 }
 function hasAuthHeaders(req) {
-  return req.headers.has("X-Auth-Token") || req.headers.has("proxy-X-Auth-Token");
+  return req.headers.has("authorization") || req.headers.has("proxy-authorization");
 }
 function sortAndConcatParams(params) {
   return [...params.keys()].sort().map((k) => `${k}=${params.getAll(k)}`).join("&");

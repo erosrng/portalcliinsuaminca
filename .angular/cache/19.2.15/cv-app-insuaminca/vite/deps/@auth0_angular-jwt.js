@@ -18,10 +18,10 @@ import {
   ɵɵdefineNgModule,
   ɵɵinject
 } from "./chunk-RFZ2BTTM.js";
-import "./chunk-PEBH6BBU.js";
 import {
   defer
 } from "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import {
   map,
   mergeMap,
@@ -174,7 +174,7 @@ var JwtInterceptor = class {
     this.document = document;
     this.standardPorts = ["80", "443"];
     this.tokenGetter = config.tokenGetter;
-    this.headerName = config.headerName || "X-Auth-Token";
+    this.headerName = config.headerName || "Authorization";
     this.authScheme = config.authScheme || config.authScheme === "" ? config.authScheme : "Bearer ";
     this.allowedDomains = config.allowedDomains || [];
     this.disallowedRoutes = config.disallowedRoutes || [];
