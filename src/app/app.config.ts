@@ -27,9 +27,13 @@ export const URLSOLA = 'https://insuaminca.org/';
 export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/'; 
 
 //URL DE INSUAMINCA PARA TRABAJAR 
-export const API_URLINTER = 'http://insuaminca.proteoerp.org:50080/proteoerp/api/';
+export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
+export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
+
+/* export const API_URLINTER = 'http://insuaminca.proteoerp.org:50080/proteoerp/api/';
 export const URLSOLAINTER = 'http://insuaminca.proteoerp.org:50080/';
-export const PROTEO_URL_ALONEINTER = 'http://insuaminca.proteoerp.org:50080/proteoerp/'; 
+export const PROTEO_URL_ALONEINTER = 'http://insuaminca.proteoerp.org:50080/proteoerp/';  */
 
 //export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/'; 
 export const appConfig: ApplicationConfig = {
