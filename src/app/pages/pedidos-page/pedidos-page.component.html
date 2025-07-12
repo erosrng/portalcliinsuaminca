@@ -267,7 +267,7 @@
                               <div class="row align-items-center mb-3">
 
                                   <mat-form-field appearance="outline" style="flex-grow: 1;">
-                                      <mat-label>Buscar producto</mat-label>
+                                      <mat-label>Buscar producto por nombre o código de barras</mat-label>
                                       <input matInput type="text" [(ngModel)]="search" (keyup)="searchProducts($event)">
                                       @if (search) {
                                           <button matSuffix mat-icon-button aria-label="Clear" (click)="clear()">
@@ -295,9 +295,10 @@
                               <tr>
                                   <th>Ver</th>
                                   <th>Descripción</th>
+                                  <th>Código de barras</th>
                                   <th>Indexado</th>
                                   <th>Fecha vencimiento</th>
-                                  <th>Precio $</th>
+                                  <th>Precio</th>
                                   <th>Disponibles</th>
                                   <th>Cantidad</th>
                                   <th>Agregar</th>
@@ -323,6 +324,9 @@
 
                                   </td>
                                   <td>
+                                      {{product.barras}}
+                                  </td>
+                                  <td>
                                       <div *ngIf="product.indexado === 'INDEXADO'"
                                            class="indexado-inline"
                                            matTooltipPosition="above">{{product.indexado}}
@@ -332,23 +336,20 @@
                                            class="indexado-inline-black"
                                            matTooltipPosition="above">{{product.indexado}}</div>
                                   </td>
-                                  <td style="text-align: center;">
-                                    <div style="background-color: #e0f7fa; 
-                                              color: #00796b; 
-                                              padding: 5px 12px; 
-                                              border-radius: 6px; 
-                                              border-left: 4px solid #4fc3f7;
-                                              font-weight: 600;
-                                              display: inline-block;">
-                                      {{product.vence}}
-                                  </div>
+                                  <td>{{product.vence}}</td>
+                                  <td>
+                                      <span>{{product.opreciod}} $</span>
+                                      <br>
+                                      <span *ngIf="product.segmento > 0" class="oldprice">{{product.dpriced}} $</span>
+
                                   </td>
-                                  <td>{{product.opreciod}}</td>
                                   <td>
                                       <span *ngIf="product.existenmat > 0" class="green-label">Maturin:  {{product.existenmat}} </span>
+                                      <br>
                                       <span *ngIf="product.existenmat <= 0" class="red-label"> Maturin: 0 </span>
 
                                       <span *ngIf="product.existengua > 0" class="green-label">Guarenas:  {{product.existengua}} </span>
+                                      <br>
                                       <span *ngIf="product.existengua <= 0" class="red-label">  Guarenas: 0 </span>
                                   </td>
                                   <td>

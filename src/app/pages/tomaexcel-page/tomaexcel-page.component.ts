@@ -26,6 +26,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {CarritoPageComponent} from "../carrito-page/carrito-page.component";
+import {ProgressSpinner} from "primeng/progressspinner";
 
 interface GrupoCliente {
   clienteId: string;
@@ -75,6 +76,7 @@ interface ProductData {
         MatExpansionModule,
         MatSnackBarModule,
         CarritoPageComponent,
+        ProgressSpinner,
     ],
   templateUrl: './tomaexcel-page.component.html',
   styleUrl: './tomaexcel-page.component.scss',
@@ -177,6 +179,13 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  showloading(): void {
+      Swal.fire({
+          title: 'Cargando Archivo',
+          text: 'espere un momento',
+      });
+  }
+
     cargarArchivo(): void {
         Swal.showLoading();
         this.loading = true; // Indicar que la carga ha comenzado
@@ -195,6 +204,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
         // 2. Encontrar los índices de "Codigo" y "Pedido" y la fila de encabezados
         let codigoIndex: number = -1;
         let pedidoIndex: number = -1;
+        let descripcionIndex: number = -1;
         let headerRowIndex: number = -1;
 
         // Iterar solo en las primeras filas para encontrar los encabezados (ej. primeras 20 filas para mayor flexibilidad)
@@ -204,10 +214,12 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
             if (Array.isArray(currentRow) && currentRow.some(cell => typeof cell === 'string')) {
                 const foundCodigo = currentRow.indexOf("Codigo");
                 const foundPedido = currentRow.indexOf("Pedido");
+                const foundDescripcion = currentRow.indexOf("Descripcion");
 
                 if (foundCodigo !== -1 && foundPedido !== -1) {
                     codigoIndex = foundCodigo;
                     pedidoIndex = foundPedido;
+                    descripcionIndex = foundDescripcion;
                     headerRowIndex = i;
                     break;
                 }
@@ -218,7 +230,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
         if (codigoIndex === -1 || pedidoIndex === -1 || headerRowIndex === -1) {
             Swal.fire({
                 title: 'Columnas no encontradas',
-                text: 'No se pudieron encontrar las columnas **"Codigo"** y **"Pedido"** en el archivo. Asegúrese de que existen y están bien escritas.',
+                text: 'No se pudieron encontrar las columnas "Codigo" y "Pedido" en el archivo. Asegúrese de que existen y están bien escritas.',
                 icon: 'error',
                 confirmButtonText: 'Entendido'
             });
@@ -228,6 +240,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
 
         console.log("Índice de 'Codigo':", codigoIndex);
         console.log("Índice de 'Pedido':", pedidoIndex);
+        console.log("Índice de 'Descripcion':", descripcionIndex);
         console.log("Fila de encabezados encontrada en el índice:", headerRowIndex);
 
         const codigosVaciosOInvalidos: any[][] = []; // Renombrado para reflejar que incluye cantidades inválidas
@@ -249,6 +262,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
             // Validar que la fila es un array y tiene suficientes columnas
             if (Array.isArray(row) && row.length > Math.max(codigoIndex, pedidoIndex)) {
                 let codigoProducto: string = String(row[codigoIndex] || '').trim().replace(/[^a-zA-Z0-9]/g, '');
+                let descripcionProducto: string = String(row[descripcionIndex] || '').trim().replace(/[^a-zA-Z0-9]/g, '');
                 const cantidadPedido: number = Number(row[pedidoIndex]); // Obtener la cantidad del pedido
 
                 // **Nueva verificación: Cantidad válida y mayor a 0, y código existente**
@@ -262,14 +276,14 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
                                 }
                             })
                             .catch((error: any) => {
-                                console.error(`Error al agregar el producto ${codigoProducto} al carrito:`, error);
+                                console.error(`Error al agregar el producto ${descripcionProducto} al carrito:`, error);
                                 // También agregamos la fila si hay un error en la llamada
                                 codigosVaciosOInvalidos.push(row);
                             })
                     );
                 } else {
                     // Si el código no existe, o la cantidad es NaN o menor/igual a 0
-                    console.warn(`Producto no procesado: Código '${codigoProducto}' o cantidad '${cantidadPedido}' inválida. Fila:`, row);
+                    console.warn(`Producto no procesado: Código '${descripcionProducto}' o cantidad '${cantidadPedido}' inválida. Fila:`, row);
                     // codigosVaciosOInvalidos.push(row);
                 }
             } else {
@@ -290,13 +304,14 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
                     let contenidoAlerta = '';
                     codigosVaciosOInvalidos.forEach((fila) => {
                         const codigo = fila[codigoIndex] || 'N/A';
+                        const descrip = fila[descripcionIndex] || 'N/A';
                         const cantidad = fila[pedidoIndex]; // Obtenemos la cantidad original
-                        contenidoAlerta += `- Código: ${codigo} (Pedido: ${cantidad || 'N/A'})<br>`;
+                        contenidoAlerta += `- Código: ${descrip} (Pedido: ${cantidad || 'N/A'})<br>`;
                     });
 
                     Swal.fire({
                         title: 'Algunos productos no se cargaron',
-                        html: 'Los siguientes productos no se agregaron al carrito, posiblemente por falta de existencia, **cantidad inválida (<= 0)** o porque ya están en el carrito:<br><br>' + contenidoAlerta,
+                        html: 'Los siguientes productos no se agregaron al carrito, posiblemente por falta de existencia, o porque ya están en el carrito:<br><br>' + contenidoAlerta,
                         icon: 'warning',
                         width: '600px',
                         heightAuto: false,
