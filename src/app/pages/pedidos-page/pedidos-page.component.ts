@@ -786,7 +786,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     }
 
     vaciacarcm(): void {
-      const apiUrl = `${API_URL}portalcli/vaciacarcm`;
+      const apiUrl = `${API_URLINTER}portalcli/vaciacarcm`;
       const formData = new FormData();
       const token = this.authService.getToken();
   
@@ -1113,7 +1113,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/totalizacampo`; 
+    const apiUrl = `${API_URLINTER}portalcli/totalizacampo`; 
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
@@ -1166,7 +1166,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URL}portalcli/eliminareg`; 
+        const apiUrl = `${API_URLINTER}portalcli/eliminareg`; 
       
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
           next: (response: any) => {
