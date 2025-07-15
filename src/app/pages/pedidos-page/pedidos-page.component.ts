@@ -313,6 +313,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   searchProducts(event: Event): void {
     this.filterValue = (event.target as HTMLInputElement).value;
     const searchText = this.filterValue.trim().toLowerCase();
+    this.filteredProducts = [...this.filteredProductsComplete];
 
     // Si el campo de búsqueda está vacío, muestra todos los productos
     if (!searchText) {
