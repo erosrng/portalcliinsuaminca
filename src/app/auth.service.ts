@@ -171,22 +171,22 @@ export class AuthService {
     const isLoginPage = currentUrl === '/login';
 
     if (!storedToken) {
-      console.log('AuthService: No hay token en localStorage.');
+      //console.log('AuthService: No hay token en localStorage.');
       this.token = null;
       this.decodedToken = null;
 
       // Solo llama a handleSessionExpired si NO estamos en la página de login
       if (!isLoginPage) {
-        console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
+        //console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(null);
       } else {
-        console.log('AuthService: No hay token, pero estamos en la página de login. No se muestra alerta ni se redirige.');
+        //console.log('AuthService: No hay token, pero estamos en la página de login. No se muestra alerta ni se redirige.');
       }
       return;
     }
 
     try {
-      console.log('AuthService: Intentando decodificar token:', storedToken);
+      //console.log('AuthService: Intentando decodificar token:', storedToken);
       const decoded = this.jwtHelper.decodeToken(storedToken);
       if (!decoded) {
         //console.error('AuthService: Decodificación de token fallida (malformado).');
@@ -194,7 +194,7 @@ export class AuthService {
       }
 
       if (this.jwtHelper.isTokenExpired(storedToken)) {
-        console.error('AuthService: Token expirado.');
+        //console.error('AuthService: Token expirado.');
         throw new Error('Token is expired.');
       }
 
@@ -294,7 +294,6 @@ export class AuthService {
     }
     this.isHandlingSessionExpired = true;
 
-    console.warn('Sesión expirada o token inválido. Mostrando alerta y redirigiendo al login...');
 
     let alertText = 'Tu sesión ha caducado o el token es inválido. Serás redirigido al inicio de sesión.';
     if (invalidToken) {
@@ -308,8 +307,8 @@ export class AuthService {
     await Swal.fire({
       icon: 'warning',
       title: 'Sesión Expirada',
-      text: alertText, // Usa el texto con el token
-      timer: 4000, // Aumentado el timer a 4 segundos para que dé tiempo a leer el token
+      text: alertText, 
+      timer: 2000,
       timerProgressBar: true,
       showConfirmButton: false,
       allowOutsideClick: false,
@@ -331,7 +330,7 @@ export class AuthService {
         }
       }
     //}
-    console.log(this._codCli);
+    //console.log(this._codCli);
     return this._codCli;
   }
 
