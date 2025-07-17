@@ -12,8 +12,9 @@ import { PortalcliLogicaService } from './../../services/portalcli-logica.servic
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 import Swal from 'sweetalert2';
-
+import { forkJoin } from 'rxjs';
 @Component({
   selector: 'app-miperfil-page',
   imports: [
@@ -107,7 +108,7 @@ export class MiperfilPageComponent implements OnInit {
       });
       return;
     }
-
+  
     const data = new FormData();
     data.append('correoElectronico', formData.correoElectronico);
     data.append('telefono', this.prefijoTelefono + formData.telefono);
@@ -117,12 +118,13 @@ export class MiperfilPageComponent implements OnInit {
       data.append('nuevaContrasena', this.nuevaContrasena);
       data.append('contrasenaActual', this.contrasenaActual);
     }
-
+  
     const headers = new HttpHeaders({
       'X-Auth-Token': `${this.authService.getToken()}`,
     });
     const apiUrl = `${API_URL}portalcli/actualizar_perfil`;
-
+    const apiUrl2 = `${API_URLINTER}portalcli/actualizar_perfil`;
+  
     Swal.fire({
       title: '¿Desea actualizar su ficha?',
       text: 'Esta acción no se puede deshacer.',
@@ -132,48 +134,66 @@ export class MiperfilPageComponent implements OnInit {
       cancelButtonText: 'Cancelar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.http.post(apiUrl, data, { headers: headers }).subscribe({
-          next: (response: any) => {
-            console.log('Datos actualizados:', response);
+        // Crear observables para ambas peticiones
+        const request1 = this.http.post(apiUrl, data, { headers: headers });
+        const request2 = this.http.post(apiUrl2, data, { headers: headers });
+  
+        // Ejecutar ambas peticiones en paralelo
+        forkJoin([request1, request2]).subscribe({
+          next: ([response1, response2]) => {
+            //console.log('Datos actualizados en ambos servidores:', response1, response2);
             Swal.fire({
               icon: 'success',
               title: 'Actualizado',
-              text: 'Su ficha ha sido actualizada.',
+              text: 'Su ficha ha sido actualizada en todos los sistemas.',
             }).then(() => { 
               window.location.reload();
-            });;
-            const modal = document.getElementById('actualizarDatosModal');
-            if (modal) {
-              modal.classList.remove('show');
-              modal.setAttribute('aria-hidden', 'true');
-              modal.style.display = 'none';
-              document.body.classList.remove('modal-open');
-              document.body.style.paddingRight = '';
-              const modalBackdrop = document.querySelector('.modal-backdrop');
-              if (modalBackdrop) {
-                modalBackdrop.remove();
-              }
-              this.contrasenaActual = '';
-              this.nuevaContrasena = '';
-              this.confirmarContrasena = '';
-            }
+            });
+            
+            this.cerrarModal();
           },
           error: (error) => {
             console.error('Error al actualizar datos:', error);
             let errorMessage = 'Error al actualizar datos.';
-            if (error.error && error.error.message) {
+            
+            // Puedes personalizar el mensaje de error según qué petición falló
+            if (Array.isArray(error)) {
+              // Si es un array de errores (forkJoin puede devolver esto)
+              errorMessage = 'Error al actualizar en uno o más servidores.';
+            } else if (error.error && error.error.message) {
               errorMessage = error.error.message;
             }
+            
             Swal.fire({
               icon: 'error',
               title: 'Error',
               text: errorMessage,
             });
-          },
+          }
         });
       }
     });
   }
+  
+  // Método auxiliar para cerrar el modal y limpiar campos
+  cerrarModal() {
+    const modal = document.getElementById('actualizarDatosModal');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      document.body.style.paddingRight = '';
+      const modalBackdrop = document.querySelector('.modal-backdrop');
+      if (modalBackdrop) {
+        modalBackdrop.remove();
+      }
+      this.contrasenaActual = '';
+      this.nuevaContrasena = '';
+      this.confirmarContrasena = '';
+    }
+  }
+
 
   alertaerror() {
     this.portalcliLogicaService.alertaerror();

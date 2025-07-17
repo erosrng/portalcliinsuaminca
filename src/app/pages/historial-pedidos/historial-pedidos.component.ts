@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
@@ -10,10 +17,8 @@ import { AuthService } from '../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
-import { MatIconModule } from '@angular/material/icon';
 import { PROTEO_URL_ALONE } from './../../app.config';
 import { PROTEO_URL_ALONEINTER } from './../../app.config';
-
 interface Pedido {
   fecha: string;
   numero: string;
@@ -55,15 +60,21 @@ interface DetallePedido {
 
 @Component({
   selector: 'app-historial-pedidos',
-    imports: [
-        MatSidenav,
-        MatSidenavModule,
-        MatIconModule,
-        CommonModule,
-        SideBarComponent,
-        NavBarComponent,
-        FooterComponent,
-    ],
+  imports: [
+    MatSidenav,
+    MatSidenavModule,
+    MatIconModule,
+    CommonModule,
+    SideBarComponent,
+    NavBarComponent,
+    FooterComponent,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ],
   templateUrl: './historial-pedidos.component.html',
   styleUrl: './historial-pedidos.component.scss'
 })
@@ -86,17 +97,7 @@ export class HistorialPedidosComponent implements OnInit {
   ngOnInit(): void {
     Swal.showLoading();
     const aux = localStorage.getItem('usuario');
-    /* if (aux) {
-      this.apiService.get_historial_by_user(aux).subscribe((data: HistoricoPedidosModel[]) => {
-        Swal.close();
-        // Aquí podrías necesitar mapear los datos si la estructura de HistoricoPedidosModel
-        // es diferente de la estructura de la respuesta de triangulatotal
-        // this.historialPedidos = data.map(item => ({ ... }));
-      }, () => {
-        Swal.close();
-      });
-    } */
-    //this.cargarResumen();
+
     this.cargarHistorialPedidos();
     
   }
@@ -194,38 +195,4 @@ export class HistorialPedidosComponent implements OnInit {
       this.totalValorDolar =(pedido.totalg / this.authService.getTasa()) + this.totalValorDolar;
     })
   }
-
-    /* cargarResumen() {
-      const proveed = this.authService.getProveed();
-      const token = this.authService.getToken();
-      const formData = new FormData();
-  
-      const headers = new HttpHeaders({
-        'X-Auth-Token': `${token}`
-      });
-      formData.append('proveed', proveed ?? '');
-  
-      const apiUrl = `${API_URL}resumen`;
-  
-      this.http.post(apiUrl, formData, { headers: headers })
-        .subscribe({
-          next: (response: any) => {
-            if (response.data) { // La API ya devuelve un objeto, no un array
-              this.totalPedidos = response.data.pedidos;
-              this.totalUnidades = response.data.unidades;
-              this.totalValorDolar = parseFloat((response.data.totalg / this.authService.getTasa()).toFixed(2));
-            } else {
-              this.totalPedidos = 0;
-              this.totalUnidades = 0;
-              this.totalValorDolar = 0;
-              console.warn('La API de resumen devolvió un objeto de datos vacío.');
-            }
-            Swal.close();
-          },
-          error: (error) => {
-            console.error('Error al cargar resumen:', error);
-            Swal.close();
-          },
-        });
-    } */
 }
