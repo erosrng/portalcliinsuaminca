@@ -3,10 +3,10 @@ import {
 } from "./chunk-Y6THGN7H.js";
 import {
   MatRippleModule
-} from "./chunk-72U3MOBZ.js";
+} from "./chunk-FRD25A3W.js";
 import {
   MatRipple
-} from "./chunk-HLLPYNTO.js";
+} from "./chunk-JUBZDEVP.js";
 import {
   _StructuralStylesLoader
 } from "./chunk-RTBJ3Y3Y.js";
@@ -16,13 +16,13 @@ import {
   SPACE,
   _VisuallyHiddenLoader,
   hasModifierKey
-} from "./chunk-KE7RDPZD.js";
+} from "./chunk-S6KAUQEY.js";
 import {
   _IdGenerator
 } from "./chunk-4BVUKKW7.js";
 import {
   _CdkPrivateStyleLoader
-} from "./chunk-WCU3UK5P.js";
+} from "./chunk-7P4B233A.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -621,6 +621,7 @@ export {
   MatOption,
   _countGroupLabelsBeforeOption,
   _getOptionScrollPosition,
+  MatPseudoCheckboxModule,
   MatOptionModule
 };
-//# sourceMappingURL=chunk-ZOFNCH3P.js.map
+//# sourceMappingURL=chunk-6DJ7PUVH.js.map

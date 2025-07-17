@@ -9,15 +9,15 @@ import {
 import {
   _CdkPrivateStyleLoader,
   _bindEventWithOptions
-} from "./chunk-WCU3UK5P.js";
-import {
-  BidiModule
-} from "./chunk-ZQJO536L.js";
+} from "./chunk-7P4B233A.js";
 import {
   Platform,
   coerceElement,
   coerceNumberProperty
 } from "./chunk-R3SUJZLI.js";
+import {
+  BidiModule
+} from "./chunk-ZQJO536L.js";
 import {
   DOCUMENT
 } from "./chunk-B5QHEHR4.js";
@@ -3084,6 +3084,7 @@ export {
   addAriaReferencedId,
   removeAriaReferencedId,
   AriaDescriber,
+  MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-KE7RDPZD.js.map
+//# sourceMappingURL=chunk-S6KAUQEY.js.map

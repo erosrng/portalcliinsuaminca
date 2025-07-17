@@ -1,6 +1,6 @@
 import {
   normalizePassiveListenerOptions
-} from "./chunk-KE7RDPZD.js";
+} from "./chunk-S6KAUQEY.js";
 import {
   _getEventTarget,
   isFakeMousedownFromScreenReader,
@@ -8,7 +8,7 @@ import {
 } from "./chunk-4BVUKKW7.js";
 import {
   _CdkPrivateStyleLoader
-} from "./chunk-WCU3UK5P.js";
+} from "./chunk-7P4B233A.js";
 import {
   Platform,
   coerceElement
@@ -611,9 +611,11 @@ var MatRipple = class _MatRipple {
 })();
 
 export {
+  RippleState,
+  RippleRef,
   defaultRippleAnimationConfig,
   RippleRenderer,
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatRipple
 };
-//# sourceMappingURL=chunk-HLLPYNTO.js.map
+//# sourceMappingURL=chunk-JUBZDEVP.js.map

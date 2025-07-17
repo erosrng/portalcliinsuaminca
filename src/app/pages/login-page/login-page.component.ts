@@ -16,6 +16,7 @@ import { API_URLINTER } from '../../app.config';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login-page',
@@ -66,7 +67,7 @@ export class LoginPageComponent implements AfterViewInit {
     this.registerForm = this.fb.group({
       idType: ['J', Validators.required],
       rif: ['', [Validators.required, Validators.pattern('^[0-9]{7,10}$')]],
-      email: ['',],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     });
   }
 
@@ -142,7 +143,7 @@ export class LoginPageComponent implements AfterViewInit {
     const tipo = idTypeControl?.value;
     const rif = rifControl?.value;
 
-    const apiUrl = `${API_URLINTER}logincli/buscacliente`; // Asegúrate de que API_URL esté configurada correctamente
+    const apiUrl = `${API_URLINTER}logincli/buscaclienteregistrado`; // Asegúrate de que API_URL esté configurada correctamente
 
     // Crear FormData para enviar los datos por separado
     const formData = new FormData();
@@ -190,6 +191,93 @@ export class LoginPageComponent implements AfterViewInit {
       this.registerForm.get(key)?.enable();
     });
     this.isRifChecked = true; // El RIF ha sido validado
+  }
+
+  enviaclave() {
+    if (!this.isRifChecked) {
+      this.msjRif = 'Por favor, verifica el RIF antes de enviar el formulario.';
+      this.registerForm.get('idType')?.markAsTouched();
+      this.registerForm.get('rif')?.markAsTouched();
+      return;
+    }
+  
+    if (this.registerForm.valid) {
+      // Mostrar loader de SweetAlert
+      Swal.fire({
+        title: 'Enviando correo...',
+        html: 'Por favor espera mientras procesamos tu solicitud.',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+  
+      const formDataToSend = this.registerForm.getRawValue();
+      delete formDataToSend.confirmPassword; 
+      
+      const formData = new FormData();
+      formData.append('idType', formDataToSend.idType);
+      formData.append('rif', formDataToSend.rif);
+      formData.append('email', formDataToSend.email);
+  
+      const apiUrl = `${API_URLINTER}logincli/enviaclave`; 
+  
+      this.http.post(apiUrl, formData).subscribe({
+        next: (response: any) => {
+          // Cerrar el loader
+          Swal.close();
+  
+          if (response.success === true) { 
+            Swal.fire({
+              icon: 'success',
+              title: '¡Correo enviado!',
+              text: 'Se ha enviado su usuario al correo proporcionado.',
+              confirmButtonText: 'Entendido',
+              timer: 3000, // Cierra automáticamente después de 3 segundos
+              timerProgressBar: true
+            }).then(() => {
+              // Limpiar el formulario y recargar la página
+              this.registerForm.reset();
+              this.msjRif = '';
+              this.nombreCli = '';
+              window.location.reload();
+            });
+          } else {
+            const errorMessage = response.error || 'Hubo un error al recuperar el usuario. Intenta de nuevo.';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMessage,
+              confirmButtonText: 'Cerrar'
+            });
+            console.error('API Error:', response);
+          }
+        },
+        error: (error) => {
+          // Cerrar el loader en caso de error
+          Swal.close();
+          
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'Ocurrió un problema al conectar con el servidor. Por favor, inténtalo nuevamente.',
+            confirmButtonText: 'Entendido'
+          });
+          console.error('HTTP Error:', error);
+        }
+      });
+    } else {
+      console.log('Formulario inválido. Por favor, revisa los campos.');
+      // Marca todos los campos como "touched" para que los mensajes de error sean visibles
+      this.registerForm.markAllAsTouched();
+      
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulario incompleto',
+        text: 'Por favor, completa todos los campos requeridos correctamente.',
+        confirmButtonText: 'Entendido'
+      });
+    }
   }
 
 }
