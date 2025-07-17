@@ -67,6 +67,9 @@
       <a href="javascript:void(0)" class="register_link_item" (click)="navigateTo('/registrocli')"
         >¿No tienes usuario? <span id="registrate__button" class="registrate__boton">Registrar</span></a
       >
+        <a href="javascript:void(0)" class="register_link_item" data-bs-toggle="modal" data-bs-target="#modalrecovery"
+        >¿Olvidaste tus datos? <span id="registrate__button" class="registrate__boton">Recuperar</span></a
+        >
       <!-- 
       <a href="#" class="register_link_item"
         >Olvidaste tu contraseña? <span id="olpws__button" class="registrate__boton">Recuperar</span></a
@@ -80,3 +83,72 @@
 
     </div>
   </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalrecovery" tabindex="-1" aria-labelledby="modalrecoveryLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalrecoveryLabel">Recuperacion de datos</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="registerForm">
+
+                    <div class="row">
+                        <h3 *ngIf="nombreCli"  style="text-align: center;color: #053354; margin-top: -10px; font-size: 1.2em;">{{ nombreCli }}</h3>
+
+                        <p *ngIf="msjRif" [style.color]="isRifChecked ? '#28a745' : 'red'" style="text-align: center; margin-top: -10px; margin-bottom: 15px; font-size: 0.95em;">
+                            {{ msjRif }}
+                        </p>
+                    </div>
+                    <div class="row g-3 mb-3 d-flex align-items-end">
+                        <div class="col-md-5">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Tipo</mat-label>
+                                <mat-select formControlName="idType">
+                                    <mat-option *ngFor="let type of idTypes" [value]="type">{{ type }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="registerForm.get('idType')?.hasError('required') && registerForm.get('idType')?.touched">
+                                    El tipo es requerido.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-7 d-flex">
+                            <mat-form-field appearance="outline" class="w-100 me-2">
+                                <mat-label>RIF</mat-label>
+                                <input matInput formControlName="rif" placeholder="123456789" type="text" maxlength="10"> <mat-error *ngIf="registerForm.get('rif')?.hasError('required') && registerForm.get('rif')?.touched">
+                                El RIF es requerido.
+                            </mat-error>
+                                <mat-error *ngIf="registerForm.get('rif')?.hasError('pattern') && registerForm.get('rif')?.touched">
+                                    El RIF debe contener solo números (7-10 dígitos).
+                                </mat-error>
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" type="button" (click)="checkRif()"
+                                    [disabled]="registerForm.get('idType')?.invalid || registerForm.get('rif')?.invalid || isLoading"
+                                    style="height: 56px;"> Verificar
+                            </button>
+                        </div>
+
+                        <div class="col-md-12 d-flex">
+                            <mat-form-field appearance="outline" class="w-100 me-2">
+                                <mat-label>Email</mat-label>
+                                <input matInput formControlName="rif" placeholder="email@g..." type="email">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-md-12">
+                            <button mat-raised-button color="primary" type="button" class="w-100"
+                                    style="height: 56px;"> Recuperar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

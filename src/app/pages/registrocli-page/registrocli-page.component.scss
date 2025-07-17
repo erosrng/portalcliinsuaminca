@@ -121,7 +121,7 @@
      gap: 20px;
  }
  .login__container{
-     width: 50%;
+     width: 100%;
  }
 
  /* Estilo de los select inputs */
@@ -198,9 +198,6 @@
              padding: 1rem;
              margin: 0;
          } */
-         .portal {
-             flex-direction: column-reverse;
-         }
          .portal__title{
              margin-bottom: 0;
          }
