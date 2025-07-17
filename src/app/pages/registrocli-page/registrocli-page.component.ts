@@ -41,7 +41,7 @@ export class RegistrocliPageComponent implements OnInit {
   isRifChecked: boolean = false; // Nueva propiedad para controlar si el RIF ha sido validado con éxito
   selected = 'J';
   idTypes: string[] = ['J', 'V', 'E'];
-  phonePrefixes: string[] = ['0414', '0424', '0416', '0426', '0412'];
+  phonePrefixes: string[] = ['0414', '0424', '0416', '0426', '0412', '0422'];
 
   constructor(
     private fb: FormBuilder,
