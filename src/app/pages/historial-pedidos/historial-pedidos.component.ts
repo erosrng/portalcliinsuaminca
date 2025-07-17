@@ -60,21 +60,15 @@ interface DetallePedido {
 
 @Component({
   selector: 'app-historial-pedidos',
-  imports: [
-    MatSidenav,
-    MatSidenavModule,
-    MatIconModule,
-    CommonModule,
-    SideBarComponent,
-    NavBarComponent,
-    FooterComponent,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
-  ],
+    imports: [
+        MatSidenav,
+        MatSidenavModule,
+        MatIconModule,
+        CommonModule,
+        SideBarComponent,
+        NavBarComponent,
+        FooterComponent,
+    ],
   templateUrl: './historial-pedidos.component.html',
   styleUrl: './historial-pedidos.component.scss'
 })
