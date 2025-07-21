@@ -245,7 +245,7 @@ export class PortalcliLogicaService {
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
-          console.log('entre')
+          //console.log('entre')
           this.clienteDataSource.next(response.datcli.datcli);
         },
         error: (error) => {

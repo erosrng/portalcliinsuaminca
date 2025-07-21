@@ -1225,8 +1225,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
     // Asegurarse de que la cantidad no sea negativa (ya que min="1" en HTML lo evita, pero es bueno validarlo en TS)
     if (newQuantity < 0) {
-        newQuantity = 1; // O puedes dejarlo en 0 y esperar la lógica de eliminación
-        inputElement.value = '1'; // Actualiza el input visualmente
+        newQuantity = 1; 
+        inputElement.value = '1'; 
         this.snackBar.open('La cantidad no puede ser negativa. Se ha establecido a 1.', 'Cerrar', {
           duration: 3000,
           panelClass: ['warning-snackbar']
@@ -1238,18 +1238,15 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         duration: 5000,
         panelClass: ['warning-snackbar']
       });
-      newQuantity = existenciaDisponible; // <--- Ajusta la cantidad a la existencia máxima
+      newQuantity = existenciaDisponible;
       inputElement.value = newQuantity.toString(); 
       return;
     }
 
-    // Llama a tu función para modificar la cantidad
     this.modificarCantidad(product, newQuantity);
   }
   
   onMarcaFocus(): void {
-    // Esto fuerza al FormControl a emitir su valor actual,
-    // lo que a su vez activa el filtro y muestra las opciones.
     this.marcaControl.setValue(this.marcaControl.value);
   }
 
@@ -1264,12 +1261,12 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         if (response.status) {
-          this.filterMarcaOptions = response.data; // Asigna las marcas al array
+          this.filterMarcaOptions = response.data; 
         } else {
           console.error('Error al cargar marcas:', response);
           this.filterMarcaOptions = [];
         }
-        this.cdr.detectChanges(); // Detecta los cambios para actualizar la vista
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error de la API:', error);
@@ -1288,8 +1285,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   onMarcaSelected(event: any): void {
     this.filterMarca = event.option.value;
-    //this.cdr.detectChanges();
-    this.fetchPedidos(); // Call your fetchPedidos method when an option is selected
+    this.fetchPedidos(); 
   }
 
   filterCategoriaOptions: Categoria[] = [];
@@ -1398,17 +1394,13 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         );
       }
 
-    // After filtering, it's a good practice to reset the paginator to the first page
     this.resetPaginator();
   }
 
   // --- Función para resetear el paginador ---
   resetPaginator(): void {
-    // Si usas ViewChild para acceder al componente p-table:
     if (this.dt) {
-      this.dt.first = 0; // También resetea la propiedad 'first' directamente en el componente
-      // Opcional: También resetea el número de filas
-      // this.dt.rows = 10;
+      this.dt.first = 0;
     }
   }
 

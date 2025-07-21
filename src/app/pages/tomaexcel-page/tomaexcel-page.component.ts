@@ -385,7 +385,7 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/getfile`;
+    const apiUrl = `${API_URLINTER}portalcli/getfile`;
   
     this.http.post(apiUrl, formData, { 
       headers: headers,
