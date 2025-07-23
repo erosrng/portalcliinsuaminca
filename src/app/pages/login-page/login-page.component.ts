@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild, AfterViewInit, signal} from '@angular/core'; // Importa AfterViewInit
+import {Component, ElementRef, ViewChild,TemplateRef,  AfterViewInit, signal} from '@angular/core'; // Importa AfterViewInit
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { PortalcliLogicaService } from './../../services/portalcli-logica.servic
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
 import Swal from 'sweetalert2';
-
+import { MatDialog, MatDialogModule,MatDialogRef} from '@angular/material/dialog';
 @Component({
   selector: 'app-login-page',
   standalone: true,
@@ -31,12 +31,18 @@ import Swal from 'sweetalert2';
     MatButtonModule,
     MatOption,
     MatSelect,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule
   ],
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
 })
+
+
 export class LoginPageComponent implements AfterViewInit {
+  @ViewChild('recoveryDialog') recoveryDialog!: TemplateRef<any>;
+  dialogRef!: MatDialogRef<any>;
+
   hide = signal(true);
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
@@ -63,12 +69,36 @@ export class LoginPageComponent implements AfterViewInit {
     private spinner: NgxSpinnerService,
     public portalcliLogicaService: PortalcliLogicaService,
     private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.registerForm = this.fb.group({
       idType: ['J', Validators.required],
       rif: ['', [Validators.required, Validators.pattern('^[0-9]{7,10}$')]],
-      email: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
     });
+  }
+
+  openRecoveryDialog(): void {
+    // Resetear el formulario al abrir el diálogo
+    this.registerForm.reset({
+      idType: 'J',
+      rif: ''
+    });
+    this.msjRif = '';
+    this.nombreCli = '';
+    this.isRifChecked = false;
+    
+    this.dialogRef = this.dialog.open(this.recoveryDialog, {
+      width: '600px',
+      disableClose: false,
+      autoFocus: false
+    });
+  }
+
+  // Cerrar diálogo
+  closeRecoveryDialog(): void {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
   }
 
   ngAfterViewInit() {
@@ -218,7 +248,6 @@ export class LoginPageComponent implements AfterViewInit {
       const formData = new FormData();
       formData.append('idType', formDataToSend.idType);
       formData.append('rif', formDataToSend.rif);
-      formData.append('email', formDataToSend.email);
   
       const apiUrl = `${API_URLINTER}logincli/enviaclave`; 
   
@@ -267,8 +296,6 @@ export class LoginPageComponent implements AfterViewInit {
         }
       });
     } else {
-      console.log('Formulario inválido. Por favor, revisa los campos.');
-      // Marca todos los campos como "touched" para que los mensajes de error sean visibles
       this.registerForm.markAllAsTouched();
       
       Swal.fire({

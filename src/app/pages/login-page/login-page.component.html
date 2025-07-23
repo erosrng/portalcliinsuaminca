@@ -67,7 +67,7 @@
       <a href="javascript:void(0)" class="register_link_item" (click)="navigateTo('/registrocli')"
         >¿No tienes usuario? <span id="registrate__button" class="registrate__boton">Registrar</span></a
       >
-        <a href="javascript:void(0)" class="register_link_item" data-bs-toggle="modal" data-bs-target="#modalrecovery"
+        <a href="javascript:void(0)" class="register_link_item" (click)="openRecoveryDialog()"
         >¿Olvidaste tus datos? <span id="registrate__button" class="registrate__boton">Recuperar</span></a
         >
       <!-- 
@@ -86,76 +86,73 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalrecovery" tabindex="-1" aria-labelledby="modalrecoveryLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="modalrecoveryLabel">Recuperacion de datos</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form [formGroup]="registerForm">
+<ng-template #recoveryDialog>
+  <div class="recovery-dialog-container">
+    <h2 mat-dialog-title>Recuperación de datos</h2>
+    
+    <mat-dialog-content>
+      <form [formGroup]="registerForm">
+        <div class="row">
+          <h3 *ngIf="nombreCli && !msjRif" class="client-name">
+            {{ nombreCli }}
+          </h3>
 
-                    <div class="row">
-                        <h3 *ngIf="nombreCli && !msjRif"  style="text-align: center;color: #053354; margin-top: -10px; font-size: 1.2em;">{{ nombreCli }}</h3>
-
-                        <p *ngIf="msjRif" [style.color]="isRifChecked ? '#28a745' : 'red'" style="text-align: center; margin-top: -10px; margin-bottom: 15px; font-size: 0.95em;">
-                            {{ msjRif }}
-                        </p>
-                    </div>
-                    <div class="row g-3 mb-3 d-flex align-items-end">
-                        <div class="col-md-5">
-                            <mat-form-field appearance="outline" class="w-100">
-                                <mat-label>Tipo</mat-label>
-                                <mat-select formControlName="idType">
-                                    <mat-option *ngFor="let type of idTypes" [value]="type">{{ type }}</mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="registerForm.get('idType')?.hasError('required') && registerForm.get('idType')?.touched">
-                                    El tipo es requerido.
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="col-md-7 d-flex">
-                            <mat-form-field appearance="outline" class="w-100 me-2">
-                                <mat-label>RIF</mat-label>
-                                <input matInput formControlName="rif" placeholder="123456789" type="text" maxlength="10"> 
-                                <mat-error *ngIf="registerForm.get('rif')?.hasError('required') && registerForm.get('rif')?.touched && registerForm.get('rif')?.value === ''">
-                                  El RIF es requerido.
-                                </mat-error>
-                                <mat-error *ngIf="registerForm.get('rif')?.hasError('pattern') && registerForm.get('rif')?.touched && registerForm.get('rif')?.value !== ''">
-                                  El RIF debe contener solo números (7-10 dígitos).
-                              </mat-error>
-                            </mat-form-field>
-                            <button mat-raised-button color="primary" type="button" (click)="checkRif()"
-                                    [disabled]="registerForm.get('idType')?.invalid || registerForm.get('rif')?.invalid || isLoading"
-                                    style="height: 56px;"> Verificar
-                            </button>
-                        </div>
-
-                        <div class="col-md-12 d-flex">
-                          <mat-form-field appearance="outline" class="w-100 me-2">
-                            <mat-label>Email</mat-label>
-                            <input matInput formControlName="email" placeholder="email@g..." type="email">
-                            <mat-error *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched && registerForm.get('email')?.value === ''">
-                                El email es requerido.
-                            </mat-error>
-                            <mat-error *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched && registerForm.get('email')?.value !== ''">
-                                Por favor ingrese un email válido.
-                            </mat-error>
-                        </mat-form-field>
-                        </div>
-
-                        <div class="col-md-12">
-                            <button *ngIf="nombreCli && !msjRif" mat-raised-button color="primary" type="button" class="w-100"
-                              (click)="enviaclave()" style="height: 56px;"> Recuperar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+          <p *ngIf="msjRif" [class]="isRifChecked ? 'success-message' : 'error-message'">
+            {{ msjRif }}
+          </p>
         </div>
-    </div>
-</div>
+        
+        <div class="form-row">
+          <div class="form-column">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Tipo</mat-label>
+              <mat-select formControlName="idType">
+                <mat-option *ngFor="let type of idTypes" [value]="type">{{ type }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="registerForm.get('idType')?.hasError('required') && registerForm.get('idType')?.touched">
+                El tipo es requerido.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="form-column with-button">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>RIF</mat-label>
+              <input matInput formControlName="rif" placeholder="123456789" type="text" maxlength="10"> 
+              <mat-error *ngIf="registerForm.get('rif')?.hasError('required') && registerForm.get('rif')?.touched">
+                El RIF es requerido.
+              </mat-error>
+              <mat-error *ngIf="registerForm.get('rif')?.hasError('pattern') && registerForm.get('rif')?.touched">
+                El RIF debe contener solo números (7-10 dígitos).
+              </mat-error>
+            </mat-form-field>
+            
+            <button mat-raised-button 
+                    color="primary" 
+                    type="button" 
+                    (click)="checkRif()"
+                    [disabled]="registerForm.get('idType')?.invalid || registerForm.get('rif')?.invalid || isLoading"
+                    class="verify-button">
+              Verificar
+            </button>
+          </div>
+
+          <div class="full-width">
+            <button *ngIf="nombreCli && !msjRif" 
+                    mat-raised-button 
+                    color="primary" 
+                    type="button" 
+                    class="w-100 recovery-button"
+                    (click)="enviaclave()">
+              Recuperar
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancelar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
