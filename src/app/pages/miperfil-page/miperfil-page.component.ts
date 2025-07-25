@@ -113,7 +113,7 @@ export class MiperfilPageComponent implements OnInit {
     data.append('correoElectronico', formData.correoElectronico);
     data.append('telefono', this.prefijoTelefono + formData.telefono);
     data.append('contacto', formData.contacto);
-    data.append('direccion', formData.direccion);
+    //data.append('direccion', formData.direccion);
     if (this.nuevaContrasena) {
       data.append('nuevaContrasena', this.nuevaContrasena);
       data.append('contrasenaActual', this.contrasenaActual);
