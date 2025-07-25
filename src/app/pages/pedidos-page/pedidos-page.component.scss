@@ -269,6 +269,18 @@ h4 {
 .mt-6 {
     margin-top: 6rem;
 }
+.escala-proveedor-inline {
+    background-color: #1f32a0; 
+    color: #f0f0f0;
+    font-size: 1em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle; 
+    display: inline-block;
+    line-height: 1; 
+}
+
 .oferta-proveedor-inline {
     background-color: #4960e6; 
     color: #f0f0f0;
@@ -279,7 +291,20 @@ h4 {
     vertical-align: middle; 
     display: inline-block;
     line-height: 1; 
-  }
+}
+
+.ficha-proveedor-inline {
+    background-color: #3d96d1; 
+    color: #f0f0f0;
+    font-size: 1em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle; 
+    display: inline-block;
+    line-height: 1; 
+}
+
 .row-clear-filter {
     background: #ededed;
     height: 5vh;

@@ -18,6 +18,7 @@ import { Subscription, takeUntil, Subject } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 
+declare var bootstrap: any;
 
 export interface OfertaDetalle {
   lista: string;
@@ -191,6 +192,25 @@ export class HomePageComponent implements OnInit {
     this.revisarCarrito();
     this.fetchProducts();
     // this.loadCarouselProviders();
+  }
+
+
+  ngAfterViewInit() {
+    // Inicializar ambos carruseles manualmente
+    const carrusel1 = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
+      interval: 3000,
+      ride: 'carousel'
+    });
+
+    const carrusel2 = new bootstrap.Carousel(document.getElementById('promotionCarousel3'), {
+      interval: 3000,
+      ride: 'carousel'
+    });
+
+    const carrusel3 = new bootstrap.Carousel(document.getElementById('promotionCarousel4'), {
+      interval: 3000,
+      ride: 'carousel'
+    });
   }
 
   // --- Método para cargar los proveedores del carrusel ---

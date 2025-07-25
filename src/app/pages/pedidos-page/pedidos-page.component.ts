@@ -42,6 +42,9 @@ import {Button} from "primeng/button";
 import {IconField} from "primeng/iconfield";
 import {InputIcon} from "primeng/inputicon";
 import {Listbox} from "primeng/listbox"; // Importa Sort
+
+declare var bootstrap: any;
+
 interface GrupoCliente {
   clienteId: string;
   clienteNombre: string;
@@ -267,6 +270,18 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.cdr.detectChanges();
+
+
+    // Inicializar ambos carruseles manualmente
+    const carrusel1 = new bootstrap.Carousel(document.getElementById('carouselInv'), {
+      interval: 3000,
+      ride: 'carousel'
+    });
+    
+    const carrusel2 = new bootstrap.Carousel(document.getElementById('carouselExample'), {
+      interval: 3000,
+      ride: 'carousel'
+    });
   }
 
 
@@ -377,7 +392,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URL}portalcli/inventariocli`;
+      const apiUrl = `${API_URLINTER}portalcli/inventariocli`;
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
@@ -1359,7 +1374,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URL}portalcli/inventariocli`;
+      const apiUrl = `${API_URLINTER}portalcli/inventariocli`;
 
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
