@@ -171,7 +171,7 @@ export class PortalcliLogicaService {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URLINTER}portalcli/traeficha`;
+    const apiUrl = `${API_URL}portalcli/traeficha`;
 
     return new Observable(observer => {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
