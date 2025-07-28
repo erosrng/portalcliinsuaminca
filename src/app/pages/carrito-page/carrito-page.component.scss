@@ -1,6 +1,6 @@
 @use '../../../styles/variables.scss' as vars;
-@import './../home-page/home-page.component.scss';
-@import '../../components/nav-bar/nav-bar.component.scss';
+@use './../home-page/home-page.component.scss';
+@use '../../components/nav-bar/nav-bar.component.scss';
 
 .container__carrito{
     width: 100%;

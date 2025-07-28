@@ -1,6 +1,6 @@
 @use '../../../styles/variables.scss' as vars;
-@import './../../pages/home-page/home-page.component.scss';
-@import './../nav-bar/nav-bar.component.scss';
+@use './../../pages/home-page/home-page.component.scss';
+@use './../nav-bar/nav-bar.component.scss';
 
 .loading-container{
   display: flex;

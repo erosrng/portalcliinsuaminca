@@ -18,8 +18,8 @@
                                     </div>
                                     <div class="col-12 mt-4">
                                         <mat-form-field class="w-100">
-                                            <mat-label>Vendedores</mat-label>
-                                            <mat-select [(ngModel)]="selectedVendedor" name="vendedor" (selectionChange)="getInfoVendedor()">
+                                            <mat-label>Vendedores</mat-label> <!-- (selectionChange)="getInfoVendedor()" -->
+                                            <mat-select [(ngModel)]="selectedVendedor" name="vendedor">
                                                 <mat-option *ngFor="let vendedor of vendedores" [value]="vendedor">{{vendedor.us_nombre}}</mat-option>
                                             </mat-select>
                                         </mat-form-field>

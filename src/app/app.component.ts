@@ -4,7 +4,7 @@ import {AlertasComponent} from "./components/alertas/alertas.component";
 
 @Component({
   selector: 'app-root',
-    imports: [RouterOutlet, AlertasComponent,],
+    imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
