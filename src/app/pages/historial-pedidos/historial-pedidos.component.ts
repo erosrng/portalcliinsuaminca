@@ -4,12 +4,13 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
-import { ApiService } from '../../services/api.service';
 import Swal from 'sweetalert2';
 import { HistoricoPedidosModel } from '../../models/model';
 import { AuthService } from '../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
+
 import { PROTEO_URL_ALONE } from './../../app.config';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -77,24 +78,13 @@ export class HistorialPedidosComponent implements OnInit {
   totalValorDolar= 0
 
   constructor(
-    private apiService: ApiService,
     private http: HttpClient,
-    public authService: AuthService,
+    public authService: AuthService
   ) { }
 
   ngOnInit(): void {
     Swal.showLoading();
     const aux = localStorage.getItem('usuario');
-    /* if (aux) {
-      this.apiService.get_historial_by_user(aux).subscribe((data: HistoricoPedidosModel[]) => {
-        Swal.close();
-        // Aquí podrías necesitar mapear los datos si la estructura de HistoricoPedidosModel
-        // es diferente de la estructura de la respuesta de triangulatotal
-        // this.historialPedidos = data.map(item => ({ ... }));
-      }, () => {
-        Swal.close();
-      });
-    } */
     this.cargarResumen();
     this.cargarHistorialPedidos();
     
@@ -119,7 +109,7 @@ export class HistorialPedidosComponent implements OnInit {
       'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}trianguladeta`; // Usamos la API para los detalles
+    const apiUrl = `${API_URLINTER}trianguladeta`; // Usamos la API para los detalles
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: DetallePedido[]; message: string }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -162,7 +152,7 @@ export class HistorialPedidosComponent implements OnInit {
       'Authorization': `${token}`
     });
 
-    const apiUrl = `${API_URL}triangulatotal`;
+    const apiUrl = `${API_URLINTER}triangulatotal`;
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: Pedido[] }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -204,7 +194,7 @@ export class HistorialPedidosComponent implements OnInit {
       });
       formData.append('proveed', proveed ?? '');
   
-      const apiUrl = `${API_URL}resumen`;
+      const apiUrl = `${API_URLINTER}resumen`;
   
       this.http.post(apiUrl, formData, { headers: headers })
         .subscribe({

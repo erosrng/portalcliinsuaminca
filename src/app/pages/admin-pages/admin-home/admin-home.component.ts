@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable } from 'rxjs';
 import { AuthService } from '../../../auth.service';
 import { API_URL } from '../../../app.config';
+import { API_URLINTER } from '../../../app.config';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {
@@ -22,7 +24,6 @@ import { FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
-import { ApiService } from '../../../services/api.service';
 import { HistoricoPedidosModel } from '../../../models/model';
 import Swal from 'sweetalert2';
 
@@ -87,7 +88,6 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
   constructor(
     public authService: AuthService,
     public http: HttpClient,
-    private apiService: ApiService
   ) {
     this.unidadesVendidasPorVendedorChart = {
       series: [
@@ -146,7 +146,7 @@ export class AdminHomeComponent implements OnInit { // Implementa OnInit
     });
     formData.append('proveed', proveed ?? '');
 
-    const apiUrl = `${API_URL}resumen1`;
+    const apiUrl = `${API_URLINTER}resumen1`;
 
     this.http.post(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -180,7 +180,7 @@ cargarResumenVendedores() {
     });
     formData.append('proveed', proveed ?? '');
 
-    const apiUrl = `${API_URL}resumen2`;
+    const apiUrl = `${API_URLINTER}resumen2`;
 
     this.http.post<{ result: boolean, mensaje: string, data: ResumenVendedor[] }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -239,7 +239,7 @@ cargarResumenVendedores() {
     this.isLoadingVendedores = true;
     const formData = new FormData();
     const token = this.authService.getToken();
-    const apiUrl = `${API_URL}vendedoresportal`;
+    const apiUrl = `${API_URLINTER}vendedoresportal`;
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });

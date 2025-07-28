@@ -11,11 +11,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { map, Observable } from 'rxjs';
 import { AuthService } from './../../../auth.service';
-import { API_URL } from './../../../app.config';
+import { API_URLINTER } from './../../../app.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SideBarComponent } from "../../../components/side-bar/side-bar.component";
 import { HistoricoPedidosModel } from '../../../models/model';
-import { ApiService } from '../../../services/api.service';
+//import { ApiService } from '../../../services/api.service';
 import Swal from 'sweetalert2';
 import { data } from 'jquery';
 
@@ -50,7 +50,7 @@ export class AdminPedidosVendedorComponent {
   constructor(
     public authService: AuthService,
     public http: HttpClient,
-    private apiService: ApiService
+    //private apiService: ApiService
   ) {}
   toggleMenu = false;
   toppings = new FormControl('');
@@ -79,7 +79,7 @@ export class AdminPedidosVendedorComponent {
     Swal.close()
   }
 
-  getInfoVendedor(): void {
+  /* getInfoVendedor(): void {
     this.totalPedidos = 0;
     this.totalUnidades = 0;
     this.totalValorDolar = 0;
@@ -104,7 +104,7 @@ export class AdminPedidosVendedorComponent {
         Swal.fire('Ocurrio un error', '', 'error');
       })
     }
-  }
+  } */
 
   openDetail(pedido: HistoricoPedidosModel): void {
     this.pedidoActivo = pedido;
@@ -114,7 +114,7 @@ export class AdminPedidosVendedorComponent {
       Swal.showLoading()
       const formData = new FormData();
       const token = this.authService.getToken();
-      const apiUrl = `${API_URL}vendedoresportal`;
+      const apiUrl = `${API_URLINTER}vendedoresportal`;
       const headers = new HttpHeaders({
         'Authorization': `${token}`
       });

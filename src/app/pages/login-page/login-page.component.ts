@@ -7,12 +7,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './../../auth.service';
 import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import { API_URL, API_URL2 } from './../../app.config';
+import { API_URLINTER, API_URL2INTER } from './../../app.config';
 
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import { ApiService } from '../../services/api.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-login-page',
@@ -49,8 +49,7 @@ export class LoginPageComponent implements AfterViewInit {
     private route: Router,
     private http: HttpClient,
     public authService: AuthService,
-    private spinner: NgxSpinnerService,
-    private apiService: ApiService
+    private spinner: NgxSpinnerService
   ) {}
 
   ngAfterViewInit() {
@@ -71,7 +70,7 @@ export class LoginPageComponent implements AfterViewInit {
     formData.append('user', this.userData.user);
     formData.append('password', this.userData.password);
 
-    const apiUrl = `${API_URL2}logincli/logincli`;
+    const apiUrl = `${API_URL2INTER}logincli/logincli`;
 
     this.login(apiUrl, formData)
 

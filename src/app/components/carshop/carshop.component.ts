@@ -9,6 +9,7 @@ import { AuthService } from './../../auth.service';
 import Swal from 'sweetalert2';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
 
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
@@ -19,7 +20,6 @@ import { MatPaginator, MatPaginatorModule, MatPaginatorIntl } from '@angular/mat
 import { MatSelectModule } from '@angular/material/select'; // Importa MatSelectModule
 import { MatFormFieldModule } from '@angular/material/form-field'; // Importa MatFormFieldModule
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import { ApiService } from '../../services/api.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -106,7 +106,6 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         private http: HttpClient,
         private authService: AuthService,
         public portalcliLogicaService: PortalcliLogicaService,
-        private apiService: ApiService,
         public dialog: MatDialog
     ) {}
 
@@ -211,7 +210,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             'Authorization': `${token}`
         });
 
-        const apiUrl = `${API_URL}opencardb`;
+        const apiUrl = `${API_URLINTER}opencardb`;
         formData.append('codCli', codCli ?? '');
         if (this.clienteData && this.clienteData.ubica) {
             formData.append('almacen', this.clienteData.ubica);
@@ -222,7 +221,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             next: (response: any) => {
                 this.revisarCarrito();
 
-                this.productscar = response.data;
+                this.productscar = response.data || []; 
                 this.dataSource.data = this.productscar;
                 let aux = 0
                 this.productscar.forEach(product => {
@@ -230,7 +229,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                     this.totalAmount = this.totalAmount + this.recalculadescud(product)
                     this.totalAmountBS = this.totalAmountBS + this.recalculadescubs(product)
                 })
-                console.log('TOTAL UNIDADES: ', aux)
+                //console.log('TOTAL UNIDADES: ', aux)
                 this.dataSource.paginator = this.paginator;
                 this.dataSource.sort = this.sort;
                 this.sortData(this.sortField as keyof Product); // Llamar a sortData después de asignar los datos
@@ -306,7 +305,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             this.dataSource.data = [...this.productscar];
         }
 
-        const apiUrl = `${API_URL}totalizadesc`;
+        const apiUrl = `${API_URLINTER}totalizadesc`;
         const formData = new FormData();
         const token = this.authService.getToken();
         const codCli = this.authService.getCodCli();
@@ -351,7 +350,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     eliminareg(caller: any, idPedido: any, codigo: any) {
         Swal.showLoading()
 
-        const apiUrl = `${API_URL}eliminareg`;
+        const apiUrl = `${API_URLINTER}eliminareg`;
         const formData = new FormData();
         const token = this.authService.getToken();
 
@@ -408,7 +407,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         const headers = new HttpHeaders({
             'Authorization': `${token}`
         });
-        const apiUrl = `${API_URL}enviaped`;
+        const apiUrl = `${API_URLINTER}enviaped`;
 
         Swal.fire({
             title: '¿Desea enviar el pedido?',
@@ -444,93 +443,13 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         this.mostrarLoader();
         formData.append('observa', observacion); // Agrega la observación al FormData
 
-        const aux = {
-            'usuario': localStorage.getItem('usuario'),
-            'nombre': localStorage.getItem('nombre'),
-            'nomprv': localStorage.getItem('nomprv'),
-            'proveed': localStorage.getItem('proveed'),
-            'codigo_cliente': this.clienteData.cliente,
-            'nombre_cliente':  this.clienteData.nombre,
-            'Pedido': this.productscar,
-            'diasCredito': this.diasCredito,
-            'montoFactura': this.montoFactura,
-            'emailSendUser': this.clienteData.email,
-            'emailSendProveed': localStorage.getItem('emailprov'),
-            'observa': observacion
-        };
-
-        this.apiService.generate_ped(aux).subscribe({
-            next: (data: any) => {
                 this.isLoading = false;
                 Swal.close()
                 this.ocultarLoader();
                 this.generar_pedido_proteo(apiUrl, formData, headers);
-            },
-            error: () => {
-                this.isLoading = false;
-                Swal.close()
-                this.ocultarLoader();
-            }
-        });
+
     }
-/*     enviaped(){
-        Swal.showLoading()
-        const codCli = this.authService.getCodCli();
 
-        const formData = new FormData();
-        const token = this.authService.getToken();
-
-        formData.append('codCli', codCli ?? '');
-        formData.append('diasCredito', String(this.diasCredito));
-        formData.append('montoFactura', String(this.montoFactura));
-
-        const headers = new HttpHeaders({
-            'Authorization': `${token}`
-        });
-        const apiUrl = `${API_URL}enviaped`;
-
-        Swal.fire({
-            title: '¿Desea enviar el pedido?',
-            text: "Esta acción no se puede deshacer.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Enviar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-
-                    if (result.isConfirmed) {
-                        this.mostrarLoader();
-                        //console.log(this.productscar)
-                        const aux = {
-                            'usuario': localStorage.getItem('usuario'),
-                            'nombre': localStorage.getItem('nombre'),
-                            'nomprv': localStorage.getItem('nomprv'),
-                            'proveed': localStorage.getItem('proveed'),
-                            'codigo_cliente': this.clienteData.cliente,
-                            'nombre_cliente':  this.clienteData.nombre,
-                            'Pedido': this.productscar,
-                            'diasCredito': this.diasCredito,
-                            'montoFactura': this.montoFactura,
-                            'emailSendUser': this.clienteData.email,
-                        }
-                        this.apiService.generate_ped(aux).subscribe((data: any) => {
-                            //console.log(data)
-                            this.isLoading = false;
-                            this.ocultarLoader();
-                            this.generar_pedido_proteo(apiUrl, formData, headers);
-                        }, () => {
-                            this.isLoading = false;
-                            this.ocultarLoader();
-
-                        })
-                    }
-                //});
-
-
-            }
-        });
-    } */
 
     generar_pedido_proteo(apiUrl: any, formData: any, headers: any): void {
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
@@ -992,7 +911,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     descudcalc = 0;
 
     totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-        const apiUrl = `${API_URL}totalizacampo`;
+        const apiUrl = `${API_URLINTER}totalizacampo`;
         const formData = new FormData();
         const token = this.authService.getToken();
 

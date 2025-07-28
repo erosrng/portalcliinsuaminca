@@ -9,6 +9,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
+
 import Swal from 'sweetalert2';
 import { Subscription, takeUntil, Subject } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,6 +37,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSort, Sort, MatSortModule} from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
+
 export interface Clienteselect {
   cliente: string;
   nombre: string; 
@@ -357,7 +360,7 @@ sortData(sortField: string) {
     const token = this.authService.getToken();
     const apiUrl = `${API_URL}bdscli`;
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     return this.http.post(apiUrl, formData, { headers: headers }).pipe(
@@ -432,7 +435,7 @@ sortData(sortField: string) {
       ]));
     
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       const apiUrl = `${API_URL}inventarioprv`;
     
@@ -663,7 +666,7 @@ sortData(sortField: string) {
         const headers = new HttpHeaders({
           'Authorization': `${token}`
         });
-        const apiUrl = `${API_URL}enviaped`;
+        const apiUrl = `${API_URLINTER}enviaped`;
       
         Swal.fire({
           
@@ -1123,7 +1126,7 @@ sortData(sortField: string) {
 
   getUrlImg(url: string) {
     const oldPrefix = 'http://insuaminca.proteoerp.org:50080/';
-    const newPrefix = 'https://d2wnvkodoh477y.cloudfront.net/';
+    const newPrefix = 'https://insuaminca.org/insuaminca/';
 
     if (url.startsWith(oldPrefix)) {
       return url.replace(oldPrefix, newPrefix);

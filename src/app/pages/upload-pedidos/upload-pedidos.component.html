@@ -380,6 +380,7 @@
                                     <th scope="col" class="border-left-top dt-th-modal ">Ver</th>
                                     <th scope="col" class="dt-th-modal">Codigo </th>
                                     <th scope="col" class="dt-th-modal">Descripcion</th>
+                                    <th scope="col" class="dt-th-modal">Cantidad</th>
                                     <th scope="col" class="dt-th-modal">Descuento</th>
                                     <th scope="col" class="dt-th-modal">Precio $</th>
                                     <th scope="col" class="dt-th-modal">Precio final</th>
@@ -392,6 +393,7 @@
                                     </td>
                                     <td class="dt-td-modal ">{{ pedido.Codigo }}</td>
                                     <td class="dt-td-modal ">{{ pedido.Descripcion }}</td>
+                                    <td class="dt-td-modal ">{{ pedido.Unidades }}</td>
                                     <td class="dt-td-modal ">{{ pedido.Descuento }}%</td>
                                     <td class="dt-td-modal ">{{ getprice(pedido)| number: '1.0-3'}} $</td>
                                     <td class="dt-td-modal ">

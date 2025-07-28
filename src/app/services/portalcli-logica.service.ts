@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../auth.service';
 import { Router } from '@angular/router';
 import { API_URL } from '../app.config';
+import { API_URLINTER } from '../app.config';
+
 import Swal from 'sweetalert2';
 import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
@@ -95,7 +97,7 @@ export class PortalcliLogicaService {
 
     formData.append('almacen', almacen);
 
-    const apiUrl = `${API_URL}agg_pedido`;
+    const apiUrl = `${API_URLINTER}agg_pedido`;
 
     return this.http.post(apiUrl, formData, { headers: headers });
   }
@@ -111,7 +113,7 @@ export class PortalcliLogicaService {
     });
     formData.append('codCli', codCli ?? '');
 
-    this.http.post(`${API_URL}revisacar`, formData, { headers: headers } ).subscribe({
+    this.http.post(`${API_URLINTER}revisacar`, formData, { headers: headers } ).subscribe({
       next: (response: any) => {
         this.loading = false;
         if (response && response.data.encar) {
@@ -161,7 +163,7 @@ export class PortalcliLogicaService {
   //Vacia carrito
   vaciacar(): Observable<any> {
     const codCli = this.authService.getCodCli();
-    const apiUrl = `${API_URL}vaciacar`;
+    const apiUrl = `${API_URLINTER}vaciacar`;
     const formData = new FormData();
     const token = this.authService.getToken();
     formData.append('codCli', codCli ?? '');
@@ -184,7 +186,7 @@ export class PortalcliLogicaService {
     formData.append('codigo', codigo);
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = `${API_URL}traeficha`;
 
@@ -255,7 +257,7 @@ export class PortalcliLogicaService {
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-        'Authorization': `${token}`
+        'X-Auth-Token': `${token}`
       });
       const apiUrl = `${API_URL}buscaalmacen`;
   

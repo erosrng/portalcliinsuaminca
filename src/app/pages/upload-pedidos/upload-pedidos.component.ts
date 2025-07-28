@@ -26,7 +26,6 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {API_URL} from "../../app.config";
 import {AuthService} from "../../auth.service";
-import {ApiService} from "../../services/api.service";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {event} from "jquery";
 
@@ -93,61 +92,11 @@ export class UploadPedidosComponent implements OnInit {
         private proteoServices: ProteoService,
         private authService: AuthService,
         public http: HttpClient,
-        private apiService: ApiService,
     ) {
     }
 
     ngOnInit() {
         this.loadAll();
-    }
-
-    fetchPedidos() {
-        Swal.showLoading();
-        const formData = new FormData();
-        const token = this.authService.getToken();
-        const codCli = '00001';
-
-        if(codCli){
-            formData.append('start', '0');
-            formData.append('length', '1000');
-            formData.append('codCli', '00001');
-            formData.append('search', '');
-            formData.append('categoria','');
-            formData.append('almacen', '0001');
-            formData.append('lote', '');
-            formData.append('orderby', 'descrip');
-            formData.append('orderDirection', 'asc');
-            formData.append('nuevos', '0');
-            formData.append('columns', JSON.stringify([
-                { data: 'codigo' },
-                { data: 'descrip' },
-                { data: 'nomprv' },
-                { data: 'oprecio' },
-                { data: 'existen' },
-            ]));
-
-            const headers = new HttpHeaders({
-                'Authorization': `${token}`
-            });
-            const apiUrl = `${API_URL}inventarioprv`;
-
-            this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-                next: (response: any) => {
-                    this.listProdutos = response.data.data;
-                    //console.log('ENTRE')
-                },
-                error: (error) => {
-                    Swal.hideLoading();
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Error al cargar inventario',
-                    })
-                    console.error('Error al cargar inventario:', error);
-                },
-            });
-
-        }
-
     }
 
     loadAll(): void {
@@ -167,7 +116,7 @@ export class UploadPedidosComponent implements OnInit {
                     map(value => this._filterUnico(value || '')),
                 );
 
-                this.fetchPedidos();
+                //this.fetchPedidos();
                 Swal.close()
             })
         });
@@ -780,14 +729,13 @@ export class UploadPedidosComponent implements OnInit {
                         }
                     });
                     if (auxLet) {
-                        this.apiService.generate_ped(aux).subscribe((data: any) => {
                             Swal.fire({
                                 title: "Pedidos generado",
                                 text: "",
                                 icon: "success"
                             });
                             this.clearUpload();
-                        })
+                        //})
                     } else {
                         Swal.close()
                         Swal.fire({
@@ -927,50 +875,13 @@ export class UploadPedidosComponent implements OnInit {
                                     const aux2 = data.data.datcli;
                                     this.emailSendUser = aux2.email;
                                     this.emailSendProveed = localStorage.getItem('emailprov');
-                                    const aux = {
-                                        'usuario': localStorage.getItem('usuario'),
-                                        'nombre': localStorage.getItem('nombre'),
-                                        'nomprv': localStorage.getItem('nomprv'),
-                                        'proveed': localStorage.getItem('proveed'),
-                                        'codigo_cliente': this.clienteData.cliente,
-                                        'nombre_cliente':  this.clienteData.nombre,
-                                        'Pedido': pedidoApi,
-                                        'diasCredito': this.diasCredito,
-                                        'montoFactura': this.montoFactura,
-                                        'emailSendUser': this.emailSendUser,
-                                        'emailSendProveed': localStorage.getItem('emailprov'),
-                                        'observa': observacion
-                                    }
-                                    this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                        //console.log('pedido enviado')
-                                        //console.log(data)
-                                        this.clearUpload();
-                                    })
+
                                     Swal.fire({
                                         title: "Pedidos generado",
                                         text: "",
                                         icon: "success"
                                     });
                                 } else {
-                                    const aux = {
-                                        'usuario': localStorage.getItem('usuario'),
-                                        'nombre': localStorage.getItem('nombre'),
-                                        'nomprv': localStorage.getItem('nomprv'),
-                                        'proveed': localStorage.getItem('proveed'),
-                                        'codigo_cliente': this.clienteData.cliente,
-                                        'nombre_cliente':  this.clienteData.nombre,
-                                        'Pedido': pedidoApi,
-                                        'diasCredito': this.diasCredito,
-                                        'montoFactura': this.montoFactura,
-                                        'emailSendUser': this.emailSendUser,
-                                        'emailSendProveed': localStorage.getItem('emailprov'),
-                                        'observa': observacion
-                                    }
-                                    this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                        //console.log('pedido enviado')
-                                        //console.log(data)
-                                        this.clearUpload();
-                                    })
                                     Swal.fire({
                                         title: "Pedidos generado",
                                         text: "",
@@ -978,25 +889,7 @@ export class UploadPedidosComponent implements OnInit {
                                     });
                                 }
                             }, () => {
-                                const aux = {
-                                    'usuario': localStorage.getItem('usuario'),
-                                    'nombre': localStorage.getItem('nombre'),
-                                    'nomprv': localStorage.getItem('nomprv'),
-                                    'proveed': localStorage.getItem('proveed'),
-                                    'codigo_cliente': this.clienteData.cliente,
-                                    'nombre_cliente':  this.clienteData.nombre,
-                                    'Pedido': pedidoApi,
-                                    'diasCredito': this.diasCredito,
-                                    'montoFactura': this.montoFactura,
-                                    'emailSendUser': this.emailSendUser,
-                                    'emailSendProveed': localStorage.getItem('emailprov'),
-                                    'observa': observacion
-                                }
-                                this.apiService.generate_ped(aux).subscribe((data: any) => {
-                                    //console.log('pedido enviado')
-                                    //console.log(data)
-                                    this.clearUpload();
-                                })
+
                                 Swal.fire({
                                     title: "Pedidos generado",
                                     text: "",

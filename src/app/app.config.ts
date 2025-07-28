@@ -42,14 +42,18 @@ export const API_FAST ='http://192.168.1.48:5020';*/
 
 // export const API_FAST ='http://0.0.0.0:5000';
 
+export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/';
+export const API_URL = 'https://insuaminca.org/insuaminca/api/ptprv/post/';
+export const API_URL2 = 'https://insuaminca.org/insuaminca/api/ptprv/';
+export const PROTEO_URL = 'https://insuaminca.org/insuaminca/api/ptprv/';
+export const API_FAST ='http://3.143.124.47:5000';
 
 // ACCESO FTP EXTER
-
-export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/';
-export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/post/';
-export const API_URL2 = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/';
-export const PROTEO_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/';
-export const API_FAST ='http://3.143.124.47:5000';
+export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/';
+export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/post/';
+export const API_URL2INTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/';
+export const PROTEO_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/';
+export const API_FASTINTER ='http://3.143.124.47:5000';
 
 export const appConfig: ApplicationConfig = {
   providers: [

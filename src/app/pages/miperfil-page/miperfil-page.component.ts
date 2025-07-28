@@ -10,6 +10,8 @@ import { PortalcliLogicaService } from './../../services/portalcli-logica.servic
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
+
 import Swal from 'sweetalert2';
 import {MatSidenav, MatSidenavModule} from '@angular/material/sidenav';
 
@@ -60,7 +62,7 @@ export class MiperfilPageComponent implements OnInit {
       'Authorization': `${token}`
     });
 
-    this.http.post(`${API_URL}portalcli/buscaopws`, formData, { headers: headers }).subscribe({
+    this.http.post(`${API_URLINTER}portalcli/buscaopws`, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         if (response.status==false) {
           this.contrasenaInvalida = true;
@@ -101,7 +103,7 @@ export class MiperfilPageComponent implements OnInit {
     const headers = new HttpHeaders({
       Authorization: `${this.authService.getToken()}`,
     });
-    const apiUrl = `${API_URL}portalcli/actualizar_perfil`;
+    const apiUrl = `${API_URLINTER}portalcli/actualizar_perfil`;
 
     Swal.fire({
       title: '¿Desea actualizar su ficha?',

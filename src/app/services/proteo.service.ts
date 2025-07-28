@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {PROTEO_URL} from "../app.config";
+import {PROTEO_URLINTER} from "../app.config";
+
 import {AuthService} from "../auth.service";
 
 @Injectable({
@@ -9,6 +11,8 @@ import {AuthService} from "../auth.service";
 })
 export class ProteoService {
   apiUrl = PROTEO_URL;
+  apiUrl2 = PROTEO_URLINTER;
+
   constructor(
       private httpClient: HttpClient,
       public authService: AuthService,
@@ -24,8 +28,8 @@ export class ProteoService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = this.apiUrl + `post/getfile`;
-    return this.httpClient.post(apiUrl, info, { headers: headers, responseType: 'blob', })
+    const apiUrl2 = this.apiUrl2 + `post/getfile`;
+    return this.httpClient.post(apiUrl2, info, { headers: headers, responseType: 'blob', })
   }
 
   //Para obtener los clientes por grupo de casas matriz
@@ -33,7 +37,7 @@ export class ProteoService {
     const token = this.authService.getToken();
     const formData = new FormData();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = this.apiUrl + `get/cmatriz`;
     return this.httpClient.post(apiUrl,formData, {headers: headers})
@@ -45,7 +49,7 @@ export class ProteoService {
     const token = this.authService.getToken();
     const formData = new FormData();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = this.apiUrl + `post/bdscli`;
     return this.httpClient.post(apiUrl,formData, {headers: headers})
@@ -58,8 +62,8 @@ export class ProteoService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = this.apiUrl + `post/multiped`;
-    return this.httpClient.post(apiUrl, info, {headers: headers})
+    const apiUrl2 = this.apiUrl2 + `post/multiped`;
+    return this.httpClient.post(apiUrl2, info, {headers: headers})
   }
 
 
@@ -70,8 +74,8 @@ export class ProteoService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = this.apiUrl + `post/listape`;
-    return this.httpClient.post(apiUrl, info, {headers: headers})
+    const apiUrl2 = this.apiUrl2 + `post/listape`;
+    return this.httpClient.post(apiUrl2, info, {headers: headers})
   }
 
 
@@ -83,8 +87,8 @@ export class ProteoService {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = this.apiUrl + `post/simplefile`;
-    return this.httpClient.post(apiUrl, info, { headers: headers, responseType: 'blob', })
+    const apiUrl2 = this.apiUrl2 + `post/simplefile`;
+    return this.httpClient.post(apiUrl2, info, { headers: headers, responseType: 'blob', })
   }
 
   get_client_data(cliente: any) : Observable<any> {
@@ -92,7 +96,7 @@ export class ProteoService {
     const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl = this.apiUrl + `post/buscaalmacen`;
     return this.httpClient.post(apiUrl, info, { headers: headers })
