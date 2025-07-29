@@ -23,9 +23,8 @@ import { forkJoin } from 'rxjs';
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    HistorialpedComponent,
-    FormsModule,
-  ],
+    FormsModule
+],
   templateUrl: './miperfil-page.component.html',
   styleUrl: './miperfil-page.component.scss'
 })

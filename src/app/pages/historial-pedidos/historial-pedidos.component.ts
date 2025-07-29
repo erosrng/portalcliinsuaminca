@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
-import { ApiService } from '../../services/api.service';
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -61,14 +60,13 @@ interface DetallePedido {
 @Component({
   selector: 'app-historial-pedidos',
     imports: [
-        MatSidenav,
-        MatSidenavModule,
-        MatIconModule,
-        CommonModule,
-        SideBarComponent,
-        NavBarComponent,
-        FooterComponent,
-    ],
+    MatSidenavModule,
+    MatIconModule,
+    CommonModule,
+    SideBarComponent,
+    NavBarComponent,
+    FooterComponent
+],
   templateUrl: './historial-pedidos.component.html',
   styleUrl: './historial-pedidos.component.scss'
 })
@@ -83,7 +81,6 @@ export class HistorialPedidosComponent implements OnInit {
   totalValorDolar= 0
 
   constructor(
-    private apiService: ApiService,
     private http: HttpClient,
     public authService: AuthService,
   ) { }

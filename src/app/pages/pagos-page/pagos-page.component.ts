@@ -19,6 +19,29 @@ import Swal from 'sweetalert2';
 import { ClicardComponent } from "../../components/clicard/clicard.component";
 import { Subscription } from 'rxjs';
 
+interface FacturaSeleccionada {
+  selected: boolean;
+  data: {
+    tipo_doc: string;
+    numero: string;
+    emision: string;
+    entregado: string;
+    vence: string;
+    dias: number;
+    monto: number;
+    impuesto: number;
+    reteiva: number;
+    saldo: number;
+    ppago: number;
+    difc: number;
+    cdolar: number;
+    monto_dolar: number;
+    saldo_dolar: number;
+    preabono: number;
+    [key: string]: any; // Para propiedades adicionales
+  };
+}
+
 @Component({
   selector: 'app-pagos-page',
   imports: [
@@ -46,7 +69,8 @@ export class PagosPageComponent implements OnInit {
   itemsPerPage = 10;
   totalPages = 1;
   isLoading = false;
-  selectedRowsMap: { [key: string]: boolean } = {};
+  //selectedRowsMap: { [key: string]: boolean } = {};
+  selectedRowsMap: { [key: string]: FacturaSeleccionada } = {};
   selectedCount = 0;
   allPagos: any[] = [];
   showSelectedOnly = false;
@@ -153,7 +177,7 @@ export class PagosPageComponent implements OnInit {
 
   seleccionarTipoPago(tipo: string) {
     if (this.tipoPagoSeleccionado === tipo) {
-      this.tipoPagoSeleccionado = ''; // Deselecciona si se selecciona el mismo tipo
+      this.tipoPagoSeleccionado = ''; 
     } else {
       this.tipoPagoSeleccionado = tipo;
     }
@@ -210,12 +234,17 @@ export class PagosPageComponent implements OnInit {
     this.fetchPagos();
   }
 
+  //Cambio de pagina
   pageChanged(event: PageEvent) {
+    if (this.showSelectedOnly) {
+      // No hacemos nada si estamos mostrando solo seleccionados
+      return;
+    }
+    
     this.isLoading = true;
     this.currentPage = event.pageIndex + 1;
     this.itemsPerPage = event.pageSize;
     this.fetchPagos();
-    this.actualizarMonto();
   }
 
   toggleSortDirection() {
@@ -274,29 +303,43 @@ export class PagosPageComponent implements OnInit {
       },
     });
   }
-
-  updatePagedPagos() {
-    this.pagedPagos = this.allPagos.map(row => ({
-      ...row,
-      selected: this.selectedRowsMap[this.getRowId(row)] || false
-    }));
-    this.filterSelectedRows();
-    this.actualizarFacturasACancelar();
-    this.actualizarMonto();
-  }
-
-
-
   //Selector de todas las filas
   selectAll(event: MatCheckboxChange) {
     this.allPagos.forEach(row => {
       const rowId = this.getRowId(row);
-      this.selectedRowsMap[rowId] = event.checked;
+      
+      if (event.checked) {
+        this.selectedRowsMap[rowId] = {
+          selected: true,
+          data: {
+            tipo_doc: row.tipo_doc,
+            numero: row.numero,
+            emision: row.emision,
+            entregado: row.entregado,
+            vence: row.vence,
+            dias: row.dias,
+            monto: row.monto,
+            impuesto: row.impuesto,
+            reteiva: row.reteiva,
+            saldo: row.saldo,
+            ppago: row.ppago || 0,
+            difc: row.difc,
+            cdolar: row.cdolar,
+            monto_dolar: row.monto / row.cdolar,
+            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
+            preabono: row.preabono || 0
+          }
+        };
+      } else {
+        if (this.selectedRowsMap[rowId]) {
+          this.selectedRowsMap[rowId].selected = false;
+        }
+      }
     });
+    
     this.updatePagedPagos();
-    this.actualizarMonto(); // Asegurarse de que se llame aquí
+    this.actualizarMonto();
   }
-  
 
   saveSelected() {
     const selectedRows = Object.keys(this.selectedRowsMap)
@@ -309,100 +352,134 @@ export class PagosPageComponent implements OnInit {
     return `${row.tipo_doc}-${row.numero}`;
   }
 
-    /* getRowId(row: any): string {
-      return row;
-    } */
-
+  //CUANDO SELECCIONAMOS UNA FILA
   toggleRowSelection(row: any) {
     const rowId = this.getRowId(row);
-    console.log(rowId)
-    this.selectedRowsMap[rowId] = !this.selectedRowsMap[rowId];
+    
+    if (!this.selectedRowsMap[rowId]) {
+      // Guardar todos los datos de la fila
+      this.selectedRowsMap[rowId] = {
+        selected: true,
+        data: {
+          tipo_doc: row.tipo_doc,
+          numero: row.numero,
+          emision: row.emision,
+          entregado: row.entregado,
+          vence: row.vence,
+          dias: row.dias,
+          monto: row.monto,
+          impuesto: row.impuesto,
+          reteiva: row.reteiva,
+          saldo: row.saldo,
+          ppago: row.ppago || 0,
+          difc: row.difc,
+          cdolar: row.cdolar,
+          monto_dolar: row.monto / row.cdolar,
+          saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
+          preabono: row.preabono || 0
+        }
+      };
+    } else {
+      this.selectedRowsMap[rowId].selected = !this.selectedRowsMap[rowId].selected;
+    }
+    
     this.updatePagedPagos();
     this.actualizarMonto();
-  }  
-
-  updateSelectedCount() {
-    this.selectedCount = Object.keys(this.selectedRowsMap)
-      .filter(key => this.selectedRowsMap[key]).length;
   }
 
-  filterSelectedRows() {
-    if (this.showSelectedOnly) {
-      this.pagedPagos = this.allPagos
-        .filter(row => this.selectedRowsMap[this.getRowId(row)])
-        .map(row => ({
-          ...row,
-          selected: this.selectedRowsMap[this.getRowId(row)] || false
-        }));
-    } else {
-      this.pagedPagos = this.allPagos.map(row => ({
+  //CAMBIA DE PAGINA
+  updatePagedPagos() {
+    this.pagedPagos = this.allPagos.map(row => {
+      const rowId = this.getRowId(row);
+      return {
         ...row,
-        selected: this.selectedRowsMap[this.getRowId(row)] || false
-      }));
-    }
-    this.updateSelectedCount();
-    this.actualizarFacturasACancelar();
-    this.actualizarMonto(); // Asegurarse de que se llame aquí
+        selected: this.selectedRowsMap[rowId]?.selected || false
+      };
+    });
+    this.filterSelectedRows();
   }
 
+  //Muestra solo las facturas seleccionadas con el chulito
   toggleShowSelectedOnly(event: MatCheckboxChange) {
     this.isLoading = true;
     this.showSelectedOnly = event.checked;
+    
+    if (this.showSelectedOnly) {
+      this.currentPage = 1; // Resetear a la primera página
+    }
+    
     this.filterSelectedRows();
     this.isLoading = false;
   }
 
+  //Filtra las filas seleccionadas
+  filterSelectedRows() {
+    if (this.showSelectedOnly) {
+      // Mostrar solo las filas seleccionadas con todos sus campos
+      this.pagedPagos = Object.keys(this.selectedRowsMap)
+        .filter(key => this.selectedRowsMap[key]?.selected)
+        .map(key => {
+          const factura = this.selectedRowsMap[key];
+          return {
+            ...factura.data,
+            selected: true
+          };
+        });
+    } else {
+      // Mostrar todas las filas con paginación normal
+      this.pagedPagos = this.allPagos.map(row => {
+        const rowId = this.getRowId(row);
+        return {
+          ...row,
+          selected: this.selectedRowsMap[rowId]?.selected || false
+        };
+      });
+    }
+    
+    this.updateSelectedCount();
+    this.actualizarFacturasACancelar();
+    this.actualizarMonto();
+  }
+
+  updateSelectedCount() {
+    this.selectedCount = Object.keys(this.selectedRowsMap)
+      .filter(key => this.selectedRowsMap[key]?.selected).length;
+  }
+
+
   // Actualizar el campo de texto aquí
-  /* actualizarFacturasACancelar() {
+  actualizarFacturasACancelar() {
     const facturas = Object.keys(this.selectedRowsMap)
-      .filter(key => this.selectedRowsMap[key])
+      .filter(key => this.selectedRowsMap[key]?.selected)
       .map(key => key.replace('-', ''));
     this.facturasACancelar = 'PAGA: ' + facturas.join(', ');
-  } */
+  }
 
-    actualizarFacturasACancelar() {
-      const facturas = Object.keys(this.selectedRowsMap)
-        .filter(key => this.selectedRowsMap[key])
-        .map(key => key.replace('-', ''));
-      this.facturasACancelar = 'PAGA: ' + facturas.join(', ');
-      console.log(this.facturasACancelar)
-    }
-
-  /* actualizarMonto() {
+  //ACTUALIZA EL MONTO EN BASE A LAS FILAS SELECCIONADAS
+  actualizarMonto() {
     let totalMonto = 0;
-    this.pagedPagos.forEach(row => {
-      if (this.selectedRowsMap[this.getRowId(row)]) {
-        const monto = parseFloat(row.monto);
+    
+    try {
+      Object.keys(this.selectedRowsMap).forEach(key => {
+        if (!this.selectedRowsMap[key] || !this.selectedRowsMap[key].selected) return;
+        
+        const factura = this.selectedRowsMap[key];
+        if (!factura.data || !factura.data.monto) return;
+        
+        const monto = Number(factura.data.monto);
         if (!isNaN(monto)) {
           totalMonto += monto;
         }
-      }
-    });
-    this.montoACancelar = parseFloat(totalMonto.toFixed(2));
-    console.log(this.montoACancelar)
-  } */
-
-    actualizarMonto() {
-      let totalMonto = 0;
-    
-      // Obtener los IDs de las filas seleccionadas desde selectedRowsMap
-      const selectedRowIds = Object.keys(this.selectedRowsMap).filter(key => this.selectedRowsMap[key]);
-    
-      // Iterar sobre allPagos y calcular el monto total
-      selectedRowIds.forEach(rowId => {
-        const row = this.allPagos.find(pago => this.getRowId(pago) === rowId);
-        if (row) {
-          const monto = parseFloat(row.monto);
-          if (!isNaN(monto)) {
-            totalMonto += monto;
-          }
-        }
       });
-    
+      
       this.montoACancelar = parseFloat(totalMonto.toFixed(2));
-      console.log(this.montoACancelar);
+      console.log('Monto calculado:', this.montoACancelar);
+      
+    } catch (error) {
+      console.error('Error al calcular el monto:', error);
+      this.montoACancelar = 0;
     }
-
+  }
   formatearMonto(monto: number): string {
     return monto.toLocaleString('es-VE', { // 'es-VE' para Venezuela
       minimumFractionDigits: 2,

@@ -108,8 +108,8 @@ interface Categoria {
     MatTooltipModule,
     MatButtonModule,
     MatIconModule,
-    MatStepperModule,      // <-- Añadir MatStepperModule
-    MatAutocompleteModule, // <-- Añadir MatAutocompleteModule
+    MatStepperModule,     
+    MatAutocompleteModule,
     MatSnackBarModule,
     MatRadioModule,
     MatCheckboxModule,

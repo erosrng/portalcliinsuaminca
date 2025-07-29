@@ -6,128 +6,296 @@
         <!-- Layaout principal -->
         <div class="pagos-content">
             <header class="pagos__header">
-                <h1 class="ofertas-title pagos__title">Pagos</h1>
+                <h1 class="ofertas-title pagos__title">Reporte de Pagos</h1>
               </header>
-            <div class="row">
-                <div class="pagos-form-col">
-                    <div class="card pagos-form-card">
+            <div class="row mt-1">
+              <!-- 
+              <div class="pagos-form-col">
+                  <div class="card pagos-form-card">
 
-                        <div class="card-body">
-                            <h4 class="card-title text-primary">Metodos de pago</h4>
+                      <div class="card-body">
+                          <h4 class="card-title text-primary">Metodos de pago</h4>
 
-                            <div class="mb-4 mt-4">
-                                <div class="d-flex justify-content-around">
-                                  <div class="pagos-metodo-container">
-                                    <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === 'VES'" (click)="seleccionarMetodoPago('VES')">
-                                      <span class="pagos-metodo-icon pagos-metodo-icon-lg">Bs</span>
-                                    </button>
-                                    <div class="pagos-metodo-tooltip">Bolívares</div>
-                                  </div>
-                                  <div class="pagos-metodo-container">
-                                    <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === '$'" (click)="seleccionarMetodoPago('$')">
-                                      <span class="pagos-metodo-icon pagos-metodo-icon-lg">$</span>
-                                    </button>
-                                    <div class="pagos-metodo-tooltip">Dólares</div>
-                                  </div>
-                                  <!-- <div class="pagos-metodo-container">
-                                    <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === '€'" (click)="seleccionarMetodoPago('€')">
-                                      <span class="pagos-metodo-icon pagos-metodo-icon-lg">€</span>
-                                    </button>
-                                    <div class="pagos-metodo-tooltip">Euros</div>
-                                  </div> -->
+                          <div class="mb-4 mt-4">
+                              <div class="d-flex justify-content-around">
+                                <div class="pagos-metodo-container">
+                                  <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === 'VES'" (click)="seleccionarMetodoPago('VES')">
+                                    <span class="pagos-metodo-icon pagos-metodo-icon-lg">Bs</span>
+                                  </button>
+                                  <div class="pagos-metodo-tooltip">Bolívares</div>
                                 </div>
-                            </div>
-                              
-                            <h4 class="card-title text-primary">Tipos de pago</h4>
+                                <div class="pagos-metodo-container">
+                                  <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === '$'" (click)="seleccionarMetodoPago('$')">
+                                    <span class="pagos-metodo-icon pagos-metodo-icon-lg">$</span>
+                                  </button>
+                                  <div class="pagos-metodo-tooltip">Dólares</div>
+                                </div>
 
-                            <div class="mb-4 d-flex justify-content-around">
-
-                              <div class="form-check" *ngFor="let tipo of tiposPago">
-                                <input class="form-check-input" type="radio" name="tipo_pago" id="{{tipo}}" value="{{tipo}}" (change)="seleccionarTipoPago(tipo)" [disabled]="!metodoPagoSeleccionado" [checked]="tipoPagoSeleccionado === tipo">
-                                <label class="form-check-label" for="{{tipo}}">{{tipo}}</label>
                               </div>
-                            </div>
-                          
+                          </div>
+                            
+                          <h4 class="card-title text-primary">Tipos de pago</h4>
 
-                            <form class="pagos-form" method="POST" enctype="multipart/form-data">
-                              <h4 class="card-title text-primary">Registro de pagos</h4>
-                              <div *ngIf="mostrarSelectorCuenta">
-                                <div class="mb-3 form-group">
-                                    <label for="cuenta" class="form-label pagos-label">Seleccionar cuenta</label>
-                                    <select name="cuenta" id="cuenta" class="form-select pagos-select" (change)="seleccionarCuenta($event.target)" [disabled]="!tipoPagoSeleccionado">
-                                        <option value="">Seleccionar cuenta</option>
-                                        <option *ngFor="let cuenta of cuentas" [value]="cuenta.codbanc" [ngValue]="cuenta">
-                                            {{cuenta.banco}} ({{cuenta.numcuent}})
-                                        </option>
-                                    </select>
-                                </div>
+                          <div class="mb-4 d-flex justify-content-around">
+
+                            <div class="form-check" *ngFor="let tipo of tiposPago">
+                              <input class="form-check-input" type="radio" name="tipo_pago" id="{{tipo}}" value="{{tipo}}" (change)="seleccionarTipoPago(tipo)" [disabled]="!metodoPagoSeleccionado" [checked]="tipoPagoSeleccionado === tipo">
+                              <label class="form-check-label" for="{{tipo}}">{{tipo}}</label>
+                            </div>
+                          </div>
                         
-                                <div *ngIf="cuentaSeleccionada">
-                                    <div class="card pagos-cuenta-card">
-                                      <div class="card-body d-flex align-items-center">
-                                        <div class="mr-3">
-                                          <img src="./../../../assets/images/logobanc/{{cuentaSeleccionada.numcuent.substring(0, 4)}}.png" alt="Logo banco" class="pagos-cuenta-logo">
-                                        </div>
-                                        <div>
-                                          <h5 class="card-title pagos-cuenta-nombre">
-                                            {{cuentaSeleccionada.banco}}
-                                              <i class="fas fa-copy copiar-btn"  (click)="copiarAlPortapapeles(cuentaSeleccionada.banco)"></i>
-                                          </h5>
-                                          <p class="card-text pagos-cuenta-numero">
-                                            Cuenta: {{cuentaSeleccionada.numcuent}}
-                                              <i class="fas fa-copy copiar-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.numcuent)"></i>
-                                          </p>
-                                        </div>
+
+                          <form class="pagos-form" method="POST" enctype="multipart/form-data">
+                            <h4 class="card-title text-primary">Registro de pagos</h4>
+                            <div *ngIf="mostrarSelectorCuenta">
+                              <div class="mb-3 form-group">
+                                  <label for="cuenta" class="form-label pagos-label">Seleccionar cuenta</label>
+                                  <select name="cuenta" id="cuenta" class="form-select pagos-select" (change)="seleccionarCuenta($event.target)" [disabled]="!tipoPagoSeleccionado">
+                                      <option value="">Seleccionar cuenta</option>
+                                      <option *ngFor="let cuenta of cuentas" [value]="cuenta.codbanc" [ngValue]="cuenta">
+                                          {{cuenta.banco}} ({{cuenta.numcuent}})
+                                      </option>
+                                  </select>
+                              </div>
+                      
+                              <div *ngIf="cuentaSeleccionada">
+                                  <div class="card pagos-cuenta-card">
+                                    <div class="card-body d-flex align-items-center">
+                                      <div class="mr-3">
+                                        <img src="./../../../assets/images/logobanc/{{cuentaSeleccionada.numcuent.substring(0, 4)}}.png" alt="Logo banco" class="pagos-cuenta-logo">
+                                      </div>
+                                      <div>
+                                        <h5 class="card-title pagos-cuenta-nombre">
+                                          {{cuentaSeleccionada.banco}}
+                                            <i class="fas fa-copy copiar-btn"  (click)="copiarAlPortapapeles(cuentaSeleccionada.banco)"></i>
+                                        </h5>
+                                        <p class="card-text pagos-cuenta-numero">
+                                          Cuenta: {{cuentaSeleccionada.numcuent}}
+                                            <i class="fas fa-copy copiar-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.numcuent)"></i>
+                                        </p>
                                       </div>
                                     </div>
-                                </div>
-
+                                  </div>
                               </div>
 
-                              <div class="mb-3 form-group">
-                                <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
-                                <input type="text" name="monto" id="monto" *ngIf="montoACancelar" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly [disabled]="!cuentaSeleccionada">
-                              </div>
-                              
+                            </div>
 
-                              <div class="mb-3 form-group">
-                                  <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
-                                  <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" 
-                                  class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly [disabled]="!cuentaSeleccionada"></textarea>
-                              </div>
-                          
-                              <div class="row mb-3">
-                                <div class="col-md-6">
-                                  <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia</label>
-                                  <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                                </div>
-                                <div class="col-md-6">
-                                  <label for="numero_referencia" class="form-label pagos-label">Número de referencia</label>
-                                  <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ingrese número de referencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                                </div>
-                              </div>
-                          
-                              <div class="mb-3 form-group">
-                                <label for="comprobante" class="form-label pagos-label">Cargar comprobante de pago</label>
-                                <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                              </div>
-                          
+                            <div class="mb-3 form-group">
+                              <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
+                              <input type="text" name="monto" id="monto" *ngIf="montoACancelar" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly [disabled]="!cuentaSeleccionada">
+                            </div>
+                            
 
-    
-                          
-                              <button class="btn btn-primary pagos-submit-btn" [disabled]="!montoACancelar">Anexar pago</button>
-                            </form>
+                            <div class="mb-3 form-group">
+                                <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
+                                <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" 
+                                class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly [disabled]="!cuentaSeleccionada"></textarea>
+                            </div>
+                        
+                            <div class="row mb-3">
+                              <div class="col-md-6">
+                                <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia</label>
+                                <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
+                              </div>
+                              <div class="col-md-6">
+                                <label for="numero_referencia" class="form-label pagos-label">Número de referencia</label>
+                                <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ingrese número de referencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
+                              </div>
+                            </div>
+                        
+                            <div class="mb-3 form-group">
+                              <label for="comprobante" class="form-label pagos-label">Cargar comprobante de pago</label>
+                              <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
+                            </div>
+                        
+
+  
+                        
+                            <button class="btn btn-primary pagos-submit-btn" [disabled]="!montoACancelar">Anexar pago</button>
+                          </form>
+                        </div>
+                    
+                  </div>
+
+                  <div class="card card__info">
+                    <app-clicard></app-clicard>
+                  </div>
+                </div> -->
+        
+                <div class="pagos-form-col">
+                  <div class="card pagos-form-card">
+                    <div class="card-body">
+                      <!-- Sección de Métodos de Pago -->
+                      <div class="payment-section">
+                        <h4 class="section-title">Seleccione el tipo de moneda</h4>
+                        <div class="payment-methods">
+                          <div class="payment-method" *ngFor="let metodo of ['VES', '$']">
+                            <input type="radio" name="metodoPago" [id]="'metodo-'+metodo" 
+                                   [value]="metodo" [checked]="metodoPagoSeleccionado === metodo"
+                                   (change)="seleccionarMetodoPago(metodo)" class="payment-method-input">
+                            <label [for]="'metodo-'+metodo" class="payment-method-label">
+                              <span class="payment-method-icon">{{metodo === 'VES' ? 'Bs' : '$'}}</span>
+                              <span class="payment-method-name">{{metodo === 'VES' ? 'Bolívares' : 'Dólares'}}</span>
+                            </label>
                           </div>
-                      
-                    </div>
-
-                    <div class="card card__info">
-                      <app-clicard></app-clicard>
+                        </div>
+                      </div>
+                
+                      <!-- Sección de Tipos de Pago -->
+                      <div class="payment-section" *ngIf="metodoPagoSeleccionado">
+                        <h4 class="section-title">Seleccione el método de pago</h4>
+                        <div class="payment-types">
+                          <div class="payment-type" *ngFor="let tipo of tiposPago">
+                            <input type="radio" name="tipo_pago" [id]="tipo" [value]="tipo"
+                                   [checked]="tipoPagoSeleccionado === tipo" (change)="seleccionarTipoPago(tipo)"
+                                   class="payment-type-input">
+                            <label [for]="tipo" class="payment-type-label">{{tipo}}</label>
+                          </div>
+                        </div>
+                      </div>
+                
+                      <!-- Sección de Registro de Pago -->
+                      <form class="payment-form" *ngIf="tipoPagoSeleccionado">
+                        <h4 class="section-title">Complete los datos del pago</h4>
+                
+                        <!-- Selección de Cuenta -->
+                        <div class="form-group" *ngIf="mostrarSelectorCuenta">
+                          <label class="form-label">Cuenta bancaria</label>
+                          <select class="form-select" (change)="seleccionarCuenta($event.target)">
+                            <option value="">Seleccione una cuenta</option>
+                            <option *ngFor="let cuenta of cuentas" [value]="cuenta.codbanc">
+                              {{cuenta.banco}} ({{cuenta.numcuent}})
+                            </option>
+                          </select>
+                        </div>
+                
+                        <!-- Info de la Cuenta Seleccionada -->
+                        <div class="account-card" *ngIf="cuentaSeleccionada">
+                          <div class="account-header">
+                            <img src="./../../../assets/images/logobanc/{{cuentaSeleccionada.numcuent.substring(0, 4)}}.png" 
+                                 alt="Logo banco" class="account-logo">
+                            <div class="account-info">
+                              <h5 class="account-name">
+                                {{cuentaSeleccionada.banco}}
+                                <button class="copy-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.banco)" title="Copiar nombre del banco">
+                                </button>
+                              </h5>
+                              
+                              <div class="account-details">
+                                <!-- Número de Cuenta -->
+                                <div class="detail-row">
+                                  <span class="detail-label">N. de Cuenta:</span>
+                                  <span class="detail-value">
+                                    {{cuentaSeleccionada.numcuent}}
+                                    <button class="copy-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.numcuent)" title="Copiar número de cuenta">
+                                      <i class="fas fa-copy"></i>
+                                    </button>
+                                  </span>
+                                </div>
+                                
+                                <!-- Teléfono -->
+                                <div class="detail-row" *ngIf="cuentaSeleccionada.telefono">
+                                  <span class="detail-label">Teléfono:</span>
+                                  <span class="detail-value">
+                                    {{cuentaSeleccionada.telefono}}
+                                    <button class="copy-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.telefono)" title="Copiar teléfono">
+                                      <i class="fas fa-copy"></i>
+                                    </button>
+                                  </span>
+                                </div>
+                                
+                                <!-- Cédula/RIF -->
+                                <div class="detail-row" *ngIf="cuentaSeleccionada.cedula">
+                                  <span class="detail-label">{{cuentaSeleccionada.cedula.length <= 8 ? 'Cédula' : 'RIF'}}:</span>
+                                  <span class="detail-value">
+                                    {{cuentaSeleccionada.cedula}}
+                                    <button class="copy-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.cedula)" title="Copiar cédula">
+                                      <i class="fas fa-copy"></i>
+                                    </button>
+                                  </span>
+                                </div>
+                                
+                                <!-- Titular -->
+                                <div class="detail-row" *ngIf="cuentaSeleccionada.titular">
+                                  <span class="detail-label">Titular:</span>
+                                  <span class="detail-value">
+                                    {{cuentaSeleccionada.titular}}
+                                    <button class="copy-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.titular)" title="Copiar nombre del titular">
+                                      <i class="fas fa-copy"></i>
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- Nota importante -->
+                          <div class="account-note mt-4">
+                            <i class="fas fa-info-circle"></i>
+                            <span> Verifique cuidadosamente los datos antes de realizar la transferencia.</span>
+                          </div>
+                        </div>
+                
+                        <!-- Monto a Cancelar - Destacado -->
+                        <div class="form-group amount-group" *ngIf="montoACancelar">
+                          <label class="form-label">Total a pagar</label>
+                          <div class="amount-display">
+                            {{formatearMonto(montoACancelar)}}
+                            <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
+                          </div>
+                          <small class="amount-note">Monto calculado según facturas seleccionadas</small>
+                        </div>
+                
+                        <!-- Facturas a Cancelar -->
+                        <div class="form-group">
+                          <label class="form-label">Facturas incluidas en este pago</label>
+                          <textarea class="form-control" rows="3" 
+                                    placeholder="Listado de facturas a cancelar"
+                                    [(ngModel)]="facturasACancelar" name="facturas" readonly></textarea>
+                        </div>
+                
+                        <!-- Datos de Transferencia -->
+                        <div class="form-row">
+                          <div class="form-group col-md-6">
+                            <label class="form-label">Fecha de transferencia</label>
+                            <input type="date" class="form-control" name="fecha_transferencia" required>
+                          </div>
+                          <div class="form-group col-md-6">
+                            <label class="form-label">Número de referencia</label>
+                            <input type="text" class="form-control" placeholder="Ej: 123456789" name="numero_referencia" required>
+                          </div>
+                        </div>
+                
+                        <!-- Comprobante -->
+                        <div class="form-group">
+                          <label class="form-label">Comprobante de pago</label>
+                          <div class="file-upload">
+                            <input type="file" id="comprobante" name="comprobante" required>
+                            <label for="comprobante" class="upload-label">
+                              <i class="fas fa-cloud-upload-alt"></i>
+                              <span>Seleccionar archivo</span>
+                            </label>
+                          </div>
+                          <small class="file-note">Formatos aceptados: JPG, PNG, PDF (Máx. 5MB)</small>
+                        </div>
+                
+                        <!-- Botón de Envío -->
+                        <button type="submit" class="submit-btn" [disabled]="!montoACancelar">
+                          Registrar Pago
+                          <i class="fas fa-paper-plane"></i>
+                        </button>
+                      </form>
                     </div>
                   </div>
-        
+                
+                  <!-- Información del Cliente -->
+                  <div class="card client-info-card">
+                    <app-clicard></app-clicard>
+                  </div>
+                </div>
+
                 <div class="col pagos-table-col">
-                  <h4 class="card-title text-primary">Facturas a cancelar</h4>
+                  <h1 class="ofertas-title pagos__title">Facturas a cancelar</h1>
 
                     <div class="container-fluid w-100 mt-4">
 
