@@ -287,8 +287,8 @@
 }
 
 .account-logo {
-  width: 50px;
-  height: 50px;
+  width: 150px;
+  height: 150px;
   object-fit: contain;
 }
 
@@ -300,6 +300,7 @@
 }
 
 .copy-btn {
+  font-size: 1.6rem;
   background: none;
   border: none;
   color: #3498db;
@@ -320,7 +321,7 @@
   padding: 0.8rem 1rem;
   border: 1px solid #ddd;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 1.4rem;
   transition: border-color 0.3s;
 }
 
@@ -396,6 +397,113 @@
   background-color: #bdc3c7;
   cursor: not-allowed;
 }
+
+/**/
+/* Estilos para resaltar el campo de monto */
+.amount-field-emphasis {
+  margin: 1.8rem 0;
+  position: relative;
+}
+
+.emphasis-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.required-asterisk {
+  color: #e74c3c;
+  font-size: 2.2em;
+  vertical-align: middle;
+}
+
+.amount-input-emphasis {
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 12px 15px;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  color: #2c3e50;
+}
+
+.amount-input-emphasis:focus {
+  border-color: #2980b9;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+  background-color: #fff;
+  outline: none;
+}
+
+.amount-input-emphasis::placeholder {
+  color: #95a5a6;
+  opacity: 0.7;
+}
+
+.amount-limits {
+  margin-top: 8px;
+  font-size: 1.25rem;
+}
+
+.max-amount {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+  color: #7f8c8d;
+}
+
+/*AJUSTES CUANDO SELECCIONAN FACTURA Y SE AGREGA EL SALDO INDIVIDUAL**/
+.selected-invoices-section {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.invoice-payment-row {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #b5b7b9 !important;
+  }
+}
+
+.invoice-info {
+  min-width: 200px;
+}
+
+.invoice-amount-input {
+  width: 200px;
+  
+  input {
+    text-align: right;
+  }
+}
+
+.mat-checkbox-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mat-checkbox-disabled .mat-checkbox-label {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/* Efecto pulsante sutil para llamar la atención */
+@keyframes subtlePulse {
+  0% { border-color: #3498db; }
+  50% { border-color: #2980b9; }
+  100% { border-color: #3498db; }
+}
+
+.amount-input-emphasis:not(:focus) {
+  animation: subtlePulse 3s infinite;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

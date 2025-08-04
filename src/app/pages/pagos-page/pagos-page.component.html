@@ -9,119 +9,7 @@
                 <h1 class="ofertas-title pagos__title">Reporte de Pagos</h1>
               </header>
             <div class="row mt-1">
-              <!-- 
-              <div class="pagos-form-col">
-                  <div class="card pagos-form-card">
 
-                      <div class="card-body">
-                          <h4 class="card-title text-primary">Metodos de pago</h4>
-
-                          <div class="mb-4 mt-4">
-                              <div class="d-flex justify-content-around">
-                                <div class="pagos-metodo-container">
-                                  <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === 'VES'" (click)="seleccionarMetodoPago('VES')">
-                                    <span class="pagos-metodo-icon pagos-metodo-icon-lg">Bs</span>
-                                  </button>
-                                  <div class="pagos-metodo-tooltip">Bolívares</div>
-                                </div>
-                                <div class="pagos-metodo-container">
-                                  <button class="btn pagos-metodo-btn pagos-metodo-btn-lg" [class.selected]="metodoPagoSeleccionado === '$'" (click)="seleccionarMetodoPago('$')">
-                                    <span class="pagos-metodo-icon pagos-metodo-icon-lg">$</span>
-                                  </button>
-                                  <div class="pagos-metodo-tooltip">Dólares</div>
-                                </div>
-
-                              </div>
-                          </div>
-                            
-                          <h4 class="card-title text-primary">Tipos de pago</h4>
-
-                          <div class="mb-4 d-flex justify-content-around">
-
-                            <div class="form-check" *ngFor="let tipo of tiposPago">
-                              <input class="form-check-input" type="radio" name="tipo_pago" id="{{tipo}}" value="{{tipo}}" (change)="seleccionarTipoPago(tipo)" [disabled]="!metodoPagoSeleccionado" [checked]="tipoPagoSeleccionado === tipo">
-                              <label class="form-check-label" for="{{tipo}}">{{tipo}}</label>
-                            </div>
-                          </div>
-                        
-
-                          <form class="pagos-form" method="POST" enctype="multipart/form-data">
-                            <h4 class="card-title text-primary">Registro de pagos</h4>
-                            <div *ngIf="mostrarSelectorCuenta">
-                              <div class="mb-3 form-group">
-                                  <label for="cuenta" class="form-label pagos-label">Seleccionar cuenta</label>
-                                  <select name="cuenta" id="cuenta" class="form-select pagos-select" (change)="seleccionarCuenta($event.target)" [disabled]="!tipoPagoSeleccionado">
-                                      <option value="">Seleccionar cuenta</option>
-                                      <option *ngFor="let cuenta of cuentas" [value]="cuenta.codbanc" [ngValue]="cuenta">
-                                          {{cuenta.banco}} ({{cuenta.numcuent}})
-                                      </option>
-                                  </select>
-                              </div>
-                      
-                              <div *ngIf="cuentaSeleccionada">
-                                  <div class="card pagos-cuenta-card">
-                                    <div class="card-body d-flex align-items-center">
-                                      <div class="mr-3">
-                                        <img src="./../../../assets/images/logobanc/{{cuentaSeleccionada.numcuent.substring(0, 4)}}.png" alt="Logo banco" class="pagos-cuenta-logo">
-                                      </div>
-                                      <div>
-                                        <h5 class="card-title pagos-cuenta-nombre">
-                                          {{cuentaSeleccionada.banco}}
-                                            <i class="fas fa-copy copiar-btn"  (click)="copiarAlPortapapeles(cuentaSeleccionada.banco)"></i>
-                                        </h5>
-                                        <p class="card-text pagos-cuenta-numero">
-                                          Cuenta: {{cuentaSeleccionada.numcuent}}
-                                            <i class="fas fa-copy copiar-btn" (click)="copiarAlPortapapeles(cuentaSeleccionada.numcuent)"></i>
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                              </div>
-
-                            </div>
-
-                            <div class="mb-3 form-group">
-                              <label for="monto" class="form-label pagos-label">Monto a cancelar</label>
-                              <input type="text" name="monto" id="monto" *ngIf="montoACancelar" [value]="formatearMonto(montoACancelar)" class="form-control pagos-input" readonly [disabled]="!cuentaSeleccionada">
-                            </div>
-                            
-
-                            <div class="mb-3 form-group">
-                                <label for="descrip" class="form-label pagos-label">Facturas a cancelar</label>
-                                <textarea name="descrip" id="descrip" rows="4" placeholder="Ingrese los documentos a cancelar" 
-                                class="form-control pagos-textarea" required [(ngModel)]="facturasACancelar" readonly [disabled]="!cuentaSeleccionada"></textarea>
-                            </div>
-                        
-                            <div class="row mb-3">
-                              <div class="col-md-6">
-                                <label for="fecha_transferencia" class="form-label pagos-label">Fecha transferencia</label>
-                                <input type="date" name="fecha_transferencia" id="fecha_transferencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                              </div>
-                              <div class="col-md-6">
-                                <label for="numero_referencia" class="form-label pagos-label">Número de referencia</label>
-                                <input type="text" name="numero_referencia" id="numero_referencia" placeholder="Ingrese número de referencia" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                              </div>
-                            </div>
-                        
-                            <div class="mb-3 form-group">
-                              <label for="comprobante" class="form-label pagos-label">Cargar comprobante de pago</label>
-                              <input type="file" name="comprobante" id="comprobante" class="form-control pagos-input" required [disabled]="!cuentaSeleccionada">
-                            </div>
-                        
-
-  
-                        
-                            <button class="btn btn-primary pagos-submit-btn" [disabled]="!montoACancelar">Anexar pago</button>
-                          </form>
-                        </div>
-                    
-                  </div>
-
-                  <div class="card card__info">
-                    <app-clicard></app-clicard>
-                  </div>
-                </div> -->
-        
                 <div class="pagos-form-col">
                   <div class="card pagos-form-card">
                     <div class="card-body">
@@ -239,13 +127,99 @@
                         <!-- Monto a Cancelar - Destacado -->
                         <div class="form-group amount-group" *ngIf="montoACancelar">
                           <label class="form-label">Total a pagar</label>
-                          <div class="amount-display">
+                          <div class="amount-display"  *ngIf="metodoPagoSeleccionado == 'VES'">
                             {{formatearMonto(montoACancelar)}}
+                            <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
+                          </div>
+
+                          <div class="amount-display"  *ngIf="metodoPagoSeleccionado != 'VES'">
+                            {{formatearMonto(montoACancelard)}}
                             <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
                           </div>
                           <small class="amount-note">Monto calculado según facturas seleccionadas</small>
                         </div>
-                
+
+                        
+                        <!-- Monto cancelado por el cliente -->
+                        <!-- <div class="form-group amount-group">
+                          <label class="form-label">Monto pagado</label>
+                          <input type="number" class="form-control"
+                          [(ngModel)]="montoPagado" 
+                          name="numero_referencia" required>
+
+                          <div class="amount-display"  *ngIf="metodoPagoSeleccionado != 'VES'">
+                            {{formatearMonto(montoACancelard)}}
+                            <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
+                          </div>
+                          <small class="amount-note">Monto trasnferido</small>
+                        </div> -->
+
+                        <div class="form-group amount-group">
+                          <h3 class="ofertas-title pagos__title">Monto pagado</h3>
+                          <input type="number" class="form-control" 
+                                 [(ngModel)]="montoPagado" 
+                                 name="monto_pagado" 
+                                 (change)="actualizarSaldoDisponible()"
+                                 [min]="0.01"
+                                 [step]="0.01"
+                                 required>
+                          
+                          <div class="saldo-info">
+                            <div *ngIf="montoPagado > 0" class="saldo-disponible">
+                              Saldo disponible: {{ formatearMonto(saldoDisponible) }} {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }}
+                            </div>
+                            <div *ngIf="montoPagado > 0 && montoACancelar > 0" class="saldo-utilizado">
+                              Monto aplicado: {{ formatearMonto(montoACancelar) }} {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }}
+                            </div>
+                          </div>
+                          
+                          <small class="amount-note">Ingrese el monto total que va a pagar</small>
+                        </div>
+
+                        <!-- Sección de montos por factura -->
+                        <div *ngIf="selectedCount > 0" class="selected-invoices-section mt-4">
+                          <h3 class="mb-3">Montos a pagar por factura</h3>
+                          
+                          <div *ngFor="let key of getSelectedKeys()" class="invoice-payment-row mb-3 p-3 bg-light rounded">
+                            <div class="d-flex align-items-center justify-content-between">
+                              <div class="invoice-info">
+                                <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
+                                <div class="text-muted small">
+                                  Saldo: {{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}
+                                </div>
+                              </div>
+                              
+                              <div class="invoice-amount-input">
+                                <input type="number" 
+                                      class="form-control"
+                                      [(ngModel)]="selectedRowsMap[key].montoAPagar"
+                                      [name]="'montoFactura_' + key"
+                                      [min]="0.01"
+                                      [max]="selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc"
+                                      step="0.01"
+                                      (change)="validarMontoFactura(key)"
+                                      placeholder="Monto a pagar"
+                                      required>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                                        
+                        <!-- Datos de Transferencia -->
+                        <div class="form-row">
+                          <!-- <div class="form-group col-md-6">
+                            <label class="form-label">Fecha de transferencia</label>
+                            <input [(ngModel)]="fechaTransferencia" type="date" class="form-control" name="fecha_transferencia" required>
+                          </div> -->
+                          <div class="form-group col-md-6">
+                            <label class="form-label">Número de referencia</label>
+                            <input type="text" class="form-control" placeholder="123456789" 
+                            [(ngModel)]="numeroReferencia" 
+                            name="numero_referencia" required>
+                          </div>
+                        </div>
+
                         <!-- Facturas a Cancelar -->
                         <div class="form-group">
                           <label class="form-label">Facturas incluidas en este pago</label>
@@ -254,33 +228,22 @@
                                     [(ngModel)]="facturasACancelar" name="facturas" readonly></textarea>
                         </div>
                 
-                        <!-- Datos de Transferencia -->
-                        <div class="form-row">
-                          <div class="form-group col-md-6">
-                            <label class="form-label">Fecha de transferencia</label>
-                            <input type="date" class="form-control" name="fecha_transferencia" required>
-                          </div>
-                          <div class="form-group col-md-6">
-                            <label class="form-label">Número de referencia</label>
-                            <input type="text" class="form-control" placeholder="Ej: 123456789" name="numero_referencia" required>
-                          </div>
-                        </div>
-                
                         <!-- Comprobante -->
                         <div class="form-group">
                           <label class="form-label">Comprobante de pago</label>
                           <div class="file-upload">
-                            <input type="file" id="comprobante" name="comprobante" required>
+                            <input type="file" id="comprobante" name="comprobante" 
+                                   (change)="handleFileUpload($event)" accept=".jpg,.jpeg,.png,.pdf">
                             <label for="comprobante" class="upload-label">
                               <i class="fas fa-cloud-upload-alt"></i>
-                              <span>Seleccionar archivo</span>
+                              <span>{{ archivoComprobante ? archivoComprobante.name : 'Seleccionar archivo' }}</span>
                             </label>
                           </div>
                           <small class="file-note">Formatos aceptados: JPG, PNG, PDF (Máx. 5MB)</small>
                         </div>
                 
                         <!-- Botón de Envío -->
-                        <button type="submit" class="submit-btn" [disabled]="!montoACancelar">
+                        <button type="submit" class="submit-btn" [disabled]="!montoACancelar" (click)="enviapago()">
                           Registrar Pago
                           <i class="fas fa-paper-plane"></i>
                         </button>
@@ -334,7 +297,6 @@
                                       <option value="emidolar">Cambio</option>
                                       <option value="monto_dolar">Monto $</option>
                                       <option value="saldo_dolar">Saldo $</option>
-                                      <option value="preabono">Preabono</option>
                                     </select>
                                     <button class="btn btn-sm btn-outline-secondary ml-2" (click)="toggleSortDirection()">
                                       <i class="fas" [ngClass]="{'fa-sort-up': sortDirection === 'asc', 'fa-sort-down': sortDirection === 'desc'}"></i>
@@ -362,7 +324,7 @@
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'entregado', direction: sortColumn === 'entregado' && sortDirection === 'asc' ? 'desc' : 'asc' })">Entregado</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'vence', direction: sortColumn === 'vence' && sortDirection === 'asc' ? 'desc' : 'asc' })">Vence</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'dias', direction: sortColumn === 'dias' && sortDirection === 'asc' ? 'desc' : 'asc' })">Dias para vencer</th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'dias', direction: sortColumn === 'dias' && sortDirection === 'asc' ? 'desc' : 'asc' })">Dias vencida</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'monto', direction: sortColumn === 'monto' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'impuesto', direction: sortColumn === 'impuesto' && sortDirection === 'asc' ? 'desc' : 'asc' })">I.V.A.</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'reteiva', direction: sortColumn === 'reteiva' && sortDirection === 'asc' ? 'desc' : 'asc' })">Ret/IVA</th>
@@ -372,14 +334,18 @@
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'emidolar', direction: sortColumn === 'emidolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Cambio</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'monto_dolar', direction: sortColumn === 'monto_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto $</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'saldo_dolar', direction: sortColumn === 'saldo_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Saldo $</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'preabono', direction: sortColumn === 'preabono' && sortDirection === 'asc' ? 'desc' : 'asc' })">Preabono</th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'preabono', direction: sortColumn === 'mfactura' && sortDirection === 'asc' ? 'desc' : 'asc' })">M.fact</th>
                             </tr>
                             
                           </thead>
                           <tbody>
                             <tr *ngFor="let row of pagedPagos; let i = index" [ngClass]="{'table-primary': row.selected}">
                               <td class="align-middle text-center">
-                                <mat-checkbox [(ngModel)]="row.selected" (change)="toggleRowSelection(row)"></mat-checkbox>
+                                <mat-checkbox 
+                                  [(ngModel)]="row.selected" 
+                                  (change)="toggleRowSelection(row)"
+                                  [disabled]="saldoDisponible <= 0 && !row.selected">
+                                </mat-checkbox>
                               </td>
                               <td class="align-middle">{{ row.tipo_doc }}-{{ row.numero }}</td>
                               <td class="align-middle">{{ row.emision }}</td>
@@ -394,7 +360,7 @@
                               <td class="align-middle text-center">{{ portalcliLogicaService.formatCurrency(row.cdolar) }}</td>
                               <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.monto / row.cdolar)) }}</td>
                               <td class="align-middle">{{ portalcliLogicaService.formatCurrency(((row.saldo - row.preabono) / row.cdolar)) }}</td>
-                              <td class="align-middle">{{ row.preabono }}</td>
+                              <td class="align-middle">{{ row.mfactura }}</td>
                             </tr>
                           </tbody>
                         </table>
