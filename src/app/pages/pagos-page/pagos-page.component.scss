@@ -493,6 +493,77 @@
   color: rgba(0, 0, 0, 0.54);
 }
 
+/*Saldo aplicado vs disponible*/
+.saldo-info {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 10px;
+}
+.progress-bar{
+  background-color: vars.$text-color2 !important;
+}
+
+.saldo-aplicado {
+  color: #28a745;
+}
+
+.saldo-disponible {
+  color: #007bff;
+}
+
+.saldo-total {
+  color: #343a40;
+}
+
+
+.progress {
+  background-color: #e9ecef;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+}
+
+.fas {
+  font-size: 1.3rem;
+}
+/*******************************************/
+
+/*Division de monto pagado por factura*/
+/* Estilos para los estados */
+.bg-success-light {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+  border: 1px solid #28a745 !important;
+}
+
+.bg-warning-light {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  border: 1px solid #ffc107 !important;
+}
+
+.invoice-payment-row {
+  transition: all 0.3s ease;
+}
+
+.saldo-info, .aplicado-info, .pendiente-info {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Mejora el input para que combine con el diseño */
+.invoice-amount-input .form-control {
+  min-width: 120px;
+  text-align: right;
+  font-weight: bold;
+}
+/****************************************************/
+
 /* Efecto pulsante sutil para llamar la atención */
 @keyframes subtlePulse {
   0% { border-color: #3498db; }

@@ -341,9 +341,9 @@ montoOriginalPagado: number = 0;
             monto: row.monto,
             impuesto: row.impuesto,
             reteiva: row.reteiva,
-            saldo: row.saldo,
+            saldo: row.saldo || 0,
             ppago: row.ppago || 0,
-            difc: row.difc,
+            difc: row.difc || 0,
             cdolar: row.cdolar,
             monto_dolar: row.monto / row.cdolar,
             saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
@@ -377,84 +377,73 @@ montoOriginalPagado: number = 0;
   }
 
   //CUANDO SELECCIONAMOS UNA FILA
-    /* toggleRowSelection(row: any) {
-      const rowId = this.getRowId(row);
+  toggleRowSelection(row: any): void {
+    const rowId = this.getRowId(row);
+    
+    if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+      Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+      return;
+    }
+  
+    if (!this.selectedRowsMap[rowId]) {
+      // Convertir a número y asegurar que no sea NaN
+      const saldo = Number(row.saldo) || 0;
+      const difc = Number(row.difc) || 0;
+      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
       
-      if (!this.selectedRowsMap[rowId]) {
-        // Calcular el monto inicial (saldo + difc)
-        const montoInicial = Number(row.saldo) + Number(row.difc);
+      this.selectedRowsMap[rowId] = {
+        selected: false,
+        data: row,
         
-        this.selectedRowsMap[rowId] = {
-          selected: true,
-          data: {
-            tipo_doc: row.tipo_doc,
-            numero: row.numero,
-            emision: row.emision,
-            entregado: row.entregado,
-            vence: row.vence,
-            dias: row.dias,
-            monto: row.monto,
-            impuesto: row.impuesto,
-            reteiva: row.reteiva,
-            saldo: row.saldo,
-            ppago: row.ppago || 0,
-            difc: row.difc,
-            cdolar: row.cdolar,
-            monto_dolar: row.monto / row.cdolar,
-            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
-            preabono: row.preabono || 0,
-            mfactura: row.mfactura
-          },
-          montoAPagar: montoInicial // Establecer el monto inicial
-        };
-      } else {
-        this.selectedRowsMap[rowId].selected = !this.selectedRowsMap[rowId].selected;
-      }
+        montoAPagar: 0
+      };
+    }
+  
+    const factura = this.selectedRowsMap[rowId];
+    
+    if (!factura.selected) {
+      // Convertir a número y asegurar que no sea NaN
+      const saldo = Number(factura.data.saldo) || 0;
+      const difc = Number(factura.data.difc) || 0;
+      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      const montoAPagar = parseFloat((Math.min(montoMaximo, this.saldoDisponible)).toFixed(2));
       
-      this.updatePagedPagos();
-      this.actualizarMonto();
-    } */
-      toggleRowSelection(row: any): void {
-        const rowId = this.getRowId(row);
-        
-        // Si no hay saldo disponible y no está seleccionada, no permitir selección
-        if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
-          Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
-          return;
-        }
-      
-        // Inicializar la factura si no existe
-        if (!this.selectedRowsMap[rowId]) {
-          const montoMaximo = Number(row.saldo) + Number(row.difc);
-          this.selectedRowsMap[rowId] = {
-            selected: false,
-            data: row,
-            montoAPagar: 0
-          };
-        }
-      
-        const factura = this.selectedRowsMap[rowId];
-        
-        if (!factura.selected) {
-          // Calcular cuánto podemos asignar a esta factura
-          const montoMaximo = factura.data.saldo + factura.data.difc;
-          const montoAPagar = Math.min(montoMaximo, this.saldoDisponible);
-          
-          factura.selected = true;
-          factura.montoAPagar = montoAPagar;
-          this.saldoDisponible -= montoAPagar;
-        } else {
-          // Al deseleccionar, devolver el monto EXACTO que estaba asignado
-          this.saldoDisponible += factura.montoAPagar; // Usar el valor existente, no recalcular
-          factura.selected = false;
-          factura.montoAPagar = 0;
-        }
-        
-        this.updatePagedPagos();
-        this.actualizarFacturasACancelar();
-        this.actualizarMonto();
-      }
+      factura.selected = true;
+      factura.montoAPagar = montoAPagar;
+      this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
+    } else {
+      this.saldoDisponible = parseFloat((this.saldoDisponible + Number(factura.montoAPagar || 0)).toFixed(2));
+      factura.selected = false;
+      factura.montoAPagar = 0;
+    }
+    
+    this.updatePagedPagos();
+    this.actualizarFacturasACancelar();
+    this.actualizarMonto();
+  }
 
+  // Verifica si la factura está pagada completamente
+  isFacturaPagadaCompleta(key: string): boolean {
+    const factura = this.selectedRowsMap[key];
+    const saldo = Number(factura.data.saldo) || 0;
+    const difc = Number(factura.data.difc) || 0;
+    const totalFactura = saldo + difc;
+    const montoAPagar = Number(factura.montoAPagar) || 0;
+    
+    return montoAPagar >= totalFactura - 0.01; // Margen de 0.01 por redondeo
+  }
+
+  // Calcula el porcentaje pagado de la factura
+  getPorcentajePagado(key: string): number {
+    const factura = this.selectedRowsMap[key];
+    const saldo = Number(factura.data.saldo) || 0;
+    const difc = Number(factura.data.difc) || 0;
+    const totalFactura = saldo + difc;
+    const montoAPagar = Number(factura.montoAPagar) || 0;
+    
+    if (totalFactura <= 0) return 100;
+    return Math.min(100, Math.round((montoAPagar / totalFactura) * 100));
+  }
 
     getSelectedKeys(): string[] {
       return Object.keys(this.selectedRowsMap).filter(key => this.selectedRowsMap[key].selected);
@@ -464,7 +453,7 @@ montoOriginalPagado: number = 0;
     validarMontoFactura(key: string): void {
       const factura = this.selectedRowsMap[key];
       const maxMonto = factura.data.saldo + factura.data.difc;
-      
+      factura.montoAPagar = parseFloat(factura.montoAPagar.toFixed(2));
       if (factura.montoAPagar! > maxMonto) {
         factura.montoAPagar = maxMonto;
         Swal.fire({
@@ -552,59 +541,29 @@ montoOriginalPagado: number = 0;
   montoAPagar: number = 0;
 
   //ACTUALIZA EL MONTO EN BASE A LAS FILAS SELECCIONADAS
-    /* actualizarMonto() {
-      let totalMonto = 0;
-      let totalMontod = 0;
+  actualizarMonto(): void {
+    let totalMonto = 0;
+    let totalMontod = 0;
+    
+    Object.keys(this.selectedRowsMap).forEach(key => {
+      if (!this.selectedRowsMap[key]?.selected) return;
       
-      try {
-        Object.keys(this.selectedRowsMap).forEach(key => {
-          if (!this.selectedRowsMap[key]?.selected) return;
-          
-          const factura = this.selectedRowsMap[key];
-          const monto = factura.montoAPagar ?? (factura.data.saldo + factura.data.difc);
-          const montod = monto / factura.data.cdolar;
-          
-          totalMonto += monto;
-          totalMontod += montod;
-        });
-        
-        this.montoACancelar = parseFloat(totalMonto.toFixed(2));
-        this.montoACancelard = parseFloat(totalMontod.toFixed(2));
-        this.montoAPagar = this.metodoPagoSeleccionado === 'VES' ? this.montoACancelar : this.montoACancelard;
-        
-      } catch (error) {
-        console.error('Error al calcular el monto:', error);
-        this.montoACancelar = 0;
-        this.montoACancelard = 0;
-        this.montoAPagar = 0;
-      }
-    } */
-
-
-      actualizarMonto(): void {
-        let totalMonto = 0;
-        let totalMontod = 0;
-        
-        Object.keys(this.selectedRowsMap).forEach(key => {
-          if (!this.selectedRowsMap[key]?.selected) return;
-          
-          const factura = this.selectedRowsMap[key];
-          const monto = factura.montoAPagar || 0;
-          const montod = this.metodoPagoSeleccionado === '$' ? monto / factura.data.cdolar : 0;
-          
-          totalMonto += monto;
-          totalMontod += montod;
-        });
-        
-        this.montoACancelar = parseFloat(totalMonto.toFixed(2));
-        this.montoACancelard = parseFloat(totalMontod.toFixed(2));
-        
-        // Validación de consistencia
-        if (totalMonto > this.montoOriginalPagado) {
-          console.error('Error: El monto aplicado excede el saldo original');
-          this.recalcularMontos();
-        }
-      }
+      const factura = this.selectedRowsMap[key];
+      const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
+      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((monto / factura.data.cdolar).toFixed(2)) : 0;      
+      totalMonto += monto;
+      totalMontod += montod;
+    });
+    
+    this.montoACancelar = parseFloat(totalMonto.toFixed(2));
+    this.montoACancelard = parseFloat(totalMontod.toFixed(2));
+    
+    // Validación de consistencia
+    if (totalMonto > this.montoOriginalPagado) {
+      console.error('Error: El monto aplicado excede el saldo original');
+      this.recalcularMontos();
+    }
+  }
 
 
   // Este método para validar el monto
