@@ -16,6 +16,9 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 import { HistorialpedComponent } from "../../components/historialped/historialped.component";
 
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-tomaexcel-page',
@@ -25,13 +28,18 @@ import { HistorialpedComponent } from "../../components/historialped/historialpe
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    HistorialpedComponent
+    HistorialpedComponent,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSidenav,
+    MatSidenavModule,
 ],
   templateUrl: './tomaexcel-page.component.html',
   styleUrl: './tomaexcel-page.component.scss'
 })
 export class TomaexcelPageComponent {
   loading: boolean = false;
+  toggleMenu = false;
 
   constructor(
     private authService: AuthService,
@@ -47,6 +55,14 @@ export class TomaexcelPageComponent {
   
 
   productosEnCarritoNumber: string = '';
+
+  openMenu(event: any) {
+    if (this.toggleMenu) {
+        this.toggleMenu = false;
+    } else {
+        this.toggleMenu = true;
+    }
+}
 
   onFileChange(event: any): void {
     const file = event.target.files[0];

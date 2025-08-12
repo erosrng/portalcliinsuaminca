@@ -159,7 +159,7 @@ export class HistorialPedidosComponent implements OnInit {
         next: (response) => {
           this.historialPedidos = response.data;
           this.isLoading = false;
-          this.calcularUnidadesHistorial()
+          //this.calcularUnidadesHistorial()
           this.calcularTotalHistorial()
           Swal.close();
         },
@@ -170,12 +170,12 @@ export class HistorialPedidosComponent implements OnInit {
       });
   }
 
-  calcularUnidadesHistorial(): void {
+  /* calcularUnidadesHistorial(): void {
     this.totalUnidades = 0;
     this.historialPedidos.forEach(pedido => {
       this.totalUnidades = Number(pedido.unidades) + this.totalUnidades;
     })
-  }
+  } */
 
   calcularTotalHistorial(): void {
     this.totalValorDolar = 0;

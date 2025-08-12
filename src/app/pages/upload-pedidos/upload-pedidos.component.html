@@ -145,7 +145,23 @@
                             <div class="row">
                                 <div class="col-12 mb-4 header-flex-btw">
                                     <h3>Pedidos cargados </h3>
-                                    <i class="fas fa-xmark icon-close" (click)="clearAll()" ></i>
+
+                                    <div class="col-3 offset-6">
+                                        <mat-form-field appearance="outline" style="width: 100% !important;">
+                                          <mat-label>Descuento Lineal (%)</mat-label>
+                                          <input
+                                            matInput
+                                            type="number"
+                                            [(ngModel)]="descuentoLineal"
+                                            (change)="aplicarDescuentoLineal($event)"
+                                            min="0"
+                                            max="100"
+                                            step="0.1"
+                                          >
+                                        </mat-form-field>
+                                      </div>
+
+                                    <i class="fas fa-xmark icon-close" title="Vaciar carrito" (click)="clearAll()" ></i>
                                 </div>
                             </div>
                             <mat-divider></mat-divider>
@@ -164,6 +180,7 @@
                                 </div>
                             </div> -->
                             <div class="row mb-5">
+
                                 <div class="col-12">
                                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 

@@ -29,6 +29,19 @@ import {AuthService} from "../../auth.service";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {event} from "jquery";
 
+interface PedidoItem {
+    Codigo: string;
+    COD_Proveedor?: string;
+    Descripcion: string;
+    Precio: string;
+    Oferta?: string;
+    Oferta1?: string;
+    Oferta2?: string;
+    Descuento: string;
+    Unidades: number;
+    PrecioOriginal?: string; // Agregamos esto para guardar el precio original
+  }
+
 
 @Component({
     selector: 'app-upload-pedidos',
@@ -88,6 +101,9 @@ export class UploadPedidosComponent implements OnInit {
     emailSendProveed: string | null = localStorage.getItem('emailprov');
     showloader = false;
 
+    descuentoLineal: number | 0 = 0;
+
+
     constructor(
         private proteoServices: ProteoService,
         private authService: AuthService,
@@ -135,6 +151,10 @@ export class UploadPedidosComponent implements OnInit {
             option.cliente.toLowerCase().includes(filterValue) // Agregamos la búsqueda por cliente
         );
     }
+
+    aplicarDescuentoLineal(event: any): void {
+            
+        }
 
     downloadFile(): void {
 
