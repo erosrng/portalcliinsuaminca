@@ -160,7 +160,7 @@ export class HistorialPedidosComponent implements OnInit {
           this.historialPedidos = response.data;
           this.isLoading = false;
           //this.calcularUnidadesHistorial()
-          this.calcularTotalHistorial()
+          //this.calcularTotalHistorial()
           Swal.close();
         },
         error: (error) => {
@@ -177,13 +177,13 @@ export class HistorialPedidosComponent implements OnInit {
     })
   } */
 
-  calcularTotalHistorial(): void {
+  /* calcularTotalHistorial(): void {
     this.totalValorDolar = 0;
     this.historialPedidos.forEach(pedido => {
       this.totalValorDolar =(pedido.totalg / this.authService.getTasa()) + this.totalValorDolar;
     })
   }
-
+ */
     cargarResumen() {
       const proveed = this.authService.getProveed();
       const token = this.authService.getToken();
@@ -202,7 +202,7 @@ export class HistorialPedidosComponent implements OnInit {
             if (response.data) { // La API ya devuelve un objeto, no un array
               this.totalPedidos = response.data.pedidos;
               this.totalUnidades = response.data.unidades;
-              this.totalValorDolar = parseFloat((response.data.totalg / this.authService.getTasa()).toFixed(2));
+              this.totalValorDolar = parseFloat((response.data.totalgd).toFixed(2));
             } else {
               this.totalPedidos = 0;
               this.totalUnidades = 0;
