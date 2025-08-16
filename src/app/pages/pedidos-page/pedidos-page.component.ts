@@ -527,7 +527,7 @@ sortData(sortField: string) {
 
   agg_pedido(product: any, type: string) {
     Swal.showLoading();
-    console.log(this.seclectElement)
+    //console.log(this.seclectElement)
     const cantidadInput = document.getElementById(`cana_${product.codigo}`) as HTMLInputElement;
     const cantidadInput2 = document.getElementById(`cana2_${product.codigo}`) as HTMLInputElement;
     let cantidad: number;
@@ -562,20 +562,33 @@ sortData(sortField: string) {
     this.portalcliLogicaService.agregarAlCarrito(product, cantidad, descprov, this.almacen).subscribe({
       next: (response: any) => {
         let mensaje = response.message;
+        
+        // Convertir mensaje a string si es un objeto
         if (typeof mensaje === 'object') {
           mensaje = JSON.stringify(mensaje);
         }
-        
+    
         Swal.fire({
-          text: mensaje == 'Producto Agregado' ? 'Producto agregado exitosamente!' : mensaje,
-          icon: mensaje == 'Producto Agregado' ? 'error' : 'success',
+          text: mensaje,
+          icon: response.result ? 'success' : 'error', // 'success' si result=true, 'error' si result=false
           showConfirmButton: false,
           timer: 3000,
           toast: true,
           position: 'bottom-end',
         });
+    
         this.revisarCarrito();
       },
+      error: (err) => {
+        Swal.fire({
+          text: 'Error al agregar el producto',
+          icon: 'error',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+          position: 'bottom-end',
+        });
+      }
     });
   }
 

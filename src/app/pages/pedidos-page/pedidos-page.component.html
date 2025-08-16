@@ -29,21 +29,8 @@
                                 </ul>
                             </div>
                             <div class="quantity">
-<!--                                <input type="text" id="cana2_{{selectedProduct?.codigo}}" [(ngModel)]="cantAddModal"  placeholder="Cant..." class="quantity-input">-->
-<!--                                <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>-->
                             </div>
-                            <!-- <button class="carrito__checkout-button">¡Agregar al carrito!</button> -->
 
-<!--                            <button -->
-<!--                              [ngClass]="{ -->
-<!--                                'carrito__checkout-button': !productosEnCarritoCodigos.includes(selectedProduct?.codigo),-->
-<!--                                'carrito__checkout-button-agg': productosEnCarritoCodigos.includes(selectedProduct?.codigo)-->
-<!--                              }" -->
-<!--                              (click)="agg_pedido(seclectElement, 'MODAL')"-->
-<!--                            >-->
-<!--                              <span *ngIf="!productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Agregar al carrito</span>-->
-<!--                              <span *ngIf="productosEnCarritoCodigos.includes(selectedProduct?.codigo)">Producto agregado</span>-->
-<!--                            </button>-->
                         </div>
                     </div>
                 </div>
@@ -75,7 +62,7 @@
                 <div class="col-5 d-center">
                   <div class="">
                     <h4 class="text-blue">Toma de Pedidos</h4>
-                    <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}}</h3>
+                    <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}} - Almacén: <span class="text-blue">({{clienteData?.ubides ?? ''}})</span>  </h3>
                     <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
                   </div>
 
@@ -131,16 +118,15 @@
                   </form>
                 </div>
                 
-                <div class="col-4">
+                <!-- <div class="col-4">
                     <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Seleccione un almacen</mat-label>
                     <mat-select [(ngModel)]="almacen" (selectionChange)="applyFilters()">
                       <mat-option value="0001">Maturin</mat-option>
                       <mat-option value="0002">Guarenas</mat-option>
-                      <!--<mat-option value="existen">Existencia</mat-option>-->
                     </mat-select>
                   </mat-form-field>
-                </div>
+                </div> -->
                 
                 <div class="col-4">
                   <mat-form-field appearance="outline" class="w-100 h-custom">
@@ -151,14 +137,14 @@
                 </div>
               </div>
 
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-12">
                   <span>Alamacen Seleccionado: 
                     <span *ngIf="almacen === '0001'">Maturin (0001)</span>
                     <span *ngIf="almacen === '0002'">Guarenas (0002)</span>
                   </span>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
 
@@ -246,17 +232,20 @@
                   <ng-container matColumnDef="vence">
                         <th mat-header-cell *matHeaderCellDef > Fecha de vencimiento </th>
                         <td mat-cell *matCellDef="let element">
-                            <span>  {{element.vence}} </span>
+                            <span>  {{element.vence ?? 'N/A'}} </span>
                         </td>
                     </ng-container>
 
                     <ng-container matColumnDef="existen">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header="existen" (click)="sortData('existen')" class="w-15"> Disponibles </th>
                         <td mat-cell *matCellDef="let element">
+                            <span *ngIf="element.existenmat > 0" class="green-label">Maturin:  {{element.existenmat}} </span>
+                            <br>
+                            <span *ngIf="element.existenmat <= 0" class="red-label"> Maturin: 0 </span>
 
-                            <span *ngIf="parseInt(element.existen) > 0" class="green-label">  {{element.existen}} </span>
-                            <span *ngIf="parseInt(element.existen) <= 0" class="red-label">  0 </span>
-
+                            <span *ngIf="element.existengua > 0" class="green-label">Guarenas:  {{element.existengua}} </span>
+                            <br>
+                            <span *ngIf="element.existengua <= 0" class="red-label">  Guarenas: 0 </span>
 
                         </td>
                     </ng-container>
@@ -310,7 +299,7 @@
                    <ng-container matColumnDef="agregar">
                     <th mat-header-cell *matHeaderCellDef class="border-top-right"> Agregar </th>
                     <td mat-cell *matCellDef="let element">
-                        <div  *ngIf="parseInt(element.existen) > 0">
+                        <div>
                             <button [ngClass]="{
                           'btn-add': !productosEnCarritoCodigos.includes(element.codigo),
                           'btn-agg': productosEnCarritoCodigos.includes(element.codigo),

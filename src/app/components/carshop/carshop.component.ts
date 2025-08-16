@@ -34,7 +34,7 @@ export interface Product {
     totald: number;
     cant: string;
     descprov: number;
-    descu: number;
+    //descu: number;
     id_pedido: number;
     codigoa: string;
 }
@@ -80,7 +80,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     productscar: Product[] = [];
     dataSource = new MatTableDataSource<Product>(this.productscar);
     displayedColumns: string[] =
-        ['img', 'descrip', 'preciosinivad', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov','descu', 'actions']; // Ajusta las columnas según tus necesidades
+        ['img', 'descrip', 'preciosinivad', 'ivad', 'preciosiniva', 'ivabs',  'totalbs', 'totald', 'cant', 'descprov','actions']; 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) sort!: MatSort;
 
@@ -100,6 +100,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     emailSendUser = ''
     totalAmount = 0
     totalAmountBS = 0
+    totalAmountD = 0
 
     constructor(
         private route: Router,
@@ -227,7 +228,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                 this.productscar.forEach(product => {
                     aux = aux + Number(product.cant)
                     this.totalAmount = this.totalAmount + this.recalculadescud(product)
-                    this.totalAmountBS = this.totalAmountBS + this.recalculadescubs(product)
+                    this.totalAmountBS = this.totalAmountBS + this.recalculadescubs(product)*aux;
+                    this.totalAmountD = this.totalAmountD + this.recalculadescud(product)*aux;
                 })
                 //console.log('TOTAL UNIDADES: ', aux)
                 this.dataSource.paginator = this.paginator;
@@ -419,6 +421,14 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
+                    title: 'Procesando pedido...',
+                    html: 'Por favor espere un momento',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                /* Swal.fire({
                     title: 'Ingrese una observación para el pedido',
                     input: 'textarea',
                     inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
@@ -434,7 +444,9 @@ export class CarshopComponent implements OnInit, AfterViewInit {
                     preConfirm: (observacion) => {
                         this.enviarPedidoConObservacion(apiUrl, formData, headers, observacion);
                     }
-                });
+                }); */
+                this.generar_pedido_proteo(apiUrl, formData, headers);
+
             }
         });
     }
@@ -454,27 +466,44 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     generar_pedido_proteo(apiUrl: any, formData: any, headers: any): void {
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
+                this.isLoading = false;
+                this.ocultarLoader();
+                
                 if (response.result) {
-                    this.ocultarLoader();
-                    this.revisarCarrito();
-                    Swal.fire(response.message, '', 'success');
-                    this.productscar = [];
-                    this.dataSource.data = this.productscar;
-                    this.isLoading = false;
-                    Swal.close()
+                    // Éxito
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: response.message || 'Pedido enviado correctamente',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        this.productscar = [];
+                        this.dataSource.data = this.productscar;
+                        this.revisarCarrito();
+                    });
                 } else {
-                    Swal.fire(response.message, '', 'error');
-                    this.isLoading = false;
-                    Swal.close()
+                    // Error del servidor (result: false)
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message || 'Ocurrió un error al procesar el pedido',
+                        icon: 'error',
+                        confirmButtonText: 'Entendido'
+                    });
                 }
             },
             error: (error) => {
                 this.isLoading = false;
-                Swal.close()
                 this.ocultarLoader();
-                Swal.fire(error, '', 'error');
+                
+                // Error de conexión/API
+                Swal.fire({
+                    title: 'Error de conexión',
+                    text: error.message || 'No se pudo conectar con el servidor',
+                    icon: 'error',
+                    confirmButtonText: 'Reintentar'
+                });
                 console.error('Error de la API:', error);
-            },
+            }
         });
     }
 
@@ -738,65 +767,10 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         //console.log([this.sumabs.toFixed(2),this.sumausd.toFixed(2)]);
     }
 
-    /* recalculadescud(product: any): number {
-        let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
-        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
-    
-        if (!isNaN(precio)) {
-            let precioConDescuentoProveedor = precio;
-    
-            // Aplicar descuento del proveedor si es válido y mayor que cero
-            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
-                const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
-                precioConDescuentoProveedor -= descuentoProveedor;
-            }
-    
-            let precioFinal = precioConDescuentoProveedor;
-    
-            // Aplicar el otro descuento si es válido y mayor que cero
-            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
-                const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
-                precioFinal -= otroDescuento;
-            }
-    
-            return precioFinal;
-        } else {
-            return precio;
-        }
-    }
 
-    recalculadescubs(product: any): number {
-        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
-        let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
-
-        if (!isNaN(precio)) {
-            let precioConDescuentoProveedor = precio;
-
-            // Aplicar descuento del proveedor si es válido y mayor que cero
-            if (!isNaN(descuentoProveedorPorcentaje) && descuentoProveedorPorcentaje > 0) {
-                const descuentoProveedor = (precio * descuentoProveedorPorcentaje) / 100;
-                precioConDescuentoProveedor -= descuentoProveedor;
-            }
-
-            let precioFinal = precioConDescuentoProveedor;
-
-            // Aplicar el otro descuento si es válido y mayor que cero
-            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
-                const otroDescuento = (precioConDescuentoProveedor * otroDescuentoPorcentaje) / 100;
-                precioFinal -= otroDescuento;
-            }
-
-            return precioFinal;
-        } else {
-            return precio;
-        }
-    }
- */
 
     recalculadescud(product: any): number {
-        let precio = parseFloat(String(product.preciosinivad).replace(',', '.'));
+        let precio = parseFloat(String(product.opreciod));
         let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
         let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.'));
         let descuentoFichaPorcentaje = parseFloat(String(product.ficha).replace(',', '.')); // Descuento de ficha
@@ -811,7 +785,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             }
     
             // Aplicar descuento de ficha si es válido y mayor que cero
-            if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
+            /* if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
                 const descuentoFicha = (precioConDescuento * descuentoFichaPorcentaje) / 100;
                 precioConDescuento -= descuentoFicha;
             }
@@ -820,7 +794,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
                 const otroDescuento = (precioConDescuento * otroDescuentoPorcentaje) / 100;
                 precioConDescuento -= otroDescuento;
-            }
+            } */
     
             return precioConDescuento;
         } else {
@@ -829,10 +803,10 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     }
 
     recalculadescubs(product: any): number {
-        let precio = parseFloat(String(product.preciosiniva).replace(',', '.'));
+        let precio = parseFloat(String(product.oprecio));
         let descuentoProveedorPorcentaje = parseFloat(String(product.descprov).replace(',', '.'));
-        let descuentoFichaPorcentaje = parseFloat(String(product.ficha).replace(',', '.')); // Descuento de ficha
-        let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
+        //let descuentoFichaPorcentaje = parseFloat(String(product.ficha).replace(',', '.')); // Descuento de ficha
+        //let otroDescuentoPorcentaje = parseFloat(String(product.descu).replace(',', '.')); // Nuevo descuento
     
         if (!isNaN(precio)) {
             let precioConDescuento = precio;
@@ -844,16 +818,16 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             }
     
             // Aplicar descuento de ficha si es válido y mayor que cero
-            if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
+            /* if (!isNaN(descuentoFichaPorcentaje) && descuentoFichaPorcentaje > 0) {
                 const descuentoFicha = (precioConDescuento * descuentoFichaPorcentaje) / 100;
                 precioConDescuento -= descuentoFicha;
-            }
+            } */
     
             // Aplicar el otro descuento si es válido y mayor que cero
-            if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
+            /* if (!isNaN(otroDescuentoPorcentaje) && otroDescuentoPorcentaje > 0) {
                 const otroDescuento = (precioConDescuento * otroDescuentoPorcentaje) / 100;
                 precioConDescuento -= otroDescuento;
-            }
+            } */
     
             return precioConDescuento;
         } else {
@@ -922,6 +896,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         formData.append('id', idPedido);
         formData.append('codigo', codigo);
         formData.append('cantidad', cantidad.toString());
+        let aux = 0
 
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
             next: (response: any) => {
