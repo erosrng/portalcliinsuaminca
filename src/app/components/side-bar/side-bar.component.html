@@ -48,6 +48,13 @@
                   <i class="fas fa-circle-nodes"></i><span *ngIf="isMenuOpen">Ventas del usuario</span>
                 </a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajareporteinv()">
+                    <i class="fas fa-circle-nodes"></i>
+                    <span *ngIf="isMenuOpen">Inventario</span>
+                    <span class="badge bg-danger ms-2" *ngIf="isMenuOpen">NUEVO!</span>
+                </a>
+            </li> 
             </ul>
           </div>
         </li>
