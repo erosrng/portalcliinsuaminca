@@ -392,7 +392,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URLINTER}portalcli/inventariocli`;
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
@@ -1374,7 +1374,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URLINTER}portalcli/inventariocli`;
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
 
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {

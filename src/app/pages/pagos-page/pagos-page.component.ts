@@ -368,7 +368,6 @@ montoOriginalPagado: number = 0;
   saveSelected() {
     const selectedRows = Object.keys(this.selectedRowsMap)
       .filter(key => this.selectedRowsMap[key]);
-    console.log(selectedRows);
   }
 
   //Guarda al momento de seleccionar fila
@@ -380,11 +379,11 @@ montoOriginalPagado: number = 0;
   toggleRowSelection(row: any): void {
     const rowId = this.getRowId(row);
     
-    if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+    /* if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
       Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
       return;
     }
-  
+   */
     if (!this.selectedRowsMap[rowId]) {
       // Convertir a número y asegurar que no sea NaN
       const saldo = Number(row.saldo) || 0;
@@ -405,9 +404,10 @@ montoOriginalPagado: number = 0;
       // Convertir a número y asegurar que no sea NaN
       const saldo = Number(factura.data.saldo) || 0;
       const difc = Number(factura.data.difc) || 0;
-      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
-      const montoAPagar = parseFloat((Math.min(montoMaximo, this.saldoDisponible)).toFixed(2));
-      
+      //const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      //const montoAPagar = parseFloat((Math.min(montoMaximo, this.saldoDisponible)).toFixed(2));
+      const montoAPagar = parseFloat((saldo + difc).toFixed(2));
+
       factura.selected = true;
       factura.montoAPagar = montoAPagar;
       this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
@@ -416,7 +416,7 @@ montoOriginalPagado: number = 0;
       factura.selected = false;
       factura.montoAPagar = 0;
     }
-    
+
     this.updatePagedPagos();
     this.actualizarFacturasACancelar();
     this.actualizarMonto();
@@ -544,11 +544,13 @@ montoOriginalPagado: number = 0;
   actualizarMonto(): void {
     let totalMonto = 0;
     let totalMontod = 0;
-    
+
     Object.keys(this.selectedRowsMap).forEach(key => {
       if (!this.selectedRowsMap[key]?.selected) return;
-      
+
       const factura = this.selectedRowsMap[key];
+      console.log(factura)
+
       const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
       const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((monto / factura.data.cdolar).toFixed(2)) : 0;      
       totalMonto += monto;
@@ -557,12 +559,11 @@ montoOriginalPagado: number = 0;
     
     this.montoACancelar = parseFloat(totalMonto.toFixed(2));
     this.montoACancelard = parseFloat(totalMontod.toFixed(2));
-    
     // Validación de consistencia
-    if (totalMonto > this.montoOriginalPagado) {
+    /* if (totalMonto > this.montoOriginalPagado) {
       console.error('Error: El monto aplicado excede el saldo original');
       this.recalcularMontos();
-    }
+    } */
   }
 
 
@@ -629,146 +630,6 @@ onFileSelected(event: Event): void {
 }
 
 //ENVIA PAGO
-/* enviapago() {
-  this.isLoading = true; 
-  const codCli = this.authService.getCodCli();
-
-  // Validar datos obligatorios
-  if (!this.numeroReferencia || !this.montoACancelar) {
-    Swal.fire('Error', 'Por favor complete todos los campos obligatorios', 'error');
-    this.isLoading = false;
-    return;
-  }
-
-  // Obtener facturas seleccionadas con sus montos personalizados
-  const facturasSeleccionadas = Object.keys(this.selectedRowsMap)
-    .filter(key => this.selectedRowsMap[key]?.selected)
-    .map(key => {
-      const facturaData = this.selectedRowsMap[key].data;
-      const montoAPagar = this.selectedRowsMap[key].montoAPagar ?? (facturaData.saldo + facturaData.difc);
-      
-      return {
-        ...facturaData,
-        montoAPagar: montoAPagar
-      };
-    });
-
-  // Validar que haya facturas seleccionadas
-  if (facturasSeleccionadas.length === 0) {
-    Swal.fire('Error', 'Debe seleccionar al menos una factura', 'error');
-    this.isLoading = false;
-    return;
-  }
-
-  const formData = new FormData();
-  const token = this.authService.getToken();
-
-  // Datos generales del pago
-  formData.append('codCli', codCli ?? '');
-  formData.append('descripcion', this.facturasACancelar);
-  formData.append('referencia', this.numeroReferencia);
-  formData.append('monto', this.montoACancelar.toString());
-  
-  // Datos del banco si existe cuenta seleccionada
-  if (this.cuentaSeleccionada) {
-    formData.append('codigo_banco', this.cuentaSeleccionada.codbanc);
-    formData.append('banco', this.cuentaSeleccionada.banco);
-    formData.append('cuenta', this.cuentaSeleccionada.numcuent);
-  }
-
-  // Tipo de pago y moneda
-  formData.append('tipo_pago', this.tipoPagoSeleccionado);
-  formData.append('moneda', this.metodoPagoSeleccionado);
-
-  // Agregar el detalle de cada factura con el monto específico
-  facturasSeleccionadas.forEach((factura, index) => {
-    formData.append(`facturas[${index}][tipo_doc]`, factura.tipo_doc);
-    formData.append(`facturas[${index}][numero]`, factura.numero);
-    formData.append(`facturas[${index}][monto]`, factura.monto.toString()); // Monto total de la factura
-    formData.append(`facturas[${index}][abono]`, factura.montoAPagar.toString()); // Monto específico a pagar
-    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
-    formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
-    formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
-    formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString() || '0');
-  });
-
-  const headers = new HttpHeaders({
-    'X-Auth-Token': `${token}`
-  });
-  
-  const apiUrl = `${API_URL}portalcli/enviapago`;
-
-  // Preparamos el resumen para la alerta
-  const simboloMoneda = this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ';
-  const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  
-  const detallesFacturas = facturasSeleccionadas.map(f => {
-    const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return `
-      <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
-        <span>${f.tipo_doc}-${f.numero}</span>
-        <span>${montoFormateado}</span>
-      </div>
-    `;
-  }).join('');
-
-  Swal.fire({
-    title: '¿Desea enviar el pago?',
-    html: `
-      <div class="text-left">
-        <p>Total a pagar: <strong>${totalFormateado}</strong></p>
-        <p>Facturas seleccionadas: ${facturasSeleccionadas.length}</p>
-        <div class="mt-2" style="max-height: 200px; overflow-y: auto;">
-          ${detallesFacturas}
-        </div>
-      </div>
-    `,
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: 'Confirmar pago',
-    cancelButtonText: 'Cancelar',
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.showLoading();
-      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-        next: (response: any) => {
-          if (response.status) {
-            const resumenPago = `
-              <p>${response.mensaje}</p>
-              <div class="mt-3 text-left">
-                <p><strong>Referencia:</strong> ${this.numeroReferencia}</p>
-                <p><strong>Total pagado:</strong> ${totalFormateado}</p>
-              </div>
-            `;
-            
-            Swal.fire({
-              title: 'Pago registrado',
-              html: resumenPago,
-              icon: 'success'
-            });
-            
-            this.isLoading = false;
-            this.resetearCampos();
-            this.fetchPagos();
-          } else {
-            Swal.fire('Error', response.mensaje || 'Ocurrió un error al procesar el pago', 'error');
-            this.isLoading = false;
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          Swal.fire('Error', 'Ocurrió un error al enviar el pago', 'error');
-          console.error('Error de la API:', error);
-        },
-      });
-    } else {
-      this.isLoading = false;
-    }
-  });
-} */
-
   async enviapago() {
     this.isLoading = true; 
     const codCli = this.authService.getCodCli();

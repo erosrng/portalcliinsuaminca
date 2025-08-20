@@ -125,7 +125,7 @@
                         </div>
                 
                         <!-- Monto a Cancelar - Destacado -->
-                        <div class="form-group amount-group" *ngIf="montoACancelar">
+                        <div class="form-group amount-group" >
                           <label class="form-label">Total Pagado</label>
                           <div class="amount-display"  *ngIf="metodoPagoSeleccionado == 'VES'">
                             {{formatearMonto(montoACancelar)}}
@@ -140,7 +140,7 @@
                         </div>
 
                         <!-- Indicador de division de montos -->
-                        <div class="form-group amount-group">
+                        <!-- <div class="form-group amount-group">
                           <h3 class="ofertas-title pagos__title">Monto pagado</h3>
                           <input type="number" class="form-control" 
                                  [(ngModel)]="montoPagado" 
@@ -152,7 +152,6 @@
                           
                                  <div class="saldo-info">
                                   <div *ngIf="montoPagado > 0" class="d-flex flex-column gap-2">
-                                    <!-- Barra de progreso -->
                                     <div class="progress" style="height: 10px;">
                                       <div class="progress-bar bg-success" 
                                            [style.width]="(montoACancelar / montoPagado * 100) + '%'"
@@ -163,7 +162,6 @@
                                       </div>
                                     </div>
                                 
-                                    <!-- Monto aplicado -->
                                     <div *ngIf="montoACancelar > 0" class="saldo-aplicado d-flex align-items-center">
                                       <span class="badge bg-success me-2">
                                         <i class="fas fa-check-circle me-1"></i>
@@ -177,7 +175,6 @@
                                       </span>
                                     </div>
                                 
-                                    <!-- Saldo disponible -->
                                     <div class="saldo-disponible d-flex align-items-center">
                                       <span class="badge bg-primary me-2">
                                         <i class="fas fa-coins me-1"></i>
@@ -191,7 +188,6 @@
                                       </span>
                                     </div>
                                 
-                                    <!-- Total pagado -->
                                     <div class="saldo-total d-flex align-items-center mt-2 pt-2 border-top">
                                       <span class="badge bg-dark me-2">
                                         <i class="fas fa-wallet me-1"></i>
@@ -205,115 +201,70 @@
                                 </div>
                           
                           <small class="amount-note">Ingrese el monto total que va a pagar</small>
-                        </div>
-
-                        <!-- Sección de montos por factura -->
+                        </div> -->
+                                  
+                        <!-- Indicadores factura a factura -->
                         <!-- <div *ngIf="selectedCount > 0" class="selected-invoices-section mt-4">
                           <h3 class="ofertas-title pagos__title">Montos pagado por factura</h3>
 
-                          <div *ngFor="let key of getSelectedKeys()" class="invoice-payment-row mb-3 p-3 bg-light rounded">
+                          <div *ngFor="let key of getSelectedKeys()" class="invoice-payment-row mb-3 p-3 rounded" 
+                              [ngClass]="{
+                                'border-success bg-success-light': isFacturaPagadaCompleta(key),
+                                'border-warning bg-warning-light': !isFacturaPagadaCompleta(key)
+                              }">
                             <div class="d-flex align-items-center justify-content-between">
                               <div class="invoice-info">
-                                <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
-                                <div class="text-muted small">
-                                  Saldo: {{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}
+                                <div class="d-flex align-items-center">
+                                  <span class="badge me-2" [ngClass]="{
+                                        'bg-success': isFacturaPagadaCompleta(key),
+                                        'bg-warning': !isFacturaPagadaCompleta(key)
+                                      }">
+                                    <i class="fas" [ngClass]="{
+                                          'fa-check-circle': isFacturaPagadaCompleta(key),
+                                          'fa-exclamation-circle': !isFacturaPagadaCompleta(key)
+                                        }"></i>
+                                  </span>
+                                  
+                                  <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
+                                </div>
+                                
+                                <div class="d-flex flex-wrap gap-3 mt-2">
+                                  <div class="saldo-info">
+                                    <span class="text-muted small">Saldo total:</span>
+                                    <span class="fw-bold">{{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
+                                  </div>
+                                  
+                                  <div class="aplicado-info">
+                                    <span class="text-muted small">Aplicado:</span>
+                                    <span class="fw-bold text-success">{{ selectedRowsMap[key].montoAPagar | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
+                                  </div>
+                                  
+                                  <div *ngIf="!isFacturaPagadaCompleta(key)" class="pendiente-info">
+                                    <span class="text-muted small">Pendiente:</span>
+                                    <span class="fw-bold text-danger">
+                                      {{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].montoAPagar) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}
+                                    </span>
+                                  </div>
+                                  
+                                  <div class="w-100 mt-1">
+                                    <div class="progress" style="height: 6px;">
+                                      <div class="progress-bar" 
+                                          [ngClass]="{
+                                            'bg-success': isFacturaPagadaCompleta(key),
+                                            'bg-warning': !isFacturaPagadaCompleta(key)
+                                          }"
+                                          [style.width]="getPorcentajePagado(key) + '%'">
+                                      </div>
+                                    </div>
+                                    <small class="text-muted">{{ getPorcentajePagado(key) }}% pagado</small>
+                                  </div>
                                 </div>
                               </div>
                               
-                              <div class="invoice-amount-input">
-                                <input type="number" 
-                                      class="form-control"
-                                      [(ngModel)]="selectedRowsMap[key].montoAPagar"
-                                      [name]="'montoFactura_' + key"
-                                      [min]="0.01"
-                                      [max]="selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc"
-                                      step="0.01"
-                                      (change)="validarMontoFactura(key)"
-                                      placeholder="Monto a pagar"
-                                      required>
-                              </div>
+
                             </div>
                           </div>
-                        </div>
- -->
-                                  
- <div *ngIf="selectedCount > 0" class="selected-invoices-section mt-4">
-  <h3 class="ofertas-title pagos__title">Montos pagado por factura</h3>
-
-  <div *ngFor="let key of getSelectedKeys()" class="invoice-payment-row mb-3 p-3 rounded" 
-       [ngClass]="{
-         'border-success bg-success-light': isFacturaPagadaCompleta(key),
-         'border-warning bg-warning-light': !isFacturaPagadaCompleta(key)
-       }">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="invoice-info">
-        <div class="d-flex align-items-center">
-          <!-- Ícono de estado -->
-          <span class="badge me-2" [ngClass]="{
-                'bg-success': isFacturaPagadaCompleta(key),
-                'bg-warning': !isFacturaPagadaCompleta(key)
-              }">
-            <i class="fas" [ngClass]="{
-                  'fa-check-circle': isFacturaPagadaCompleta(key),
-                  'fa-exclamation-circle': !isFacturaPagadaCompleta(key)
-                }"></i>
-          </span>
-          
-          <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
-        </div>
-        
-        <div class="d-flex flex-wrap gap-3 mt-2">
-          <!-- Saldo total -->
-          <div class="saldo-info">
-            <span class="text-muted small">Saldo total:</span>
-            <span class="fw-bold">{{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
-          </div>
-          
-          <!-- Monto aplicado -->
-          <div class="aplicado-info">
-            <span class="text-muted small">Aplicado:</span>
-            <span class="fw-bold text-success">{{ selectedRowsMap[key].montoAPagar | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
-          </div>
-          
-          <!-- Saldo pendiente (solo muestra si hay) -->
-          <div *ngIf="!isFacturaPagadaCompleta(key)" class="pendiente-info">
-            <span class="text-muted small">Pendiente:</span>
-            <span class="fw-bold text-danger">
-              {{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].montoAPagar) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}
-            </span>
-          </div>
-          
-          <!-- Barra de progreso pequeña -->
-          <div class="w-100 mt-1">
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar" 
-                   [ngClass]="{
-                     'bg-success': isFacturaPagadaCompleta(key),
-                     'bg-warning': !isFacturaPagadaCompleta(key)
-                   }"
-                   [style.width]="getPorcentajePagado(key) + '%'">
-              </div>
-            </div>
-            <small class="text-muted">{{ getPorcentajePagado(key) }}% pagado</small>
-          </div>
-        </div>
-      </div>
-      
-      <!-- <div class="invoice-amount-input">
-        <input type="number" 
-              class="form-control"
-              [(ngModel)]="selectedRowsMap[key].montoAPagar"
-              [name]="'montoFactura_' + key"
-              [min]="0.01"
-              [max]="selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc"
-              step="0.01"
-              (change)="validarMontoFactura(key)"
-              placeholder="Monto a pagar"
-              required>
-      </div> -->
-    </div>
-  </div>
-</div>
+                        </div> -->
 
                         <!-- Datos de Transferencia -->
                         <div class="form-row">
@@ -368,8 +319,33 @@
                   <h1 class="ofertas-title pagos__title">Facturas a cancelar</h1>
 
                     <!-- Información del Cliente -->
-                    <div class="card client-info-card">
-                      <app-clicard></app-clicard>
+                    <div class="container-fluid">
+                      <div class="row align-items-center">
+                        <!-- Tarjetas pequeñas -->
+                        <div class="col-md-4">
+                          <div class="card mb-2">
+                            <div class="card-body py-2">
+                              <h4 class="card-title text-primary">Días Crédito</h4>
+
+                              <p class="mb-0 fw-bold">{{(portalcliLogicaService.clienteData$ | async)?.formap}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                          <div class="card mb-2">
+                            <div class="card-body py-2">
+                              <h4 class="card-title text-primary">Monto Factura</h4>
+                              <p class="mb-0 fw-bold">{{(portalcliLogicaService.clienteData$ | async)?.mfactura}}</p>
+                            </div>
+                          </div>
+                        </div>
+                    
+                        <!-- Componente clicard al lado -->
+                        <div class="col-md-4">
+                          <app-clicard></app-clicard>
+                        </div>
+                      </div>
                     </div>
 
                     <div class="container-fluid w-100 mt-4">
@@ -455,7 +431,7 @@
                                 <mat-checkbox 
                                   [(ngModel)]="row.selected" 
                                   (change)="toggleRowSelection(row)"
-                                  [disabled]="saldoDisponible <= 0 && !row.selected">
+                                  > <!-- [disabled]="saldoDisponible <= 0 && !row.selected"  -->
                                 </mat-checkbox>
                               </td>
                               <td class="align-middle">{{ row.tipo_doc }}-{{ row.numero }}</td>
