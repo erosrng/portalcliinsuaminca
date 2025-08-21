@@ -20,8 +20,8 @@ export const PROTEO_URL_ALONE = 'http://10.0.100.2/practica/';
 //PRACTICA SOLO PRUEBAS LOCALES
 export const API_URLINTER = 'http://10.0.100.2/practica/api/';
 export const URLSOLAINTER = 'http://10.0.100.2/';
-export const PROTEO_URL_ALONEINTER = 'http://10.0.100.2/practica/'; 
- */
+export const PROTEO_URL_ALONEINTER = 'http://10.0.100.2/practica/';  */
+
 //URL PRACTICA EXTERNA
 
 /* export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/';

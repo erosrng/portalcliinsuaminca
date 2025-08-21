@@ -167,55 +167,27 @@
                       <div class="publi">
                           <!-- <img src="/assets/images/banner3.png" class="banner-insua" alt="..."> -->
 
-                           <!-- PRIMER CARRUSEL -->                         
-                        <div class="carrusel1__container main-carousel" style="margin-right: 1rem;">
-                            <div id="carouselInv" class="carousel" data-bs-ride="carousel" data-bs-interval="3000">
+                            <!-- PRIMER CARRUSEL -->                         
+                            <div class="carrusel1__container main-carousel" style="margin-right: 1rem;">
+                                <div id="carouselInv" class="carousel" data-bs-ride="carousel" data-bs-interval="3000">
                                 <div class="carousel-indicators">
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="3" aria-label="Slide 4"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="4" aria-label="Slide 5"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="5" aria-label="Slide 6"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="6" aria-label="Slide 7"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="7" aria-label="Slide 8"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="8" aria-label="Slide 9"></button>
-                                    <button type="button" data-bs-target="#carouselInv" data-bs-slide-to="9" aria-label="Slide 10"></button>
+                                    <button *ngFor="let image of shuffledInvImages; let i = index" 
+                                            type="button" 
+                                            data-bs-target="#carouselInv" 
+                                            [attr.data-bs-slide-to]="i" 
+                                            [class.active]="i === 0" 
+                                            [attr.aria-label]="'Slide ' + (i + 1)">
+                                    </button>
                                 </div>
-                        
+                            
                                 <div class="carousel-inner">
-                                    <div class="carousel-item active">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg" class="d-block w-100 main-img" alt="Banner 1">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg" class="d-block w-100 main-img" alt="Banner 2">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg" class="d-block w-100 main-img" alt="Banner 3">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg" class="d-block w-100 main-img" alt="Banner 4">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg" class="d-block w-100 main-img" alt="Banner 5">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png" class="d-block w-100 main-img" alt="Banner 6">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png" class="d-block w-100 main-img" alt="Banner 7">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png" class="d-block w-100 main-img" alt="Banner 8">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png" class="d-block w-100 main-img" alt="Banner 9">
-                                    </div>
-                                    <div class="carousel-item">
-                                        <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg" class="d-block w-100 main-img" alt="Banner 10">
+                                    <div *ngFor="let image of shuffledInvImages; let i = index" 
+                                        class="carousel-item" 
+                                        [class.active]="i === 0">
+                                    <img [src]="image.src" class="d-block w-100 main-img" [alt]="image.alt">
                                     </div>
                                 </div>
-                        
+                            
                                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselInv" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
@@ -224,81 +196,38 @@
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
-                            </div>
-                        </div>
-
-                        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 37% !important;">
-                            <div class="carousel-inner">
-                                <!-- Banner 10 (activo) -->
-                                <div class="carousel-item active">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner10.jpg" class="d-block w-100" alt="Banner 10">
-                                </div>
-                                
-                                <!-- Banner 11 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner11.jpg" class="d-block w-100" alt="Banner 11">
-                                </div>
-                                
-                                <!-- Banner 12 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner12.jpg" class="d-block w-100" alt="Banner 12">
-                                </div>
-                                
-                                <!-- Banner 13 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner13.jpg" class="d-block w-100" alt="Banner 13">
-                                </div>
-                                
-                                <!-- Banner 15 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner15.jpg" class="d-block w-100" alt="Banner 15">
-                                </div>
-                                
-                                <!-- Banner 16 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner16.jpg" class="d-block w-100" alt="Banner 16">
-                                </div>
-                                
-                                <!-- Banner 17 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner17.png" class="d-block w-100" alt="Banner 17">
-                                </div>
-                                
-                                <!-- Banner 18 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner18.png" class="d-block w-100" alt="Banner 18">
-                                </div>
-                                
-                                <!-- Banner 19 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner19.png" class="d-block w-100" alt="Banner 19">
-                                </div>
-                                
-                                <!-- Banner 20 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner20.png" class="d-block w-100" alt="Banner 20">
-                                </div>
-                                
-                                <!-- Banner 21 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner21.jpg" class="d-block w-100" alt="Banner 21">
-                                </div>
-                                
-                                <!-- Banner 22 -->
-                                <div class="carousel-item">
-                                    <img src="https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner22.jpg" class="d-block w-100" alt="Banner 22">
                                 </div>
                             </div>
                             
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <!-- SEGUNDO CARRUSEL -->
+                            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 37% !important;">
+                                <div class="carousel-indicators">
+                                <button *ngFor="let image of shuffledExampleImages; let i = index" 
+                                        type="button" 
+                                        data-bs-target="#carouselExample" 
+                                        [attr.data-bs-slide-to]="i" 
+                                        [class.active]="i === 0" 
+                                        [attr.aria-label]="'Slide ' + (i + 1)">
+                                </button>
+                                </div>
+                                
+                                <div class="carousel-inner">
+                                <div *ngFor="let image of shuffledExampleImages; let i = index" 
+                                    class="carousel-item" 
+                                    [class.active]="i === 0">
+                                    <img [src]="image.src" class="d-block w-100" [alt]="image.alt">
+                                </div>
+                                </div>
+                                
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
+                                </button>
+                            </div>
 
                       </div>
 

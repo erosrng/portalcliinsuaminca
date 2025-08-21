@@ -119,8 +119,8 @@
                           
                           <!-- Nota importante -->
                           <div class="account-note mt-4">
-                            <i class="fas fa-info-circle"></i>
-                            <span> Verifique cuidadosamente los datos antes de realizar la transferencia.</span>
+                            <i class="fas fa-info-circle text-danger"></i>
+                            <span class="text-danger">Verifique cuidadosamente los datos antes de realizar la transferencia.</span>
                           </div>
                         </div>
                 
@@ -136,7 +136,11 @@
                             {{formatearMonto(montoACancelard)}}
                             <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
                           </div>
-                          <small class="amount-note">Monto calculado según facturas seleccionadas</small>
+                          <span class="amount-note">Monto calculado según facturas seleccionadas</span>
+                          <div class="account-note mt-4">
+                            <i class="fas fa-info-circle text-danger"></i>
+                            <span class="text-danger">Asegurese de pagar el monto exacto indicado por el sistema.</span>
+                          </div>
                         </div>
 
                         <!-- Indicador de division de montos -->
@@ -303,7 +307,7 @@
                         </div>
                 
                         <!-- Botón de Envío -->
-                        <button type="submit" class="submit-btn" [disabled]="saldoDisponible<montoACancelar" (click)="enviapago()">
+                        <button type="submit" class="submit-btn" [disabled]="!numeroReferencia && !archivoComprobante" (click)="enviapago()">
                           Registrar Pago
                           <i class="fas fa-paper-plane"></i>
                         </button>
@@ -401,7 +405,7 @@
                         </div>
                   
                       <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered pagos-table">
                           <thead>
                             <tr class="text-center">
                               <th scope="col" class="align-middle">
@@ -426,7 +430,7 @@
                             
                           </thead>
                           <tbody>
-                            <tr *ngFor="let row of pagedPagos; let i = index" [ngClass]="{'table-primary': row.selected}">
+                            <tr *ngFor="let row of pagedPagos; let i = index" [ngClass]="{'table-primary': row.selected}" class="pagos-row">
                               <td class="align-middle text-center">
                                 <mat-checkbox 
                                   [(ngModel)]="row.selected" 

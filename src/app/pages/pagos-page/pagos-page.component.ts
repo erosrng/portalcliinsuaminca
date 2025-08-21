@@ -85,6 +85,14 @@ export class PagosPageComponent implements OnInit {
   saldoDisponible: number = 0;
 montoOriginalPagado: number = 0;
 
+isResponsiveMode: boolean = false;
+
+displayedColumns: string[] = [
+  'select', 'documento', 'emision', 'entregado', 'vence', 'dias', 
+  'monto', 'impuesto', 'reteiva', 'saldo', 'ppago', 'difc', 
+  'cdolar', 'monto_dolar', 'saldo_dolar', 'mfactura'
+];
+
 
   @ViewChild(MatSort) sort: MatSort = new MatSort();
   private subscriptions: Subscription[] = []; 
@@ -105,7 +113,12 @@ montoOriginalPagado: number = 0;
       this.fetchPagos();
     });
 
-    
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.checkScreenSize());
+  }
+
+  checkScreenSize() {
+    this.isResponsiveMode = window.innerWidth <= 576;
   }
 
   metodoPagoSeleccionado: string = '';
@@ -687,10 +700,10 @@ onFileSelected(event: Event): void {
   // Función para mostrar la confirmación del pago
   private async mostrarConfirmacionPago(facturasSeleccionadas: any[]): Promise<any> {
     const simboloMoneda = this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ';
-    const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2);
     
     const detallesFacturas = facturasSeleccionadas.map(f => {
-      const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2);
       return `
         <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
           <span>${f.tipo_doc}-${f.numero}</span>

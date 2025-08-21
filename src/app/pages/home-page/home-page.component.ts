@@ -105,6 +105,36 @@ export interface ApiResponseProviders {
   encapsulation: ViewEncapsulation.None
 })
 export class HomePageComponent implements OnInit {
+  mainImages = [
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg", alt: "Banner 2" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 3" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 4" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg", alt: "Banner 5" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png", alt: "Banner 6" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png", alt: "Banner 7" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png", alt: "Banner 8" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png", alt: "Banner 9" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg", alt: "Banner 10" }
+  ];
+
+  leftImages = [
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner24.jpg", alt: "Banner 24" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner25.jpg", alt: "Banner 25" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner26.png", alt: "Banner 26" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner27.jpg", alt: "Banner 27" }
+  ];
+
+  // Carrusel derecho (promotionCarousel4)
+  rightImages = [
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner28.png", alt: "Banner 28" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner29.png", alt: "Banner 29" },
+    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner30.jpg", alt: "Banner 30" }
+  ];
+
+  shuffledMainImages: any[] = [];
+  shuffledLeftImages: any[] = [];
+  shuffledRightImages: any[] = [];
 
   userData: any;
   apiKey: string = '';
@@ -191,7 +221,30 @@ export class HomePageComponent implements OnInit {
   ngOnInit() {
     this.revisarCarrito();
     this.fetchProducts();
+    this.shuffleAllImages();
     // this.loadCarouselProviders();
+  }
+
+  // Función para mezclar cualquier array de imágenes
+  shuffleArray(array: any[]): any[] {
+    let arrayCopy = [...array];
+    for (let i = arrayCopy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+    }
+    return arrayCopy;
+  }
+
+  // Mezclar todas las imágenes
+  shuffleAllImages() {
+    this.shuffledMainImages = this.shuffleArray(this.mainImages);
+    this.shuffledLeftImages = this.shuffleArray(this.leftImages);
+    this.shuffledRightImages = this.shuffleArray(this.rightImages);
+  }
+
+  // Función para regenerar el orden aleatorio de todos los carruseles
+  regenerateAllOrders() {
+    this.shuffleAllImages();
   }
 
 

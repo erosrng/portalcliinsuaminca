@@ -118,24 +118,24 @@
     font-weight: 600;
 }
 
-.pagos-table-responsive {
-    border-radius: 8px;
-    overflow: auto;
+
+.pagos-table th {
+    background-color: vars.$text-color2;
+    color: vars.$menu-color;
+}
+.pagos-table tbody tr {
+  transition: background-color 0.3s ease;
 }
 
-.pagos-table {
-    width: 99%;
+.pagos-table tbody tr:hover {
+  background-color: #ccc; 
+  cursor: pointer;
 }
-
 .pagos-th, .pagos-td {
     text-align: left;
     padding: 8px;
 }
 
-.pagos-th {
-    background-color: #f2f2f2;
-    font-weight: 600;
-}
 
 .doc-cell {
     white-space: nowrap;
@@ -145,11 +145,11 @@
 .payment-section {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid vars.$background-fondo;
 }
 
 .section-title {
-  color: #2c3e50;
+  color: vars.$menu-color;
   font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 1.2rem;
@@ -162,7 +162,7 @@
   display: inline-block;
   width: 4px;
   height: 16px;
-  background: #3498db;
+  background: vars.$principal-color;
   margin-right: 10px;
   border-radius: 2px;
 }
@@ -187,15 +187,15 @@
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid vars.$text-claro;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .payment-method-input:checked + .payment-method-label {
-  border-color: #3498db;
-  background-color: #f8fafc;
+  border-color: vars.$principal-color;
+  background-color: vars.$background-fondo;
 }
 
 .payment-method-icon {
@@ -228,7 +228,7 @@
 .payment-type-label {
   display: block;
   padding: 0.8rem 1rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid vars.$text-claro;
   border-radius: 6px;
   text-align: center;
   cursor: pointer;
@@ -236,8 +236,8 @@
 }
 
 .payment-type-input:checked + .payment-type-label {
-  border-color: #3498db;
-  background-color: #f0f7ff;
+  border-color: vars.$principal-color;
+  background-color: vars.$background-fondo;
   font-weight: 500;
 }
 
@@ -249,35 +249,35 @@
 .amount-display {
   font-size: 2.2rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: vars.$menu-color;
   padding: 1rem;
-  background-color: #f8f9fa;
+  background-color: vars.$background-fondo;
   border-radius: 8px;
   text-align: center;
   margin: 0.5rem 0;
-  border: 1px solid #e0e0e0;
+  border: 1px solid vars.$text-claro;
 }
 
 .currency-symbol {
   font-size: 1.5rem;
-  color: #7f8c8d;
+  color: vars.$text-claro;
   margin-left: 5px;
 }
 
 .amount-note {
   display: block;
   text-align: center;
-  color: #7f8c8d;
+  color: vars.$text-claro;
   font-size: 0.85rem;
 }
 
 /* Cuenta bancaria */
 .account-card {
-  background: #f8fafc;
+  background: vars.$background-fondo;
   border-radius: 8px;
   padding: 1rem;
   margin: 1rem 0;
-  border: 1px solid #e0e0e0;
+  border: 1px solid vars.$text-claro;
 }
 
 .account-header {
@@ -303,7 +303,7 @@
   font-size: 1.6rem;
   background: none;
   border: none;
-  color: #3498db;
+  color: vars.$principal-color;
   cursor: pointer;
   padding: 0;
 }
@@ -313,7 +313,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #2c3e50;
+  color: vars.$menu-color;
 }
 
 .form-control, .form-select {
@@ -327,7 +327,7 @@
 
 .form-control:focus, .form-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: vars.$principal-color;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -355,15 +355,15 @@
   padding: 1rem;
   border: 2px dashed #ddd;
   border-radius: 6px;
-  background: #f8f9fa;
-  color: #7f8c8d;
+  background: vars.$background-fondo;
+  color: vars.$text-claro;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .upload-label:hover {
-  border-color: #3498db;
-  color: #3498db;
+  border-color: vars.$principal-color;
+  color: vars.$principal-color;
 }
 
 .file-note {
@@ -375,7 +375,7 @@
 .submit-btn {
   width: 100%;
   padding: 1rem;
-  background-color: #3498db;
+  background-color: vars.$principal-color;
   color: white;
   border: none;
   border-radius: 6px;
@@ -407,7 +407,7 @@
 
 .emphasis-label {
   font-weight: 600;
-  color: #2c3e50;
+  color: vars.$menu-color;
   font-size: 2rem;
   display: block;
   margin-bottom: 8px;
@@ -423,12 +423,12 @@
   font-size: 2rem;
   font-weight: 500;
   padding: 12px 15px;
-  border: 2px solid #3498db;
+  border: 2px solid vars.$principal-color;
   border-radius: 6px;
-  background-color: #f8fafc;
+  background-color: vars.$background-fondo;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
-  color: #2c3e50;
+  color: vars.$menu-color;
 }
 
 .amount-input-emphasis:focus {
@@ -453,7 +453,7 @@
   padding: 4px 8px;
   background-color: #ecf0f1;
   border-radius: 4px;
-  color: #7f8c8d;
+  color: vars.$text-claro;
 }
 
 /*AJUSTES CUANDO SELECCIONAN FACTURA Y SE AGREGA EL SALDO INDIVIDUAL**/
@@ -461,7 +461,7 @@
   border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 1.5rem;
-  background-color: #f8f9fa;
+  background-color: vars.$background-fondo;
 }
 
 .invoice-payment-row {
@@ -495,7 +495,7 @@
 
 /*Saldo aplicado vs disponible*/
 .saldo-info {
-  background-color: #f8f9fa;
+  background-color: vars.$background-fondo;
   border-radius: 8px;
   padding: 12px;
   margin-top: 10px;
@@ -566,14 +566,15 @@
 
 /* Efecto pulsante sutil para llamar la atención */
 @keyframes subtlePulse {
-  0% { border-color: #3498db; }
+  0% { border-color: vars.$principal-color; }
   50% { border-color: #2980b9; }
-  100% { border-color: #3498db; }
+  100% { border-color: vars.$principal-color; }
 }
 
 .amount-input-emphasis:not(:focus) {
   animation: subtlePulse 3s infinite;
 }
+
 
 
 /* Responsive */
