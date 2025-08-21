@@ -11,7 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
 
-import { PROTEO_URL_ALONE } from './../../app.config';
+import { PROTEO_URL_ALONEINTER } from './../../app.config';
 import { MatIconModule } from '@angular/material/icon';
 
 interface Pedido {
@@ -127,7 +127,7 @@ export class HistorialPedidosComponent implements OnInit {
   }
 
   abrirEnlaceExcel(idpedido: string) {
-    const url = `${PROTEO_URL_ALONE}formatos/ver/PFAC2/${idpedido}`;
+    const url = `${PROTEO_URL_ALONEINTER}formatos/ver/PFAC2/${idpedido}`;
     window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
