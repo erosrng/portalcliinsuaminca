@@ -42,6 +42,19 @@ export const API_URL2INTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/ap
 export const PROTEO_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/ptprv/';
 export const API_FASTINTER ='http://3.143.124.47:5000'; */
 
+//////ACCESO TODO DESDE PRACTICA
+/* export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/practica/';
+export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/post/';
+export const API_URL2 = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/';
+export const PROTEO_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/';
+export const API_FAST ='http://3.143.124.47:5000';
+
+export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/practica/';
+export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/post/';
+export const API_URL2INTER = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/';
+export const PROTEO_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/ptprv/';
+export const API_FASTINTER ='http://3.143.124.47:5000';  */
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

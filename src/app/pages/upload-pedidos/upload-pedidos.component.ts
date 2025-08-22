@@ -378,7 +378,7 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     formatearCantidad(cantidadString: string): number {
-        console.log(cantidadString, 'VALOR')
+        //console.log(cantidadString, 'VALOR')
         // Eliminar los puntos que actúan como separadores de miles
         const sinPuntosMiles = cantidadString.replace(/\./g, '');
 
@@ -760,7 +760,7 @@ export class UploadPedidosComponent implements OnInit {
                         Swal.close()
                         Swal.fire({
                             icon: 'error',
-                            title: 'Ocurrio un error al realizar la descarga',
+                            title: 'Ocurrio al cargar el pedido',
                             text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
                             showCancelButton: false,
                         });
@@ -781,168 +781,325 @@ export class UploadPedidosComponent implements OnInit {
 
     }
 
-    executeMultiPed(): void {
-        Swal.fire({
-            title: 'Ingrese una observación para el pedido',
-            input: 'textarea',
-            inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
-            showCancelButton: true,
-            confirmButtonText: 'Continuar con el envío',
-            cancelButtonText: 'Cancelar',
-            inputValidator: (value) => {
-                if (!value) {
-                    return '¡La observación es obligatoria!';
-                }
-                return null;
-            },
-            preConfirm: (observacion) => {
-                this.emailSendUser = ''
-                Swal.close()
-                this.showloader = true;
-                const pedidoResponse: any = {
-                    pedidos: {}
-                };
+    /* executeMultiPed(): void {
+        this.emailSendUser = ''
+        Swal.close()
+        this.showloader = true;
+        const pedidoResponse: any = {
+            pedidos: {}
+        };
 
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            pedidoResponse.pedidos[codigoCliente] = {
+                diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
+                montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
+                pedido: []
+            };
+
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedidos[codigoCliente].pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+        Swal.showLoading()
+
+
+
+        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
+            const pedidosTem = INFO.data.tem_carrito;
+            let auxLet = true
+            pedidosTem.forEach((element: any) => {
+                console.log(element)
+
+                if (element.result === false) {
+                    auxLet = element.result;
+                }
+            });
+            if (auxLet) {
                 this.selection.selected.forEach((element: any) => {
                     const codigoCliente = element.codigoCliente;
-                    pedidoResponse.pedidos[codigoCliente] = {
-                        diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
-                        montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
-                        pedido: []
-                    };
-
-                    element.pedido.forEach((info: any) => {
-                        pedidoResponse.pedidos[codigoCliente].pedido.push({
-                            cantidad: info.Unidades,
-                            descuento: info.Descuento,
-                            codigo: info.Codigo,
-                        });
-                    });
-                });
-                Swal.showLoading()
-
-
-
-                this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
-                    const pedidosTem = INFO.data.tem_carrito;
-                    let auxLet = true
-                    pedidosTem.forEach((element: any) => {
-                        if (element.result === false) {
-                            auxLet = element.result;
+                    this.clientesIndividual.forEach((item, index) => {
+                        if (item.cliente === codigoCliente) {
+                            this.clienteData = item
                         }
                     });
-                    if (auxLet) {
-                        this.selection.selected.forEach((element: any) => {
-                            const codigoCliente = element.codigoCliente;
-                            this.clientesIndividual.forEach((item, index) => {
-                                if (item.cliente === codigoCliente) {
-                                    this.clienteData = item
-                                }
-                            });
-                            const pedidoApi: any[] = [];
-                            //console.log(element)
-                            //console.log(this.listProdutos)
-                            element.pedido.forEach((info: any) => {
-                                this.listProdutos.forEach((item: any) => {
-                                    if (info.Codigo === item.codigo) {
-                                        //console.log(info)
-                                        pedidoApi.push({
-                                            cant: Number(info.Unidades),
-                                            descuento: info.Descuento,
-                                            codigo: item.codigo,
-                                            descprov: item.descprov,
-                                            descrip: item.descrip,
-                                            dprice: item.dprice,
-                                            dpriced: item.dpriced,
-                                            encar: item.encar,
-                                            existen: item.existen,
-                                            img: item.img,
-                                            lote: item.lote,
-                                            nomprv: item.nomprv,
-                                            oferta: item.oferta,
-                                            oprecio: item.oprecio,
-                                            opreciod: item.opreciod,
-                                            vence: item.vence,
-                                            barras: '',
-                                            bssiniva: '',
-                                            cod_cli: '',
-                                            codigoa: '',
-                                            dconiva: '',
-                                            descu: '',
-                                            dsiniva: '',
-                                            escala: '',
-                                            id_pedido: '',
-                                            iva: '',
-                                            ivabs: '',
-                                            ivad: '',
-                                            preciod: '',
-                                            preciosiniva: '',
-                                            tasa: 0,
-                                            tivabs: '',
-                                            tivad: '',
-                                            totalbs: '',
-                                            totald: info.Oferta,
+                    const pedidoApi: any[] = [];
+                    //console.log(element)
+                    //console.log(this.listProdutos)
+                    element.pedido.forEach((info: any) => {
+                        this.listProdutos.forEach((item: any) => {
+                            if (info.Codigo === item.codigo) {
+                                //console.log(info)
+                                pedidoApi.push({
+                                    cant: Number(info.Unidades),
+                                    descuento: info.Descuento,
+                                    codigo: item.codigo,
+                                    descprov: item.descprov,
+                                    descrip: item.descrip,
+                                    dprice: item.dprice,
+                                    dpriced: item.dpriced,
+                                    encar: item.encar,
+                                    existen: item.existen,
+                                    img: item.img,
+                                    lote: item.lote,
+                                    nomprv: item.nomprv,
+                                    oferta: item.oferta,
+                                    oprecio: item.oprecio,
+                                    opreciod: item.opreciod,
+                                    vence: item.vence,
+                                    barras: '',
+                                    bssiniva: '',
+                                    cod_cli: '',
+                                    codigoa: '',
+                                    dconiva: '',
+                                    descu: '',
+                                    dsiniva: '',
+                                    escala: '',
+                                    id_pedido: '',
+                                    iva: '',
+                                    ivabs: '',
+                                    ivad: '',
+                                    preciod: '',
+                                    preciosiniva: '',
+                                    tasa: 0,
+                                    tivabs: '',
+                                    tivad: '',
+                                    totalbs: '',
+                                    totald: info.Oferta,
 
 
-                                        });
-                                    }
-                                })
-                            });
-
-                            this.proteoServices.get_client_data(codigoCliente).subscribe((data: any) => {
-                                //console.log(data);
-                                if (data.data.datcli) {
-                                    const aux2 = data.data.datcli;
-                                    this.emailSendUser = aux2.email;
-                                    this.emailSendProveed = localStorage.getItem('emailprov');
-
-                                    Swal.fire({
-                                        title: "Pedidos generado",
-                                        text: "",
-                                        icon: "success"
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: "Pedidos generado",
-                                        text: "",
-                                        icon: "success"
-                                    });
-                                }
-                            }, () => {
-
-                                Swal.fire({
-                                    title: "Pedidos generado",
-                                    text: "",
-                                    icon: "success"
                                 });
-                            })
-
-                        });
-                    } else {
-                        Swal.close()
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Ocurrio un error al realizar la descarga',
-                            text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
-                            showCancelButton: false,
-                        });
-                        this.showloader = false;
-                    }
-
-
-
-                }, () => {
-                    Swal.fire({
-                        title: "Error al generar pedidos",
-                        text: "",
-                        icon: "error"
+                            }
+                        })
                     });
-                    this.showloader = false;
-                })
+
+                    this.proteoServices.get_client_data(codigoCliente).subscribe((data: any) => {
+                        //console.log(data);
+                        if (data.data.datcli) {
+                            const aux2 = data.data.datcli;
+                            //this.emailSendUser = aux2.email;
+                            //this.emailSendProveed = localStorage.getItem('emailprov');
+
+                            console.log(aux2+' Encontrado')
+                        } else {
+
+                            console.log('no encotrado el cliente: '+codigoCliente)
+                        }
+                    }, () => {
+
+                        console.log('no encotrado nada, cliente: '+codigoCliente)
+                    })
+
+                });
+            } else {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocurrio un al cargar el pedido de grupo',
+                    text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
+                    showCancelButton: false,
+                });
+                this.showloader = false;
             }
+
+
+
+        }, () => {
+            Swal.fire({
+                title: "Error al generar pedidos",
+                text: "",
+                icon: "error"
+            });
+            this.showloader = false;
         })
+    } */
 
-
+    executeMultiPed(): void {
+        this.emailSendUser = '';
+        Swal.close();
+        this.showloader = true;
+    
+        const pedidoResponse: any = {
+            pedidos: {}
+        };
+    
+        this.selection.selected.forEach((element: any) => {
+            const codigoCliente = element.codigoCliente;
+            pedidoResponse.pedidos[codigoCliente] = {
+                diasCredito: 0,
+                montoFactura: 0,
+                pedido: []
+            };
+    
+            element.pedido.forEach((info: any) => {
+                pedidoResponse.pedidos[codigoCliente].pedido.push({
+                    cantidad: info.Unidades,
+                    descuento: info.Descuento,
+                    codigo: info.Codigo,
+                });
+            });
+        });
+    
+        Swal.showLoading();
+    
+        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
+            const pedidosTem = INFO.data.tem_carrito;
+            
+            // Arrays para almacenar resultados
+            const productosExitosos: any[] = [];
+            const productosFallidos: any[] = [];
+            let operacionGeneralExitosa = false;
+    
+            // Separar productos exitosos y fallidos
+            pedidosTem.forEach((element: any) => {
+                if (element.result === true) {
+                    productosExitosos.push(element);
+                } else {
+                    productosFallidos.push(element);
+                }
+            });
+    
+            // Determinar si la operación general fue exitosa
+            // (Consideramos exitosa si al menos un producto se agregó)
+            operacionGeneralExitosa = productosExitosos.length > 0;
+    
+            if (operacionGeneralExitosa) {
+                // Procesar clientes individualmente
+                this.selection.selected.forEach((element: any) => {
+                    const codigoCliente = element.codigoCliente;
+                    
+                    // Encontrar datos del cliente
+                    this.clientesIndividual.forEach((item, index) => {
+                        if (item.cliente === codigoCliente) {
+                            this.clienteData = item;
+                        }
+                    });
+    
+                    const pedidoApi: any[] = [];
+                    element.pedido.forEach((info: any) => {
+                        this.listProdutos.forEach((item: any) => {
+                            if (info.Codigo === item.codigo) {
+                                pedidoApi.push({
+                                    cant: Number(info.Unidades),
+                                    descuento: info.Descuento,
+                                    codigo: item.codigo,
+                                    descprov: item.descprov,
+                                    descrip: item.descrip,
+                                    dprice: item.dprice,
+                                    dpriced: item.dpriced,
+                                    encar: item.encar,
+                                    existen: item.existen,
+                                    img: item.img,
+                                    lote: item.lote,
+                                    nomprv: item.nomprv,
+                                    oferta: item.oferta,
+                                    oprecio: item.oprecio,
+                                    opreciod: item.opreciod,
+                                    vence: item.vence,
+                                    barras: '',
+                                    bssiniva: '',
+                                    cod_cli: '',
+                                    codigoa: '',
+                                    dconiva: '',
+                                    descu: '',
+                                    dsiniva: '',
+                                    escala: '',
+                                    id_pedido: '',
+                                    iva: '',
+                                    ivabs: '',
+                                    ivad: '',
+                                    preciod: '',
+                                    preciosiniva: '',
+                                    tasa: 0,
+                                    tivabs: '',
+                                    tivad: '',
+                                    totalbs: '',
+                                    totald: info.Oferta,
+                                });
+                            }
+                        });
+                    });
+    
+                    // Obtener datos del cliente
+                    this.proteoServices.get_client_data(codigoCliente).subscribe({
+                        next: (data: any) => {
+                            if (data.data.datcli) {
+                                const aux2 = data.data.datcli;
+                                console.log(aux2 + ' Encontrado');
+                            } else {
+                                console.log('No encontrado el cliente: ' + codigoCliente);
+                            }
+                        },
+                        error: () => {
+                            console.log('Error al buscar cliente: ' + codigoCliente);
+                        }
+                    });
+                });
+    
+                // Mostrar resumen de la operación
+                this.mostrarResumenOperacion(productosExitosos, productosFallidos);
+                
+            } else {
+                // Si ningún producto se pudo agregar
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en todos los productos',
+                    text: 'Ningún producto pudo ser procesado. Verifique las existencias.',
+                    showCancelButton: false,
+                });
+            }
+    
+            this.showloader = false;
+    
+        }, (error) => {
+            Swal.fire({
+                title: "Error al generar pedidos",
+                text: "",
+                icon: "error"
+            });
+            this.showloader = false;
+        });
+    }
+    
+    // Método para mostrar el resumen de la operación
+    private mostrarResumenOperacion(exitosos: any[], fallidos: any[]): void {
+        let mensaje = '';
+        
+        if (exitosos.length > 0) {
+            mensaje += `<strong>Productos agregados exitosamente (${exitosos.length}):</strong><br>`;
+            exitosos.forEach((producto, index) => {
+                if (index < 10) { // Mostrar máximo 10 productos para no saturar
+                    mensaje += `✓ ${producto.mensaje}<br>`;
+                }
+            });
+            if (exitosos.length > 10) {
+                mensaje += `... y ${exitosos.length - 10} productos más<br>`;
+            }
+        }
+    
+        if (fallidos.length > 0) {
+            mensaje += `<br><strong>Productos con errores (${fallidos.length}):</strong><br>`;
+            fallidos.forEach((producto, index) => {
+                if (index < 10) { // Mostrar máximo 10 errores
+                    mensaje += `✗ ${producto.mensaje}<br>`;
+                }
+            });
+            if (fallidos.length > 10) {
+                mensaje += `... y ${fallidos.length - 10} errores más<br>`;
+            }
+        }
+    
+        Swal.fire({
+            title: 'Resumen de la operación',
+            html: mensaje,
+            icon: fallidos.length > 0 ? 'warning' : 'success',
+            confirmButtonText: 'Aceptar',
+            width: '600px'
+        });
     }
 
     clearAll() {
