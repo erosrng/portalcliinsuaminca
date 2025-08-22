@@ -155,7 +155,7 @@ export class NavBarComponent implements OnInit {
           // Verifica si productos es un array y tiene al menos un elemento
           if (Array.isArray(productos) && productos.length > 0) {
             if (productos[0].value > 0) {
-              this.productosEnCarritoNumber = productos[0].value;
+              this.productosEnCarritoNumber = productos[2].value;
             } else {
               this.productosEnCarritoNumber = '0';
             }
