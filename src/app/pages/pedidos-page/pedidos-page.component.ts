@@ -917,7 +917,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URL}portalcli/enviaped`;
+        const apiUrl = `${API_URL}portalcli/enviaped/0`;
       
         Swal.fire({
         title: '¿Desea enviar el pedido?',

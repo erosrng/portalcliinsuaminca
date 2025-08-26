@@ -193,7 +193,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'Authorization': `${token}`
     });
-    const apiUrl = `${API_URLINTER}portalcli/enviaped`;
+    const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
   
     Swal.fire({
       title: '¿Desea enviar el pedido?',
@@ -202,28 +202,27 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
-      // Allow outside clicks to close the confirmation, but not the loader
       allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
       if (result.isConfirmed) {
-        // --- Display the loader HERE, immediately after confirmation ---
         Swal.fire({
           title: 'Enviando pedido...',
           text: 'Por favor, espere.',
-          allowOutsideClick: false, // Prevent closing by clicking outside
+          allowOutsideClick: false, 
           didOpen: () => {
-            Swal.showLoading(); // Show the actual loading spinner
+            Swal.showLoading(); 
           }
         });
   
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
           next: (response: any) => {
-            Swal.close(); // Close the loader whether success or error
+            //Swal.close(); 
             if (response.status) {
-              this.revisarCarrito();
+              /* this.revisarCarrito();
               Swal.fire(response.mensaje, '', 'success');
               this.productscar = [];
-              this.dataSource.data = this.productscar;
+              this.dataSource.data = this.productscar; */
+              this.enviaServer();
             } else {
               Swal.fire(response.mensaje, '', 'error');
             }
@@ -237,6 +236,68 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
+  /* enviaServer() {
+    const codCli = this.authService.getCodCli();
+    const formData = new FormData();
+    const token = this.authService.getToken();
+  
+    formData.append('codCli', codCli ?? '');
+  
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = `${API_URLINTER}portalcli/enviaserver`;
+  
+        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+          next: (response: any) => {
+            Swal.close(); 
+            if (response.status) {
+              this.revisarCarrito();
+              Swal.fire(response.mensaje, '', 'success');
+              this.productscar = [];
+              this.dataSource.data = this.productscar;
+            } else {
+              Swal.fire(response.mensaje, '', 'error');
+            } 
+          },
+          error: (error) => {
+            Swal.close(); // Close the loader on error
+            Swal.fire('Error al enviar el pedido al servidor', 'Por favor, intente de nuevo. Detalles: ' + error.message, 'error');
+            console.error('Error de la API:', error);
+          },
+        });
+
+  } */
+        enviaServer() {
+          const codCli = this.authService.getCodCli();
+          const formData = new FormData();
+          const token = this.authService.getToken();
+        
+          formData.append('codCli', codCli ?? '');
+        
+          const headers = new HttpHeaders({
+            'Authorization': `${token}`
+          });
+          const apiUrl = `${API_URLINTER}portalcli/enviaserver`;
+        
+          // Ejecutar en segundo plano sin esperar respuesta ni mostrar interfaz al usuario
+          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+            next: (response: any) => {
+              // Solo registrar en consola, no mostrar nada al usuario
+              this.revisarCarrito();
+              this.productscar = [];
+              this.dataSource.data = this.productscar;
+              Swal.fire(response.mensaje, '', 'success');
+
+              //console.log('Envío al servidor completado:', response);
+            },
+            error: (error) => {
+              // Solo registrar error en consola, no mostrar nada al usuario
+              console.error('Error al enviar al servidor (background):', error);
+            }
+          });
+      }
 
   //Vacia carrito
   vaciacar(): void {
