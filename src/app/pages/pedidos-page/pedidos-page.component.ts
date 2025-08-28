@@ -679,7 +679,7 @@ sortData(sortField: string) {
         const headers = new HttpHeaders({
           'Authorization': `${token}`
         });
-        const apiUrl = `${API_URLINTER}enviaped`;
+        const apiUrl = `${API_URL}enviapedweb`;
       
         Swal.fire({
           
@@ -959,24 +959,25 @@ sortData(sortField: string) {
   } */
 
     getPriceWDiscount(element: any): number {
-      let precioStr = String(element.opreciod);
-      let precio = parseFloat(precioStr.replace(',', '.'));
-      let descuentoPorcentajeProv = parseFloat(String(element.descprov).replace(',', '.'));
-      let descuentoPorcentajeFicha = parseFloat(String(element.ficha).replace(',', '.'));
-      let precioConDescuento = precio; // Inicializamos con el precio base
+      //let precioStr = String(element.opreciod);
+      let precio = parseFloat(element.opreciod);
+      let descuentoPorcentajeProv = parseFloat((element.descprov));
+      let descuentoPorcentajeFicha = parseFloat((element.ficha));
+      let precioConDescuento = precio;
   
       if (!isNaN(precio)) {
           // Aplicar descuento por porcentaje del proveedor (descprov) si es válido y mayor que 0
           if (!isNaN(descuentoPorcentajeProv) && descuentoPorcentajeProv > 0) {
-              const descuentoProv = (precioConDescuento * descuentoPorcentajeProv) / 100;
-              precioConDescuento -= descuentoProv;
-          }
+            const descuentoProv = (precioConDescuento * descuentoPorcentajeProv) / 100;
+            precioConDescuento -= descuentoProv;
+        }
+          /* 
   
           // Aplicar descuento por porcentaje de ficha si es válido y mayor que 0
           if (!isNaN(descuentoPorcentajeFicha) && descuentoPorcentajeFicha > 0) {
               const descuentoFicha = (precioConDescuento * descuentoPorcentajeFicha) / 100;
               precioConDescuento -= descuentoFicha;
-          }
+          } */
   
           return parseFloat(precioConDescuento.toFixed(2)); // Formatear a 2 decimales
       } else {
@@ -985,31 +986,10 @@ sortData(sortField: string) {
       }
   }
 
-  /* getPriceWDiscountBS(element: any): number {
-    let precioStr = String(element.oprecio);
-    precioStr = precioStr.replace(/\./g, ''); // Elimina todos los puntos (asumiendo que son separadores de miles)
-    let precio = parseFloat(precioStr.replace(',', '.'));
-    let descuentoPorcentaje = parseFloat(String(element.descprov).replace(',', '.'));
-    let descuentoficha = parseFloat(String(element.ficha).replace(',', '.'));
-
-    if (!isNaN(descuentoPorcentaje) && descuentoPorcentaje > 0) {
-      if (!isNaN(precio)) {
-        const descuento = (precio * descuentoPorcentaje) / 100;
-        return precio - descuento;
-      } else {
-        console.warn('Oprecio no es un número válido:', element);
-        return precio;
-      }
-    }
-    return parseFloat(String(precio).replace(',', '.').replace('.',','));
-  } */
-
     getPriceWDiscountBS(element: any): number {
-      let precioStr = String(element.oprecio);
-      precioStr = precioStr.replace(/\./g, '');
-      let precio = parseFloat(precioStr.replace(',', '.'));
-      let descuentoPorcentajeProv = parseFloat(String(element.descprov).replace(',', '.'));
-      let descuentoPorcentajeFicha = parseFloat(String(element.ficha).replace(',', '.'));
+      let precio = parseFloat(element.oprecio);
+      let descuentoPorcentajeProv = parseFloat((element.descprov));
+      let descuentoPorcentajeFicha = parseFloat((element.ficha));
       let precioConDescuento = precio; // Inicializamos con el precio base
   
       if (!isNaN(precio)) {
@@ -1020,10 +1000,10 @@ sortData(sortField: string) {
           }
   
           // Aplicar descuento por porcentaje de ficha si es válido y mayor que 0
-          if (!isNaN(descuentoPorcentajeFicha) && descuentoPorcentajeFicha > 0) {
+          /* if (!isNaN(descuentoPorcentajeFicha) && descuentoPorcentajeFicha > 0) {
               const descuentoFicha = (precioConDescuento * descuentoPorcentajeFicha) / 100;
               precioConDescuento -= descuentoFicha;
-          }
+          } */
   
           return parseFloat(precioConDescuento.toFixed(2)); // Formatear a 2 decimales
       } else {

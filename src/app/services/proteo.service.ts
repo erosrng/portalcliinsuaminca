@@ -26,7 +26,7 @@ export class ProteoService {
     const token = this.authService.getToken();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
     const apiUrl2 = this.apiUrl2 + `post/getfile`;
     return this.httpClient.post(apiUrl2, info, { headers: headers, responseType: 'blob', })
@@ -60,10 +60,10 @@ export class ProteoService {
     const token = this.authService.getToken();
     const formData = new FormData();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
-    const apiUrl2 = this.apiUrl2 + `post/multiped`;
-    return this.httpClient.post(apiUrl2, info, {headers: headers})
+    const apiUrl = this.apiUrl + `post/multipedweb`;
+    return this.httpClient.post(apiUrl, info, {headers: headers})
   }
 
 
@@ -72,10 +72,10 @@ export class ProteoService {
     const token = this.authService.getToken();
     const formData = new FormData();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
-    const apiUrl2 = this.apiUrl2 + `post/listape`;
-    return this.httpClient.post(apiUrl2, info, {headers: headers})
+    const apiUrl = this.apiUrl + `post/listapeweb`;
+    return this.httpClient.post(apiUrl, info, {headers: headers})
   }
 
 

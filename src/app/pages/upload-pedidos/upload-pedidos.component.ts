@@ -154,7 +154,7 @@ export class UploadPedidosComponent implements OnInit {
 
     aplicarDescuentoLineal(event: any): void {
             
-        }
+    }
 
     downloadFile(): void {
 
@@ -579,11 +579,11 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     getimagen(pedido: any) {
-        return `http://192.168.1.48/proteoerp/uploads/inventario/Image/${pedido.Codigo}_.png`
+        return `https://insuaminca.org/insuaminca/uploads/inventario/Image/${pedido.Codigo}_.png`
     }
 
     setDefaultImage(event: any) {
-        event.target.src = 'http://192.168.1.48/proteoerp/assets/images/elemento-44.png';
+        event.target.src = 'https://insuaminca.org/insuaminca/assets/images/elemento-44.png';
     }
 
     generatePedido() {
@@ -635,20 +635,7 @@ export class UploadPedidosComponent implements OnInit {
     }
 
     executePed(): void {
-        Swal.fire({
-            title: 'Ingrese una observación para el pedido',
-            input: 'textarea',
-            inputPlaceholder: 'Escriba aquí su observación (obligatorio)',
-            showCancelButton: true,
-            confirmButtonText: 'Continuar con el envío',
-            cancelButtonText: 'Cancelar',
-            inputValidator: (value) => {
-                if (!value) {
-                    return '¡La observación es obligatoria!';
-                }
-                return null;
-            },
-            preConfirm: (observacion) => {
+
                 this.showloader = true;
                 const pedidoResponse: any = {
                     cliente: this.controlUnico.value,
@@ -737,8 +724,7 @@ export class UploadPedidosComponent implements OnInit {
                     'diasCredito': this.diasCredito,
                     'montoFactura': this.montoFactura,
                     'emailSendUser': this.emailSendUser,
-                    'emailSendProveed': this.emailSendProveed,
-                    'observa': observacion
+                    'emailSendProveed': this.emailSendProveed
                 }
                 this.proteoServices.generate_ped_simple(pedidoResponse).subscribe((INFO: any) => {
                     const pedidosTem = INFO.data.agg_pedido;
@@ -775,148 +761,10 @@ export class UploadPedidosComponent implements OnInit {
                     });
                     this.showloader = false;
                 });
-            }
-        });
+
 
 
     }
-
-    /* executeMultiPed(): void {
-        this.emailSendUser = ''
-        Swal.close()
-        this.showloader = true;
-        const pedidoResponse: any = {
-            pedidos: {}
-        };
-
-        this.selection.selected.forEach((element: any) => {
-            const codigoCliente = element.codigoCliente;
-            pedidoResponse.pedidos[codigoCliente] = {
-                diasCredito: 0, // Assuming 'diasCredito' exists in your 'element'
-                montoFactura: 0, // Assuming 'montoFactura' exists in your 'element'
-                pedido: []
-            };
-
-            element.pedido.forEach((info: any) => {
-                pedidoResponse.pedidos[codigoCliente].pedido.push({
-                    cantidad: info.Unidades,
-                    descuento: info.Descuento,
-                    codigo: info.Codigo,
-                });
-            });
-        });
-        Swal.showLoading()
-
-
-
-        this.proteoServices.generate_ped_multi(pedidoResponse).subscribe((INFO: any) => {
-            const pedidosTem = INFO.data.tem_carrito;
-            let auxLet = true
-            pedidosTem.forEach((element: any) => {
-                console.log(element)
-
-                if (element.result === false) {
-                    auxLet = element.result;
-                }
-            });
-            if (auxLet) {
-                this.selection.selected.forEach((element: any) => {
-                    const codigoCliente = element.codigoCliente;
-                    this.clientesIndividual.forEach((item, index) => {
-                        if (item.cliente === codigoCliente) {
-                            this.clienteData = item
-                        }
-                    });
-                    const pedidoApi: any[] = [];
-                    //console.log(element)
-                    //console.log(this.listProdutos)
-                    element.pedido.forEach((info: any) => {
-                        this.listProdutos.forEach((item: any) => {
-                            if (info.Codigo === item.codigo) {
-                                //console.log(info)
-                                pedidoApi.push({
-                                    cant: Number(info.Unidades),
-                                    descuento: info.Descuento,
-                                    codigo: item.codigo,
-                                    descprov: item.descprov,
-                                    descrip: item.descrip,
-                                    dprice: item.dprice,
-                                    dpriced: item.dpriced,
-                                    encar: item.encar,
-                                    existen: item.existen,
-                                    img: item.img,
-                                    lote: item.lote,
-                                    nomprv: item.nomprv,
-                                    oferta: item.oferta,
-                                    oprecio: item.oprecio,
-                                    opreciod: item.opreciod,
-                                    vence: item.vence,
-                                    barras: '',
-                                    bssiniva: '',
-                                    cod_cli: '',
-                                    codigoa: '',
-                                    dconiva: '',
-                                    descu: '',
-                                    dsiniva: '',
-                                    escala: '',
-                                    id_pedido: '',
-                                    iva: '',
-                                    ivabs: '',
-                                    ivad: '',
-                                    preciod: '',
-                                    preciosiniva: '',
-                                    tasa: 0,
-                                    tivabs: '',
-                                    tivad: '',
-                                    totalbs: '',
-                                    totald: info.Oferta,
-
-
-                                });
-                            }
-                        })
-                    });
-
-                    this.proteoServices.get_client_data(codigoCliente).subscribe((data: any) => {
-                        //console.log(data);
-                        if (data.data.datcli) {
-                            const aux2 = data.data.datcli;
-                            //this.emailSendUser = aux2.email;
-                            //this.emailSendProveed = localStorage.getItem('emailprov');
-
-                            console.log(aux2+' Encontrado')
-                        } else {
-
-                            console.log('no encotrado el cliente: '+codigoCliente)
-                        }
-                    }, () => {
-
-                        console.log('no encotrado nada, cliente: '+codigoCliente)
-                    })
-
-                });
-            } else {
-                Swal.close()
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ocurrio un al cargar el pedido de grupo',
-                    text: 'intente nuevamente, si continua el error pongase en contacto con nosotros',
-                    showCancelButton: false,
-                });
-                this.showloader = false;
-            }
-
-
-
-        }, () => {
-            Swal.fire({
-                title: "Error al generar pedidos",
-                text: "",
-                icon: "error"
-            });
-            this.showloader = false;
-        })
-    } */
 
     executeMultiPed(): void {
         this.emailSendUser = '';

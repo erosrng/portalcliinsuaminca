@@ -86,7 +86,7 @@ export class PortalcliLogicaService {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     formData.append('codigo', producto.codigo);
@@ -97,7 +97,7 @@ export class PortalcliLogicaService {
 
     formData.append('almacen', almacen);
 
-    const apiUrl = `${API_URLINTER}agg_pedido`;
+    const apiUrl = `${API_URL}agg_pedido`;
 
     return this.http.post(apiUrl, formData, { headers: headers });
   }
@@ -109,11 +109,11 @@ export class PortalcliLogicaService {
 
     const token = this.authService.getToken();
     const headers = new HttpHeaders({
-      'Authorization': `${token}`,
+      'X-Auth-Token': `${token}`,
     });
     formData.append('codCli', codCli ?? '');
 
-    this.http.post(`${API_URLINTER}revisacar`, formData, { headers: headers } ).subscribe({
+    this.http.post(`${API_URL}revisacar`, formData, { headers: headers } ).subscribe({
       next: (response: any) => {
         this.loading = false;
         if (response && response.data.encar) {
@@ -163,13 +163,13 @@ export class PortalcliLogicaService {
   //Vacia carrito
   vaciacar(): Observable<any> {
     const codCli = this.authService.getCodCli();
-    const apiUrl = `${API_URLINTER}vaciacar`;
+    const apiUrl = `${API_URL}vaciacar`;
     const formData = new FormData();
     const token = this.authService.getToken();
     formData.append('codCli', codCli ?? '');
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
     return this.http.post(apiUrl, formData, { headers: headers }); // Devuelve el observable

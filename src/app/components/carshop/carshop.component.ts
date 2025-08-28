@@ -146,7 +146,7 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         const formData = new FormData();
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
 
         const apiUrl = `${API_URL}opencardb`;
@@ -208,10 +208,10 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         const formData = new FormData();
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
 
-        const apiUrl = `${API_URLINTER}opencardb`;
+        const apiUrl = `${API_URL}opencardb`;
         formData.append('codCli', codCli ?? '');
         if (this.clienteData && this.clienteData.ubica) {
             formData.append('almacen', this.clienteData.ubica);
@@ -307,13 +307,13 @@ export class CarshopComponent implements OnInit, AfterViewInit {
             this.dataSource.data = [...this.productscar];
         }
 
-        const apiUrl = `${API_URLINTER}totalizadesc`;
+        const apiUrl = `${API_URL}totalizadesc`;
         const formData = new FormData();
         const token = this.authService.getToken();
         const codCli = this.authService.getCodCli();
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
 
         formData.append('desc', this.descuentoLineal!.toString());
@@ -352,12 +352,12 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     eliminareg(caller: any, idPedido: any, codigo: any) {
         Swal.showLoading()
 
-        const apiUrl = `${API_URLINTER}eliminareg`;
+        const apiUrl = `${API_URL}eliminareg`;
         const formData = new FormData();
         const token = this.authService.getToken();
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
 
         formData.append('id', idPedido);
@@ -407,9 +407,9 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         formData.append('montoFactura', String(this.montoFactura));
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URLINTER}enviaped`;
+        const apiUrl = `${API_URL}enviapedweb`;
 
         Swal.fire({
             title: '¿Desea enviar el pedido?',
@@ -885,12 +885,12 @@ export class CarshopComponent implements OnInit, AfterViewInit {
     descudcalc = 0;
 
     totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-        const apiUrl = `${API_URLINTER}totalizacampo`;
+        const apiUrl = `${API_URL}totalizacampo`;
         const formData = new FormData();
         const token = this.authService.getToken();
 
         const headers = new HttpHeaders({
-            'Authorization': `${token}`
+            'X-Auth-Token': `${token}`
         });
 
         formData.append('id', idPedido);
