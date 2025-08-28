@@ -50,7 +50,9 @@ interface DetallePedido {
   cana: string;
   pvp: string;
   preca: number;
+  precad: number;
   tota: number;
+  totad: number;
   iva: number;
   lote: string | null;
   vence: string | null;
