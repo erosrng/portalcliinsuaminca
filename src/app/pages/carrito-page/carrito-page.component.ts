@@ -112,10 +112,10 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const formData = new FormData();
 
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URLINTER}portalcli/opencardb`;
+    const apiUrl = `${API_URL}portalcli/opencardb`;
     formData.append('codCli', codCli ?? '');
 
     this.http.post(apiUrl,formData, { headers: headers }).subscribe({
@@ -142,12 +142,12 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   eliminareg(caller: any, idPedido: any, codigo: any) {
       this.isLoading = true;
   
-      const apiUrl = `${API_URLINTER}portalcli/eliminareg`;
+      const apiUrl = `${API_URL}portalcli/eliminareg`;
       const formData = new FormData();
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
       });
   
       formData.append('id', idPedido);
@@ -191,9 +191,9 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     formData.append('codCli', codCli ?? '');
   
     const headers = new HttpHeaders({
-      'Authorization': `${token}`
+      'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
+    const apiUrl = `${API_URL}portalcli/enviapedweb`;
   
     Swal.fire({
       title: '¿Desea enviar el pedido?',
@@ -218,11 +218,11 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
           next: (response: any) => {
             //Swal.close(); 
             if (response.status) {
-              /* this.revisarCarrito();
+              this.revisarCarrito();
               Swal.fire(response.mensaje, '', 'success');
               this.productscar = [];
-              this.dataSource.data = this.productscar; */
-              this.enviaServer();
+              this.dataSource.data = this.productscar;
+              //this.enviaServer();
             } else {
               Swal.fire(response.mensaje, '', 'error');
             }
@@ -237,38 +237,6 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /* enviaServer() {
-    const codCli = this.authService.getCodCli();
-    const formData = new FormData();
-    const token = this.authService.getToken();
-  
-    formData.append('codCli', codCli ?? '');
-  
-    const headers = new HttpHeaders({
-      'Authorization': `${token}`
-    });
-    const apiUrl = `${API_URLINTER}portalcli/enviaserver`;
-  
-        this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-          next: (response: any) => {
-            Swal.close(); 
-            if (response.status) {
-              this.revisarCarrito();
-              Swal.fire(response.mensaje, '', 'success');
-              this.productscar = [];
-              this.dataSource.data = this.productscar;
-            } else {
-              Swal.fire(response.mensaje, '', 'error');
-            } 
-          },
-          error: (error) => {
-            Swal.close(); // Close the loader on error
-            Swal.fire('Error al enviar el pedido al servidor', 'Por favor, intente de nuevo. Detalles: ' + error.message, 'error');
-            console.error('Error de la API:', error);
-          },
-        });
-
-  } */
         enviaServer() {
           const codCli = this.authService.getCodCli();
           const formData = new FormData();
@@ -346,7 +314,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     this.portalcliLogicaService.revisarCarrito();
     this.subscriptions.push(
       this.portalcliLogicaService.productosEnCarrito$.subscribe((productos) => {
-        if (productos[0].value > 0) {
+        // Verificar si el array tiene elementos antes de acceder a [0]
+        if (productos && productos.length > 0 && productos[0].value > 0) {
           this.productosEnCarritoNumber = productos[0].value;
         } else {
           this.productosEnCarritoNumber = '0';
@@ -460,12 +429,12 @@ clear(): void {
 
 
   totaliza(idPedido: string, codigo: string, cantidad: number, existen: number) {
-      const apiUrl = `${API_URLINTER}portalcli/totalizacampo`;
+      const apiUrl = `${API_URL}portalcli/totalizacampo`;
       const formData = new FormData();
       const token = this.authService.getToken();
   
       const headers = new HttpHeaders({
-          'Authorization': `${token}`
+          'X-Auth-Token': `${token}`
       });
   
       formData.append('id', idPedido);

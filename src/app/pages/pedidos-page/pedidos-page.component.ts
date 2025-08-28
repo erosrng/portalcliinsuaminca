@@ -280,7 +280,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       this.fetchPedidos(); // Llama a la función de búsqueda
     });
 
-    //this.fetchPedidos();
     this.revisarCarrito();
 
     this.dataSource.filterPredicate = (data: any, filter: string): boolean => {
@@ -856,7 +855,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     }
 
     vaciacarcm(): void {
-      const apiUrl = `${API_URLINTER}portalcli/vaciacarcm`;
+      const apiUrl = `${API_URL}portalcli/vaciacarcm`;
       const formData = new FormData();
       const token = this.authService.getToken();
   
@@ -917,7 +916,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URL}portalcli/enviaped/0`;
+        const apiUrl = `${API_URL}portalcli/enviapedweb`;
       
         Swal.fire({
         title: '¿Desea enviar el pedido?',
@@ -961,7 +960,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URLINTER}portalcli/enviacm`;
+        const apiUrl = `${API_URL}portalcli/enviacmweb`;
       
         Swal.fire({
           
@@ -1061,7 +1060,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     } else if (event.selectedIndex === 2 && this.esgrupo && this.tipoCargaControl.value === 'casa_matriz') { 
       this.Procesarpedido(); 
     }
-    // Si tienes lógica para otros pasos, puedes añadir más `else if`
   }
 
   iniciarCargaDeInventario() {
@@ -1088,7 +1086,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URLINTER}portalcli/carritocm`;
+    const apiUrl = `${API_URL}portalcli/carritocm`;
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
@@ -1183,7 +1181,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URLINTER}portalcli/totalizacampo`; 
+    const apiUrl = `${API_URL}portalcli/totalizacampo`; 
   
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
@@ -1236,7 +1234,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URLINTER}portalcli/eliminareg`; 
+        const apiUrl = `${API_URL}portalcli/eliminareg`; 
       
         this.http.post(apiUrl, formData, { headers: headers }).subscribe({
           next: (response: any) => {
@@ -1477,7 +1475,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     Swal.showLoading();
     this.tipoCargaControl.setValue(type);
     this.stepper.next()
-    this.iniciarCargaDeInventario(); 
+    //this.iniciarCargaDeInventario(); 
   }
 
   // Listen for scroll events on the window

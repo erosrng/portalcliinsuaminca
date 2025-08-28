@@ -123,7 +123,7 @@ export class LoginPageComponent implements AfterViewInit {
     formData.append('user', this.userData.user);
     formData.append('password', this.userData.password);
 
-    const apiUrl = `${API_URLINTER}logincli/logincli`;
+    const apiUrl = `${API_URL}logincli/logincli`;
 
     this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {
