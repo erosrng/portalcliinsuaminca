@@ -409,8 +409,8 @@ export class CarshopComponent implements OnInit, AfterViewInit {
         const headers = new HttpHeaders({
             'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URL}enviapedweb`;
-
+        //const apiUrl = `${API_URL}enviapedweb`;
+        const apiUrl = `${API_URL}enviaped`;
         Swal.fire({
             title: '¿Desea enviar el pedido?',
             text: "Esta acción no se puede deshacer.",
