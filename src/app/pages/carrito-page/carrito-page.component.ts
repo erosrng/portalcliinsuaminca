@@ -193,8 +193,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    //const apiUrl = `${API_URL}portalcli/enviapedweb`;
-    const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
+    const apiUrl = `${API_URL}portalcli/enviapedweb`;
+    //const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
     Swal.fire({
       title: '¿Desea enviar el pedido?',
       text: "Esta acción no se puede deshacer.",
@@ -218,11 +218,11 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
           next: (response: any) => {
             //Swal.close(); 
             if (response.status) {
-             /*  this.revisarCarrito();
+              this.revisarCarrito();
               Swal.fire(response.mensaje, '', 'success');
               this.productscar = [];
-              this.dataSource.data = this.productscar; */
-              this.enviaServer();
+              this.dataSource.data = this.productscar;
+              //this.enviaServer();
             } else {
               Swal.fire(response.mensaje, '', 'error');
             }

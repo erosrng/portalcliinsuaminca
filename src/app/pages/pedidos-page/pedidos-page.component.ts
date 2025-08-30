@@ -960,8 +960,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        //const apiUrl = `${API_URL}portalcli/enviacmweb`;
-        const apiUrl = `${API_URL}portalcli/enviacm`;
+        const apiUrl = `${API_URL}portalcli/enviacmweb`;
+        //const apiUrl = `${API_URL}portalcli/enviacm`;
         Swal.fire({
           
         title: '¿Desea enviar los pedidos del grupo?',
