@@ -36,23 +36,13 @@ export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/prac
 
 
 //URL DE INSUAMINCA PARA TRABAJAR 
-/* export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+ export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
 
 export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
 export const URLSOLA = 'https://insuaminca.org/';
-export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/';  */
-
-//TODOS AL CLOUD DEL FTP 
-//URL DE INSUAMINCA PARA TRABAJAR 
-export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
-export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
-export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
-
-export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/'; 
-export const URLSOLA = 'https://d2wnvkodoh477y.cloudfront.net/';
-export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
+export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/'; 
 
 //MI MAQUINA
 /* export const API_URL = 'http://localhost:4200/insuaminca/api/';
