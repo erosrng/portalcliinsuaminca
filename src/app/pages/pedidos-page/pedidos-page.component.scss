@@ -274,24 +274,24 @@
 }
 
   .oferta-proveedor-inline {
-    background-color: #f0f0f0; /* Fondo claro */
-    color: #4960e6; /* Color primario de Angular Material */
-    font-size: 0.6em;
+    background-color: #df5050;
+    color: #000000;
+    font-size: 0.8em;
     padding: 2px 5px;
     border-radius: 3px;
-    margin-left: 5px; /* Espacio entre la existencia y la etiqueta */
+    margin-left: 5px; 
     vertical-align: middle; /* Alinear verticalmente con el texto de existencia */
     display: inline-block; /* Permite que los elementos se muestren en línea */
     line-height: 1; /* Asegura que el texto dentro del div no tenga un espaciado vertical excesivo */
   }
   
   .ficha-proveedor-inline {
-    background-color: #f0f0f0; /* Fondo claro */
+    background-color: #f0f0f0; 
     color: #4960e6; /* Color primario de Angular Material */
     font-size: 0.8em;
     padding: 2px 5px;
     border-radius: 3px;
-    margin-left: 5px; /* Espacio entre la existencia y la etiqueta */
+    margin-left: 5px; 
     vertical-align: middle; /* Alinear verticalmente con el texto de existencia */
     display: inline-block; /* Permite que los elementos se muestren en línea */
     line-height: 1; /* Asegura que el texto dentro del div no tenga un espaciado vertical excesivo */

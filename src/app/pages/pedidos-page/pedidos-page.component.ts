@@ -176,10 +176,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
     this.codCli = this.authService.getCodCli();
     if (this.codCli) {
-      this.subscribeToClienteData(() => { // Pasar un callback a subscribeToClienteData
+      this.subscribeToClienteData(() => { 
         
         if (this.stepper) {
-          this.stepper.next(); // Avanza al siguiente paso si ya hay cliente
+          this.stepper.next();
         }
       });
     }else{
@@ -249,17 +249,10 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Escucha el evento de cambio de paso del stepper
     if (this.stepper) {
       this.stepper.selectionChange.pipe(takeUntil(this.destroy$)).subscribe((step) => {
-        // Verifica si el índice del paso actual es 2 (el tercer paso, ya que los índices son 0, 1, 2)
-        /*if (step.selectedIndex == 2 && this.carshopComponent) {
-          // Llama a la función openCar() del CarshopComponent
-          this.carshopComponent.subscribeToClienteData();
-        }*/
+
       });
     }
     this.dataSource.sort = this.sort;
-
-    // $(this.datatable.nativeElement).DataTable(this.dtOptions);
-
   }
 
 
@@ -319,18 +312,6 @@ sortData(sortField: string) {
   }
   this.applyFilters();
 }
-
-/* announceSortChange(sortState: Sort) {
-  // This example uses English messages. If your application supports
-  // multiple language, you would internationalize these strings.
-  // Furthermore, you can customize the message to add additional
-  // details about the values being sorted.
-  if (sortState.direction) {
-    this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-  } else {
-    this._liveAnnouncer.announce('Sorting cleared');
-  }
-} */
 
   //Trae los datos del cliente al buscarlo o cambiarlo
   subscribeToClienteData(callback?: () => void) { // Añadir un parámetro de callback
@@ -479,35 +460,34 @@ sortData(sortField: string) {
     return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
   }
 
-  /* formatfichasTooltip(fichas: any[]): string {
-    return fichas.map(ficha => `${ficha.lista} (Descuento: ${ficha.descuento}%)`).join('\n');
-  } */
   // Función para aplicar el descuento lineal
-    aplicarDescuentoLineal(): void {
-      if (this.descuentoLineal > 100) {
-        Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
-        return;
-      }
-  
-      if (this.descuentoLineal !== null) {
-        this.pagedProducts = this.pagedProducts.map(product => {
-          if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
-            product.descprov = this.descuentoLineal;
-          }
-          return product;
-        });
-        this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
-      } else {
-        // Si el descuento lineal es null, puedes resetear los descuentos si lo deseas
-        this.pagedProducts = this.pagedProducts.map(product => {
-          if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
-            product.descprov = null; // O el valor original si lo tienes almacenado
-          }
-          return product;
-        });
-        this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
-      }
+  aplicarDescuentoLineal(): void {
+    if (this.descuentoLineal > 100) {
+      Swal.fire('El descuento no puede ser mayor a 100', '', 'warning');
+      return;
     }
+  
+    if (this.descuentoLineal !== null) {
+      this.pagedProducts = this.pagedProducts.map(product => {
+        if (!this.productosEnCarritoCodigos.includes(product.codigo) && product.excluidoprv !== 'S') {
+          product.descprov = this.descuentoLineal;
+        }
+        return product;
+      });
+      this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
+            
+    } else {
+      // Si el descuento lineal es null, resetear los descuentos
+      this.pagedProducts = this.pagedProducts.map(product => {
+        if (!this.productosEnCarritoCodigos.includes(product.codigo)) {
+          product.descprov = null;
+        }
+        return product;
+      });
+      this.dataSource.data = [...this.pagedProducts]; // Actualiza la vista de la tabla
+    }
+  }
+  
 
   goToFirstPage() {
     this.currentPage = 1;
