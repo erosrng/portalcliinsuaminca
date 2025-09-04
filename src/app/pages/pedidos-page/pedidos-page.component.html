@@ -210,6 +210,11 @@
                           matTooltipPosition="above">SIN DESCUENTO
                     </div>
 
+                    <div *ngIf="element.ficha>0 && element.ficha.length>0"
+                      class="ficha-proveedor-inline"
+                      matTooltipPosition="above"> D.FICHA <br>{{parseInt(element.ficha)}} %
+                 </div>
+
                     </td>
                   </ng-container>
 
