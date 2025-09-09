@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
-import { HistorialpedComponent } from "../../components/historialped/historialped.component";
+//import { HistorialpedComponent } from "../../components/historialped/historialped.component";
 
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -28,7 +28,7 @@ import {MatSidenav, MatSidenavModule} from "@angular/material/sidenav";
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
-    HistorialpedComponent,
+    //HistorialpedComponent,
     MatInputModule,
     MatFormFieldModule,
     MatSidenav,
