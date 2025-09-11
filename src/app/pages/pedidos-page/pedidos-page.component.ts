@@ -389,6 +389,7 @@ sortData(sortField: string) {
     const formData = new FormData();
     const token = this.authService.getToken();
     const codCli = this.authService.getCodCli();
+    const proveed = this.authService.getProveed();
 
     if(codCli){
       // Parámetros de paginación
@@ -399,6 +400,8 @@ sortData(sortField: string) {
       formData.append('length', length.toString());
     
       formData.append('codCli', codCli ?? '');
+      formData.append('proveed', proveed ?? '');
+
       formData.append('search', this.search ?? ''); 
       formData.append('categoria', this.categoria ?? '');
       formData.append('almacen', this.almacen);
