@@ -15,8 +15,7 @@
             <p>Cliente: {{ (portalcliLogicaService.clienteData$ | async)?.nombre }}</p>
             <p>RIF: {{ (portalcliLogicaService.clienteData$ | async)?.rifci }}</p>
             <p>Días de crédito: {{ (portalcliLogicaService.clienteData$ | async)?.formap }}</p>
-            <p>Código SICM: 38658</p>
-            <p>Código SADA: 865036</p>
+            <p>Código SICM:  {{ (portalcliLogicaService.clienteData$ | async)?.sicm }}</p>
             <p>Correo Electrónico: {{ (portalcliLogicaService.clienteData$ | async)?.email }}</p>
             <p>Usuario: {{ authService.getUsuario() }}</p>
             <p>Teléfono: {{ (portalcliLogicaService.clienteData$ | async)?.email }}</p>
