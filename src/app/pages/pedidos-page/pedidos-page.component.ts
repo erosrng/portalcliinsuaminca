@@ -17,7 +17,7 @@ import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
 import Swal from 'sweetalert2';
 import { Observable, Subscription, takeUntil, Subject } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import {catchError,finalize, map, startWith } from 'rxjs/operators';
 import { FormsModule, ReactiveFormsModule, FormControl,Validators } from '@angular/forms'; // Importar ReactiveFormsModule y FormControl
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -86,7 +86,21 @@ interface Categoria {
   grupo: string;
   nom_grup: string;
 }
+export interface PublicidadItem {
+  prefijo: string;
+  proveedor: string;
+  nombre_proveedor: string;
+  titulo: string;
+  plantilla: string; // 'HB', 'HS1', 'HS2', 'PB', 'PS'
+  descrip: string;
+  url: string[];
+}
 
+export interface ApiResponsePublicidad {
+  status: boolean;
+  message: string;
+  data: PublicidadItem[];
+}
 
 @Component({
   selector: 'app-pedidos-page',
@@ -157,6 +171,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner21.jpg", alt: "Banner 21" },
       { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner22.jpg", alt: "Banner 22" }
     ];
+
   
     shuffledInvImages: any[] = [];
     shuffledExampleImages: any[] = [];
@@ -248,8 +263,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.traeMarcas();
     this.traeCategorias();
+    this.fetchPublicidad();
 
-    this.shuffleAllImages();
     this.filteredMarcaOptions = this.marcaControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || ''))
@@ -295,6 +310,123 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     
   }
 
+  fetchPublicidad(): void {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'X-Auth-Token': `${token}`
+    });
+
+    const apiUrl = `${API_URL}portalcli/publiweb`;
+
+    this.http.post<ApiResponsePublicidad>(apiUrl, {}, { headers: headers })
+      .subscribe({
+        next: (response: ApiResponsePublicidad) => {
+          // La API devuelve status: false incluso cuando hay datos
+          if (response.data && response.data.length > 0) {
+            this.processPublicidadData(response.data);
+            this.shuffleAllImages();
+          } else {
+            console.warn('No se encontraron imágenes de publicidad:', response.message);
+            this.setDefaultImages();
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar publicidad:', error);
+          this.setDefaultImages();
+        }
+      });
+  }
+
+  private processPublicidadData(publicidadData: PublicidadItem[]): void {
+    // Limpiar arrays
+    this.carouselInvImages = [];
+    this.carouselExampleImages = [];
+
+    publicidadData.forEach(item => {
+      // Filtrar solo items que tengan URLs válidas y no estén vacías
+      if (item.url && item.url.length > 0 && item.url[0]) {
+        const imageData = {
+          src: item.url[0],
+          alt: item.titulo || `Publicidad ${item.prefijo}`,
+          descrip: item.descrip || '',
+          plantilla: item.plantilla,
+          prefijo: item.prefijo
+        };
+
+        // Organizar por tipo de plantilla para PEDIDOS
+        switch (item.plantilla) {
+          case 'PB': // Pedidos Big - Carrusel principal de pedidos
+            this.carouselInvImages.push(imageData);
+            break;
+          case 'PS': // Pedidos Small - Carrusel secundario de pedidos
+            this.carouselExampleImages.push(imageData);
+            break;
+          case 'HB': // Home Big - Ignorar (son para home)
+          case 'HS1': // Home Small 1 - Ignorar
+          case 'HS2': // Home Small 2 - Ignorar
+            console.log(`Imagen ${item.plantilla} ignorada para pedidos:`, item.titulo);
+            break;
+        }
+      } else {
+        console.warn('Item sin URL válida:', item.prefijo, item.titulo);
+      }
+    });
+
+    // Log para debugging
+    console.log('Imágenes de pedidos cargadas:', {
+      pedidosBig: this.carouselInvImages.length,
+      pedidosSmall: this.carouselExampleImages.length
+    });
+
+    // Usar imágenes por defecto si algún array está vacío
+    if (this.carouselInvImages.length === 0) {
+      console.warn('No hay imágenes PB, usando defaults');
+      this.carouselInvImages = this.getDefaultInvImages();
+    }
+    if (this.carouselExampleImages.length === 0) {
+      console.warn('No hay imágenes PS, usando defaults');
+      this.carouselExampleImages = this.getDefaultExampleImages();
+    }
+  }
+
+  // Imágenes por defecto como fallback para pedidos
+  private setDefaultImages(): void {
+    this.carouselInvImages = this.getDefaultInvImages();
+    this.carouselExampleImages = this.getDefaultExampleImages();
+  }
+
+  private getDefaultInvImages(): any[] {
+    return [
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg", alt: "Banner 2" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 3" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 4" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg", alt: "Banner 5" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png", alt: "Banner 6" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png", alt: "Banner 7" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png", alt: "Banner 8" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png", alt: "Banner 9" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg", alt: "Banner 10" }
+    ];
+  }
+
+  private getDefaultExampleImages(): any[] {
+    return [
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner10.jpg", alt: "Banner 10" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner11.jpg", alt: "Banner 11" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner12.jpg", alt: "Banner 12" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner13.jpg", alt: "Banner 13" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner15.jpg", alt: "Banner 15" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner16.jpg", alt: "Banner 16" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner17.png", alt: "Banner 17" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner18.png", alt: "Banner 18" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner19.png", alt: "Banner 19" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner20.png", alt: "Banner 20" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner21.jpg", alt: "Banner 21" },
+      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner22.jpg", alt: "Banner 22" }
+    ];
+  }
+
   shuffleArray(array: any[]): any[] {
     let arrayCopy = [...array];
     for (let i = arrayCopy.length - 1; i > 0; i--) {
@@ -304,38 +436,47 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     return arrayCopy;
   }
 
-  // Mezclar todas las imágenes
+  // Modificar shuffleAllImages para inicializar carruseles después del shuffle
   shuffleAllImages() {
     this.shuffledInvImages = this.shuffleArray(this.carouselInvImages);
     this.shuffledExampleImages = this.shuffleArray(this.carouselExampleImages);
+    
+    // Reinicializar carruseles después de mezclar
+    setTimeout(() => {
+      this.initializeCarousels();
+    }, 100);
   }
 
-  // Función para regenerar el orden aleatorio de todos los carruseles
-  regenerateAllOrders() {
-    this.shuffleAllImages();
+  // Función para inicializar carruseles
+  initializeCarousels() {
+    const carruseles = [
+      'carouselInv',
+      'carouselExample'
+    ];
+    
+    carruseles.forEach(id => {
+      const element = document.getElementById(id);
+      if (element) {
+        // Disposes existing carousel if any
+        const existing = bootstrap.Carousel.getInstance(element);
+        if (existing) {
+          existing.dispose();
+        }
+        
+        // Initialize new carousel
+        new bootstrap.Carousel(element, {
+          interval: 3000,
+          ride: 'carousel'
+        });
+      }
+    });
   }
+
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.cdr.detectChanges();
-
-
-    // Inicializar ambos carruseles manualmente
-    const carrusel1 = new bootstrap.Carousel(document.getElementById('carouselInv'), {
-      interval: 3000,
-      ride: 'carousel'
-    });
-    
-    const carrusel2 = new bootstrap.Carousel(document.getElementById('carouselExample'), {
-      interval: 3000,
-      ride: 'carousel'
-    });
-  }
 
 
 

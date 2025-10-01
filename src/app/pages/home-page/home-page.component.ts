@@ -86,6 +86,21 @@ export interface ApiResponseProviders {
   }[];
 }
 // --- Fin Nuevas Interfaces ---
+export interface PublicidadItem {
+  prefijo: string;
+  proveedor: string;
+  nombre_proveedor: string;
+  titulo: string;
+  plantilla: string; // 'HB', 'HS1', 'HS2', 'PB', 'PS'
+  descrip: string;
+  url: string[];
+}
+
+export interface ApiResponsePublicidad {
+  status: boolean;
+  message: string;
+  data: PublicidadItem[];
+}
 
 @Component({
   selector: 'app-home-page',
@@ -105,32 +120,9 @@ export interface ApiResponseProviders {
   encapsulation: ViewEncapsulation.None
 })
 export class HomePageComponent implements OnInit {
-  mainImages = [
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg", alt: "Banner 2" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 3" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 4" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg", alt: "Banner 5" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png", alt: "Banner 6" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png", alt: "Banner 7" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png", alt: "Banner 8" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png", alt: "Banner 9" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg", alt: "Banner 10" }
-  ];
-
-  leftImages = [
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner24.jpg", alt: "Banner 24" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner25.jpg", alt: "Banner 25" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner26.png", alt: "Banner 26" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner27.jpg", alt: "Banner 27" }
-  ];
-
-  // Carrusel derecho (promotionCarousel4)
-  rightImages = [
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner28.png", alt: "Banner 28" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner29.png", alt: "Banner 29" },
-    { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner30.jpg", alt: "Banner 30" }
-  ];
+  mainImages: any[] = []; 
+  leftImages: any[] = []; 
+  rightImages: any[] = []; 
 
   shuffledMainImages: any[] = [];
   shuffledLeftImages: any[] = [];
@@ -221,50 +213,172 @@ export class HomePageComponent implements OnInit {
   ngOnInit() {
     this.revisarCarrito();
     this.fetchProducts();
-    this.shuffleAllImages();
+    this.fetchPublicidad();
     // this.loadCarouselProviders();
   }
 
-  // Función para mezclar cualquier array de imágenes
-  shuffleArray(array: any[]): any[] {
-    let arrayCopy = [...array];
-    for (let i = arrayCopy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+    // Nuevo método para obtener las imágenes de publicidad desde la API
+    fetchPublicidad(): void {
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders({
+        'X-Auth-Token': `${token}`
+      });
+  
+      const apiUrl = `${API_URL}portalcli/publiweb`;
+      const body = {
+        area: '' // Solo necesitamos estas áreas para la página de inicio
+      };
+  
+      this.http.post<ApiResponsePublicidad>(apiUrl, body, { headers: headers })
+        .pipe(
+          catchError(this.handleError)
+        )
+        .subscribe({
+          next: (response: ApiResponsePublicidad) => {
+            if (response.data) {
+              this.processPublicidadData(response.data);
+              this.shuffleAllImages();
+            } else {
+              console.warn('No se encontraron imágenes de publicidad:', response.message);
+              this.setDefaultImages(); // Fallback a imágenes por defecto si no hay datos
+            }
+          },
+          error: (error) => {
+            console.error('Error al cargar publicidad:', error);
+            this.setDefaultImages(); // Fallback a imágenes por defecto en caso de error
+          }
+        });
     }
-    return arrayCopy;
-  }
-
-  // Mezclar todas las imágenes
-  shuffleAllImages() {
-    this.shuffledMainImages = this.shuffleArray(this.mainImages);
-    this.shuffledLeftImages = this.shuffleArray(this.leftImages);
-    this.shuffledRightImages = this.shuffleArray(this.rightImages);
-  }
-
-  // Función para regenerar el orden aleatorio de todos los carruseles
-  regenerateAllOrders() {
-    this.shuffleAllImages();
-  }
-
-
-  ngAfterViewInit() {
-    // Inicializar ambos carruseles manualmente
-    const carrusel1 = new bootstrap.Carousel(document.getElementById('carouselExampleIndicators'), {
-      interval: 3000,
-      ride: 'carousel'
-    });
-
-    const carrusel2 = new bootstrap.Carousel(document.getElementById('promotionCarousel3'), {
-      interval: 3000,
-      ride: 'carousel'
-    });
-
-    const carrusel3 = new bootstrap.Carousel(document.getElementById('promotionCarousel4'), {
-      interval: 3000,
-      ride: 'carousel'
-    });
-  }
+  
+    // Procesar los datos de la API y organizarlos por plantilla
+    private processPublicidadData(publicidadData: PublicidadItem[]): void {
+      // Limpiar arrays
+      this.mainImages = [];
+      this.leftImages = [];
+      this.rightImages = [];
+  
+      publicidadData.forEach(item => {
+        const images = item.url.map(url => ({
+          src: url,
+          alt: item.titulo || `Publicidad ${item.prefijo}`,
+          descrip: item.descrip || '',
+          plantilla: item.plantilla
+        }));
+  
+        // Organizar por tipo de plantilla
+        switch (item.plantilla) {
+          case 'HB': // Home Big - Carrusel principal
+            this.mainImages.push(...images);
+            break;
+          case 'HS1': // Home Small 1 - Carrusel izquierdo
+            this.leftImages.push(...images);
+            break;
+          case 'HS2': // Home Small 2 - Carrusel derecho
+            this.rightImages.push(...images);
+            break;
+        }
+      });
+  
+      // Si algún array está vacío, usar imágenes por defecto para esa sección
+      if (this.mainImages.length === 0) {
+        this.mainImages = this.getDefaultMainImages();
+      }
+      if (this.leftImages.length === 0) {
+        this.leftImages = this.getDefaultLeftImages();
+      }
+      if (this.rightImages.length === 0) {
+        this.rightImages = this.getDefaultRightImages();
+      }
+    }
+  
+    // Imágenes por defecto como fallback
+    private setDefaultImages(): void {
+      this.mainImages = this.getDefaultMainImages();
+      this.leftImages = this.getDefaultLeftImages();
+      this.rightImages = this.getDefaultRightImages();
+    }
+  
+    private getDefaultMainImages(): any[] {
+      return [
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
+        { src: "https://d2wnvkodoh477y.cloudfront.net/proteoerp/uploads/publicidad/68dae7581634d.jpg", alt: "Banner 2" },
+        { src: "https://insuaminca.org/insuaminca/uploads/publicidad/68dd4c74e1ac5.jpg", alt: "Banner 3" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 4" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 5" },
+      ];
+    }
+  
+    private getDefaultLeftImages(): any[] {
+      return [
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner24.jpg", alt: "Banner 24" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner25.jpg", alt: "Banner 25" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner26.png", alt: "Banner 26" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner27.jpg", alt: "Banner 27" }
+      ];
+    }
+  
+    private getDefaultRightImages(): any[] {
+      return [
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner28.png", alt: "Banner 28" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner29.png", alt: "Banner 29" },
+        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner30.jpg", alt: "Banner 30" }
+      ];
+    }
+  
+    // Función para mezclar cualquier array de imágenes (mantener la existente)
+    shuffleArray(array: any[]): any[] {
+      let arrayCopy = [...array];
+      for (let i = arrayCopy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arrayCopy[i], arrayCopy[j]] = [arrayCopy[j], arrayCopy[i]];
+      }
+      return arrayCopy;
+    }
+  
+    // Mezclar todas las imágenes (modificada para usar los nuevos arrays)
+    shuffleAllImages() {
+      this.shuffledMainImages = this.shuffleArray(this.mainImages);
+      this.shuffledLeftImages = this.shuffleArray(this.leftImages);
+      this.shuffledRightImages = this.shuffleArray(this.rightImages);
+      
+      // Reinicializar carruseles después de mezclar
+      setTimeout(() => {
+        this.initializeCarousels();
+      }, 100);
+    }
+  
+    // Función mejorada para inicializar carruseles
+    initializeCarousels() {
+      const carruseles = [
+        'carouselExampleIndicators',
+        'promotionCarousel3', 
+        'promotionCarousel4'
+      ];
+      
+      carruseles.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          // Disposes existing carousel if any
+          const existing = bootstrap.Carousel.getInstance(element);
+          if (existing) {
+            existing.dispose();
+          }
+          
+          // Initialize new carousel
+          new bootstrap.Carousel(element, {
+            interval: 3000,
+            ride: 'carousel'
+          });
+        }
+      });
+    }
+  
+    ngAfterViewInit() {
+      // Inicializar carruseles después de que se carguen las imágenes
+      setTimeout(() => {
+        this.initializeCarousels();
+      }, 500);
+    }
 
   // --- Método para cargar los proveedores del carrusel ---
   loadCarouselProviders(): void {
