@@ -256,29 +256,35 @@ export class HomePageComponent implements OnInit {
       this.mainImages = [];
       this.leftImages = [];
       this.rightImages = [];
-  
+      
       publicidadData.forEach(item => {
-        const images = item.url.map(url => ({
-          src: url,
-          alt: item.titulo || `Publicidad ${item.prefijo}`,
-          descrip: item.descrip || '',
-          plantilla: item.plantilla
-        }));
+        // Filtrar solo items que tengan URLs válidas y no estén vacías
+        if (item.url && item.url.length > 0 && item.url[0]) {
+          const imageData = {
+            src: item.url[0],
+            alt: item.titulo || `Publicidad ${item.prefijo}`,
+            descrip: item.descrip || '',
+            plantilla: item.plantilla,
+            prefijo: item.prefijo
+          };
+  
   
         // Organizar por tipo de plantilla
         switch (item.plantilla) {
           case 'HB': // Home Big - Carrusel principal
-            this.mainImages.push(...images);
+            this.mainImages.push(imageData);
             break;
           case 'HS1': // Home Small 1 - Carrusel izquierdo
-            this.leftImages.push(...images);
+            this.leftImages.push(imageData);
             break;
           case 'HS2': // Home Small 2 - Carrusel derecho
-            this.rightImages.push(...images);
+            this.rightImages.push(imageData);
             break;
         }
-      });
-  
+      } else {
+        console.warn('Item sin URL válida:', item.prefijo, item.titulo);
+      }
+    });  
       // Si algún array está vacío, usar imágenes por defecto para esa sección
       if (this.mainImages.length === 0) {
         this.mainImages = this.getDefaultMainImages();
