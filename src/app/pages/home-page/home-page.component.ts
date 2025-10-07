@@ -300,28 +300,19 @@ export class HomePageComponent implements OnInit {
   
     private getDefaultMainImages(): any[] {
       return [
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
-        { src: "https://d2wnvkodoh477y.cloudfront.net/proteoerp/uploads/publicidad/68dae7581634d.jpg", alt: "Banner 2" },
-        { src: "https://insuaminca.org/insuaminca/uploads/publicidad/68dd4c74e1ac5.jpg", alt: "Banner 3" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 4" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 5" },
+        //{ src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
       ];
     }
   
     private getDefaultLeftImages(): any[] {
       return [
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner24.jpg", alt: "Banner 24" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner25.jpg", alt: "Banner 25" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner26.png", alt: "Banner 26" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner27.jpg", alt: "Banner 27" }
+        //{ src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner24.jpg", alt: "Banner 24" },
       ];
     }
   
     private getDefaultRightImages(): any[] {
       return [
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner28.png", alt: "Banner 28" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner29.png", alt: "Banner 29" },
-        { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner30.jpg", alt: "Banner 30" }
+       // { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Standard/PUBLICIDAD LARGA STANDARD/banner28.png", alt: "Banner 28" },
       ];
     }
   

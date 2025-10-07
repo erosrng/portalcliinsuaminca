@@ -143,35 +143,8 @@ export interface ApiResponsePublicidad {
 
 export class PedidosPageComponent implements OnInit, OnDestroy {
     // Primer carrusel (carouselInv)
-    carouselInvImages = [
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg", alt: "Banner 2" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 3" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 4" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg", alt: "Banner 5" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png", alt: "Banner 6" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png", alt: "Banner 7" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png", alt: "Banner 8" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png", alt: "Banner 9" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg", alt: "Banner 10" }
-    ];
-  
-    // Segundo carrusel (carouselExample)
-    carouselExampleImages = [
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner10.jpg", alt: "Banner 10" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner11.jpg", alt: "Banner 11" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner12.jpg", alt: "Banner 12" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner13.jpg", alt: "Banner 13" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner15.jpg", alt: "Banner 15" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner16.jpg", alt: "Banner 16" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner17.png", alt: "Banner 17" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner18.png", alt: "Banner 18" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner19.png", alt: "Banner 19" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner20.png", alt: "Banner 20" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner21.jpg", alt: "Banner 21" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner22.jpg", alt: "Banner 22" }
-    ];
-
+    carouselInvImages: any[] = []; 
+    carouselExampleImages: any[] = []; 
   
     shuffledInvImages: any[] = [];
     shuffledExampleImages: any[] = [];
@@ -397,33 +370,15 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   private getDefaultInvImages(): any[] {
     return [
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner1.jpg", alt: "Banner 2" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner2.jpg", alt: "Banner 3" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner3.jpg", alt: "Banner 4" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner4.jpg", alt: "Banner 5" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner5.png", alt: "Banner 6" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner6.png", alt: "Banner 7" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner7.png", alt: "Banner 8" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner8.png", alt: "Banner 9" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner9.jpg", alt: "Banner 10" }
+      //{ src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD LARGA (HOME E INVENTARIO)/banner.jpg", alt: "Banner 1" },
+      
     ];
   }
 
   private getDefaultExampleImages(): any[] {
     return [
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner10.jpg", alt: "Banner 10" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner11.jpg", alt: "Banner 11" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner12.jpg", alt: "Banner 12" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner13.jpg", alt: "Banner 13" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner15.jpg", alt: "Banner 15" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner16.jpg", alt: "Banner 16" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner17.png", alt: "Banner 17" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner18.png", alt: "Banner 18" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner19.png", alt: "Banner 19" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner20.png", alt: "Banner 20" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner21.jpg", alt: "Banner 21" },
-      { src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner22.jpg", alt: "Banner 22" }
+      //{ src: "https://insuaminca.org/insuaminca/assets/images/Publicidad Diamante/PUBLICIDAD INVENTARIO/banner10.jpg", alt: "Banner 10" },
+      
     ];
   }
 
