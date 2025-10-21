@@ -63,7 +63,7 @@
                   <div class="">
                     <h4 class="text-blue">Toma de Pedidos</h4>
                     <h3>Cliente: {{clienteData?.nombre ?? 'Seleccione un cliente por favor.'}} - Deposito: <span class="text-blue">({{clienteData?.ubides ?? ''}})</span>  </h3>
-                    <h3>Rif: {{clienteData?.rifci ?? ''}} - Zona: <span class="text-blue">({{clienteData?.nomzona ?? ''}})</span>  </h3>
+                    <h3>Codigo: {{clienteData?.cliente ?? ''}}Rif: {{clienteData?.rifci ?? ''}} - Zona: <span class="text-blue">({{clienteData?.nomzona ?? ''}})</span>  </h3>
                     <a class="show-text-car" (click)="navigateTo('/carrito')">Ver carrito de compra</a>
                   </div>
 
