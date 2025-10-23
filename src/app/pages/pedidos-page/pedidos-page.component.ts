@@ -1056,7 +1056,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         const headers = new HttpHeaders({
           'X-Auth-Token': `${token}`
         });
-        const apiUrl = `${API_URL}portalcli/enviacmweb`;
+        const apiUrl = `${API_URL}portalcli/enviapedwebmasivo`;
         //const apiUrl = `${API_URL}portalcli/enviacm`;
         Swal.fire({
           
