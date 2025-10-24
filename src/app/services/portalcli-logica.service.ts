@@ -62,10 +62,14 @@ export class PortalcliLogicaService {
     }
   }
 
-  navigateTo(route: string) {
+// En portalcli-logica.service.ts
+navigateTo(route: string, queryParams?: any) {
+  if (queryParams) {
+    this.router.navigate([route], { queryParams: queryParams });
+  } else {
     this.router.navigate([route]);
   }
-
+}
   agregarAlCarrito(producto: any, cantidad: number, cliente: any) {
     let codCli;
     if(cliente){  

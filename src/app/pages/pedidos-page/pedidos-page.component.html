@@ -236,28 +236,33 @@
                           <div class="card-body">
                               <div class="row mb-3 border-box">
                                   <label class="label-filtro">Filtros de busqueda</label>
-                                  <div class="col-3 mb-3 mb-md-0">
-
-
-                                      <mat-form-field appearance="outline" class="w-100">
-                                          <mat-label>Marca</mat-label>
-                                          <input type="text"
-                                                 placeholder="Selecciona una Marca"
-                                                 aria-label="Marca"
-                                                 matInput
-                                                 [formControl]="marcaControl"
-                                                 [matAutocomplete]="auto"
-                                                 (keydown.enter)="fetchPedidos()"
-                                                 (focus)="onMarcaFocus()"> <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMarcaSelected($event)">
-                                          <mat-option value="">Todas</mat-option>
-
-                                          @for (marca of filteredMarcaOptions | async; track marca.marca) {
-                                              <mat-option [value]="marca.marca">{{ marca.marca }}</mat-option>
-                                          }
-                                      </mat-autocomplete>
-                                      </mat-form-field>
-
-
+                                  
+                                  <div class="col-3 mb-3 mb-md-0 d-flex align-items-center">
+                                    <button mat-raised-button 
+                                            [class]="filterOfertasActivas ? 'ofertas-activas-btn active' : 'ofertas-activas-btn'"
+                                            (click)="toggleOfertasActivas()"
+                                            class="position-relative">
+                                      
+                                      <div class="d-flex align-items-center justify-content-center" style="margin: 1rem;">
+                                        <mat-icon class="me-2" [class]="filterOfertasActivas ? 'text-white' : 'text-success'">
+                                          local_offer
+                                        </mat-icon>
+                                        <span [class]="filterOfertasActivas ? 'text-white fw-bold' : 'text-success fw-semibold'">
+                                          {{ filterOfertasActivas ? 'Ofertas Activas' : 'Ver Ofertas' }}
+                                        </span>
+                                      </div>
+                                  
+                                      <!-- Badge de ofertas activas -->
+                                      <span *ngIf="filterOfertasActivas" 
+                                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
+                                        ¡
+                                      </span>
+                                  
+                                      <!-- ⭐ ETIQUETA NUEVO - Siempre visible -->
+                                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger nuevo-badge">
+                                        NUEVO
+                                      </span>
+                                    </button>
                                   </div>
 
                                   <div class="col-3 mb-3 mb-md-0">

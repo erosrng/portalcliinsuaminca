@@ -72,7 +72,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   totalBs: string = '';
-  totalUsd: string = '';
+  totalUsd: number = 0;
   unidades: string = '';
   encarprod: string = '';
 
@@ -135,9 +135,9 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  navigateTo(route: string) {
-    this.portalcliLogicaService.navigateTo(route);
-  }
+  navigateTo(route: string, queryParams?: any) {
+  this.portalcliLogicaService.navigateTo(route, queryParams);
+}
 
   eliminareg(caller: any, idPedido: any, codigo: any) {
       this.isLoading = true;
@@ -183,11 +183,78 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
   }
 
   //Envia pedidos al servidor
-  enviaped() {
+  async enviaped() {
+    Swal.showLoading(); 
     const codCli = this.authService.getCodCli();
     const formData = new FormData();
     const token = this.authService.getToken();
-  
+
+    //**************************************
+    //Revisa que el pedido no sea menor a 20$ 
+    if(this.totalUsd < 20){
+      const totalhoy = await this.traetotalhoy();
+      
+      if(totalhoy<20){
+        Swal.fire({
+          icon: 'info',
+          title: '<h2 style="color: #2c5530; margin: 0; font-size: 1.9rem;">Valoramos su preferencia</h2>',
+          html: `
+              <div style="text-align: center; padding: 10px;">
+                  <p style="font-size: 1.8rem; line-height: 1.6; color: #555; text-align: left;">
+                      Apreciado cliente,<br><br>
+                      Agradecemos su interés en nuestros productos. Para brindarle el mejor servicio, 
+                      le informamos que por política de la empresa, no procesamos el <strong style="color: #2c5530;">primer pedido del día 
+                      inferior a $20 USD</strong>.<br><br>
+                      Lo invitamos cordialmente a revisar nuestras <strong style="color: #e91e63;">ofertas especiales y promociones</strong> 
+                      para complementar su pedido y alcanzar este valor mínimo.<br><br>
+                      Estamos seguros de que encontrará opciones adicionales que serán de su agrado.
+                  </p>
+              </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: '<span style="font-size: 1.8rem; font-weight: bold;">🎁 VER OFERTAS ESPECIALES</span>',
+          cancelButtonText: '<span style="font-size: 1.6rem;">✕ Cancelar</span>',
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          background: '#ffffff',
+          iconColor: '#28a745',
+          width: 600,
+          padding: '2em',
+          customClass: {
+              popup: 'swal-popup-custom',
+              confirmButton: 'swal-confirm-btn-profesional',
+              cancelButton: 'swal-cancel-btn-profesional',
+              title: 'swal-title-custom'
+          }
+      }).then((result) => {
+          if (result.isConfirmed) {
+              Swal.fire({
+                  title: '<h3 style="color: #2c5530;">Buscando ofertas...</h3>',
+                  html: `
+                      <div style="text-align: center; padding: 20px;">
+                          <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+                              <span class="sr-only">Cargando...</span>
+                          </div>
+                          <p style="margin-top: 20px; color: #666; font-size: 1.1rem;">
+                              Estamos preparando las mejores ofertas para usted
+                          </p>
+                      </div>
+                  `,
+                  allowOutsideClick: false,
+                  showConfirmButton: false,
+                  width: 500,
+                  background: '#f8f9fa'
+              });
+              
+              setTimeout(() => {
+                  this.navigateTo('/pedidos', { soloOfertas: 'S' });
+              }, 1500);
+          }
+      });
+        return;
+      }
+
+    }
     formData.append('codCli', codCli ?? '');
   
     const headers = new HttpHeaders({
@@ -237,35 +304,58 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-        enviaServer() {
-          const codCli = this.authService.getCodCli();
-          const formData = new FormData();
-          const token = this.authService.getToken();
-        
-          formData.append('codCli', codCli ?? '');
-        
-          const headers = new HttpHeaders({
-            'Authorization': `${token}`
-          });
-          const apiUrl = `${API_URLINTER}portalcli/enviaserver`;
-        
-          // Ejecutar en segundo plano sin esperar respuesta ni mostrar interfaz al usuario
-          this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-            next: (response: any) => {
-              // Solo registrar en consola, no mostrar nada al usuario
-              this.revisarCarrito();
-              this.productscar = [];
-              this.dataSource.data = this.productscar;
-              Swal.fire(response.mensaje, '', 'success');
+  //////////////////////////
+  //Revisamos si ya pidio mas de 20 hoy
+  async traetotalhoy(): Promise<number> {
+    const codCli = this.authService.getCodCli();
+    const formData = new FormData();
+    const token = this.authService.getToken();
+  
+    formData.append('codCli', codCli ?? '');
+  
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = `${API_URLINTER}portalcli/totalhoy`;
+  
+    try {
+      const response: any = await this.http.post(apiUrl, formData, { headers: headers }).toPromise();
+      return response.saldo || 0;
+    } catch (error) {
+      console.error('Error al obtener total hoy', error);
+      return 0;
+    }
+  }
 
-              //console.log('Envío al servidor completado:', response);
-            },
-            error: (error) => {
-              // Solo registrar error en consola, no mostrar nada al usuario
-              console.error('Error al enviar al servidor (background):', error);
-            }
-          });
+  enviaServer() {
+    const codCli = this.authService.getCodCli();
+    const formData = new FormData();
+    const token = this.authService.getToken();
+  
+    formData.append('codCli', codCli ?? '');
+  
+    const headers = new HttpHeaders({
+      'Authorization': `${token}`
+    });
+    const apiUrl = `${API_URLINTER}portalcli/enviaserver`;
+  
+    // Ejecutar en segundo plano sin esperar respuesta ni mostrar interfaz al usuario
+    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+      next: (response: any) => {
+        // Solo registrar en consola, no mostrar nada al usuario
+        this.revisarCarrito();
+        this.productscar = [];
+        this.dataSource.data = this.productscar;
+        Swal.fire(response.mensaje, '', 'success');
+
+        //console.log('Envío al servidor completado:', response);
+      },
+      error: (error) => {
+        // Solo registrar error en consola, no mostrar nada al usuario
+        console.error('Error al enviar al servidor (background):', error);
       }
+    });
+}
 
   //Vacia carrito
   vaciacar(): void {
@@ -328,7 +418,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
         this.totalBs = totalBs;
       }),
       this.portalcliLogicaService.totalUsd$.subscribe((totalUsd) => {
-        this.totalUsd = totalUsd;
+        this.totalUsd = Number(totalUsd);
       }),
       this.portalcliLogicaService.encarprod$.subscribe((encarprod) => {
         this.encarprod = encarprod;

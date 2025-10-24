@@ -315,6 +315,54 @@
   }
 }
 
+//*********************************************
+//alerta de menos de 20 dolares
+.swal-popup-custom {
+  border-radius: 15px;
+  border: 2px solid #e8f5e9;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.swal-confirm-btn-profesional {
+  padding: 15px 35px !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3) !important;
+  transition: all 0.3s ease !important;
+  margin: 10px 5px !important;
+}
+
+.swal-confirm-btn-profesional:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important;
+  background: linear-gradient(135deg, #20c997 0%, #28a745 100%) !important;
+}
+
+.swal-cancel-btn-profesional {
+  padding: 12px 30px !important;
+  font-size: 1rem !important;
+  border-radius: 10px !important;
+  border: 2px solid #6c757d !important;
+  background: transparent !important;
+  color: #6c757d !important;
+  transition: all 0.3s ease !important;
+  margin: 10px 5px !important;
+}
+
+.swal-cancel-btn-profesional:hover {
+  background: #6c757d !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+}
+
+.swal-title-custom {
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
 @media screen and (max-width: 768px) {
 
   .carrito__totals{

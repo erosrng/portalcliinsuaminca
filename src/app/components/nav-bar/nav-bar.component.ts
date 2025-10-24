@@ -86,10 +86,9 @@ export class NavBarComponent implements OnInit {
     this.portalcliLogicaService.closeMenu();
   }
 
-  navigateTo(route: string) {
-    this.portalcliLogicaService.navigateTo(route);
+  navigateTo(route: string, queryParams?: any) {
+    this.portalcliLogicaService.navigateTo(route, queryParams);
   }
-
   onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
     this.authService.setCodCli(cliente.cliente);
     this.portalcliLogicaService.buscaalmacen();

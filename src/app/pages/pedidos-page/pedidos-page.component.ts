@@ -209,9 +209,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
 
   filterCategoria: string = "";
   filterIndexados: string = '';
-  filterOfertasActivas: string = '';
+  filterOfertasActivas:  boolean = false;
   filterNuevasEntradas: boolean = false;
-  filterOfertas: boolean = false;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -237,6 +236,25 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     this.traeMarcas();
     this.traeCategorias();
     this.fetchPublicidad();
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['soloOfertas'] === 'S') {
+        // ⭐ MOSTRAR LOADER AL CARGAR OFERTAS
+        Swal.fire({
+          title: 'Buscando ofertas...',
+          text: 'Filtrando productos con promociones activas',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+          timerProgressBar: true
+        });
+
+        this.filterOfertasActivas = true;
+
+        //this.fetchPedidos(); 
+      }
+    });
 
     this.filteredMarcaOptions = this.marcaControl.valueChanges.pipe(
       startWith(''),
@@ -490,7 +508,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     const searchTerms = searchText.split(' ').filter(term => term.length > 0);
 
     this.filteredProducts = this.filteredProducts.filter(product => { // Importante: Filtrar siempre sobre this.products original
-      // Convertimos la descripción del producto y el código de barras a minúsculas
       const productDescription = product.descrip ? String(product.descrip).toLowerCase() : '';
       const productBarras = product.barras ? String(product.barras).toLowerCase() : '';
 
@@ -501,7 +518,20 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       );
     });
   }
-    
+
+   // ⭐ FUNCIÓN PARA MANEJAR EL CAMBIO DEL CHECKBOX
+   onOfertasActivasChange() {
+    // El valor ya cambia automáticamente con [(ngModel)], solo recargamos
+    this.fetchPedidos();
+  }
+
+    // ⭐ FUNCIÓN PARA EL BOTÓN TOGGLE
+    toggleOfertasActivas() {
+      // Solo cambiar el estado localmente y recargar
+      this.filterOfertasActivas = !this.filterOfertasActivas;
+      this.fetchPedidos(); // Recargar con el nuevo filtro
+    }
+            
     fetchPedidos() {
       Swal.showLoading();
       const formData = new FormData();
@@ -527,12 +557,11 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       formData.append('orderby', this.orderBy);
       formData.append('orderDirection', this.orderDirection);
       formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
-      formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
-      formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
+      formData.append('soloOfertas', this.filterOfertasActivas ? 'S' : 'N');
   
       formData.append('columns', JSON.stringify([
         { data: 'codigo' },
-        { data: 'descrip' },
+        { data: 'descrip' }, 
         { data: 'nomprv' },
         { data: 'oprecio' },
         { data: 'existen' },
@@ -907,8 +936,8 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  navigateTo(route: string) {
-    this.portalcliLogicaService.navigateTo(route);
+  navigateTo(route: string, queryParams?: any) {
+    this.portalcliLogicaService.navigateTo(route, queryParams);
   }
 
     vaciacar(): void {
@@ -1508,8 +1537,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       formData.append('orderby', this.orderBy);
       formData.append('orderDirection', this.orderDirection);
       formData.append('nuevos', this.filterNuevasEntradas ? '1' : '0'); // Añadido el filtro de nuevas entradas
-      formData.append('ofertas', this.filterOfertas ? '1' : '0'); // Añadido el filtro de ofertas
-      formData.append('ofertasActivas', this.filterOfertasActivas); // Añadido el filtro de ofertas activas
+      formData.append('soloOfertas', this.filterOfertasActivas ? 'S' : 'N');
 
       formData.append('columns', JSON.stringify([
         { data: 'codigo' },
