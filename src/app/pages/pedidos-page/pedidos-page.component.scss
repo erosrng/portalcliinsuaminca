@@ -877,3 +877,44 @@ nav[aria-label="Page navigation example"] {
   .badge {
     text-transform: uppercase;
   }
+
+  .inventory-status {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.inventory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.city-label {
+    color: #2c3e50;
+    font-weight: 600;
+    min-width: 100px;
+    text-align: left;
+}
+
+.stock-available {
+    color: #00477c;
+    font-weight: 900;
+    background-color: #e8eef8;;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.stock-unavailable {
+    color: #e74c3c;
+    font-weight: 600;
+    background-color: #fdedec;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    min-width: 40px;
+    text-align: center;
+}

@@ -393,15 +393,28 @@
                                       <span *ngIf="product.segmento > 0" class="oldprice">{{product.dpriced}} $</span>
 
                                   </td>
-                                  <td>
-                                      <span *ngIf="product.existenmat > 0" class="green-label">Maturin:  {{product.existenmat}} </span>
-                                      <br>
-                                      <span *ngIf="product.existenmat <= 0" class="red-label"> Maturin: 0 </span>
-
-                                      <span *ngIf="product.existengua > 0" class="green-label">Guarenas:  {{product.existengua}} </span>
-                                      <br>
-                                      <span *ngIf="product.existengua <= 0" class="red-label">  Guarenas: 0 </span>
-                                  </td>
+                                  <td class="inventory-status">
+                                    <div class="inventory-item">
+                                        <span class="city-label">Maturín:</span>
+                                        <span [class]="product.existenmat > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existenmat > 0 ? product.existenmat : 0 }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="inventory-item">
+                                        <span class="city-label">Guarenas:</span>
+                                        <span [class]="product.existengua > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existengua > 0 ? product.existengua : 0 }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="inventory-item">
+                                        <span class="city-label">Barquisimeto:</span>
+                                        <span [class]="product.existenbq > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existenbq > 0 ? product.existenbq : 0 }}
+                                        </span>
+                                    </div>
+                                </td>
                                   <td>
                                     <input type="number" min="1" maxlength="10"
                                     [value]="product.encar ? product.encar : ''"
