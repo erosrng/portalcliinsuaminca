@@ -332,43 +332,50 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
     // Limpiar arrays
     this.carouselInvImages = [];
     this.carouselExampleImages = [];
-
+  
     publicidadData.forEach(item => {
-      // Filtrar solo items que tengan URLs válidas y no estén vacías
-      if (item.url && item.url.length > 0 && item.url[0]) {
-        const imageData = {
-          src: item.url[0],
-          alt: item.titulo || `Publicidad ${item.prefijo}`,
-          descrip: item.descrip || '',
-          plantilla: item.plantilla,
-          prefijo: item.prefijo
-        };
-
-        // Organizar por tipo de plantilla para PEDIDOS
-        switch (item.plantilla) {
-          case 'PB': // Pedidos Big - Carrusel principal de pedidos
-            this.carouselInvImages.push(imageData);
-            break;
-          case 'PS': // Pedidos Small - Carrusel secundario de pedidos
-            this.carouselExampleImages.push(imageData);
-            break;
-          case 'HB': // Home Big - Ignorar (son para home)
-          case 'HS1': // Home Small 1 - Ignorar
-          case 'HS2': // Home Small 2 - Ignorar
-            console.log(`Imagen ${item.plantilla} ignorada para pedidos:`, item.titulo);
-            break;
-        }
+      // Verificar que tenga URLs válidas y no esté vacío
+      if (item.url && item.url.length > 0) {
+        
+        // Recorrer TODAS las URLs del item, no solo la primera
+        item.url.forEach((url, index) => {
+          if (url && url.trim() !== '') { // Validar que la URL no esté vacía
+            const imageData = {
+              src: url,
+              alt: item.titulo || `Publicidad ${item.prefijo}`,
+              descrip: item.descrip || '',
+              plantilla: item.plantilla,
+              prefijo: item.prefijo
+            };
+  
+            // Organizar por tipo de plantilla para PEDIDOS
+            switch (item.plantilla) {
+              case 'PB': // Pedidos Big - Carrusel principal de pedidos
+                this.carouselInvImages.push(imageData);
+                break;
+              case 'PS': // Pedidos Small - Carrusel secundario de pedidos
+                this.carouselExampleImages.push(imageData);
+                break;
+              case 'HB': // Home Big - Ignorar (son para home)
+              case 'HS1': // Home Small 1 - Ignorar
+              case 'HS2': // Home Small 2 - Ignorar
+                console.log(`Imagen ${item.plantilla} ignorada para pedidos:`, item.titulo);
+                break;
+            }
+          }
+        });
+        
       } else {
-        console.warn('Item sin URL válida:', item.prefijo, item.titulo);
+        console.warn('Item sin URLs válidas:', item.prefijo, item.titulo);
       }
     });
-
+  
     // Log para debugging
     console.log('Imágenes de pedidos cargadas:', {
       pedidosBig: this.carouselInvImages.length,
       pedidosSmall: this.carouselExampleImages.length
     });
-
+  
     // Usar imágenes por defecto si algún array está vacío
     if (this.carouselInvImages.length === 0) {
       console.warn('No hay imágenes PB, usando defaults');

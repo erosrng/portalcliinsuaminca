@@ -258,36 +258,55 @@ export class HomePageComponent implements OnInit {
       this.rightImages = [];
       
       publicidadData.forEach(item => {
-        // Filtrar solo items que tengan URLs válidas y no estén vacías
-        if (item.url && item.url.length > 0 && item.url[0]) {
-          const imageData = {
-            src: item.url[0],
-            alt: item.titulo || `Publicidad ${item.prefijo}`,
-            descrip: item.descrip || '',
-            plantilla: item.plantilla,
-            prefijo: item.prefijo
-          };
-  
-  
-        // Organizar por tipo de plantilla
-        switch (item.plantilla) {
-          case 'HB': // Home Big - Carrusel principal
-            this.mainImages.push(imageData);
-            break;
-          case 'HS1': // Home Small 1 - Carrusel izquierdo
-            this.leftImages.push(imageData);
-            break;
-          case 'HS2': // Home Small 2 - Carrusel derecho
-            this.rightImages.push(imageData);
-            break;
+        // Verificar que tenga URLs válidas y no esté vacío
+        if (item.url && item.url.length > 0) {
+          
+          // Recorrer TODAS las URLs del item, no solo la primera
+          item.url.forEach((url, index) => {
+            if (url && url.trim() !== '') { // Validar que la URL no esté vacía
+              const imageData = {
+                src: url,
+                alt: item.titulo || `Publicidad ${item.prefijo}`,
+                descrip: item.descrip || '',
+                plantilla: item.plantilla,
+                prefijo: item.prefijo,
+                proveedor: item.proveedor,
+                nombre_proveedor: item.nombre_proveedor
+              };
+    
+              // Organizar por tipo de plantilla
+              switch (item.plantilla) {
+                case 'HB': // Home Big - Carrusel principal
+                  this.mainImages.push(imageData);
+                  break;
+                case 'HS1': // Home Small 1 - Carrusel izquierdo
+                  this.leftImages.push(imageData);
+                  break;
+                case 'HS2': // Home Small 2 - Carrusel derecho
+                  this.rightImages.push(imageData);
+                  break;
+                case 'PB': // Puedes agregar más casos si necesitas
+                case 'PS':
+                  // Opcional: agregar a algún array adicional
+                  break;
+              }
+            }
+          });
+          
+        } else {
+          console.warn('Item sin URLs válidas:', item.prefijo, item.titulo);
         }
-      } else {
-        console.warn('Item sin URL válida:', item.prefijo, item.titulo);
-      }
-    });  
+      });  
+      
+      // Log para debug
+      console.log('Main Images encontradas:', this.mainImages.length);
+      console.log('Left Images encontradas:', this.leftImages.length);
+      console.log('Right Images encontradas:', this.rightImages.length);
+      
       // Si algún array está vacío, usar imágenes por defecto para esa sección
       if (this.mainImages.length === 0) {
         this.mainImages = this.getDefaultMainImages();
+        console.log('Usando imágenes por defecto para main');
       }
       if (this.leftImages.length === 0) {
         this.leftImages = this.getDefaultLeftImages();
