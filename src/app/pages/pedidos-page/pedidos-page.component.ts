@@ -199,7 +199,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   diasMontoFactura: number | undefined;
 
   filterPrecio = '';
-  clienteData: any;
+  public clienteData: any = {};
   private clienteDataSubscription: Subscription | undefined;
   filterLote: string = '';
   orderBy: string = 'descrip';
@@ -298,7 +298,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       // Verifica si TODOS los términos de búsqueda están presentes en la cadena de datos
       return searchTerms.every(term => dataStr.includes(term));
     };
-    
   }
 
   fetchPublicidad(): void {
