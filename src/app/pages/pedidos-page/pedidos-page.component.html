@@ -416,7 +416,7 @@
                                         </span>
                                     </div> -->
                                     <!-- Maturín: Solo para ubica 0001, 0002, 0010 -->
-                                  <div class="inventory-item" *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0010'">
+                                  <div class="inventory-item" *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002'">
                                     <span class="city-label">Maturín:</span>
                                     <span [class]="product.existenmat > 0 ? 'stock-available' : 'stock-unavailable'">
                                         {{ product.existenmat > 0 ? product.existenmat : 0 }}
