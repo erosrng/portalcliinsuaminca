@@ -254,15 +254,28 @@
                     <ng-container matColumnDef="existen">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header="existen" (click)="sortData('existen')" class="w-15"> Disponibles </th>
                         <td mat-cell *matCellDef="let element">
-                            <!-- <span *ngIf="element.existenmat > 0" class="green-label">Maturin:  {{element.existenmat}} </span>
-                            <br>
-                            <span *ngIf="element.existenmat <= 0" class="red-label"> Maturin: 0 </span>
-
-                            <span *ngIf="element.existengua > 0" class="green-label">Guarenas:  {{element.existengua}} </span>
-                            <br>
-                            <span *ngIf="element.existengua <= 0" class="red-label">  Guarenas: 0 </span> -->
-                            <strong>{{ (element.existenmat || 0) + (element.existengua || 0) + (element.existenbqto || 0) }}</strong>
-                        </td>
+                          <ng-container [ngSwitch]="clienteData?.ubica">
+                              <!-- Para 0001: existenmat + existengua -->
+                              <ng-container *ngSwitchCase="'0001'">
+                                  <strong>{{ (element.existenmat || 0) + (element.existengua || 0) }}</strong>
+                              </ng-container>
+                              
+                              <!-- Para 0002: existengua + existenmat + existenbqto -->
+                              <ng-container *ngSwitchCase="'0002'">
+                                  <strong>{{ (element.existengua || 0) + (element.existenmat || 0) + (element.existenbqto || 0) }}</strong>
+                              </ng-container>
+                              
+                              <!-- Para 0010: existengua + existenbqto -->
+                              <ng-container *ngSwitchCase="'0010'">
+                                  <strong>{{ (element.existengua || 0) + (element.existenbqto || 0) }}</strong>
+                              </ng-container>
+                              
+                              <!-- Caso por defecto: suma de todos -->
+                              <ng-container *ngSwitchDefault>
+                                  <strong>{{ (element.existenmat || 0) + (element.existengua || 0) + (element.existenbqto || 0) }}</strong>
+                              </ng-container>
+                          </ng-container>
+                      </td>
                     </ng-container>
 
                   <ng-container matColumnDef="oferta">

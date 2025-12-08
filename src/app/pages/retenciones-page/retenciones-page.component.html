@@ -1,0 +1,281 @@
+<app-nav-bar></app-nav-bar>
+
+<div style="display: flex; flex-direction: row;">
+  <app-side-bar></app-side-bar>
+
+  <main class="retenciones">
+    <header class="retenciones__header">
+      <h1 class="retenciones__title">Relación de Retenciones</h1>
+    </header>
+
+    <!-- Indicadores visuales -->
+    <div class="retenciones__indicadores">
+      <div class="retenciones__indicador retenciones__indicador--pendientes">
+        <div class="retenciones__indicador-title">Pendientes</div>
+        <div class="retenciones__indicador-value">{{retenciones.length}}</div>
+      </div>
+      <div class="retenciones__indicador retenciones__indicador--seleccionadas">
+        <div class="retenciones__indicador-title">Seleccionadas</div>
+        <div class="retenciones__indicador-value">
+          {{activeTab === 'individual' ? (retencionSeleccionada ? '1' : '0') : retencionesSeleccionadas.length}}
+        </div>
+      </div>
+      <div class="retenciones__indicador retenciones__indicador--total">
+        <div class="retenciones__indicador-title">Total a Aplicar</div>
+        <div class="retenciones__indicador-value">
+          ${{activeTab === 'individual' ? formatCurrency(montoAplicar.toString()) : formatCurrency(totalSeleccionado.toString())}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="retenciones__tabs">
+      <button 
+        class="retenciones__tab" 
+        [class.retenciones__tab--active]="activeTab === 'individual'"
+        (click)="cambiarTab('individual')">
+        Relacionar Retención
+      </button>
+      <button 
+        class="retenciones__tab" 
+        [class.retenciones__tab--active]="activeTab === 'multiple'"
+        (click)="cambiarTab('multiple')">
+        Relacionar Múltiples Retenciones
+      </button>
+    </nav>
+
+    <!-- Filtros -->
+    <div class="retenciones__filtros">
+      <div class="retenciones__filtro-group">
+        <label class="retenciones__filtro-label">Buscar</label>
+        <input 
+          type="text" 
+          class="retenciones__filtro-input" 
+          placeholder="Buscar por nombre, número o tipo..."
+          [(ngModel)]="searchTerm">
+      </div>
+      <div class="retenciones__filtro-group">
+        <label class="retenciones__filtro-label">Fecha desde</label>
+        <input 
+          type="date" 
+          class="retenciones__filtro-input"
+          [(ngModel)]="filtroFechaDesde">
+      </div>
+      <div class="retenciones__filtro-group">
+        <label class="retenciones__filtro-label">Fecha hasta</label>
+        <input 
+          type="date" 
+          class="retenciones__filtro-input"
+          [(ngModel)]="filtroFechaHasta">
+      </div>
+      <div class="retenciones__filtro-group">
+        <button 
+          class="retenciones__btn retenciones__btn--outline"
+          (click)="searchTerm = ''; filtroFechaDesde = ''; filtroFechaHasta = ''">
+          Limpiar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenido según tab activo -->
+    <div *ngIf="isLoading" class="retenciones__loading">
+      <div class="retenciones__loading-spinner"></div>
+      <div class="retenciones__loading-text">Cargando retenciones...</div>
+    </div>
+
+    <div *ngIf="!isLoading" class="retenciones__tab-content">
+      <!-- Tab 1: Relacionar Retención Individual -->
+      <div *ngIf="activeTab === 'individual'">
+        <h2>Seleccione una retención para relacionar</h2>
+        
+        <div *ngIf="retencionSeleccionada" class="retenciones__resumen">
+          <h3 class="retenciones__resumen-title">Retención Seleccionada</h3>
+          <div class="retenciones__resumen-info">
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Cliente</span>
+              <span class="retenciones__resumen-value">{{retencionSeleccionada.nombre}}</span>
+            </div>
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Factura</span>
+              <span class="retenciones__resumen-value">{{retencionSeleccionada.numero}}</span>
+            </div>
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Saldo</span>
+              <span class="retenciones__resumen-value">${{formatCurrency(retencionSeleccionada.saldo)}}</span>
+            </div>
+          </div>
+          
+          <div class="retenciones__botones">
+            <button 
+              class="retenciones__btn retenciones__btn--primary"
+              (click)="aplicarRetencionIndividual()"
+              [disabled]="!retencionSeleccionada">
+              Relacionar Retención
+            </button>
+            <button 
+              class="retenciones__btn retenciones__btn--secondary"
+              (click)="retencionSeleccionada = null">
+              Cancelar
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla de retenciones para selección individual -->
+        <div class="retenciones__table-container">
+          <table class="retenciones__table">
+            <thead class="retenciones__table-header">
+              <tr>
+                <th class="retenciones__table-header-cell">Seleccionar</th>
+                <th class="retenciones__table-header-cell">Factura</th>
+                <th class="retenciones__table-header-cell">Cliente</th>
+                <th class="retenciones__table-header-cell">Fecha</th>
+                <th class="retenciones__table-header-cell">Monto</th>
+                <th class="retenciones__table-header-cell">Saldo</th>
+                <th class="retenciones__table-header-cell">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let retencion of retencionesFiltradas" 
+                  class="retenciones__table-row"
+                  [class.retenciones__table-row--selected]="retencionSeleccionada?.id === retencion.id">
+                <td class="retenciones__table-cell">
+                  <input 
+                    type="radio" 
+                    name="retencionIndividual"
+                    class="retenciones__checkbox"
+                    [checked]="retencionSeleccionada?.id === retencion.id"
+                    (change)="seleccionarRetencionIndividual(retencion)">
+                </td>
+                <td class="retenciones__table-cell">{{retencion.numero}}</td>
+                <td class="retenciones__table-cell">{{retencion.nombre}}</td>
+                <td class="retenciones__table-cell">{{retencion.fecha}}</td>
+                <td class="retenciones__table-cell">${{formatCurrency(retencion.monto)}}</td>
+                <td class="retenciones__table-cell">${{formatCurrency(retencion.saldo)}}</td>
+                <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
+                  {{parseFloat(retencion.saldo) <= 0 ? 'Pagado' : 'Pendiente'}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
+          <div class="retenciones__empty-icon">📄</div>
+          <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
+          <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
+        </div>
+      </div>
+
+      <!-- Tab 2: Relacionar Múltiples Retenciones -->
+      <div *ngIf="activeTab === 'multiple'">
+        <h2>Seleccione múltiples retenciones para relacionar</h2>
+        
+        <!-- Controles de selección múltiple -->
+        <div class="retenciones__botones">
+          <button 
+            class="retenciones__btn retenciones__btn--outline"
+            (click)="seleccionarTodo()">
+            Seleccionar Todo
+          </button>
+          <button 
+            class="retenciones__btn retenciones__btn--outline"
+            (click)="deseleccionarTodo()">
+            Deseleccionar Todo
+          </button>
+        </div>
+
+        <!-- Resumen de selección múltiple -->
+        <div *ngIf="retencionesSeleccionadas.length > 0" class="retenciones__resumen">
+          <h3 class="retenciones__resumen-title">Resumen de Selección</h3>
+          <div class="retenciones__resumen-info">
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Retenciones Seleccionadas</span>
+              <span class="retenciones__resumen-value">{{retencionesSeleccionadas.length}}</span>
+            </div>
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Monto Total</span>
+              <span class="retenciones__resumen-value">${{formatCurrency(totalSeleccionado.toString())}}</span>
+            </div>
+            <div class="retenciones__resumen-item">
+              <span class="retenciones__resumen-label">Facturas</span>
+              <span class="retenciones__resumen-value">
+                <span *ngFor="let r of retencionesSeleccionadas.slice(0, 3)">
+                  {{r.numero}}<span *ngIf="retencionesSeleccionadas.length > 1">, </span>
+                </span>
+                <span *ngIf="retencionesSeleccionadas.length > 3">...</span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="retenciones__botones">
+            <button 
+              class="retenciones__btn retenciones__btn--primary"
+              (click)="aplicarMultiplesRetenciones()"
+              [disabled]="retencionesSeleccionadas.length === 0">
+              Relacionar {{retencionesSeleccionadas.length}} Retenciones
+            </button>
+            <button 
+              class="retenciones__btn retenciones__btn--secondary"
+              (click)="deseleccionarTodo()">
+              Limpiar Selección
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla para selección múltiple -->
+        <div class="retenciones__table-container">
+          <table class="retenciones__table">
+            <thead class="retenciones__table-header">
+              <tr>
+                <th class="retenciones__table-header-cell">
+                  <input 
+                    type="checkbox" 
+                    class="retenciones__checkbox"
+                    [checked]="retencionesSeleccionadas.length === retencionesFiltradas.length"
+                    (change)="retencionesSeleccionadas.length === retencionesFiltradas.length ? deseleccionarTodo() : seleccionarTodo()">
+                </th>
+                <th class="retenciones__table-header-cell">Factura</th>
+                <th class="retenciones__table-header-cell">Cliente</th>
+                <th class="retenciones__table-header-cell">Fecha</th>
+                <th class="retenciones__table-header-cell">Monto</th>
+                <th class="retenciones__table-header-cell">Saldo</th>
+                <th class="retenciones__table-header-cell">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let retencion of retencionesFiltradas" 
+                  class="retenciones__table-row"
+                  [class.retenciones__table-row--selected]="retencion.selected">
+                <td class="retenciones__table-cell">
+                  <input 
+                    type="checkbox" 
+                    class="retenciones__checkbox"
+                    [checked]="retencion.selected"
+                    (change)="toggleSeleccionMultiple(retencion)">
+                </td>
+                <td class="retenciones__table-cell">{{retencion.numero}}</td>
+                <td class="retenciones__table-cell">{{retencion.nombre}}</td>
+                <td class="retenciones__table-cell">{{retencion.fecha}}</td>
+                <td class="retenciones__table-cell">${{formatCurrency(retencion.monto)}}</td>
+                <td class="retenciones__table-cell">${{formatCurrency(retencion.saldo)}}</td>
+                <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
+                  {{parseFloat(retencion.saldo) <= 0 ? 'Pagado' : 'Pendiente'}}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
+          <div class="retenciones__empty-icon">📄</div>
+          <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
+          <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pre__footer"></div>
+  </main>
+</div>
+
+<app-footer></app-footer>
