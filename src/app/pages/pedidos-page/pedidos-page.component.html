@@ -417,28 +417,38 @@
                                         </span>
                                     </div> -->
                                     <!-- Maturín: Solo para ubica 0001, 0002, 0010 -->
-                                  <div class="inventory-item" *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002'">
-                                    <span class="city-label">Maturín:</span>
-                                    <span [class]="product.existenmat > 0 ? 'stock-available' : 'stock-unavailable'">
-                                        {{ product.existenmat > 0 ? product.existenmat : 0 }}
-                                    </span>
-                                  </div>
-
-                                  <!-- Guarenas: Solo para ubica 0001, 0002, 0010 -->
-                                  <div class="inventory-item" *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0010'">
-                                    <span class="city-label">Guarenas:</span>
-                                    <span [class]="product.existengua > 0 ? 'stock-available' : 'stock-unavailable'">
-                                        {{ product.existengua > 0 ? product.existengua : 0 }}
-                                    </span>
-                                  </div>
-
-                                  <!-- Barquisimeto: Solo para ubica 0002, 0010 -->
-                                  <div class="inventory-item" *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0002' || (portalcliLogicaService.clienteData$ | async)?.ubica === '0010'">
-                                    <span class="city-label">Barquisimeto:</span>
-                                    <span [class]="product.existenbq > 0 ? 'stock-available' : 'stock-unavailable'">
-                                        {{ product.existenbq > 0 ? product.existenbq : 0 }}
-                                    </span>
-                                  </div>
+                                    <div class="inventory-item" 
+                                          *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' 
+                                                || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002'
+                                                || product?.enlist >= 1">
+                                        <span class="city-label">Maturín:</span>
+                                        <span [class]="product.existenmat > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existenmat > 0 ? product.existenmat : 0 }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Guarenas: Solo para ubica 0001, 0002, 0010 o enlist >= 1 -->
+                                    <div class="inventory-item" 
+                                          *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0001' 
+                                                || (portalcliLogicaService.clienteData$ | async)?.ubica === '0002' 
+                                                || (portalcliLogicaService.clienteData$ | async)?.ubica === '0010'
+                                                || product?.enlist >= 1">
+                                        <span class="city-label">Guarenas:</span>
+                                        <span [class]="product.existengua > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existengua > 0 ? product.existengua : 0 }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Barquisimeto: Solo para ubica 0002, 0010 o enlist >= 1 -->
+                                    <div class="inventory-item" 
+                                          *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica === '0002' 
+                                                || (portalcliLogicaService.clienteData$ | async)?.ubica === '0010'
+                                                || product?.enlist >= 1">
+                                        <span class="city-label">Barquisimeto:</span>
+                                        <span [class]="product.existenbq > 0 ? 'stock-available' : 'stock-unavailable'">
+                                            {{ product.existenbq > 0 ? product.existenbq : 0 }}
+                                        </span>
+                                    </div>
                                 </td>
                                   <td>
                                     <input type="number" min="1" maxlength="10"
