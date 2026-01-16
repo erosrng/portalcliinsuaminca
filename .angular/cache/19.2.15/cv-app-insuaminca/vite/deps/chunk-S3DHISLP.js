@@ -1,26 +1,26 @@
 import {
-  ScrollDispatcher,
-  ScrollingModule,
-  ViewportRuler
-} from "./chunk-GGW6PG74.js";
-import {
-  _isTestEnvironment
-} from "./chunk-42FJBLFI.js";
-import {
-  coerceCssPixelValue
-} from "./chunk-IBYU652R.js";
-import {
-  supportsScrollBehavior
-} from "./chunk-2O4WY5GE.js";
-import {
   DomPortalOutlet,
   PortalModule,
   TemplatePortal
 } from "./chunk-TJL6QEYR.js";
 import {
+  ScrollDispatcher,
+  ScrollingModule,
+  ViewportRuler
+} from "./chunk-NJFPBYFW.js";
+import {
+  _isTestEnvironment
+} from "./chunk-42FJBLFI.js";
+import {
+  coerceCssPixelValue
+} from "./chunk-JXBCBRYI.js";
+import {
+  supportsScrollBehavior
+} from "./chunk-2O4WY5GE.js";
+import {
   ESCAPE,
   hasModifierKey
-} from "./chunk-S6KAUQEY.js";
+} from "./chunk-RGRWTJZS.js";
 import {
   _IdGenerator,
   _getEventTarget,
@@ -31,12 +31,12 @@ import {
   _bindEventWithOptions
 } from "./chunk-7P4B233A.js";
 import {
-  Platform
-} from "./chunk-R3SUJZLI.js";
-import {
   BidiModule,
   Directionality
 } from "./chunk-ZQJO536L.js";
+import {
+  Platform
+} from "./chunk-R3SUJZLI.js";
 import {
   Location
 } from "./chunk-UCCE5RQP.js";
@@ -2893,9 +2893,10 @@ export {
   OverlayConfig,
   OverlayContainer,
   OverlayRef,
+  FlexibleConnectedPositionStrategy,
   Overlay,
   CdkOverlayOrigin,
   CdkConnectedOverlay,
   OverlayModule
 };
-//# sourceMappingURL=chunk-63V2JINQ.js.map
+//# sourceMappingURL=chunk-S3DHISLP.js.map

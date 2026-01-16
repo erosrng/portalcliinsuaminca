@@ -10,20 +10,6 @@ import {
   ScrollerModule
 } from "./chunk-OY5PG3YL.js";
 import {
-  InputText,
-  InputTextModule
-} from "./chunk-O6YDGTEE.js";
-import "./chunk-UPC7RBIL.js";
-import {
-  animate,
-  animation,
-  state,
-  style,
-  transition,
-  trigger,
-  useAnimation
-} from "./chunk-X2NH565A.js";
-import {
   IconField
 } from "./chunk-DKGGK45F.js";
 import {
@@ -63,6 +49,10 @@ import {
   TimesIcon,
   TrashIcon
 } from "./chunk-UDWAPW4D.js";
+import {
+  InputText,
+  InputTextModule
+} from "./chunk-O6YDGTEE.js";
 import {
   BaseComponent
 } from "./chunk-TUO4ECIF.js";
@@ -115,6 +105,16 @@ import {
   unblockBodyScroll,
   uuid
 } from "./chunk-SXZ3E2NS.js";
+import "./chunk-UPC7RBIL.js";
+import {
+  animate,
+  animation,
+  state,
+  style,
+  transition,
+  trigger,
+  useAnimation
+} from "./chunk-X2NH565A.js";
 import {
   FormsModule,
   NG_VALUE_ACCESSOR,
@@ -231,8 +231,8 @@ import {
   ɵɵtwoWayProperty,
   ɵɵviewQuery
 } from "./chunk-RFZ2BTTM.js";
-import "./chunk-WPM5VTLQ.js";
 import "./chunk-PEBH6BBU.js";
+import "./chunk-WPM5VTLQ.js";
 import {
   Subject
 } from "./chunk-4S3KYZTJ.js";

@@ -8,6 +8,7 @@ import { PedidosPageComponent } from './pages/pedidos-page/pedidos-page.componen
 import { TomaexcelPageComponent } from './pages/tomaexcel-page/tomaexcel-page.component';
 import { PagosPageComponent } from './pages/pagos-page/pagos-page.component';
 import {HistorialPedidosComponent  } from './pages/historial-pedidos/historial-pedidos.component';
+import {ReclamosPageComponent  } from './pages/reclamos-page/reclamos-page.component';
 
 
 import { authGuard } from './auth.guard';
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'pedidos', component: PedidosPageComponent, canActivate: [authGuard] },
     { path: 'tomaexcel', component: TomaexcelPageComponent, canActivate: [authGuard] },
     { path: 'pagos', component: PagosPageComponent, canActivate: [authGuard] },
-    { path: 'historialpedidos', component: HistorialPedidosComponent, canActivate: [authGuard] }
+    { path: 'historialpedidos', component: HistorialPedidosComponent, canActivate: [authGuard] },
+    { path: 'reclamos', component: ReclamosPageComponent, canActivate: [authGuard] }
 
 ];

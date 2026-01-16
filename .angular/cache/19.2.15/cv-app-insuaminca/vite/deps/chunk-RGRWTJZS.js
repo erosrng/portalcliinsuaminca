@@ -11,13 +11,13 @@ import {
   _bindEventWithOptions
 } from "./chunk-7P4B233A.js";
 import {
+  BidiModule
+} from "./chunk-ZQJO536L.js";
+import {
   Platform,
   coerceElement,
   coerceNumberProperty
 } from "./chunk-R3SUJZLI.js";
-import {
-  BidiModule
-} from "./chunk-ZQJO536L.js";
 import {
   DOCUMENT
 } from "./chunk-B5QHEHR4.js";
@@ -79,6 +79,7 @@ import {
 } from "./chunk-WDMUDEB6.js";
 
 // node_modules/@angular/cdk/fesm2022/keycodes-CpHkExLC.mjs
+var BACKSPACE = 8;
 var TAB = 9;
 var ENTER = 13;
 var SHIFT = 16;
@@ -3060,10 +3061,15 @@ var MatCommonModule = class _MatCommonModule {
 })();
 
 export {
+  BACKSPACE,
   TAB,
   ENTER,
   ESCAPE,
   SPACE,
+  PAGE_UP,
+  PAGE_DOWN,
+  END,
+  HOME,
   LEFT_ARROW,
   UP_ARROW,
   RIGHT_ARROW,
@@ -3071,11 +3077,13 @@ export {
   A,
   normalizePassiveListenerOptions,
   FocusMonitor,
+  CdkMonitorFocus,
   _VisuallyHiddenLoader,
   BreakpointObserver,
   ObserversModule,
   InteractivityChecker,
   FocusTrapFactory,
+  CdkTrapFocus,
   LiveAnnouncer,
   A11yModule,
   hasModifierKey,
@@ -3087,4 +3095,4 @@ export {
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-S6KAUQEY.js.map
+//# sourceMappingURL=chunk-RGRWTJZS.js.map

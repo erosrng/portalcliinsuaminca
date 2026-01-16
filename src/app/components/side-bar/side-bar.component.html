@@ -49,6 +49,17 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/reclamos')">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span *ngIf="portalcliLogicaService.isMenuOpen"> Reclamos</span>
+                    <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                    *ngIf="portalcliLogicaService.isMenuOpen">
+                        NUEVO!
+                    </span>
+                </a>
+            </li>
+
             <!-- <li class="nav-item">
                 <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
                     <i class="fas fa-chart-line"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
