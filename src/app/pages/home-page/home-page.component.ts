@@ -157,6 +157,9 @@ export class HomePageComponent implements OnInit {
   encarprod: string = '';
   productosEnCarritoCodigos: string[] = [];
 
+  // Variables para el modal de imagen
+  showFloatingModal = false;
+
   customOptions: OwlOptions = {
     loop: true,
     mouseDrag: true,
@@ -214,7 +217,34 @@ export class HomePageComponent implements OnInit {
     this.revisarCarrito();
     this.fetchProducts();
     this.fetchPublicidad();
-    // this.loadCarouselProviders();
+
+    setTimeout(() => {
+      this.showImageModal();
+    }, 600);    // this.loadCarouselProviders();
+  }
+
+    
+  ngAfterViewInit() {
+    // Inicializar carruseles después de que se carguen las imágenes
+    setTimeout(() => {
+      this.initializeCarousels();
+    }, 500);
+  }
+
+   // Método para mostrar imagen
+  showImageModal(): void {
+    // URL de la imagen que quieres mostrar
+    this.showFloatingModal = true;
+  }
+  
+  // Método para cerrar el modal
+  closeModal(): void {
+    this.showFloatingModal = false;
+  }
+  
+  // Método para mostrar una imagen específica
+  showCustomImage(imageUrl: string): void {
+    this.showFloatingModal = true;
   }
 
     // Nuevo método para obtener las imágenes de publicidad desde la API
@@ -388,13 +418,7 @@ export class HomePageComponent implements OnInit {
         }
       });
     }
-  
-    ngAfterViewInit() {
-      // Inicializar carruseles después de que se carguen las imágenes
-      setTimeout(() => {
-        this.initializeCarousels();
-      }, 500);
-    }
+
 
   // --- Método para cargar los proveedores del carrusel ---
   loadCarouselProviders(): void {

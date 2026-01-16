@@ -51,6 +51,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Flotante Simple -->
+    <div *ngIf="showFloatingModal" class="modal-overlay" (click)="closeModal()">
+  
+        <div class="modal-container" (click)="$event.stopPropagation()">
+          
+          <!-- Botón de cerrar -->
+          <button class="modal-close-btn" (click)="closeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+          
+          <!-- Imagen -->
+          <img src="./../../../assets/images/reclamos-insuanet.jpg" alt="Publicidad" class="modal-image">
+          
+        </div>
+        
+      </div>
+
     
      <app-side-bar></app-side-bar>
 
