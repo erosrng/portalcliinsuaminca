@@ -114,7 +114,7 @@ export class HistorialPedidosComponent implements OnInit {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URLINTER}/portalcli/trianguladeta`; // Usamos la API para los detalles
+    const apiUrl = `${API_URLINTER}portalcli/trianguladeta`; // Usamos la API para los detalles
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: DetallePedido[]; message: string }>(apiUrl, formData, { headers: headers })
       .subscribe({
@@ -152,7 +152,7 @@ export class HistorialPedidosComponent implements OnInit {
       'X-Auth-Token': `${token}`
     });
 
-    const apiUrl = `${API_URLINTER}/portalcli/triangulatotal`;
+    const apiUrl = `${API_URLINTER}portalcli/triangulatotal`;
 
     this.http.post<{ result: boolean; keys: any[]; columns: any[]; data: Pedido[] }>(apiUrl, formData, { headers: headers })
       .subscribe({
