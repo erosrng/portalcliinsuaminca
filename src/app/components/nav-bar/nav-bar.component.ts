@@ -92,7 +92,7 @@ export class NavBarComponent implements OnInit {
   onClienteSeleccionado(cliente: { cliente: string; nombre: string; rifci: string }): void {
     this.authService.setCodCli(cliente.cliente);
     this.portalcliLogicaService.buscaalmacen();
-    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos' || this.rutaActual == 'pagos') {
+    if (this.rutaActual == 'carrito' || this.rutaActual == 'pedidos' || this.rutaActual == 'pagos' || this.rutaActual == 'retenciones') {
       this.portalcliLogicaService.notificarCambioCliente(cliente.cliente);
     }
     this.revisarCarrito();

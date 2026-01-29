@@ -1052,6 +1052,7 @@ export class ReclamosPageComponent implements OnInit {
       formData.append('cod_cli', this.facturaEncontrada.cod_cli || codCli || '');
       formData.append('nombre_cliente', nombreCliente || this.facturaEncontrada.cliente || '');
       formData.append('almacen', this.facturaEncontrada.almacen);
+      formData.append('dolarcambio', this.facturaEncontrada.dolarcambio);
       formData.append('total_reclamado', this.totalReclamado.toString());
       formData.append('observaciones', this.resumenForm.get('observacionesGenerales')?.value || '');
       

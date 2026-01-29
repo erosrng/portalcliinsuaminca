@@ -30,13 +30,44 @@
             </li>
 
             <!-- <li class="nav-item">
+                <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pagosDropdown" aria-expanded="false">
+                    <i class="fas fa-credit-card"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Pagos</span> 
+                    <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                    *ngIf="portalcliLogicaService.isMenuOpen">
+                        NUEVO!
+                    </span>
+                    <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
+
+                </a>
+                <div class="collapse menu__dropdown-content" id="pagosDropdown">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                <span *ngIf="portalcliLogicaService.isMenuOpen"> Reportar Pagos</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/retenciones')">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <span *ngIf="portalcliLogicaService.isMenuOpen"> Retenciones</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li> -->
+
+            <!-- <li class="nav-item">
                 <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
                     <i class="fas fa-money-bill-wave"></i>
                     <span *ngIf="portalcliLogicaService.isMenuOpen"> Pagos</span>
-                    <span class="badge bg-danger ms-2" *ngIf="portalcliLogicaService.isMenuOpen">NUEVO!</span>
+                    <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                    *ngIf="portalcliLogicaService.isMenuOpen">
+                        NUEVO!
+                    </span>
                 </a>
-            </li> -->
-
+            </li>  -->
+            
             <li class="nav-item">
                 <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/miperfil')">
                     <i class="fas fa-user"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Perfil</span>

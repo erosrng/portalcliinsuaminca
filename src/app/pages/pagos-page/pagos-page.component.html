@@ -120,13 +120,13 @@
                           <!-- Nota importante -->
                           <div class="account-note mt-4">
                             <i class="fas fa-info-circle text-danger"></i>
-                            <span class="text-danger">Verifique cuidadosamente los datos antes de realizar la transferencia.</span>
+                            <span class="text-danger"> Verifique cuidadosamente los datos antes de realizar la transferencia.</span>
                           </div>
                         </div>
                 
                         <!-- Monto a Cancelar - Destacado -->
                         <div class="form-group amount-group" >
-                          <label class="form-label">Total Pagado</label>
+                          <label class="form-label">Total a pagar</label>
                           <div class="amount-display"  *ngIf="metodoPagoSeleccionado == 'VES'">
                             {{formatearMonto(montoACancelar)}}
                             <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
@@ -139,7 +139,7 @@
                           <span class="amount-note">Monto calculado según facturas seleccionadas</span>
                           <div class="account-note mt-4">
                             <i class="fas fa-info-circle text-danger"></i>
-                            <span class="text-danger">Asegurese de pagar el monto exacto indicado por el sistema.</span>
+                            <span class="text-danger"> Asegurese de pagar el monto exacto indicado por el sistema.</span>
                           </div>
                         </div>
 
@@ -272,14 +272,14 @@
 
                         <!-- Datos de Transferencia -->
                         <div class="form-row">
-                          <!-- <div class="form-group col-md-6">
-                            <label class="form-label">Fecha de transferencia</label>
+                          <div class="form-group col-md-6">
+                            <label class="form-label">Fecha del pago</label>
                             <input [(ngModel)]="fechaTransferencia" type="date" class="form-control" name="fecha_transferencia" required>
-                          </div> -->
+                          </div>
                           <div class="form-group col-md-6">
                             <label class="form-label">Número de referencia</label>
-                            <input type="text" class="form-control" placeholder="123456789" 
-                            [(ngModel)]="numeroReferencia" 
+                            <input type="text" class="form-control" placeholder="" 
+                            [(ngModel)]="numeroReferencia" maxlength="30"
                             name="numero_referencia" required>
                           </div>
                         </div>
@@ -297,13 +297,13 @@
                           <label class="form-label">Comprobante de pago</label>
                           <div class="file-upload">
                             <input type="file" id="comprobante" name="comprobante" 
-                                   (change)="handleFileUpload($event)" accept=".jpg,.jpeg,.png,.pdf">
+                                   (change)="handleFileUpload($event)" accept=".jpg,.jpeg,.png">
                             <label for="comprobante" class="upload-label">
                               <i class="fas fa-cloud-upload-alt"></i>
                               <span>{{ archivoComprobante ? archivoComprobante.name : 'Seleccionar archivo' }}</span>
                             </label>
                           </div>
-                          <small class="file-note">Formatos aceptados: JPG, PNG, PDF (Máx. 5MB)</small>
+                          <small class="file-note">Formatos aceptados: JPG, PNG, (Máx. 5MB)</small>
                         </div>
                 
                         <!-- Botón de Envío -->
@@ -371,6 +371,19 @@
 
                                 <mat-checkbox [(ngModel)]="showSelectedOnly" (change)="toggleShowSelectedOnly($event)">Mostrar Seleccionadas</mat-checkbox>      
                               
+                                <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
+                                  <mat-checkbox 
+                                    [(ngModel)]="showConRetencionOnly" 
+                                    (change)="toggleMostrarConRetencion()"
+                                    class="con-retencion-filter">
+                                    <span class="d-flex align-items-center">
+                                      <i class="fas fa-filter me-2"></i>
+                                      Mostrar solo facturas con retención
+                                    </span>
+                                  </mat-checkbox>
+
+                                </div>
+
                                 <div class="rowd-flex justify-content-between align-items-center mb-3">
                                   <div>
                                     <label for="sortField">Ordenar por:</label>
@@ -404,12 +417,16 @@
                             <p>No has seleccionado ninguna fila.</p>
                         </div>
                   
+                      <!----Tabla de facturas--->
                       <div class="table-responsive">
                         <table class="table table-bordered pagos-table">
                           <thead>
                             <tr class="text-center">
                               <th scope="col" class="align-middle">
-                                <mat-checkbox (change)="selectAll($event)"></mat-checkbox>
+                                <mat-checkbox 
+                                  (change)="selectAll($event)"
+                                  [disabled]="!tieneFacturasSeleccionables()">
+                                </mat-checkbox>
                               </th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'numero', direction: sortColumn === 'numero' && sortDirection === 'asc' ? 'desc' : 'asc' })">Documento</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión</th>
@@ -430,15 +447,31 @@
                             
                           </thead>
                           <tbody>
-                            <tr *ngFor="let row of pagedPagos; let i = index" [ngClass]="{'table-primary': row.selected}" class="pagos-row">
-                              <td class="align-middle text-center">
-                                <mat-checkbox 
-                                  [(ngModel)]="row.selected" 
-                                  (change)="toggleRowSelection(row)"
-                                  > <!-- [disabled]="saldoDisponible <= 0 && !row.selected"  -->
-                                </mat-checkbox>
+                            <tr *ngFor="let row of pagedPagos; let i = index" 
+                                [ngClass]="{'table-primary': row.selected, 'fila-sin-retencion': noTieneRetencion(row)}" 
+                                class="pagos-row">
+                                <td class="align-middle text-center">
+                                  <mat-checkbox
+                                      [(ngModel)]="row.selected" 
+                                      (change)="toggleRowSelection(row)"
+                                      [disabled]="noTieneRetencion(row)">
+                                  </mat-checkbox>
+                                  
+                                  <!-- Indicador visual para estado de retención - SOLO si NO es exento -->
+                                  <div *ngIf="clienteData?.tiva == 'E'" class="retencion-indicador" [title]="getTooltipRetencion(row)">
+                                      <i [class]="getIconoRetencion(row)"></i>
+                                  </div>
                               </td>
-                              <td class="align-middle">{{ row.tipo_doc }}-{{ row.numero }}</td>
+                              
+                              <td class="align-middle">
+                                  {{ row.tipo_doc }}-{{ row.numero }}
+                                  
+                                  <!-- Badge para mostrar estado de retención - SOLO si NO es exento -->
+                                  <span *ngIf="clienteData?.tiva == 'E'" class="badge ms-2" [ngClass]="getBadgeClaseRetencion(row)">
+                                      {{ getBadgeRetencion(row) }}
+                                  </span>
+
+                              </td>
                               <td class="align-middle">{{ row.emision }}</td>
                               <td class="align-middle">{{ row.entregado ? row.entregado : 'No entregado' }}</td>
                               <td class="align-middle">{{ row.vence }}</td>
