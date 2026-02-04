@@ -167,6 +167,7 @@
                           <!-- <th width="15%">Almacén</th> -->
                           <th width="15%" class="text-end">Total</th>
                           <th width="10%">Estado</th>
+                          <th width="15%" class="text-center">Descargar</th>
                           <th width="15%" class="text-center">Acciones</th>
                         </tr>
                       </thead>
@@ -182,10 +183,17 @@
                             <span class="badge" 
                                   [ngClass]="{'bg-warning': reclamo.estado === 'A',
                                              'bg-success': reclamo.estado === 'C'}">
-                              {{reclamo.estado === 'A' ? 'Abierto' : 
+                              {{reclamo.estado === 'A' ? 'En proceso' : 
                                 reclamo.estado === 'C' ? 'Cerrado' : 
                                 reclamo.estado}}
                             </span>
+                          </td>
+                          <td class="text-center"  style="text-align: center; cursor: pointer;">
+                              <i class="fa-solid fa-file-pdf"
+                                 title="Ver en Excel"
+                                 (click)="descargarPDFReclamo(reclamo.id)"
+                                 style="color: #217346; font-size: 1.2em;">
+                              </i>
                           </td>
                           <td class="text-center">
                             <button mat-button color="primary" 

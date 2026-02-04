@@ -21,11 +21,13 @@ import Swal from 'sweetalert2';
 
 import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
+import { PROTEO_URL_ALONEINTER } from './../../app.config';
 
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 interface Reclamo {
+  id: string;
   numero: string;
   factura: string;
   fecha: string;
@@ -210,6 +212,7 @@ export class ReclamosPageComponent implements OnInit {
         if (response.status && response.data && response.data.length > 0) {
           this.reclamosAnteriores = response.data.map(item => ({
             numero: item.numero || '',
+            id: item.id || '',
             factura: item.factura || '',
             fecha: item.fecha || '',
             cod_cli: item.cod_cli || '',
@@ -1124,6 +1127,11 @@ export class ReclamosPageComponent implements OnInit {
         }
       });
     });
+  }
+
+  descargarPDFReclamo(idRecla: string) {
+    const url = `${PROTEO_URL_ALONEINTER}formatos/ver/RECLA/${idRecla}`;
+    window.open(url, '_blank', 'width=800,height=600,scrollbars=yes,status=yes,resizable=yes');
   }
 
 

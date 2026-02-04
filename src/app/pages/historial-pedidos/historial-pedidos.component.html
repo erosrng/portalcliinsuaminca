@@ -35,6 +35,8 @@
 
         <div class="row mt-5" *ngIf="historialPedidos && historialPedidos.length > 0">
           <div class="col-12">
+            
+            <!-- Tu tabla original (solo cambia el *ngFor) -->
             <table class="historialped__historial-table">
               <thead>
                 <tr>
@@ -45,13 +47,14 @@
                   <th scope="col">IVA</th>
                   <th scope="col" style="text-align: right;">Total General</th>
                   <th scope="col" style="text-align: right;">Total General $</th>
-                    <th scope="col">Unidades</th>
-                    <th scope="col" style="text-align: center;">Detalle</th>
+                  <th scope="col">Unidades</th>
+                  <th scope="col" style="text-align: center;">Detalle</th>
                   <th scope="col" class="border-right-top" style="text-align: center;">Descargar</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let pedido of historialPedidos">
+                <!-- Usa dataSource.paginatedData o calcula manualmente -->
+                <tr *ngFor="let pedido of getPaginatedData()">
                   <td>{{ pedido.numero }}</td>
                   <td>{{ pedido.nombre }}</td>
                   <td>{{ pedido.fecha }}</td>
@@ -60,13 +63,13 @@
                   <td>{{ pedido.totalg | number:'1.2-2' }}</td>
                   <td>{{ pedido.totalg / authService.getTasa() | number:'1.2-2'}}</td>
                   <td>{{ pedido.unidades | number:'1.0-0' }}</td>
-                  <td  style="text-align: center; cursor: pointer;">
+                  <td style="text-align: center; cursor: pointer;">
                     <i class="show__detail fa-solid fa-eye"
                         title="Mostrar detalle"
                         data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop"
-                        (click)="openDetail(pedido)"
-                      ></i>
+                        (click)="openDetail(pedido)">
+                    </i>
                   </td>
                   <td style="text-align: center; cursor: pointer;">
                     <i class="fa-solid fa-file-pdf"
@@ -78,6 +81,17 @@
                 </tr>
               </tbody>
             </table>
+            
+            <!-- Paginador de Angular Material -->
+            <mat-paginator [length]="historialPedidos.length"
+                       [pageSize]="pageSize"
+                       [pageSizeOptions]="pageSizeOptions"
+                       [pageIndex]="pageIndex"
+                       showFirstLastButtons
+                       (page)="onPageChange($event)"
+                       aria-label="Seleccionar página">
+        </mat-paginator>
+            
           </div>
         </div>
 

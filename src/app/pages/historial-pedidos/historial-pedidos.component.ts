@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
+
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
@@ -67,7 +69,9 @@ interface DetallePedido {
     CommonModule,
     SideBarComponent,
     NavBarComponent,
-    FooterComponent
+    FooterComponent,
+    MatTableModule,
+    MatPaginatorModule
 ],
   templateUrl: './historial-pedidos.component.html',
   styleUrl: './historial-pedidos.component.scss'
@@ -82,6 +86,19 @@ export class HistorialPedidosComponent implements OnInit {
   totalUnidades= 0
   totalValorDolar= 0
 
+   // Variables para paginación Material
+  dataSource = new MatTableDataSource<Pedido>([]);
+  displayedColumns: string[] = [
+    'numero', 'nombre', 'fecha', 'totals', 'iva', 'totalg', 
+    'totalgDolar', 'unidades', 'detalle', 'descargar'
+  ];
+  // Configuración del paginator
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
+  pageIndex = 0;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private http: HttpClient,
     public authService: AuthService,
@@ -95,6 +112,20 @@ export class HistorialPedidosComponent implements OnInit {
     
   }
 
+    // Método para obtener datos paginados
+    getPaginatedData(): Pedido[] {
+      const startIndex = this.pageIndex * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      return this.historialPedidos.slice(startIndex, endIndex);
+    }
+  
+    // Método para manejar cambio de página
+    onPageChange(event: PageEvent): void {
+      this.pageIndex = event.pageIndex;
+      this.pageSize = event.pageSize;
+    }
+
+    
   openMenu(event: any) {
     this.toggleMenu = !this.toggleMenu;
   }
@@ -158,9 +189,11 @@ export class HistorialPedidosComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.historialPedidos = response.data;
+          this.dataSource.data = this.historialPedidos; // Asigna datos al dataSource
+          this.dataSource.paginator = this.paginator; // Asigna el paginator
           this.isLoading = false;
-          this.calcularUnidadesHistorial()
-          this.calcularTotalHistorial()
+          this.calcularUnidadesHistorial();
+          this.calcularTotalHistorial();
           Swal.close();
         },
         error: (error) => {
