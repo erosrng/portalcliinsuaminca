@@ -10,6 +10,8 @@ import { MatCheckboxModule, MatCheckboxChange } from '@angular/material/checkbox
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
+
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -109,7 +111,6 @@ export class PagosPageComponent implements OnInit {
     this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
       (cliente) => {
         this.clienteData = cliente;
-        console.log('Cliente actualizado:', this.clienteData);
         
         // Si necesitas hacer algo cuando cambia el cliente
         if (Object.keys(this.clienteData).length > 0) {
@@ -441,7 +442,7 @@ export class PagosPageComponent implements OnInit {
     const formData = new FormData();
     const token = this.authService.getToken();
 
-    const apiUrl = `${API_URL}portalcli/buscabanco`;
+    const apiUrl = `${API_URLINTER}portalcli/buscabanco`;
 
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
@@ -574,7 +575,7 @@ export class PagosPageComponent implements OnInit {
     const token = this.authService.getToken();
     const codCli = this.authService.getCodCli();
 
-    const apiUrl = `${API_URL}portalcli/facturaspago`;
+    const apiUrl = `${API_URLINTER}portalcli/facturaspago`;
 
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
@@ -952,7 +953,7 @@ onFileSelected(event: Event): void {
     
     try {
       Swal.showLoading();
-      const response: any = await this.http.post(`${API_URL}portalcli/enviapago`, formData, { headers }).toPromise();
+      const response: any = await this.http.post(`${API_URLINTER}portalcli/enviapago`, formData, { headers }).toPromise();
       
       if (response?.status) {
         const resumenPago = `
@@ -1033,7 +1034,7 @@ private async enviarComprobante(idPago: string): Promise<void> {
   
   
   try {
-    const response: any = await this.http.post(`${API_URL}portalcli/guardar_comprobante`, formData, { headers }).toPromise();
+    const response: any = await this.http.post(`${API_URLINTER}portalcli/guardar_comprobante`, formData, { headers }).toPromise();
     if (response?.success) {
       Swal.fire('Éxito', 'Comprobante subido correctamente', 'success');
     } else {

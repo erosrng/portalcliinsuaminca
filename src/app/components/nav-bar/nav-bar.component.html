@@ -15,7 +15,7 @@
                         <button class="btn btn-sm btn-outline-secondary dropdown__toggle" type="button" id="idcli" data-bs-toggle="dropdown" aria-expanded="false">
                           {{ getNombreClienteSeleccionado() }} <i *ngIf="clientes" class="fas fa-solid fa-angle-down"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="idcli" *ngIf="clientes">
+                        <ul class="dropdown-menu dropdown-menu-end" style="height: 56rem; overflow: auto;" aria-labelledby="idcli" *ngIf="clientes">
                           <li *ngFor="let cliente of clientes">
                             <a class="dropdown-item" href="javascript:void(0)" [attr.data-value]="cliente.cliente" (click)="onClienteSeleccionado(cliente)">
                               ({{ cliente.cliente }}) {{ cliente.nombre }}

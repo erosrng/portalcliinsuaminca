@@ -14,7 +14,7 @@ import {
   setAttributes,
   toKebabCase,
   toTokenKey
-} from "./chunk-SXZ3E2NS.js";
+} from "./chunk-WQFSD3LU.js";
 import {
   DOCUMENT
 } from "./chunk-B5QHEHR4.js";
@@ -1483,4 +1483,4 @@ export {
   PRIME_NG_CONFIG,
   providePrimeNG
 };
-//# sourceMappingURL=chunk-SS6HJSIN.js.map
+//# sourceMappingURL=chunk-K5LX574Q.js.map

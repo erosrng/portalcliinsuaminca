@@ -6,8 +6,12 @@ import { FooterComponent } from "../../components/footer/footer.component";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
 import { API_URL } from './../../app.config';
+import { API_URLINTER } from './../../app.config';
+
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
+import { Subscription } from 'rxjs';
 
 interface Retencion {
   id: string;
@@ -79,13 +83,29 @@ export class RetencionesPageComponent implements OnInit {
   currentSort: string = 'fecha';
   sortDirection: 'asc' | 'desc' = 'desc';
 
+    private subscriptions: Subscription[] = []; 
+  private clienteSubscription: Subscription = new Subscription();
+    public clienteData: any = {};
+
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    public portalcliLogicaService: PortalcliLogicaService
   ) { }
 
   ngOnInit() {
     this.fetchRetenciones();
+
+    this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
+      (cliente) => {
+        this.clienteData = cliente;
+        
+        // Si necesitas hacer algo cuando cambia el cliente
+        if (Object.keys(this.clienteData).length > 0) {
+          this.fetchRetenciones(); 
+        }
+      }
+    );
   }
 
   // Método para cambiar entre pestañas
@@ -115,7 +135,7 @@ export class RetencionesPageComponent implements OnInit {
       const token = this.authService.getToken();
       const codCli = this.authService.getCodCli();
   
-      const apiUrl = `${API_URL}portalcli/retenpendi`;
+      const apiUrl = `${API_URLINTER}portalcli/retenpendi`;
   
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
@@ -260,7 +280,7 @@ export class RetencionesPageComponent implements OnInit {
       });
       
       // URL de la API para crear retención
-      const apiUrl = `${API_URL}portalcli/crear_retencion`;
+      const apiUrl = `${API_URLINTER}portalcli/crear_retencion`;
       
       // Enviar a la API
       this.http.post<any>(apiUrl, formData, { 
