@@ -61,6 +61,7 @@ export class RetencionesPageComponent implements OnInit {
   uploadError: string | null = null;
   isDragging = false;
   numeroComprobante: string = '';
+  fechaComprobante: string = '';
   comprobanteError: string | null = null;
   
   // Variables para múltiples retenciones
@@ -240,6 +241,11 @@ export class RetencionesPageComponent implements OnInit {
           this.comprobanteError = 'El número de comprobante es obligatorio';
           return;
       }
+
+      if (!this.fechaComprobante || this.fechaComprobante.trim() === '') {
+          this.comprobanteError = 'La fecha de comprobante es obligatorio';
+          return;
+      }
       
       // Validar formato (solo números y letras)
       if (!/^[A-Z0-9-\/]+$/.test(this.numeroComprobante)) {
@@ -270,6 +276,7 @@ export class RetencionesPageComponent implements OnInit {
       formData.append('numero', this.retencionSeleccionada.numero);
       formData.append('monto', this.retencionSeleccionada.rt);
       formData.append('nrocomp', this.numeroComprobante.trim());
+      formData.append('fechacomp', this.fechaComprobante.trim());
 
       // Agregar archivo PDF
       formData.append('comprobante', this.comprobanteFile, this.comprobanteFile.name);

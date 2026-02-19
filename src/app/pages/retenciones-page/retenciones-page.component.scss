@@ -407,7 +407,7 @@
   }
   
   .retenciones__busqueda-input {
-    width: 30%;
+    width: 100%;
     padding: 0.75rem 1rem 0.75rem 40px;
     border: 1px solid #ced4da;
     border-radius: 6px;
@@ -809,7 +809,6 @@
 }
 
 .retenciones__comprobante-label {
-  display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: vars.$menu-color;

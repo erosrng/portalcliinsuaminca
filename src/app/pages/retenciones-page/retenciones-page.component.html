@@ -126,10 +126,10 @@
                     <span class="retenciones__resumen-label">Monto Retenido</span>
                     <span class="retenciones__resumen-value">Bs.{{formatCurrency(retencionSeleccionada.rt)}}</span>
                 </div>
-                <div class="retenciones__resumen-item">
+                <!-- <div class="retenciones__resumen-item">
                     <span class="retenciones__resumen-label">Fecha</span>
                     <span class="retenciones__resumen-value">{{formatDate(retencionSeleccionada.fecha)}}</span>
-                </div>
+                </div> -->
             </div>
             
             <!-- Sección para cargar comprobante -->
@@ -138,21 +138,39 @@
                     <i class="fas fa-file-pdf me-2"></i>Cargar Comprobante de Retención
                 </h4>
 
+                <div class="retenciones__comprobante-input d-flex gap-5">
                   <!-- Campo para número de comprobante -->
                   <div class="retenciones__comprobante-input">
-                    <label class="retenciones__comprobante-label">
-                        Número de Comprobante*
-                    </label>
-                    <input 
-                        type="text" 
-                        class="retenciones__comprobante-field"
-                        [(ngModel)]="numeroComprobante"
-                        (input)="onComprobanteInput()"
-                        maxlength="8">
-                    <div *ngIf="comprobanteError" class="retenciones__input-error">
-                        <i class="fas fa-exclamation-circle me-1"></i>{{comprobanteError}}
-                    </div>
+                      <label class="retenciones__comprobante-label">
+                          Número de Comprobante*
+                      </label>
+
+                      <input 
+                          type="text" 
+                          class="retenciones__comprobante-field"
+                          [(ngModel)]="numeroComprobante"
+                          (input)="onComprobanteInput()"
+                          maxlength="18">
+                      <div *ngIf="comprobanteError" class="retenciones__input-error">
+                          <i class="fas fa-exclamation-circle me-1"></i>{{comprobanteError}}
+                      </div>
+
+                  </div>
+
+                  <div class="retenciones__comprobante-input">
+
+                      <label class="retenciones__comprobante-label">
+                          Fecha de Comprobante*
+                      </label>
+
+                      <input 
+                          type="date" 
+                          class="retenciones__comprobante-field"
+                          [(ngModel)]="fechaComprobante">
+                  </div>
                 </div>
+
+
                 
                 <div class="retenciones__comprobante-upload">
                     <!-- Área de arrastrar y soltar -->
