@@ -13,14 +13,14 @@ import Aura from '@primeuix/themes/aura';
 // ***********************************************
 
 //URL PRACTICA INTERNA 
-export const API_URL = 'http://10.0.100.2/practica/api/';
+/* export const API_URL = 'http://10.0.100.2/practica/api/';
 export const URLSOLA = 'http://10.0.100.2/';
 export const PROTEO_URL_ALONE = 'http://10.0.100.2/practica/';
 
 //PRACTICA SOLO PRUEBAS LOCALES
 export const API_URLINTER = 'http://10.0.100.2/practica/api/';
 export const URLSOLAINTER = 'http://10.0.100.2/';
-export const PROTEO_URL_ALONEINTER = 'http://10.0.100.2/practica/'; 
+export const PROTEO_URL_ALONEINTER = 'http://10.0.100.2/practica/';  */
 
 //URL PRACTICA EXTERNA
 
@@ -36,14 +36,14 @@ export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/prac
 
 
 //URL DE INSUAMINCA PARA TRABAJAR 
-/* export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
 
 export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
 export const URLSOLA = 'https://insuaminca.org/';
 export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/'; 
- */
+
 //MI MAQUINA
 /* export const API_URL = 'http://localhost/insuaminca/api/';
 export const URLSOLA = 'http://localhost/';
