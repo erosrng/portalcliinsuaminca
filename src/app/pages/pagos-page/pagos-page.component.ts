@@ -111,7 +111,7 @@ export class PagosPageComponent implements OnInit {
     this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
       (cliente) => {
         this.clienteData = cliente;
-        
+        this.selectedRowsMap = {};
         // Si necesitas hacer algo cuando cambia el cliente
         if (Object.keys(this.clienteData).length > 0) {
           this.fetchPagos(); // O cualquier otra acción
