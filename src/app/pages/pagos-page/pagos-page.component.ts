@@ -44,6 +44,7 @@ interface FacturaSeleccionada {
     [key: string]: any;
   };
   montoAPagar: number; 
+  montoAPagarD: number; 
 }
 
 @Component({
@@ -324,26 +325,33 @@ export class PagosPageComponent implements OnInit {
     const rowId = this.getRowId(row);
     
     if (!this.selectedRowsMap[rowId]) {
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const saldo = Number(row.saldo) || 0;
-      const difc = Number(row.difc) || 0;
+      const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
       const montoMaximo = parseFloat((saldo + difc).toFixed(2));
       
       this.selectedRowsMap[rowId] = {
         selected: false,
         data: row,
-        montoAPagar: 0
+        montoAPagar: 0,
+        montoAPagarD: 0
       };
     }
   
     const factura = this.selectedRowsMap[rowId];
     
     if (!factura.selected) {
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const saldo = Number(factura.data.saldo) || 0;
-      const difc = Number(factura.data.difc) || 0;
+      const saldod = Number(factura.data.saldo_dolar) || 0;
+      const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
       const montoAPagar = parseFloat((saldo + difc).toFixed(2));
+      const montoAPagarD = parseFloat((saldod + difc).toFixed(2));
 
       factura.selected = true;
       factura.montoAPagar = montoAPagar;
+      factura.montoAPagarD = montoAPagarD;
+
       this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
     } else {
       this.saldoDisponible = parseFloat((this.saldoDisponible + Number(factura.montoAPagar || 0)).toFixed(2));
@@ -368,8 +376,10 @@ export class PagosPageComponent implements OnInit {
       
       if (event.checked) {
         const saldo = Number(row.saldo) || 0;
+        const saldod = Number(row.saldod) || 0;
         const difc = Number(row.difc) || 0;
         const montoInicial = saldo + difc;
+        const montoInicialD = saldod;
 
         this.selectedRowsMap[rowId] = {
           selected: true,
@@ -397,7 +407,8 @@ export class PagosPageComponent implements OnInit {
             nrocomp_aprobado: row.nrocomp_aprobado,
             nrocomp_proceso: row.nrocomp_proceso
           },
-          montoAPagar: montoInicial
+          montoAPagar: montoInicial,
+          montoAPagarD: montoInicialD
         };
       } else {
         if (this.selectedRowsMap[rowId]) {
@@ -419,7 +430,7 @@ export class PagosPageComponent implements OnInit {
         this.cuentaSeleccionada = null;
         break;
       case '$':
-        this.tiposPago = ['Zelle', 'Transferencia'];
+        this.tiposPago = ['Transferencia / Zelle'];
         this.mostrarSelectorCuenta = false;
         this.cuentaSeleccionada = null;
         break;
@@ -486,6 +497,9 @@ export class PagosPageComponent implements OnInit {
     if (this.tipoPagoSeleccionado === 'Pago Movil / Transferencia' && this.metodoPagoSeleccionado === 'VES') {
       this.mostrarSelectorCuenta = true;
       this.cargarCuentas();
+    }else if(this.metodoPagoSeleccionado === '$'){
+      this.mostrarSelectorCuenta = true;
+      this.cargarCuentas();
     } else {
       this.mostrarSelectorCuenta = false;
       this.cuentaSeleccionada = null;
@@ -501,6 +515,7 @@ export class PagosPageComponent implements OnInit {
   }
 
   resetearCampos() {
+    this.selectedRowsMap = {};
     this.tipoPagoSeleccionado = '';
     this.cuentaSeleccionada = null;
     this.identificacion = '';
@@ -743,10 +758,12 @@ export class PagosPageComponent implements OnInit {
       if (!this.selectedRowsMap[key]?.selected) return;
 
       const factura = this.selectedRowsMap[key];
-      console.log(factura)
+      console.log(this.metodoPagoSeleccionado)
 
-      const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
-      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((monto / factura.data.cdolar).toFixed(2)) : 0;      
+      //const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
+      const monto = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.monto).toFixed(2)) : parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2));      
+
+      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2)) : 0;      
       totalMonto += monto;
       totalMontod += montod;
     });
@@ -848,6 +865,7 @@ onFileSelected(event: Event): void {
       .map(key => {
         const facturaData = this.selectedRowsMap[key].data;
         const montoAPagar = this.selectedRowsMap[key].montoAPagar ?? (facturaData.saldo + facturaData.difc);
+        
         return {
           ...facturaData,
           montoAPagar: montoAPagar
@@ -923,6 +941,8 @@ onFileSelected(event: Event): void {
     formData.append('descripcion', this.facturasACancelar);
     formData.append('referencia', this.numeroReferencia);
     formData.append('monto', this.montoACancelar.toString());
+    formData.append('montod', this.montoACancelard.toString());
+
     
     // Datos del banco si existe cuenta seleccionada
     if (this.cuentaSeleccionada) {
