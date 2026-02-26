@@ -761,9 +761,9 @@ export class PagosPageComponent implements OnInit {
       console.log(this.metodoPagoSeleccionado)
 
       //const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
-      const monto = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.monto).toFixed(2)) : parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2));      
+      const monto = this.metodoPagoSeleccionado === 'VES' ? parseFloat((factura.montoAPagar || 0).toFixed(2)) : parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2));      
 
-      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2)) : 0;      
+      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.saldo / factura.data.cdolar).toFixed(2)) : 0;      
       totalMonto += monto;
       totalMontod += montod;
     });
