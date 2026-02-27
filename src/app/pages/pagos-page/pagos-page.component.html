@@ -307,7 +307,7 @@
                         </div>
                 
                         <!-- Botón de Envío -->
-                        <button type="submit" class="submit-btn" [disabled]="!numeroReferencia && !archivoComprobante" (click)="enviapago()">
+                        <button type="submit" class="submit-btn" [disabled]="!numeroReferencia && !archivoComprobante && !cuentaSeleccionada" (click)="enviapago()">
                           Registrar Pago
                           <i class="fas fa-paper-plane"></i>
                         </button>
