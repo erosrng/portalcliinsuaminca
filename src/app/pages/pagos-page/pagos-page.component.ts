@@ -1,3 +1,4 @@
+ 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -45,6 +46,8 @@ interface FacturaSeleccionada {
   };
   montoAPagar: number; 
   montoAPagarD: number; 
+  montoTotalSeleccionado: number; 
+  montoTotalSeleccionadoD: number; 
 }
 
 @Component({
@@ -74,6 +77,7 @@ export class PagosPageComponent implements OnInit {
   itemsPerPage = 10;
   totalPages = 1;
   isLoading = false;
+  //selectedRowsMap: { [key: string]: boolean } = {};
   selectedRowsMap: { [key: string]: FacturaSeleccionada } = {};
   selectedCount = 0;
   allPagos: any[] = [];
@@ -81,10 +85,21 @@ export class PagosPageComponent implements OnInit {
   facturasACancelar: string = '';
   montoACancelar: number = 0;
   montoACancelard: number = 0;
-  montoPagado: number = 0;
+
+  //Monto seleccionado en las filas
+  montoSeleccionado: number = 0;
+  montoSeleccionadod: number = 0;
+
+  //montoPagado: number = 0;
   montoPagadod: number = 0;
+
   saldoDisponible: number = 0;
-  montoOriginalPagado: number = 0;
+  saldoDisponibleD: number = 0;
+
+  montoPagado: any = ''; // Lo usaremos para el binding visual
+montoNumerico: number = 0;
+
+montoOriginalPagado: number = 0;
   isResponsiveMode: boolean = false;
 
   displayedColumns: string[] = [
@@ -112,7 +127,7 @@ export class PagosPageComponent implements OnInit {
     this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
       (cliente) => {
         this.clienteData = cliente;
-        this.selectedRowsMap = {};
+        this.resetearCampos();
         // Si necesitas hacer algo cuando cambia el cliente
         if (Object.keys(this.clienteData).length > 0) {
           this.fetchPagos(); // O cualquier otra acción
@@ -270,6 +285,12 @@ export class PagosPageComponent implements OnInit {
 
     const mensaje = `La factura ${row.tipo_doc}-${row.numero} no tiene retención cargada.\n\nDebe cargar la retención primero en la sección correspondiente antes de poder seleccionarla para pago.`;
     
+    row.selected = false; 
+
+    // Opcional: Si manejas un mapa de filas seleccionadas, asegúrate de borrarla de ahí también
+    const rowId = this.getRowId(row);
+    delete this.selectedRowsMap[rowId];
+
     Swal.fire({
       title: 'Retención Requerida',
       text: mensaje,
@@ -312,114 +333,8 @@ export class PagosPageComponent implements OnInit {
 
   // ============ MÉTODOS EXISTENTES MODIFICADOS ============
 
-  // Modificado para validar retención antes de seleccionar
-  toggleRowSelection(row: any): void {
-    // Validar si tiene retención cargada
-    if (this.noTieneRetencion(row)) {
-      this.mostrarAlertaSinRetencion(row);
-      // Revertir el cambio del checkbox
-      row.selected = !row.selected;
-      return;
-    }
-    
-    const rowId = this.getRowId(row);
-    
-    if (!this.selectedRowsMap[rowId]) {
-      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
-      const saldo = Number(row.saldo) || 0;
-      const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
-      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
-      
-      this.selectedRowsMap[rowId] = {
-        selected: false,
-        data: row,
-        montoAPagar: 0,
-        montoAPagarD: 0
-      };
-    }
-  
-    const factura = this.selectedRowsMap[rowId];
-    
-    if (!factura.selected) {
-      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
-      const saldo = Number(factura.data.saldo) || 0;
-      const saldod = Number(factura.data.saldo_dolar) || 0;
-      const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
-      const montoAPagar = parseFloat((saldo + difc).toFixed(2));
-      const montoAPagarD = parseFloat((saldod + difc).toFixed(2));
 
-      factura.selected = true;
-      factura.montoAPagar = montoAPagar;
-      factura.montoAPagarD = montoAPagarD;
 
-      this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
-    } else {
-      this.saldoDisponible = parseFloat((this.saldoDisponible + Number(factura.montoAPagar || 0)).toFixed(2));
-      factura.selected = false;
-      factura.montoAPagar = 0;
-    }
-
-    this.updatePagedPagos();
-    this.actualizarFacturasACancelar();
-    this.actualizarMonto();
-  }
-
-  // Modificado para solo seleccionar facturas con retención
-  selectAll(event: MatCheckboxChange) {
-    this.allPagos.forEach(row => {
-      // Solo seleccionar las que tienen retención
-      if (this.noTieneRetencion(row)) {
-        return;
-      }
-      
-      const rowId = this.getRowId(row);
-      
-      if (event.checked) {
-        const saldo = Number(row.saldo) || 0;
-        const saldod = Number(row.saldod) || 0;
-        const difc = Number(row.difc) || 0;
-        const montoInicial = saldo + difc;
-        const montoInicialD = saldod;
-
-        this.selectedRowsMap[rowId] = {
-          selected: true,
-          data: {
-            tipo_doc: row.tipo_doc,
-            numero: row.numero,
-            emision: row.emision,
-            entregado: row.entregado,
-            vence: row.vence,
-            dias: row.dias,
-            monto: row.monto,
-            impuesto: row.impuesto,
-            reteiva: row.reteiva,
-            saldo: row.saldo || 0,
-            ppago: row.ppago || 0,
-            difc: row.difc || 0,
-            cdolar: row.cdolar,
-            monto_dolar: row.monto / row.cdolar,
-            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
-            preabono: row.preabono || 0,
-            mfactura: row.mfactura,
-            estado_retencion: row.estado_retencion,
-            disponible_para_retencion: row.disponible_para_retencion,
-            puede_seleccionar: row.puede_seleccionar,
-            nrocomp_aprobado: row.nrocomp_aprobado,
-            nrocomp_proceso: row.nrocomp_proceso
-          },
-          montoAPagar: montoInicial,
-          montoAPagarD: montoInicialD
-        };
-      } else {
-        if (this.selectedRowsMap[rowId]) {
-          this.selectedRowsMap[rowId].selected = false;
-        }
-      }
-    });
-    
-    this.updatePagedPagos();
-    this.actualizarMonto();
-  }
 
 
   actualizarTiposPago() {
@@ -482,6 +397,7 @@ export class PagosPageComponent implements OnInit {
 
   //METODO DE PAGO
   seleccionarMetodoPago(metodo: string) {
+    this.selectedRowsMap = {};
     this.resetearCampos();
     this.metodoPagoSeleccionado = metodo;
     this.actualizarTiposPago();
@@ -524,6 +440,11 @@ export class PagosPageComponent implements OnInit {
     this.comprobante = null;
     this.monto = 0;
     this.metodoPagoSeleccionado = '';
+    this.montoACancelar=0;
+    this.montoSeleccionado=0;
+    this.montoPagado=0;
+    this.montoPagadod=0;
+
   }
 
   copiarAlPortapapeles(texto: string) {
@@ -620,15 +541,139 @@ export class PagosPageComponent implements OnInit {
     });
   }
 
+  //Selector de todas las filas
+  selectAll(event: MatCheckboxChange) {
+    this.allPagos.forEach(row => {
+      // Solo seleccionar las que tienen retención
+      if (this.noTieneRetencion(row)) {
+        return;
+      }
+      
+      const rowId = this.getRowId(row);
+      
+      if (event.checked) {
+        // Convertir a números y asegurar valores válidos
+        const saldo = Number(row.saldo) || 0;
+        const saldod = Number(row.saldod) || 0;
+        const difc = Number(row.difc) || 0;
+        const montoInicial = saldo + difc;
+        const montoInicialD = saldod;
+
+        this.selectedRowsMap[rowId] = {
+          selected: true,
+          data: {
+            tipo_doc: row.tipo_doc,
+            numero: row.numero,
+            emision: row.emision,
+            entregado: row.entregado,
+            vence: row.vence,
+            dias: row.dias,
+            monto: row.monto,
+            impuesto: row.impuesto,
+            reteiva: row.reteiva,
+            saldo: row.saldo || 0,
+            ppago: row.ppago || 0,
+            difc: row.difc || 0,
+            cdolar: row.cdolar,
+            monto_dolar: row.monto / row.cdolar,
+            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
+            preabono: row.preabono || 0,
+            mfactura: row.mfactura,
+            estado_retencion: row.estado_retencion,
+            disponible_para_retencion: row.disponible_para_retencion,
+            puede_seleccionar: row.puede_seleccionar,
+            nrocomp_aprobado: row.nrocomp_aprobado,
+            nrocomp_proceso: row.nrocomp_proceso
+          },
+          montoAPagar: montoInicial,
+          montoAPagarD: montoInicialD,
+          montoTotalSeleccionado: montoInicial,
+          montoTotalSeleccionadoD: montoInicialD,
+        };
+      } else {
+        if (this.selectedRowsMap[rowId]) {
+          this.selectedRowsMap[rowId].selected = false;
+        }
+      }
+    });
+    
+    this.updatePagedPagos();
+    this.actualizarMonto();
+  }
+
 
   saveSelected() {
     const selectedRows = Object.keys(this.selectedRowsMap)
       .filter(key => this.selectedRowsMap[key]);
+    console.log(selectedRows);
   }
 
   //Guarda al momento de seleccionar fila
   getRowId(row: any): string {
     return `${row.tipo_doc}-${row.numero}`;
+  }
+
+  //CUANDO SELECCIONAMOS UNA FILA
+  toggleRowSelection(row: any): void {
+    // Validar si tiene retención cargada
+    if (this.noTieneRetencion(row)) {
+      this.mostrarAlertaSinRetencion(row);
+      // Revertir el cambio del checkbox
+      row.selected = !row.selected;
+      return;
+    }
+    const rowId = this.getRowId(row);
+    
+    if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+      Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+      return;
+    }
+  
+    if (!this.selectedRowsMap[rowId]) {
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+      const saldo = Number(row.saldo) || 0;
+      const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
+      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      
+      this.selectedRowsMap[rowId] = {
+        selected: false,
+        data: row,
+        montoAPagar: 0,
+        montoAPagarD: 0,
+        montoTotalSeleccionado: 0,
+        montoTotalSeleccionadoD: 0
+      };
+    }
+  
+    const factura = this.selectedRowsMap[rowId];
+    
+    if (!factura.selected) {
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+      const saldo = Number(factura.data.saldo) || 0;
+      const saldod = Number(factura.data.saldo_dolar) || 0;
+      const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
+      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      const montoMaximoD = parseFloat((saldod + difc).toFixed(2));
+      const montoAPagar = parseFloat((Math.min(montoMaximo, this.saldoDisponible)).toFixed(2));
+      const montoAPagarD = parseFloat((Math.min(montoMaximoD, this.saldoDisponible)).toFixed(2));
+      
+      factura.selected = true;
+      factura.montoAPagar = montoAPagar;
+      factura.montoAPagarD = montoAPagarD;
+      factura.montoTotalSeleccionado = montoMaximo;
+      factura.montoTotalSeleccionadoD = montoMaximoD;
+      this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
+      this.saldoDisponibleD = parseFloat((this.saldoDisponibleD - montoAPagarD).toFixed(2));
+    } else {
+      this.saldoDisponible = parseFloat((this.saldoDisponible + Number(factura.montoAPagar || 0)).toFixed(2));
+      factura.selected = false;
+      factura.montoAPagar = 0;
+      factura.montoAPagarD = 0;
+    }
+    
+    this.updatePagedPagos();
+    this.actualizarFacturasACancelar();
+    this.actualizarMonto();
   }
 
   // Verifica si la factura está pagada completamente
@@ -753,28 +798,34 @@ export class PagosPageComponent implements OnInit {
   actualizarMonto(): void {
     let totalMonto = 0;
     let totalMontod = 0;
-
+    let totalMontoSeleccionado = 0;
+    let totalMontoSeleccionadod = 0;
+    
     Object.keys(this.selectedRowsMap).forEach(key => {
       if (!this.selectedRowsMap[key]?.selected) return;
-
+      
       const factura = this.selectedRowsMap[key];
-      console.log(this.metodoPagoSeleccionado)
+      const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
+      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((monto / factura.data.cdolar).toFixed(2)) : 0;      
+      
+      const monto2 = this.metodoPagoSeleccionado === 'VES' ? parseFloat((factura.montoTotalSeleccionado || 0).toFixed(2)) : parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2));      
 
-      //const monto = parseFloat((factura.montoAPagar || 0).toFixed(2)); 
-      const monto = this.metodoPagoSeleccionado === 'VES' ? parseFloat((factura.montoAPagar || 0).toFixed(2)) : parseFloat((factura.data.monto / factura.data.cdolar).toFixed(2));      
-
-      const montod = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.saldo / factura.data.cdolar).toFixed(2)) : 0;      
+      const monto2d = this.metodoPagoSeleccionado === '$' ? parseFloat((factura.data.saldo / factura.data.cdolar).toFixed(2)) : 0;     
       totalMonto += monto;
       totalMontod += montod;
+      totalMontoSeleccionado += monto2;
+      totalMontoSeleccionadod += monto2d;
     });
     
     this.montoACancelar = parseFloat(totalMonto.toFixed(2));
     this.montoACancelard = parseFloat(totalMontod.toFixed(2));
+    this.montoSeleccionado = parseFloat(totalMontoSeleccionado.toFixed(2));
+    this.montoSeleccionadod = parseFloat(totalMontoSeleccionadod.toFixed(2));
     // Validación de consistencia
-    /* if (totalMonto > this.montoOriginalPagado) {
+    if (totalMonto > this.montoOriginalPagado) {
       console.error('Error: El monto aplicado excede el saldo original');
       this.recalcularMontos();
-    } */
+    }
   }
 
 
@@ -899,10 +950,10 @@ onFileSelected(event: Event): void {
   // Función para mostrar la confirmación del pago
   private async mostrarConfirmacionPago(facturasSeleccionadas: any[]): Promise<any> {
     const simboloMoneda = this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ';
-    const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2);
+    const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     
     const detallesFacturas = facturasSeleccionadas.map(f => {
-      const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2);
+      const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       return `
         <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
           <span>${f.tipo_doc}-${f.numero}</span>
@@ -952,21 +1003,22 @@ onFileSelected(event: Event): void {
     }
   
     // Tipo de pago y moneda
+    formData.append('fbanco', this.fechaTransferencia);
     formData.append('tipo_pago', this.tipoPagoSeleccionado);
     formData.append('moneda', this.metodoPagoSeleccionado);
-  
     // Agregar el detalle de cada factura
     facturasSeleccionadas.forEach((factura, index) => {
       formData.append(`facturas[${index}][tipo_doc]`, factura.tipo_doc);
       formData.append(`facturas[${index}][numero]`, factura.numero);
       formData.append(`facturas[${index}][monto]`, factura.monto.toString());
-      formData.append(`facturas[${index}][abono]`, factura.montoAPagar.toString());
+      //formData.append(`facturas[${index}][abono]`, factura.montoAPagar.toString());
+      formData.append(`facturas[${index}][abono]`, (factura.saldo + factura.difc));
       formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
       formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
       formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
       formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString() || '0');
     });
-  
+
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
@@ -1069,7 +1121,7 @@ private async enviarComprobante(idPago: string): Promise<void> {
 //LOGICA PARA DISTRIBUIR EL MONTO TRANSFERIDO POR EL CLIENTE
 
 // Actualiza cuando cambia el monto pagado
-actualizarSaldoDisponible(): void {
+ actualizarSaldoDisponible(): void {
   if (this.montoPagado <= 0) {
     this.montoPagado = 0.01;
   }
@@ -1086,7 +1138,7 @@ actualizarSaldoDisponible(): void {
   
   this.updatePagedPagos();
   this.actualizarFacturasACancelar();
-}
+} 
 
 distribuirSaldoAFacturas(): void {
   this.saldoDisponible = this.montoOriginalPagado;
@@ -1137,6 +1189,34 @@ recalcularMontos(): void {
   this.saldoDisponible = saldoRestante;
   this.updatePagedPagos();
   this.actualizarMonto();
+}
+
+//Para poner cacherosos los montos 
+  onBlurCurrency(event: any) {
+  if (event.target.value === '' || event.target.value === '0,00') return;
+  this.formatCurrency(event);
+}
+
+formatCurrency(event: any) {
+  let value = event.target.value;
+
+  // Solo dejamos números
+  value = value.replace(/\D/g, '');
+
+  if (value === '') {
+    this.montoPagado = '';
+    return;
+  }
+
+  // Convertimos a formato visual (1.250,50)
+  const options = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+  const formattedValue = new Intl.NumberFormat('de-DE', options).format(
+    parseFloat(value) / 100
+  );
+
+  // IMPORTANTE: Aquí asignamos el string formateado a tu variable original
+  this.montoPagado = formattedValue;
+  event.target.value = formattedValue;
 }
 
 }
