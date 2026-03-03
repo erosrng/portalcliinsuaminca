@@ -17,7 +17,8 @@
                       <div class="payment-section">
                         <h4 class="section-title">Seleccione el tipo de moneda</h4>
                         <div class="payment-methods">
-                          <div class="payment-method" *ngFor="let metodo of ['VES', '$']">
+                         <!--  <div class="payment-method" *ngFor="let metodo of ['VES', '$']"> -->
+                          <div class="payment-method" *ngFor="let metodo of ['VES']">
                             <input type="radio" name="metodoPago" [id]="'metodo-'+metodo" 
                                    [value]="metodo" [checked]="metodoPagoSeleccionado === metodo"
                                    (change)="seleccionarMetodoPago(metodo)" class="payment-method-input">
@@ -169,7 +170,7 @@
                                   </div>
 
                                   <div class="amount-display"  *ngIf="metodoPagoSeleccionado != 'VES'">
-                                    {{formatearMonto(montoACancelard)}}
+                                    {{formatearMonto(montoSeleccionadod)}}
                                     <span class="currency-symbol">{{metodoPagoSeleccionado === 'VES' ? 'Bs' : '$'}}</span>
                                   </div>
                                   <small class="amount-note">Monto calculado según facturas seleccionadas</small>
@@ -198,7 +199,7 @@
                                         {{ formatearMonto(montoACancelar) }} {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }}
                                       </span>
                                       <span class="ms-2 text-muted small">
-                                        ({{ (montoACancelar / montoPagado * 100).toFixed(0) }}% del total)
+                                        ({{ metodoPagoSeleccionado === 'VES' ? (montoACancelar / montoPagado * 100).toFixed(0) : (montoACancelard / montoPagadod * 100).toFixed(0)  }}% del total)
                                       </span>
                                     </div>
                                 
@@ -209,7 +210,7 @@
                                       </span>
                                       <span class="me-2 fw-bold">Disponible:</span>
                                       <span class="text-primary fw-bold">
-                                        {{ formatearMonto(saldoDisponible) }} {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }}
+                                        {{ metodoPagoSeleccionado === 'VES' ? formatearMonto(saldoDisponible) : saldoDisponibled   }} {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }}
                                       </span>
                                       <span class="ms-2 text-muted small">
                                         ({{ (saldoDisponible / montoPagado * 100).toFixed(0) }}% restante)

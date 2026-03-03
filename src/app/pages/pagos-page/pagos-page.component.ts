@@ -91,15 +91,17 @@ export class PagosPageComponent implements OnInit {
   montoSeleccionadod: number = 0;
 
   //montoPagado: number = 0;
-  montoPagadod: number = 0;
 
   saldoDisponible: number = 0;
-  saldoDisponibleD: number = 0;
+  saldoDisponibled: number = 0;
 
-  montoPagado: any = ''; // Lo usaremos para el binding visual
-montoNumerico: number = 0;
+  montoPagado: any = ''; 
+  montoPagadod: any = ''; 
+  montoNumerico: number = 0;
 
-montoOriginalPagado: number = 0;
+  montoOriginalPagado: number = 0;
+  montoOriginalPagadod: number = 0;
+
   isResponsiveMode: boolean = false;
 
   displayedColumns: string[] = [
@@ -624,11 +626,18 @@ montoOriginalPagado: number = 0;
     }
     const rowId = this.getRowId(row);
     
-    if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
-      Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
-      return;
+    if(this.metodoPagoSeleccionado=='VES'){
+      if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+        Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+        return;
+      }
+    }else{
+      if (this.saldoDisponibled <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+        Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+        return;
+      }
     }
-  
+
     if (!this.selectedRowsMap[rowId]) {
       const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const saldo = Number(row.saldo) || 0;
@@ -637,7 +646,30 @@ montoOriginalPagado: number = 0;
       
       this.selectedRowsMap[rowId] = {
         selected: false,
-        data: row,
+        data: {
+            tipo_doc: row.tipo_doc,
+            numero: row.numero,
+            emision: row.emision,
+            entregado: row.entregado,
+            vence: row.vence,
+            dias: row.dias,
+            monto: row.monto,
+            impuesto: row.impuesto,
+            reteiva: row.reteiva,
+            saldo: row.saldo || 0,
+            ppago: row.ppago || 0,
+            difc: row.difc || 0,
+            cdolar: row.cdolar,
+            monto_dolar: row.monto / row.cdolar,
+            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
+            preabono: row.preabono || 0,
+            mfactura: row.mfactura,
+            estado_retencion: row.estado_retencion,
+            disponible_para_retencion: row.disponible_para_retencion,
+            puede_seleccionar: row.puede_seleccionar,
+            nrocomp_aprobado: row.nrocomp_aprobado,
+            nrocomp_proceso: row.nrocomp_proceso
+          },
         montoAPagar: 0,
         montoAPagarD: 0,
         montoTotalSeleccionado: 0,
@@ -653,9 +685,11 @@ montoOriginalPagado: number = 0;
       const saldod = Number(factura.data.saldo_dolar) || 0;
       const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
       const montoMaximo = parseFloat((saldo + difc).toFixed(2));
-      const montoMaximoD = parseFloat((saldod + difc).toFixed(2));
+      const montoMaximoD = parseFloat((saldod).toFixed(2));
+          console.log(factura.data.saldo_dolar)
+
       const montoAPagar = parseFloat((Math.min(montoMaximo, this.saldoDisponible)).toFixed(2));
-      const montoAPagarD = parseFloat((Math.min(montoMaximoD, this.saldoDisponible)).toFixed(2));
+      const montoAPagarD = parseFloat((Math.min(montoMaximoD, this.saldoDisponibled)).toFixed(2));
       
       factura.selected = true;
       factura.montoAPagar = montoAPagar;
@@ -663,13 +697,16 @@ montoOriginalPagado: number = 0;
       factura.montoTotalSeleccionado = montoMaximo;
       factura.montoTotalSeleccionadoD = montoMaximoD;
       this.saldoDisponible = parseFloat((this.saldoDisponible - montoAPagar).toFixed(2));
-      this.saldoDisponibleD = parseFloat((this.saldoDisponibleD - montoAPagarD).toFixed(2));
+      this.saldoDisponibled = parseFloat((this.saldoDisponibled - montoAPagarD).toFixed(2));
     } else {
       this.saldoDisponible = parseFloat((this.saldoDisponible + Number(factura.montoAPagar || 0)).toFixed(2));
+      this.saldoDisponibled = parseFloat((this.saldoDisponibled + Number(factura.montoAPagarD || 0)).toFixed(2));
+
       factura.selected = false;
       factura.montoAPagar = 0;
       factura.montoAPagarD = 0;
     }
+
     
     this.updatePagedPagos();
     this.actualizarFacturasACancelar();
@@ -823,6 +860,11 @@ montoOriginalPagado: number = 0;
     this.montoSeleccionadod = parseFloat(totalMontoSeleccionadod.toFixed(2));
     // Validación de consistencia
     if (totalMonto > this.montoOriginalPagado) {
+      console.error('Error: El monto aplicado excede el saldo original');
+      this.recalcularMontos();
+    }
+
+    if (totalMontod > this.montoOriginalPagadod) {
       console.error('Error: El monto aplicado excede el saldo original');
       this.recalcularMontos();
     }
@@ -1122,14 +1164,19 @@ private async enviarComprobante(idPago: string): Promise<void> {
 
 // Actualiza cuando cambia el monto pagado
  actualizarSaldoDisponible(): void {
-  if (this.montoPagado <= 0) {
+  if (this.montoPagado <= 0 ) {
     this.montoPagado = 0.01;
   }
-  
+  if (this.montoPagadod <= 0) {
+    this.montoPagadod = 0.01;
+  }
   // Resetear todo al cambiar el monto principal
   this.montoOriginalPagado = this.montoPagado;
+  this.montoOriginalPagadod = this.montoPagadod;
+
   this.saldoDisponible = this.montoPagado;
-  
+  this.saldoDisponibled = this.montoPagadod;
+
   // Limpiar selecciones existentes
   Object.keys(this.selectedRowsMap).forEach(key => {
     this.selectedRowsMap[key].selected = false;
@@ -1142,7 +1189,8 @@ private async enviarComprobante(idPago: string): Promise<void> {
 
 distribuirSaldoAFacturas(): void {
   this.saldoDisponible = this.montoOriginalPagado;
-  
+    this.saldoDisponibled = this.montoOriginalPagadod;
+
   // Primero, resetear todos los montos a pagar
   Object.keys(this.selectedRowsMap).forEach(key => {
     if (this.selectedRowsMap[key].selected) {
@@ -1152,14 +1200,26 @@ distribuirSaldoAFacturas(): void {
   
   // Luego, distribuir el saldo
   Object.keys(this.selectedRowsMap).forEach(key => {
-    if (this.selectedRowsMap[key].selected && this.saldoDisponible > 0) {
-      const factura = this.selectedRowsMap[key].data;
-      const montoMaximo = factura.saldo + factura.difc;
-      const montoAPagar = Math.min(montoMaximo, this.saldoDisponible);
-      
-      this.selectedRowsMap[key].montoAPagar = montoAPagar;
-      this.saldoDisponible -= montoAPagar;
+    if(this.metodoPagoSeleccionado=='VES'){
+      if (this.selectedRowsMap[key].selected && this.saldoDisponible > 0) {
+        const factura = this.selectedRowsMap[key].data;
+        const montoMaximo = factura.saldo + factura.difc;
+        const montoAPagar = Math.min(montoMaximo, this.saldoDisponible);
+        
+        this.selectedRowsMap[key].montoAPagar = montoAPagar;
+        this.saldoDisponible -= montoAPagar;
+      }
+    }else{
+      if (this.selectedRowsMap[key].selected && this.saldoDisponibled > 0) {
+        const factura = this.selectedRowsMap[key].data;
+        const montoMaximo = factura.saldo_dolar;
+        const montoAPagar = Math.min(montoMaximo, this.saldoDisponibled);
+        
+        this.selectedRowsMap[key].montoAPagar = montoAPagar;
+        this.saldoDisponibled -= montoAPagar;
+      }
     }
+
   });
   
   this.actualizarMonto();
@@ -1167,56 +1227,47 @@ distribuirSaldoAFacturas(): void {
 
 recalcularMontos(): void {
   let saldoRestante = this.montoOriginalPagado;
-  
+  let saldoRestanted = this.montoOriginalPagadod;
+
   Object.keys(this.selectedRowsMap).forEach(key => {
+
     if (this.selectedRowsMap[key].selected) {
-      const factura = this.selectedRowsMap[key];
-      const montoMaximo = factura.data.saldo + factura.data.difc;
-      const montoAPagar = Math.min(montoMaximo, saldoRestante);
-      
-      factura.montoAPagar = montoAPagar;
-      saldoRestante -= montoAPagar;
-      
-      // Si no queda saldo, deseleccionar las siguientes
-      if (saldoRestante <= 0) {
-        factura.selected = false;
-        factura.montoAPagar = 0;
-        saldoRestante = 0;
+      if(this.metodoPagoSeleccionado=='VES'){
+        const factura = this.selectedRowsMap[key];
+        const montoMaximo = factura.data.saldo + factura.data.difc;
+        const montoAPagar = Math.min(montoMaximo, saldoRestante);
+        
+        factura.montoAPagar = montoAPagar;
+        saldoRestante -= montoAPagar;
+        
+        // Si no queda saldo, deseleccionar las siguientes
+        if (saldoRestante <= 0) {
+          factura.selected = false;
+          factura.montoAPagar = 0;
+          saldoRestante = 0;
+        }
+      }else{
+        const factura = this.selectedRowsMap[key];
+        const montoMaximo = factura.data.saldo_dolar;
+        const montoAPagar = Math.min(montoMaximo, saldoRestanted);
+        
+        factura.montoAPagar = montoAPagar;
+        saldoRestanted -= montoAPagar;
+        
+        // Si no queda saldo, deseleccionar las siguientes
+        if (saldoRestanted <= 0) {
+          factura.selected = false;
+          factura.montoAPagar = 0;
+          saldoRestanted = 0;
+        }
       }
+
     }
   });
   
   this.saldoDisponible = saldoRestante;
+  this.saldoDisponibled = saldoRestanted;
   this.updatePagedPagos();
   this.actualizarMonto();
 }
-
-//Para poner cacherosos los montos 
-  onBlurCurrency(event: any) {
-  if (event.target.value === '' || event.target.value === '0,00') return;
-  this.formatCurrency(event);
-}
-
-formatCurrency(event: any) {
-  let value = event.target.value;
-
-  // Solo dejamos números
-  value = value.replace(/\D/g, '');
-
-  if (value === '') {
-    this.montoPagado = '';
-    return;
-  }
-
-  // Convertimos a formato visual (1.250,50)
-  const options = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-  const formattedValue = new Intl.NumberFormat('de-DE', options).format(
-    parseFloat(value) / 100
-  );
-
-  // IMPORTANTE: Aquí asignamos el string formateado a tu variable original
-  this.montoPagado = formattedValue;
-  event.target.value = formattedValue;
-}
-
 }
