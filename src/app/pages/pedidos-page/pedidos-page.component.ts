@@ -1579,20 +1579,20 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
   }
 
     filterIndexadosFunc() {
-      this.filteredProducts = [...this.products];
-      if (this.filterIndexados === 'INDEXADO') {
-        this.filteredProducts = this.originalDataSourceData.filter((item: any) =>
-          item.indexado === 'INDEXADO'
-        );
+        this.filteredProducts = [...this.products];
+        if (this.filterIndexados === 'INDEXADO') {
+          this.filteredProducts = this.originalDataSourceData.filter((item: any) =>
+            item.indexado === 'INDEXADO'
+          );
+          }
+      if (this.filterIndexados === 'INDEXADO A PARTIR') {
+        this.filteredProducts  = this.originalDataSourceData.filter((item: any) =>
+            item.indexado.includes('INDEXADO A PARTIR')
+          );
         }
-     if (this.filterIndexados === 'INDEXADO A PARTIR') {
-       this.filteredProducts  = this.originalDataSourceData.filter((item: any) =>
-          item.indexado.includes('INDEXADO A PARTIR')
-        );
-      }
 
-    this.resetPaginator();
-  }
+      this.resetPaginator();
+    }
 
   // --- Función para resetear el paginador ---
   resetPaginator(): void {

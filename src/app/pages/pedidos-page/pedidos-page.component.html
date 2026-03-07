@@ -366,6 +366,12 @@
                                   </td>
                                   <td>
                                       {{product.barras}}
+                                      <br>
+                                      <div *ngIf="product.conjunto=='X'"
+                                          class="oferta-proveedor-inline"
+                                          matTooltipPosition="above">
+                                            CONDICIONADO
+                                    </div>
                                   </td>
                                   <td>
                                       <div *ngIf="product.indexado === 'INDEXADO'"
@@ -391,7 +397,7 @@
                                   <td>
                                       <span>{{product.opreciod}} $</span>
                                       <br>
-                                      <span *ngIf="product.segmento > 0" class="oldprice">{{product.dpriced}} $</span>
+                                      <span *ngIf="product.segmento > 0 && product.conjunto!='X'" class="oldprice">{{product.dpriced}} $</span>
 
                                   </td>
                                   <td class="inventory-status">
