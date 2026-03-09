@@ -84,11 +84,19 @@
                 <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/reclamos')">
                     <i class="fas fa-exclamation-circle"></i>
                     <span *ngIf="portalcliLogicaService.isMenuOpen"> Reclamos</span>
+
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajaedocuenta()">
+                    <i class="fas fa-file-invoice-dollar"></i><span *ngIf="portalcliLogicaService.isMenuOpen">Edo.Cuenta</span>
                     <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
                     *ngIf="portalcliLogicaService.isMenuOpen">
                         NUEVO!
                     </span>
                 </a>
+
             </li>
 
             <!-- <li class="nav-item">
