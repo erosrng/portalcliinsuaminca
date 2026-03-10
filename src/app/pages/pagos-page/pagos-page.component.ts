@@ -123,7 +123,7 @@ export class PagosPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.fetchPagos();
+    //this.fetchPagos();
 
 
     this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
@@ -131,7 +131,7 @@ export class PagosPageComponent implements OnInit {
         this.clienteData = cliente;
         this.resetearCampos();
         // Si necesitas hacer algo cuando cambia el cliente
-        if (Object.keys(this.clienteData).length > 0) {
+        if (Object.keys(this.clienteData).length > 0 && this.fechaTransferencia) {
           this.fetchPagos(); // O cualquier otra acción
         }
       }
@@ -424,13 +424,21 @@ export class PagosPageComponent implements OnInit {
     }
   }
 
-  seleccionarCuenta(event: any) {
+  seleccionarFecha(fechaSeleccionada: string) {
+    if (!fechaSeleccionada) return; 
+
+    console.log('La nueva fecha es:', this.fechaTransferencia);
+    this.fetchPagos();
+}
+
+    seleccionarCuenta(event: any) {
     if (event && event.value) {
       this.cuentaSeleccionada = this.cuentas.find(cuenta => cuenta.codbanc == event.value);
     } else {
       this.cuentaSeleccionada = null;
     }
   }
+
 
   resetearCampos() {
     this.selectedRowsMap = {};
@@ -528,6 +536,7 @@ export class PagosPageComponent implements OnInit {
     formData.append('search', this.search ?? '');
     formData.append('sortColumn', this.sortColumn);
     formData.append('sortDirection', this.sortDirection);
+    formData.append('fechapago', this.fechaTransferencia);
 
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
@@ -542,6 +551,7 @@ export class PagosPageComponent implements OnInit {
       },
     });
   }
+  
 
   //Selector de todas las filas
   selectAll(event: MatCheckboxChange) {
@@ -558,7 +568,8 @@ export class PagosPageComponent implements OnInit {
         const saldo = Number(row.saldo) || 0;
         const saldod = Number(row.saldod) || 0;
         const difc = Number(row.difc) || 0;
-        const montoInicial = saldo + difc;
+        const ppago = Number(row.ppago) || 0;
+        const montoInicial = saldo + difc -ppago;
         const montoInicialD = saldod;
 
         this.selectedRowsMap[rowId] = {
@@ -641,8 +652,9 @@ export class PagosPageComponent implements OnInit {
     if (!this.selectedRowsMap[rowId]) {
       const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const saldo = Number(row.saldo) || 0;
+      const ppago = Number(row.ppago) || 0;
       const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
-      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      const montoMaximo = parseFloat((saldo + difc - ppago).toFixed(2));
       
       this.selectedRowsMap[rowId] = {
         selected: false,
@@ -683,8 +695,9 @@ export class PagosPageComponent implements OnInit {
       const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const saldo = Number(factura.data.saldo) || 0;
       const saldod = Number(factura.data.saldo_dolar) || 0;
+      const ppago = Number(factura.data.ppago) || 0;
       const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
-      const montoMaximo = parseFloat((saldo + difc).toFixed(2));
+      const montoMaximo = parseFloat((saldo + difc - ppago).toFixed(2));
       const montoMaximoD = parseFloat((saldod).toFixed(2));
           console.log(factura.data.saldo_dolar)
 
@@ -715,10 +728,13 @@ export class PagosPageComponent implements OnInit {
 
   // Verifica si la factura está pagada completamente
   isFacturaPagadaCompleta(key: string): boolean {
+    const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+
     const factura = this.selectedRowsMap[key];
     const saldo = Number(factura.data.saldo) || 0;
-    const difc = Number(factura.data.difc) || 0;
-    const totalFactura = saldo + difc;
+    const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
+    const ppago = Number(factura.data.ppago) || 0;
+    const totalFactura = saldo + difc-ppago;
     const montoAPagar = Number(factura.montoAPagar) || 0;
     
     return montoAPagar >= totalFactura - 0.01; // Margen de 0.01 por redondeo
@@ -726,10 +742,12 @@ export class PagosPageComponent implements OnInit {
 
   // Calcula el porcentaje pagado de la factura
   getPorcentajePagado(key: string): number {
+    const aplicarDifc = this.metodoPagoSeleccionado !== '$';
     const factura = this.selectedRowsMap[key];
     const saldo = Number(factura.data.saldo) || 0;
-    const difc = Number(factura.data.difc) || 0;
-    const totalFactura = saldo + difc;
+    const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
+    const ppago = Number(factura.data.ppago) || 0;
+    const totalFactura = saldo + difc-ppago;
     const montoAPagar = Number(factura.montoAPagar) || 0;
     
     if (totalFactura <= 0) return 100;
@@ -742,8 +760,11 @@ export class PagosPageComponent implements OnInit {
     
     // Validar el monto de una factura específica
     validarMontoFactura(key: string): void {
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
       const factura = this.selectedRowsMap[key];
-      const maxMonto = factura.data.saldo + factura.data.difc;
+      const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
+
+      const maxMonto = factura.data.saldo + difc - factura.data.ppago;
       factura.montoAPagar = parseFloat(factura.montoAPagar.toFixed(2));
       if (factura.montoAPagar! > maxMonto) {
         factura.montoAPagar = maxMonto;
@@ -1083,9 +1104,9 @@ onFileSelected(event: Event): void {
           html: resumenPago,
           icon: 'success'
         });
-        
+        this.pagedPagos=[];
         this.resetearCampos();
-        this.fetchPagos();
+        //this.fetchPagos();
         
         return { success: true, idPago: response.idPago };
       } else {
@@ -1203,7 +1224,7 @@ distribuirSaldoAFacturas(): void {
     if(this.metodoPagoSeleccionado=='VES'){
       if (this.selectedRowsMap[key].selected && this.saldoDisponible > 0) {
         const factura = this.selectedRowsMap[key].data;
-        const montoMaximo = factura.saldo + factura.difc;
+        const montoMaximo = factura.saldo + factura.difc - factura.ppago;
         const montoAPagar = Math.min(montoMaximo, this.saldoDisponible);
         
         this.selectedRowsMap[key].montoAPagar = montoAPagar;
@@ -1234,7 +1255,7 @@ recalcularMontos(): void {
     if (this.selectedRowsMap[key].selected) {
       if(this.metodoPagoSeleccionado=='VES'){
         const factura = this.selectedRowsMap[key];
-        const montoMaximo = factura.data.saldo + factura.data.difc;
+        const montoMaximo = factura.data.saldo + factura.data.difc - factura.data.ppago;
         const montoAPagar = Math.min(montoMaximo, saldoRestante);
         
         factura.montoAPagar = montoAPagar;
