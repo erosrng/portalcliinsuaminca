@@ -632,7 +632,8 @@ nav[aria-label="Page navigation example"] {
     }
 
     .slide {
-        width: 30% !important;
+        /* width: 30% !important; */
+        width: 412px !important;
         height: 300px !important;
         background-color: black !important;
         border-radius: 1rem !important;
