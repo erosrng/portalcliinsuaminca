@@ -353,11 +353,12 @@
                                            matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'">D ESCALA
                                       </div>
                                       <div *ngIf="product.oferta2 && product.oferta2.length > 0 && product.lineal"
-                                          class="oferta-proveedor-inline"
-                                          [matTooltip]="formatOfertasTooltip(product.oferta2)"
-                                          matTooltipPosition="above">
-                                      D.LINEAL {{ product.lineal }}%
-                                    </div>
+                                            class="oferta-proveedor-inline"
+                                            [matTooltip]="formatOfertasTooltip(product.oferta2)"
+                                            matTooltipPosition="above">
+                                        D.LINEAL {{ product.lineal }}%
+                                      </div>
+                                      
                                       <div *ngIf="product.ficha > 0"
                                            class="ficha-proveedor-inline"
                                            matTooltipPosition="above"> D.FICHA <br>{{product.ficha}} %

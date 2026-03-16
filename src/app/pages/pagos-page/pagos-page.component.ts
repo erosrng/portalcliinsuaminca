@@ -1066,7 +1066,8 @@ onFileSelected(event: Event): void {
     }
   
     // Tipo de pago y moneda
-    formData.append('fbanco', this.fechaTransferencia);
+    //formData.append('fbanco', this.fechaTransferencia);
+    formData.append('fbanco', this.fechaTransferencia.replace(/-/g, ''));
     formData.append('tipo_pago', this.tipoPagoSeleccionado);
     formData.append('moneda', this.metodoPagoSeleccionado);
     // Agregar el detalle de cada factura
