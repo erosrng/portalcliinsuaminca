@@ -13,6 +13,9 @@ import { PortalcliLogicaService } from './../../services/portalcli-logica.servic
 import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core'; // O MatLuxonDateModule si usas Luxon
+
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
@@ -60,6 +63,8 @@ interface FacturaSeleccionada {
     CommonModule,
     FormsModule,
     MatTableModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatPaginatorModule,
     MatInputModule,
     MatSelectModule,
@@ -423,13 +428,29 @@ export class PagosPageComponent implements OnInit {
       this.cuentaSeleccionada = null;
     }
   }
-
+fechaAnterior: any = null; // Guardará la fecha antes del cambio
   seleccionarFecha(fechaSeleccionada: string) {
-    if (!fechaSeleccionada) return; 
+      if (!fechaSeleccionada) return; 
 
-    console.log('La nueva fecha es:', this.fechaTransferencia);
-    this.fetchPagos();
-}
+      // Solo reseteamos si ya había una fecha guardada y es diferente a la nueva
+    if (this.fechaAnterior && this.fechaAnterior !== fechaSeleccionada) {
+        this.selectedRowsMap = {};
+        //this.cuentaSeleccionada = null;
+        this.identificacion = '';
+        this.numeroReferencia = '';
+        this.comprobante = null;
+        this.monto = 0;
+        this.montoACancelar=0;
+        this.montoSeleccionado=0;
+        this.montoPagado=0;
+        this.montoPagadod=0;
+    }
+
+    // Actualizamos la fecha anterior para el próximo cambio
+    this.fechaAnterior = fechaSeleccionada;
+
+      this.fetchPagos();
+  }
 
     seleccionarCuenta(event: any) {
     if (event && event.value) {
@@ -960,11 +981,18 @@ onFileSelected(event: Event): void {
     const codCli = this.authService.getCodCli();
   
     // Validar datos obligatorios
-    if (!this.numeroReferencia || !this.montoACancelar) {
+    if (!this.numeroReferencia || !this.montoACancelar || !this.cuentaSeleccionada ) {
       Swal.fire('Error', 'Por favor complete todos los campos obligatorios', 'error');
       this.isLoading = false;
       return;
     }
+
+    if (this.saldoDisponible>0 && this.saldoDisponible<this.montoACancelar ) {
+      Swal.fire('Error', 'Saldo debe aplicarse por completo.', 'error');
+      this.isLoading = false;
+      return;
+    }
+  
   
     // Validar archivo si es requerido
     if (this.cuentaSeleccionada && !this.archivoComprobante) {
@@ -1067,7 +1095,17 @@ onFileSelected(event: Event): void {
   
     // Tipo de pago y moneda
     //formData.append('fbanco', this.fechaTransferencia);
-    formData.append('fbanco', this.fechaTransferencia.replace(/-/g, ''));
+    if (this.fechaTransferencia) {
+      // Creamos una fecha local para evitar problemas de zona horaria
+      const d = new Date(this.fechaTransferencia);
+      const anio = d.getFullYear();
+      const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+      const dia = ('0' + d.getDate()).slice(-2);
+      
+      const fechaParaEnviar = `${anio}${mes}${dia}`; // Resultado: "20260317"
+      formData.append('fbanco', fechaParaEnviar);
+    }
+    //formData.append('fbanco', this.fechaTransferencia.replace(/-/g, ''));
     formData.append('tipo_pago', this.tipoPagoSeleccionado);
     formData.append('moneda', this.metodoPagoSeleccionado);
     // Agregar el detalle de cada factura

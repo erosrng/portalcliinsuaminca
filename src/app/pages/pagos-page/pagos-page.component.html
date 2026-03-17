@@ -8,9 +8,9 @@
             <header class="pagos__header">
                 <h1 class="ofertas-title pagos__title">Reporte de Pagos</h1>
               </header>
-            <div class="row mt-1">
+            <div class="d-flex flex-column flex-lg-row mt-1" style="gap: 20px;">
 
-                <div class="pagos-form-col">
+                <div class="pagos-form-col" style="flex: 0 0 350px; min-width: 320px;">
                   <div class="card pagos-form-card">
                     <div class="card-body">
                       <!-- Sección de Métodos de Pago -->
@@ -47,19 +47,8 @@
                       <form class="payment-form" *ngIf="tipoPagoSeleccionado">
                         <h4 class="section-title">Complete los datos del pago</h4>
                 
-                        <!-- <div class="form-row">
-                          <div class="form-group col-md-6">
-                            <label class="form-label">Fecha del pago</label>
-                            <input [(ngModel)]="fechaTransferencia" type="date" class="form-control" name="fecha_transferencia" required>
-                          </div>
-                          <div class="form-group col-md-6">
-                            <label class="form-label">Número de referencia</label>
-                            <input type="text" class="form-control" placeholder="" 
-                            [(ngModel)]="numeroReferencia" maxlength="30"
-                            name="numero_referencia" required>
-                          </div>
-                        </div> -->
-                        <div class="form-row" style="display: flex; gap: 16px;">
+   
+                        <!-- <div class="form-row" style="display: flex; gap: 16px;">
                             
                             <mat-form-field appearance="outline" class="col-md-6" style="flex: 1;">
                               <mat-label>Fecha del pago</mat-label>
@@ -70,6 +59,23 @@
                                 type="date" 
                                 name="fecha_transferencia" 
                                 required>
+                            </mat-form-field>
+                          </div> -->
+
+                          <div class="form-row" style="display: flex; gap: 16px;">
+                            <mat-form-field appearance="outline" class="col-md-6" style="flex: 1;">
+                              <mat-label>Fecha del pago</mat-label>
+                              <input 
+                                matInput 
+                                [matDatepicker]="picker"
+                                [(ngModel)]="fechaTransferencia" 
+                                (dateChange)="seleccionarFecha($event.value)"
+                                name="fecha_transferencia" 
+                                readonly
+                                (click)="picker.open()"
+                                required>
+                              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                              <mat-datepicker #picker></mat-datepicker>
                             </mat-form-field>
                           </div>
 
@@ -380,7 +386,10 @@
                         </div>
                 
                         <!-- Botón de Envío -->
-                        <button type="submit" class="submit-btn" [disabled]="saldoDisponible<montoACancelar && !numeroReferencia && !archivoComprobante && !cuentaSeleccionada" (click)="enviapago()">
+                        <button type="submit" class="submit-btn" 
+                        [disabled]="saldoDisponible<montoACancelar && saldoDisponible>0 && !numeroReferencia 
+                        && !archivoComprobante && !cuentaSeleccionada && !cuentaSeleccionada"
+                        (click)="enviapago()">
                           Registrar Pago
                           <i class="fas fa-paper-plane"></i>
                         </button>
@@ -392,7 +401,7 @@
                 </div>
 
                 <!-- Selector de facturas -->
-                <div class="col pagos-table-col">
+                <div class="pagos-table-col" style="flex: 1; min-width: 0;">
                   <h1 class="ofertas-title pagos__title">Facturas a cancelar</h1>
 
                     <!-- Información del Cliente -->

@@ -1,5 +1,10 @@
 @use '../../../styles/variables.scss' as vars;
-
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto; // Esto permite que la tabla tenga su propio scroll si no cabe
+    -webkit-overflow-scrolling: touch;
+}
 .card-body{
   color: vars.$menu-color !important;
 }
