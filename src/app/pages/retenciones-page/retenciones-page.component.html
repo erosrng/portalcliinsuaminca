@@ -13,28 +13,8 @@
         </div>
     </div>
 
-    <!-- Indicadores visuales -->
-   <!--  <div class="retenciones__indicadores">
-      <div class="retenciones__indicador retenciones__indicador--pendientes">
-        <div class="retenciones__indicador-title">Pendientes</div>
-        <div class="retenciones__indicador-value">{{retenciones.length}}</div>
-      </div>
-      <div class="retenciones__indicador retenciones__indicador--seleccionadas">
-        <div class="retenciones__indicador-title">Seleccionadas</div>
-        <div class="retenciones__indicador-value">
-          {{activeTab === 'individual' ? (retencionSeleccionada ? '1' : '0') : retencionesSeleccionadas.length}}
-        </div>
-      </div>
-      <div class="retenciones__indicador retenciones__indicador--total">
-        <div class="retenciones__indicador-title">Total a Aplicar</div>
-        <div class="retenciones__indicador-value">
-          Bs.{{activeTab === 'individual' ? formatCurrency(montoAplicar.toString()) : formatCurrency(totalSeleccionado.toString())}}
-        </div>
-      </div>
-    </div>
- -->
     <!-- Tabs -->
-    <!-- <nav class="retenciones__tabs">
+    <nav class="retenciones__tabs">
       <button 
         class="retenciones__tab" 
         [class.retenciones__tab--active]="activeTab === 'individual'"
@@ -48,522 +28,663 @@
         Relacionar Múltiples Retenciones
       </button>
     </nav>
- -->
-    <!-- Barra de búsqueda mejorada -->
-    <div class="retenciones__busqueda-container">
-      <div class="retenciones__busqueda-wrapper">
-        <i class="fas fa-search retenciones__busqueda-icon"></i>
-        <input 
-          type="text" 
-          class="retenciones__busqueda-input" 
-          placeholder="Buscar por nombre, número de factura, tipo..."
-          [(ngModel)]="searchTerm"
-          (input)="onSearchChange()">
-        <button 
-          class="retenciones__busqueda-btn"
-          (click)="clearSearch()"
-          *ngIf="searchTerm">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+
+    <div class="d-flex flex-column flex-lg-row mt-1" style="gap: 20px;">
       
-      <div class="retenciones__filtros">
-        <div class="retenciones__filtro-group">
-          <label class="retenciones__filtro-label">
-            <i class="fas fa-calendar-alt me-1"></i>Fecha desde
-          </label>
-          <input 
-            type="date" 
-            class="retenciones__filtro-input"
-            [(ngModel)]="filtroFechaDesde"
-            (change)="applyFilters()">
-        </div>
-        <div class="retenciones__filtro-group">
-          <label class="retenciones__filtro-label">
-            <i class="fas fa-calendar-alt me-1"></i>Fecha hasta
-          </label>
-          <input 
-            type="date" 
-            class="retenciones__filtro-input"
-            [(ngModel)]="filtroFechaHasta"
-            (change)="applyFilters()">
-        </div>
-        <div class="retenciones__filtro-group">
-          <button 
+      <!-- Barra de búsqueda mejorada -->
+      <div class="pagos-form-col" style="flex: 0 0 350px; min-width: 320px;">
+        <div class="retenciones__busqueda-container">
+          <div class="retenciones__busqueda-wrapper">
+            <i class="fas fa-search retenciones__busqueda-icon"></i>
+            <input 
+              type="text" 
+              class="retenciones__busqueda-input" 
+              placeholder="Buscar por número de factura, tipo, nombre..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()">
+            <button 
+              class="retenciones__busqueda-btn"
+              (click)="clearSearch()"
+              *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          
+          
+          <div class="retenciones__filtros">
+            <div class="retenciones__filtro-group">
+        <mat-form-field appearance="outline" class="retenciones__mat-filter">
+            <mat-label>Fecha desde</mat-label>
+            <input 
+                matInput 
+                [matDatepicker]="pickerDesde"
+                [(ngModel)]="filtroFechaDesde"
+                (dateChange)="applyFilters()"
+                readonly
+                (click)="pickerDesde.open()">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+            <mat-datepicker #pickerDesde></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <div class="retenciones__filtro-group">
+        <mat-form-field appearance="outline" class="retenciones__mat-filter">
+            <mat-label>Fecha hasta</mat-label>
+            <input 
+                matInput 
+                [matDatepicker]="pickerHasta"
+                [(ngModel)]="filtroFechaHasta"
+                (dateChange)="applyFilters()"
+                readonly
+                (click)="pickerHasta.open()">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+            <mat-datepicker #pickerHasta></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <div class="retenciones__filtro-group">
+        <button 
             class="retenciones__btn retenciones__btn--outline"
-            (click)="clearFilters()">
+            (click)="clearFilters()"
+            style="height: 56px; margin-top: -4px;">
             <i class="fas fa-eraser me-1"></i>Limpiar Filtros
-          </button>
+        </button>
+    </div>
+
+          </div>
+          
         </div>
       </div>
-    </div>
 
-    <!-- Contenido según tab activo -->
-    <div *ngIf="isLoading" class="retenciones__loading">
-      <div class="retenciones__loading-spinner"></div>
-      <div class="retenciones__loading-text">Cargando retenciones...</div>
-    </div>
+      <!-- Contenido según tab activo -->
+      <div class="pagos-table-col" style="flex: 1; min-width: 0;">
+          <div *ngIf="isLoading" class="retenciones__loading">
+            <div class="retenciones__loading-spinner"></div>
+            <div class="retenciones__loading-text">Cargando retenciones...</div>
+          </div>
 
-    <div *ngIf="!isLoading" class="retenciones__tab-content">
+          <div *ngIf="!isLoading" class="retenciones__tab-content">
 
-      <!-- Tab 1: Relacionar Retención Individual -->
+            <!-- Tab 1: Relacionar Retención Individual -->
 
-      <div *ngIf="activeTab === 'individual'">
-        <h2>Seleccione una retención para relacionar</h2>
-        
-        <div *ngIf="retencionSeleccionada" class="retenciones__resumen">
-            <h3 class="retenciones__resumen-title">Retención Seleccionada</h3>
-            <div class="retenciones__resumen-info">
-                <div class="retenciones__resumen-item">
-                    <span class="retenciones__resumen-label">Cliente</span>
-                    <span class="retenciones__resumen-value">{{retencionSeleccionada.nombre}}</span>
-                </div>
-                <div class="retenciones__resumen-item">
-                    <span class="retenciones__resumen-label">Factura</span>
-                    <span class="retenciones__resumen-value">{{retencionSeleccionada.numero}}</span>
-                </div>
-                <div class="retenciones__resumen-item">
-                    <span class="retenciones__resumen-label">Monto Retenido</span>
-                    <span class="retenciones__resumen-value">Bs.{{formatCurrency(retencionSeleccionada.rt)}}</span>
-                </div>
-                <!-- <div class="retenciones__resumen-item">
-                    <span class="retenciones__resumen-label">Fecha</span>
-                    <span class="retenciones__resumen-value">{{formatDate(retencionSeleccionada.fecha)}}</span>
-                </div> -->
+            <div *ngIf="activeTab === 'individual'">
+              <h2>Seleccione una retención para relacionar</h2>
+              
+              <div *ngIf="retencionSeleccionada" class="retenciones__resumen">
+                  <h3 class="retenciones__resumen-title">Retención Seleccionada</h3>
+                  <div class="retenciones__resumen-info">
+                      <div class="retenciones__resumen-item">
+                          <span class="retenciones__resumen-label">Cliente</span>
+                          <span class="retenciones__resumen-value">{{retencionSeleccionada.nombre}}</span>
+                      </div>
+                      <div class="retenciones__resumen-item">
+                          <span class="retenciones__resumen-label">Factura</span>
+                          <span class="retenciones__resumen-value">{{retencionSeleccionada.numero}}</span>
+                      </div>
+                      <div class="retenciones__resumen-item">
+                          <span class="retenciones__resumen-label">Monto Retenido</span>
+                          <span class="retenciones__resumen-value">Bs.{{formatCurrency(retencionSeleccionada.rt)}}</span>
+                      </div>
+                      <!-- <div class="retenciones__resumen-item">
+                          <span class="retenciones__resumen-label">Fecha</span>
+                          <span class="retenciones__resumen-value">{{formatDate(retencionSeleccionada.fecha)}}</span>
+                      </div> -->
+                  </div>
+                  
+                  <!-- Sección para cargar comprobante -->
+                  <div class="retenciones__comprobante-section">
+                      <h4 class="retenciones__comprobante-title">
+                          <i class="fas fa-file-pdf me-2"></i>Cargar Comprobante de Retención
+                      </h4>
+
+                      <div class="d-flex gap-3 mt-3">
+                        <mat-form-field appearance="outline" class="flex-grow-1">
+                            <mat-label>Número de Comprobante</mat-label>
+                            <input 
+                                matInput 
+                                type="text" 
+                                [(ngModel)]="numeroComprobante"
+                                (input)="onComprobanteInput()"
+                                maxlength="18"
+                                placeholder="Ej: 202600001"
+                                required>
+                            <mat-error *ngIf="comprobanteError">
+                                {{comprobanteError}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-grow-1">
+                            <mat-label>Fecha de Comprobante</mat-label>
+                            <input 
+                                matInput 
+                                [matDatepicker]="pickerComp"
+                                [(ngModel)]="fechaComprobante"
+                                readonly
+                                (click)="pickerComp.open()"
+                                required>
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerComp"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerComp></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                      
+                      <div class="retenciones__comprobante-upload">
+                          <!-- Área de arrastrar y soltar -->
+                          <div class="retenciones__upload-area"
+                              [class.retenciones__upload-area--dragover]="isDragging"
+                              (dragover)="onDragOver($event)"
+                              (dragleave)="onDragLeave($event)"
+                              (drop)="onFileDrop($event)"
+                              (click)="fileInput.click()">
+                              
+                              <div *ngIf="!comprobanteFile" class="retenciones__upload-placeholder">
+                                  <i class="fas fa-cloud-upload-alt retenciones__upload-icon"></i>
+                                  <p class="retenciones__upload-text">
+                                      <strong>Arrastra y suelta tu archivo PDF aquí</strong>
+                                  </p>
+                                  <p class="retenciones__upload-subtext">o haz clic para seleccionar</p>
+                                  <p class="retenciones__upload-info">
+                                      <i class="fas fa-info-circle me-1"></i>
+                                      Solo se permiten archivos PDF (máx. 5MB)
+                                  </p>
+                              </div>
+                              
+                              <div *ngIf="comprobanteFile" class="retenciones__upload-preview">
+                                  <div class="retenciones__file-info">
+                                      <i class="fas fa-file-pdf retenciones__file-icon"></i>
+                                      <div class="retenciones__file-details">
+                                          <p class="retenciones__file-name">{{comprobanteFile.name}}</p>
+                                          <p class="retenciones__file-size">{{formatFileSize(comprobanteFile.size)}}</p>
+                                      </div>
+                                  </div>
+                                  <button type="button" class="retenciones__file-remove" 
+                                          (click)="removeComprobante($event)">
+                                      <i class="fas fa-times"></i>
+                                  </button>
+                              </div>
+                          </div>
+                          
+                          <!-- Input de archivo oculto -->
+                          <input #fileInput 
+                                type="file" 
+                                class="retenciones__file-input"
+                                accept=".pdf,application/pdf"
+                                (change)="onFileSelected($event)"
+                                hidden>
+                          
+                          <!-- Requisitos del archivo -->
+                          <div class="retenciones__requisitos">
+                              <p class="retenciones__requisitos-title">
+                                  <i class="fas fa-exclamation-circle me-1"></i>Requisitos:
+                              </p>
+                              <ul class="retenciones__requisitos-list">
+                                  <li>Formato PDF</li>
+                                  <li>Tamaño máximo: 5MB</li>
+                                  <li>Debe ser legible y estar completo</li>
+                                  <li>Debe corresponder a la retención seleccionada</li>
+                              </ul>
+                          </div>
+                          
+                          <!-- Mensajes de error/validación -->
+                          <div *ngIf="uploadError" class="retenciones__upload-error">
+                              <i class="fas fa-exclamation-triangle me-2"></i>
+                              {{uploadError}}
+                          </div>
+                          
+                          <!-- Progreso de carga -->
+                          <div *ngIf="isUploading" class="retenciones__upload-progress">
+                              <div class="retenciones__progress-bar">
+                                  <div class="retenciones__progress-fill" 
+                                      [style.width]="uploadProgress + '%'"></div>
+                              </div>
+                              <div class="retenciones__progress-text">
+                                  {{uploadProgress}}% - Cargando comprobante...
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <!-- Botones de acción -->
+                      <div class="retenciones__botones">
+                          <button 
+                              class="retenciones__btn retenciones__btn--primary"
+                              (click)="cargarRetencion()"
+                              [disabled]="!retencionSeleccionada || !comprobanteFile || isUploading">
+                              <i class="fas fa-upload me-1"></i>
+                              <span *ngIf="!isUploading">Cargar Retención</span>
+                              <span *ngIf="isUploading">Cargando...</span>
+                          </button>
+                          <button 
+                              class="retenciones__btn retenciones__btn--secondary"
+                              (click)="cancelarRetencion()">
+                              <i class="fas fa-times me-1"></i>Cancelar
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          
+              <!-- Tabla de retenciones para selección individual -->
+              <div class="retenciones__table-container">
+                  <table class="retenciones__table">
+                      <thead class="retenciones__table-header">
+                          <tr>
+                              <th class="retenciones__table-header-cell">Seleccionar</th>
+                              <th class="retenciones__table-header-cell sortable" (click)="sortBy('numero')">
+                                  Documento <i class="fas fa-sort" *ngIf="currentSort !== 'numero'"></i>
+                                  <i class="fas fa-sort-up" *ngIf="currentSort === 'numero' && sortDirection === 'asc'"></i>
+                                  <i class="fas fa-sort-down" *ngIf="currentSort === 'numero' && sortDirection === 'desc'"></i>
+                              </th>
+                              <th class="retenciones__table-header-cell sortable" (click)="sortBy('nombre')">
+                                  Cliente <i class="fas fa-sort" *ngIf="currentSort !== 'nombre'"></i>
+                                  <i class="fas fa-sort-up" *ngIf="currentSort === 'nombre' && sortDirection === 'asc'"></i>
+                                  <i class="fas fa-sort-down" *ngIf="currentSort === 'nombre' && sortDirection === 'desc'"></i>
+                              </th>
+                              <th class="retenciones__table-header-cell sortable" (click)="sortBy('fecha')">
+                                  Fecha <i class="fas fa-sort" *ngIf="currentSort !== 'fecha'"></i>
+                                  <i class="fas fa-sort-up" *ngIf="currentSort === 'fecha' && sortDirection === 'asc'"></i>
+                                  <i class="fas fa-sort-down" *ngIf="currentSort === 'fecha' && sortDirection === 'desc'"></i>
+                              </th>
+                              <th class="retenciones__table-header-cell sortable" (click)="sortBy('rt')">
+                                  Monto Retenido <i class="fas fa-sort" *ngIf="currentSort !== 'rt'"></i>
+                                  <i class="fas fa-sort-up" *ngIf="currentSort === 'rt' && sortDirection === 'asc'"></i>
+                                  <i class="fas fa-sort-down" *ngIf="currentSort === 'rt' && sortDirection === 'desc'"></i>
+                              </th>
+                              <th class="retenciones__table-header-cell sortable" (click)="sortBy('estado_retencion')">
+                                  Estado <i class="fas fa-sort" *ngIf="currentSort !== 'estado_retencion'"></i>
+                                  <i class="fas fa-sort-up" *ngIf="currentSort === 'estado_retencion' && sortDirection === 'asc'"></i>
+                                  <i class="fas fa-sort-down" *ngIf="currentSort === 'estado_retencion' && sortDirection === 'desc'"></i>
+                              </th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let retencion of paginatedRetenciones" 
+                              class="retenciones__table-row"
+                              [class.retenciones__table-row--selected]="retencionSeleccionada?.id === retencion.id">
+                              <td class="retenciones__table-cell">
+                                  <input 
+                                      type="radio" 
+                                      name="retencionIndividual"
+                                      class="retenciones__checkbox"
+                                      [checked]="retencionSeleccionada?.id === retencion.id"
+                                      (change)="seleccionarRetencionIndividual(retencion)">
+                              </td>
+                              <td class="retenciones__table-cell">{{retencion.tipo}}-{{retencion.numero}}</td>
+                              <td class="retenciones__table-cell">{{retencion.nombre}}</td>
+                              <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
+                              <td class="retenciones__table-cell">Bs.{{formatCurrency(retencion.rt)}}</td>
+                              <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
+                                  {{retencion.estado_retencion || 'Pendiente'}}
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+              
+              <!-- Paginación -->
+              <div class="retenciones__paginacion" *ngIf="totalPages > 1">
+                  <div class="retenciones__paginacion-info">
+                      Mostrando {{startItem}} - {{endItem}} de {{retencionesFiltradas.length}} registros
+                  </div>
+                  <div class="retenciones__paginacion-controls">
+                      <button 
+                          class="retenciones__paginacion-btn"
+                          [disabled]="currentPage === 1"
+                          (click)="goToPage(1)">
+                          <i class="fas fa-angle-double-left"></i>
+                      </button>
+                      <button 
+                          class="retenciones__paginacion-btn"
+                          [disabled]="currentPage === 1"
+                          (click)="previousPage()">
+                          <i class="fas fa-chevron-left"></i>
+                      </button>
+                      
+                      <div class="retenciones__paginacion-pages">
+                          <span *ngFor="let page of getVisiblePages()" 
+                              class="retenciones__paginacion-page"
+                              [class.retenciones__paginacion-page--active]="page === currentPage"
+                              (click)="goToPage(page)">
+                              {{page}}
+                          </span>
+                          <span class="retenciones__paginacion-ellipsis" *ngIf="totalPages > 7 && currentPage < totalPages - 3">
+                              ...
+                          </span>
+                      </div>
+                      
+                      <button 
+                          class="retenciones__paginacion-btn"
+                          [disabled]="currentPage === totalPages"
+                          (click)="nextPage()">
+                          <i class="fas fa-chevron-right"></i>
+                      </button>
+                      <button 
+                          class="retenciones__paginacion-btn"
+                          [disabled]="currentPage === totalPages"
+                          (click)="goToPage(totalPages)">
+                          <i class="fas fa-angle-double-right"></i>
+                      </button>
+                  </div>
+                  <div class="retenciones__paginacion-size">
+                      <label>Mostrar:</label>
+                      <select class="retenciones__paginacion-select" [(ngModel)]="itemsPerPage" (change)="changePageSize()">
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="20">20</option>
+                          <option value="50">50</option>
+                      </select>
+                  </div>
+              </div>
+              
+              <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
+                  <div class="retenciones__empty-icon">📄</div>
+                  <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
+                  <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
+              </div>
             </div>
             
-            <!-- Sección para cargar comprobante -->
-            <div class="retenciones__comprobante-section">
-                <h4 class="retenciones__comprobante-title">
-                    <i class="fas fa-file-pdf me-2"></i>Cargar Comprobante de Retención
-                </h4>
 
-                <div class="retenciones__comprobante-input d-flex gap-5">
-                  <!-- Campo para número de comprobante -->
-                  <div class="retenciones__comprobante-input">
-                      <label class="retenciones__comprobante-label">
-                          Número de Comprobante*
-                      </label>
+            <!-- Tab 2: Relacionar Múltiples Retenciones -->
+            <div *ngIf="activeTab === 'multiple'">
+              <h2>Seleccione múltiples retenciones para relacionar</h2>
+              
+              <div class="retenciones__botones">
+                <button 
+                  class="retenciones__btn retenciones__btn--outline"
+                  (click)="seleccionarTodo()">
+                  <i class="fas fa-check-square me-1"></i>Seleccionar Todo
+                </button>
+                <button 
+                  class="retenciones__btn retenciones__btn--outline"
+                  (click)="deseleccionarTodo()">
+                  <i class="fas fa-times-circle me-1"></i>Deseleccionar Todo
+                </button>
+              </div>
 
-                      <input 
-                          type="text" 
-                          class="retenciones__comprobante-field"
-                          [(ngModel)]="numeroComprobante"
-                          (input)="onComprobanteInput()"
-                          maxlength="18">
-                      <div *ngIf="comprobanteError" class="retenciones__input-error">
-                          <i class="fas fa-exclamation-circle me-1"></i>{{comprobanteError}}
+              <div *ngIf="retencionesSeleccionadas.length > 0" class="retenciones__resumen">
+
+                <!-- Sección para cargar comprobante -->
+                  <div class="retenciones__comprobante-section">
+                      <h4 class="retenciones__comprobante-title">
+                          <i class="fas fa-file-pdf me-2"></i>Cargar Comprobante de Retención
+                      </h4>
+
+                      <div class="d-flex gap-3 mt-3">
+                        <mat-form-field appearance="outline" class="flex-grow-1">
+                            <mat-label>Número de Comprobante</mat-label>
+                            <input 
+                                matInput 
+                                type="text" 
+                                [(ngModel)]="numeroComprobante"
+                                (input)="onComprobanteInput()"
+                                maxlength="18"
+                                placeholder="Ej: 202600001"
+                                required>
+                            <mat-icon matSuffix>description</mat-icon>
+                            <mat-error *ngIf="comprobanteError">
+                                {{comprobanteError}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="flex-grow-1">
+                            <mat-label>Fecha de Comprobante</mat-label>
+                            <input 
+                                matInput 
+                                [matDatepicker]="pickerComp"
+                                [(ngModel)]="fechaComprobante"
+                                readonly
+                                (click)="pickerComp.open()"
+                                required>
+                            <mat-datepicker-toggle matIconSuffix [for]="pickerComp"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerComp></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                      
+                      <div class="retenciones__comprobante-upload">
+                          <!-- Área de arrastrar y soltar -->
+                          <div class="retenciones__upload-area"
+                              [class.retenciones__upload-area--dragover]="isDragging"
+                              (dragover)="onDragOver($event)"
+                              (dragleave)="onDragLeave($event)"
+                              (drop)="onFileDrop($event)"
+                              (click)="fileInput.click()">
+                              
+                              <div *ngIf="!comprobanteFile" class="retenciones__upload-placeholder">
+                                  <i class="fas fa-cloud-upload-alt retenciones__upload-icon"></i>
+                                  <p class="retenciones__upload-text">
+                                      <strong>Arrastra y suelta tu archivo PDF aquí</strong>
+                                  </p>
+                                  <p class="retenciones__upload-subtext">o haz clic para seleccionar</p>
+                                  <p class="retenciones__upload-info">
+                                      <i class="fas fa-info-circle me-1"></i>
+                                      Solo se permiten archivos PDF (máx. 5MB)
+                                  </p>
+                              </div>
+                              
+                              <div *ngIf="comprobanteFile" class="retenciones__upload-preview">
+                                  <div class="retenciones__file-info">
+                                      <i class="fas fa-file-pdf retenciones__file-icon"></i>
+                                      <div class="retenciones__file-details">
+                                          <p class="retenciones__file-name">{{comprobanteFile.name}}</p>
+                                          <p class="retenciones__file-size">{{formatFileSize(comprobanteFile.size)}}</p>
+                                      </div>
+                                  </div>
+                                  <button type="button" class="retenciones__file-remove" 
+                                          (click)="removeComprobante($event)">
+                                      <i class="fas fa-times"></i>
+                                  </button>
+                              </div>
+                          </div>
+                          
+                          <!-- Input de archivo oculto -->
+                          <input #fileInput 
+                                type="file" 
+                                class="retenciones__file-input"
+                                accept=".pdf,application/pdf"
+                                (change)="onFileSelected($event)"
+                                hidden>
+                          
+                          <!-- Requisitos del archivo -->
+                          <div class="retenciones__requisitos">
+                              <p class="retenciones__requisitos-title">
+                                  <i class="fas fa-exclamation-circle me-1"></i>Requisitos:
+                              </p>
+                              <ul class="retenciones__requisitos-list">
+                                  <li>Formato PDF</li>
+                                  <li>Tamaño máximo: 5MB</li>
+                                  <li>Debe ser legible y estar completo</li>
+                                  <li>Debe corresponder a la retención seleccionada</li>
+                              </ul>
+                          </div>
+                          
+                          <!-- Mensajes de error/validación -->
+                          <div *ngIf="uploadError" class="retenciones__upload-error">
+                              <i class="fas fa-exclamation-triangle me-2"></i>
+                              {{uploadError}}
+                          </div>
+                          
+                          <!-- Progreso de carga -->
+                          <div *ngIf="isUploading" class="retenciones__upload-progress">
+                              <div class="retenciones__progress-bar">
+                                  <div class="retenciones__progress-fill" 
+                                      [style.width]="uploadProgress + '%'"></div>
+                              </div>
+                              <div class="retenciones__progress-text">
+                                  {{uploadProgress}}% - Cargando comprobante...
+                              </div>
+                          </div>
                       </div>
-
                   </div>
 
-                  <div class="retenciones__comprobante-input">
-
-                      <label class="retenciones__comprobante-label">
-                          Fecha de Comprobante*
-                      </label>
-
-                      <input 
-                          type="date" 
-                          class="retenciones__comprobante-field"
-                          [(ngModel)]="fechaComprobante">
+                <h3 class="retenciones__resumen-title">Resumen de Selección</h3>
+                <div class="retenciones__resumen-info">
+                  <div class="retenciones__resumen-item">
+                    <span class="retenciones__resumen-label">Retenciones Seleccionadas</span>
+                    <span class="retenciones__resumen-value">{{retencionesSeleccionadas.length}}</span>
+                  </div>
+                  <div class="retenciones__resumen-item">
+                    <span class="retenciones__resumen-label">Monto Total</span>
+                    <span class="retenciones__resumen-value">Bs. {{formatCurrency(totalSeleccionado.toString())}}</span>
+                  </div>
+                  <div class="retenciones__resumen-item mt-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                      <mat-label>Facturas seleccionadas</mat-label>
+                      <textarea 
+                        matInput 
+                        rows="3" 
+                        [value]="getFacturasSeleccionadasTexto()" 
+                        disabled 
+                        style="resize: none; color: rgba(0,0,0,0.6);">
+                      </textarea>
+                    </mat-form-field>
                   </div>
                 </div>
-
-
                 
-                <div class="retenciones__comprobante-upload">
-                    <!-- Área de arrastrar y soltar -->
-                    <div class="retenciones__upload-area"
-                         [class.retenciones__upload-area--dragover]="isDragging"
-                         (dragover)="onDragOver($event)"
-                         (dragleave)="onDragLeave($event)"
-                         (drop)="onFileDrop($event)"
-                         (click)="fileInput.click()">
-                        
-                        <div *ngIf="!comprobanteFile" class="retenciones__upload-placeholder">
-                            <i class="fas fa-cloud-upload-alt retenciones__upload-icon"></i>
-                            <p class="retenciones__upload-text">
-                                <strong>Arrastra y suelta tu archivo PDF aquí</strong>
-                            </p>
-                            <p class="retenciones__upload-subtext">o haz clic para seleccionar</p>
-                            <p class="retenciones__upload-info">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Solo se permiten archivos PDF (máx. 5MB)
-                            </p>
-                        </div>
-                        
-                        <div *ngIf="comprobanteFile" class="retenciones__upload-preview">
-                            <div class="retenciones__file-info">
-                                <i class="fas fa-file-pdf retenciones__file-icon"></i>
-                                <div class="retenciones__file-details">
-                                    <p class="retenciones__file-name">{{comprobanteFile.name}}</p>
-                                    <p class="retenciones__file-size">{{formatFileSize(comprobanteFile.size)}}</p>
-                                </div>
-                            </div>
-                            <button type="button" class="retenciones__file-remove" 
-                                    (click)="removeComprobante($event)">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Input de archivo oculto -->
-                    <input #fileInput 
-                           type="file" 
-                           class="retenciones__file-input"
-                           accept=".pdf,application/pdf"
-                           (change)="onFileSelected($event)"
-                           hidden>
-                    
-                    <!-- Requisitos del archivo -->
-                    <div class="retenciones__requisitos">
-                        <p class="retenciones__requisitos-title">
-                            <i class="fas fa-exclamation-circle me-1"></i>Requisitos:
-                        </p>
-                        <ul class="retenciones__requisitos-list">
-                            <li>Formato PDF</li>
-                            <li>Tamaño máximo: 5MB</li>
-                            <li>Debe ser legible y estar completo</li>
-                            <li>Debe corresponder a la retención seleccionada</li>
-                        </ul>
-                    </div>
-                    
-                    <!-- Mensajes de error/validación -->
-                    <div *ngIf="uploadError" class="retenciones__upload-error">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        {{uploadError}}
-                    </div>
-                    
-                    <!-- Progreso de carga -->
-                    <div *ngIf="isUploading" class="retenciones__upload-progress">
-                        <div class="retenciones__progress-bar">
-                            <div class="retenciones__progress-fill" 
-                                 [style.width]="uploadProgress + '%'"></div>
-                        </div>
-                        <div class="retenciones__progress-text">
-                            {{uploadProgress}}% - Cargando comprobante...
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Botones de acción -->
                 <div class="retenciones__botones">
-                    <button 
-                        class="retenciones__btn retenciones__btn--primary"
-                        (click)="cargarRetencion()"
-                        [disabled]="!retencionSeleccionada || !comprobanteFile || isUploading">
-                        <i class="fas fa-upload me-1"></i>
-                        <span *ngIf="!isUploading">Cargar Retención</span>
-                        <span *ngIf="isUploading">Cargando...</span>
-                    </button>
-                    <button 
-                        class="retenciones__btn retenciones__btn--secondary"
-                        (click)="cancelarRetencion()">
-                        <i class="fas fa-times me-1"></i>Cancelar
-                    </button>
+                  <button 
+                    class="retenciones__btn retenciones__btn--primary"
+                    (click)="cargarRetencionesMultiples()"
+                    [disabled]="retencionesSeleccionadas.length === 0">
+                    <i class="fas fa-link me-1"></i>Cargar {{retencionesSeleccionadas.length}} Retenciones
+                  </button>
+                  <button 
+                    class="retenciones__btn retenciones__btn--secondary"
+                    (click)="deseleccionarTodo()">
+                    <i class="fas fa-eraser me-1"></i>Limpiar Selección
+                  </button>
                 </div>
-            </div>
-        </div>
-    
-        <!-- Tabla de retenciones para selección individual -->
-        <div class="retenciones__table-container">
-            <table class="retenciones__table">
-                <thead class="retenciones__table-header">
+              </div>
+
+              <div class="retenciones__table-container">
+                <table class="retenciones__table">
+                  <thead class="retenciones__table-header">
                     <tr>
-                        <th class="retenciones__table-header-cell">Seleccionar</th>
-                        <th class="retenciones__table-header-cell sortable" (click)="sortBy('numero')">
-                            Documento <i class="fas fa-sort" *ngIf="currentSort !== 'numero'"></i>
-                            <i class="fas fa-sort-up" *ngIf="currentSort === 'numero' && sortDirection === 'asc'"></i>
-                            <i class="fas fa-sort-down" *ngIf="currentSort === 'numero' && sortDirection === 'desc'"></i>
-                        </th>
-                        <th class="retenciones__table-header-cell sortable" (click)="sortBy('nombre')">
-                            Cliente <i class="fas fa-sort" *ngIf="currentSort !== 'nombre'"></i>
-                            <i class="fas fa-sort-up" *ngIf="currentSort === 'nombre' && sortDirection === 'asc'"></i>
-                            <i class="fas fa-sort-down" *ngIf="currentSort === 'nombre' && sortDirection === 'desc'"></i>
-                        </th>
-                        <th class="retenciones__table-header-cell sortable" (click)="sortBy('fecha')">
-                            Fecha <i class="fas fa-sort" *ngIf="currentSort !== 'fecha'"></i>
-                            <i class="fas fa-sort-up" *ngIf="currentSort === 'fecha' && sortDirection === 'asc'"></i>
-                            <i class="fas fa-sort-down" *ngIf="currentSort === 'fecha' && sortDirection === 'desc'"></i>
-                        </th>
-                        <th class="retenciones__table-header-cell sortable" (click)="sortBy('rt')">
-                            Monto Retenido <i class="fas fa-sort" *ngIf="currentSort !== 'rt'"></i>
-                            <i class="fas fa-sort-up" *ngIf="currentSort === 'rt' && sortDirection === 'asc'"></i>
-                            <i class="fas fa-sort-down" *ngIf="currentSort === 'rt' && sortDirection === 'desc'"></i>
-                        </th>
-                        <th class="retenciones__table-header-cell sortable" (click)="sortBy('estado_retencion')">
-                            Estado <i class="fas fa-sort" *ngIf="currentSort !== 'estado_retencion'"></i>
-                            <i class="fas fa-sort-up" *ngIf="currentSort === 'estado_retencion' && sortDirection === 'asc'"></i>
-                            <i class="fas fa-sort-down" *ngIf="currentSort === 'estado_retencion' && sortDirection === 'desc'"></i>
-                        </th>
+                      <th class="retenciones__table-header-cell">
+                        <input 
+                          type="checkbox" 
+                          class="retenciones__checkbox"
+                          [checked]="retencionesSeleccionadas.length === retencionesFiltradas.length"
+                          (change)="retencionesSeleccionadas.length === retencionesFiltradas.length ? deseleccionarTodo() : seleccionarTodo()">
+                      </th>
+                      <th class="retenciones__table-header-cell sortable" (click)="sortBy('numero')">
+                        Factura <i class="fas fa-sort" *ngIf="currentSort !== 'numero'"></i>
+                        <i class="fas fa-sort-up" *ngIf="currentSort === 'numero' && sortDirection === 'asc'"></i>
+                        <i class="fas fa-sort-down" *ngIf="currentSort === 'numero' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="retenciones__table-header-cell sortable" (click)="sortBy('nombre')">
+                        Cliente <i class="fas fa-sort" *ngIf="currentSort !== 'nombre'"></i>
+                        <i class="fas fa-sort-up" *ngIf="currentSort === 'nombre' && sortDirection === 'asc'"></i>
+                        <i class="fas fa-sort-down" *ngIf="currentSort === 'nombre' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="retenciones__table-header-cell sortable" (click)="sortBy('fecha')">
+                        Fecha <i class="fas fa-sort" *ngIf="currentSort !== 'fecha'"></i>
+                        <i class="fas fa-sort-up" *ngIf="currentSort === 'fecha' && sortDirection === 'asc'"></i>
+                        <i class="fas fa-sort-down" *ngIf="currentSort === 'fecha' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="retenciones__table-header-cell sortable" (click)="sortBy('rt')">
+                          Monto Retenido <i class="fas fa-sort" *ngIf="currentSort !== 'rt'"></i>
+                          <i class="fas fa-sort-up" *ngIf="currentSort === 'rt' && sortDirection === 'asc'"></i>
+                          <i class="fas fa-sort-down" *ngIf="currentSort === 'rt' && sortDirection === 'desc'"></i>
+                      </th>
+        
+                      <th class="retenciones__table-header-cell sortable" (click)="sortBy('saldo')">
+                        Estado <i class="fas fa-sort" *ngIf="currentSort !== 'saldo'"></i>
+                        <i class="fas fa-sort-up" *ngIf="currentSort === 'saldo' && sortDirection === 'asc'"></i>
+                        <i class="fas fa-sort-down" *ngIf="currentSort === 'saldo' && sortDirection === 'desc'"></i>
+                      </th>
                     </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                     <tr *ngFor="let retencion of paginatedRetenciones" 
                         class="retenciones__table-row"
-                        [class.retenciones__table-row--selected]="retencionSeleccionada?.id === retencion.id">
-                        <td class="retenciones__table-cell">
-                            <input 
-                                type="radio" 
-                                name="retencionIndividual"
-                                class="retenciones__checkbox"
-                                [checked]="retencionSeleccionada?.id === retencion.id"
-                                (change)="seleccionarRetencionIndividual(retencion)">
-                        </td>
-                        <td class="retenciones__table-cell">{{retencion.tipo}}-{{retencion.numero}}</td>
-                        <td class="retenciones__table-cell">{{retencion.nombre}}</td>
-                        <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
-                        <td class="retenciones__table-cell">Bs.{{formatCurrency(retencion.rt)}}</td>
-                        <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
-                            {{retencion.estado_retencion || 'Pendiente'}}
-                        </td>
+                        [class.retenciones__table-row--selected]="retencion.selected">
+                      <td class="retenciones__table-cell">
+                        <input 
+                          type="checkbox" 
+                          class="retenciones__checkbox"
+                          [checked]="retencion.selected"
+                          (change)="toggleSeleccionMultiple(retencion)">
+                      </td>
+                      <td class="retenciones__table-cell">{{retencion.numero}}</td>
+                      <td class="retenciones__table-cell">{{retencion.nombre}}</td>
+                      <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
+                      <td class="retenciones__table-cell">Bs. {{formatCurrency(retencion.rt)}}</td>
+                      <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
+                        {{parseFloat(retencion.saldo) <= 0 ? 'Pagado' : 'Pendiente'}}
+                      </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Paginación -->
-        <div class="retenciones__paginacion" *ngIf="totalPages > 1">
-            <div class="retenciones__paginacion-info">
-                Mostrando {{startItem}} - {{endItem}} de {{retencionesFiltradas.length}} registros
-            </div>
-            <div class="retenciones__paginacion-controls">
-                <button 
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="retenciones__paginacion" *ngIf="totalPages > 1">
+                <div class="retenciones__paginacion-info">
+                  Mostrando {{startItem}} - {{endItem}} de {{retencionesFiltradas.length}} registros
+                </div>
+                <div class="retenciones__paginacion-controls">
+                  <button 
                     class="retenciones__paginacion-btn"
                     [disabled]="currentPage === 1"
                     (click)="goToPage(1)">
                     <i class="fas fa-angle-double-left"></i>
-                </button>
-                <button 
+                  </button>
+                  <button 
                     class="retenciones__paginacion-btn"
                     [disabled]="currentPage === 1"
                     (click)="previousPage()">
                     <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="retenciones__paginacion-pages">
+                  </button>
+                  
+                  <div class="retenciones__paginacion-pages">
                     <span *ngFor="let page of getVisiblePages()" 
-                        class="retenciones__paginacion-page"
-                        [class.retenciones__paginacion-page--active]="page === currentPage"
-                        (click)="goToPage(page)">
-                        {{page}}
+                          class="retenciones__paginacion-page"
+                          [class.retenciones__paginacion-page--active]="page === currentPage"
+                          (click)="goToPage(page)">
+                      {{page}}
                     </span>
                     <span class="retenciones__paginacion-ellipsis" *ngIf="totalPages > 7 && currentPage < totalPages - 3">
-                        ...
+                      ...
                     </span>
-                </div>
-                
-                <button 
+                  </div>
+                  
+                  <button 
                     class="retenciones__paginacion-btn"
                     [disabled]="currentPage === totalPages"
                     (click)="nextPage()">
                     <i class="fas fa-chevron-right"></i>
-                </button>
-                <button 
+                  </button>
+                  <button 
                     class="retenciones__paginacion-btn"
                     [disabled]="currentPage === totalPages"
                     (click)="goToPage(totalPages)">
                     <i class="fas fa-angle-double-right"></i>
-                </button>
-            </div>
-            <div class="retenciones__paginacion-size">
-                <label>Mostrar:</label>
-                <select class="retenciones__paginacion-select" [(ngModel)]="itemsPerPage" (change)="changePageSize()">
+                  </button>
+                </div>
+                <div class="retenciones__paginacion-size">
+                  <label>Mostrar:</label>
+                  <select class="retenciones__paginacion-select" [(ngModel)]="itemsPerPage" (change)="changePageSize()">
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
-                </select>
-            </div>
-        </div>
-        
-        <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
-            <div class="retenciones__empty-icon">📄</div>
-            <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
-            <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
-        </div>
+                  </select>
+                </div>
+              </div>
+              
+              <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
+                <div class="retenciones__empty-icon">📄</div>
+                <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
+                <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
+              </div>
+            </div> 
+
+          </div>
       </div>
-      
-
-      <!-- Tab 2: Relacionar Múltiples Retenciones -->
-      <!-- <div *ngIf="activeTab === 'multiple'">
-        <h2>Seleccione múltiples retenciones para relacionar</h2>
-        
-        <div class="retenciones__botones">
-          <button 
-            class="retenciones__btn retenciones__btn--outline"
-            (click)="seleccionarTodo()">
-            <i class="fas fa-check-square me-1"></i>Seleccionar Todo
-          </button>
-          <button 
-            class="retenciones__btn retenciones__btn--outline"
-            (click)="deseleccionarTodo()">
-            <i class="fas fa-times-circle me-1"></i>Deseleccionar Todo
-          </button>
-        </div>
-
-        <div *ngIf="retencionesSeleccionadas.length > 0" class="retenciones__resumen">
-          <h3 class="retenciones__resumen-title">Resumen de Selección</h3>
-          <div class="retenciones__resumen-info">
-            <div class="retenciones__resumen-item">
-              <span class="retenciones__resumen-label">Retenciones Seleccionadas</span>
-              <span class="retenciones__resumen-value">{{retencionesSeleccionadas.length}}</span>
-            </div>
-            <div class="retenciones__resumen-item">
-              <span class="retenciones__resumen-label">Monto Total</span>
-              <span class="retenciones__resumen-value">Bs. {{formatCurrency(totalSeleccionado.toString())}}</span>
-            </div>
-            <div class="retenciones__resumen-item">
-              <span class="retenciones__resumen-label">Facturas</span>
-              <span class="retenciones__resumen-value">
-                <span *ngFor="let r of retencionesSeleccionadas.slice(0, 3)">
-                  {{r.numero}}<span *ngIf="retencionesSeleccionadas.length > 1">, </span>
-                </span>
-                <span *ngIf="retencionesSeleccionadas.length > 3">...</span>
-              </span>
-            </div>
-          </div>
-          
-          <div class="retenciones__botones">
-            <button 
-              class="retenciones__btn retenciones__btn--primary"
-              (click)="aplicarMultiplesRetenciones()"
-              [disabled]="retencionesSeleccionadas.length === 0">
-              <i class="fas fa-link me-1"></i>Relacionar {{retencionesSeleccionadas.length}} Retenciones
-            </button>
-            <button 
-              class="retenciones__btn retenciones__btn--secondary"
-              (click)="deseleccionarTodo()">
-              <i class="fas fa-eraser me-1"></i>Limpiar Selección
-            </button>
-          </div>
-        </div>
-
-        <div class="retenciones__table-container">
-          <table class="retenciones__table">
-            <thead class="retenciones__table-header">
-              <tr>
-                <th class="retenciones__table-header-cell">
-                  <input 
-                    type="checkbox" 
-                    class="retenciones__checkbox"
-                    [checked]="retencionesSeleccionadas.length === retencionesFiltradas.length"
-                    (change)="retencionesSeleccionadas.length === retencionesFiltradas.length ? deseleccionarTodo() : seleccionarTodo()">
-                </th>
-                <th class="retenciones__table-header-cell sortable" (click)="sortBy('numero')">
-                  Factura <i class="fas fa-sort" *ngIf="currentSort !== 'numero'"></i>
-                  <i class="fas fa-sort-up" *ngIf="currentSort === 'numero' && sortDirection === 'asc'"></i>
-                  <i class="fas fa-sort-down" *ngIf="currentSort === 'numero' && sortDirection === 'desc'"></i>
-                </th>
-                <th class="retenciones__table-header-cell sortable" (click)="sortBy('nombre')">
-                  Cliente <i class="fas fa-sort" *ngIf="currentSort !== 'nombre'"></i>
-                  <i class="fas fa-sort-up" *ngIf="currentSort === 'nombre' && sortDirection === 'asc'"></i>
-                  <i class="fas fa-sort-down" *ngIf="currentSort === 'nombre' && sortDirection === 'desc'"></i>
-                </th>
-                <th class="retenciones__table-header-cell sortable" (click)="sortBy('fecha')">
-                  Fecha <i class="fas fa-sort" *ngIf="currentSort !== 'fecha'"></i>
-                  <i class="fas fa-sort-up" *ngIf="currentSort === 'fecha' && sortDirection === 'asc'"></i>
-                  <i class="fas fa-sort-down" *ngIf="currentSort === 'fecha' && sortDirection === 'desc'"></i>
-                </th>
-                <th class="retenciones__table-header-cell sortable" (click)="sortBy('rt')">
-                    Monto Retenido <i class="fas fa-sort" *ngIf="currentSort !== 'rt'"></i>
-                    <i class="fas fa-sort-up" *ngIf="currentSort === 'rt' && sortDirection === 'asc'"></i>
-                    <i class="fas fa-sort-down" *ngIf="currentSort === 'rt' && sortDirection === 'desc'"></i>
-                </th>
-  
-                <th class="retenciones__table-header-cell sortable" (click)="sortBy('saldo')">
-                  Estado <i class="fas fa-sort" *ngIf="currentSort !== 'saldo'"></i>
-                  <i class="fas fa-sort-up" *ngIf="currentSort === 'saldo' && sortDirection === 'asc'"></i>
-                  <i class="fas fa-sort-down" *ngIf="currentSort === 'saldo' && sortDirection === 'desc'"></i>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let retencion of paginatedRetenciones" 
-                  class="retenciones__table-row"
-                  [class.retenciones__table-row--selected]="retencion.selected">
-                <td class="retenciones__table-cell">
-                  <input 
-                    type="checkbox" 
-                    class="retenciones__checkbox"
-                    [checked]="retencion.selected"
-                    (change)="toggleSeleccionMultiple(retencion)">
-                </td>
-                <td class="retenciones__table-cell">{{retencion.numero}}</td>
-                <td class="retenciones__table-cell">{{retencion.nombre}}</td>
-                <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
-                <td class="retenciones__table-cell">Bs. {{formatCurrency(retencion.rt)}}</td>
-                <td class="retenciones__table-cell" [ngClass]="getEstadoClase(retencion)">
-                  {{parseFloat(retencion.saldo) <= 0 ? 'Pagado' : 'Pendiente'}}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <div class="retenciones__paginacion" *ngIf="totalPages > 1">
-          <div class="retenciones__paginacion-info">
-            Mostrando {{startItem}} - {{endItem}} de {{retencionesFiltradas.length}} registros
-          </div>
-          <div class="retenciones__paginacion-controls">
-            <button 
-              class="retenciones__paginacion-btn"
-              [disabled]="currentPage === 1"
-              (click)="goToPage(1)">
-              <i class="fas fa-angle-double-left"></i>
-            </button>
-            <button 
-              class="retenciones__paginacion-btn"
-              [disabled]="currentPage === 1"
-              (click)="previousPage()">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            
-            <div class="retenciones__paginacion-pages">
-              <span *ngFor="let page of getVisiblePages()" 
-                    class="retenciones__paginacion-page"
-                    [class.retenciones__paginacion-page--active]="page === currentPage"
-                    (click)="goToPage(page)">
-                {{page}}
-              </span>
-              <span class="retenciones__paginacion-ellipsis" *ngIf="totalPages > 7 && currentPage < totalPages - 3">
-                ...
-              </span>
-            </div>
-            
-            <button 
-              class="retenciones__paginacion-btn"
-              [disabled]="currentPage === totalPages"
-              (click)="nextPage()">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-            <button 
-              class="retenciones__paginacion-btn"
-              [disabled]="currentPage === totalPages"
-              (click)="goToPage(totalPages)">
-              <i class="fas fa-angle-double-right"></i>
-            </button>
-          </div>
-          <div class="retenciones__paginacion-size">
-            <label>Mostrar:</label>
-            <select class="retenciones__paginacion-select" [(ngModel)]="itemsPerPage" (change)="changePageSize()">
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
-            </select>
-          </div>
-        </div>
-        
-        <div *ngIf="retencionesFiltradas.length === 0" class="retenciones__empty">
-          <div class="retenciones__empty-icon">📄</div>
-          <h3 class="retenciones__empty-title">No se encontraron retenciones</h3>
-          <p>No hay retenciones pendientes que coincidan con los filtros aplicados.</p>
-        </div>
-      </div> -->
 
     </div>
+
+
+
+
 
   </main>
 </div>

@@ -7,6 +7,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
 import { API_URL } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core'; // O MatLuxonDateModule si usas Luxon
+import { MatInputModule } from '@angular/material/input';
 
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -42,7 +46,12 @@ interface Retencion {
 
 @Component({
   selector: 'app-retenciones-page',
-  imports: [CommonModule, NavBarComponent, SideBarComponent, FooterComponent, FormsModule],
+  imports: [CommonModule, NavBarComponent, SideBarComponent, FooterComponent, FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   templateUrl: './retenciones-page.component.html',
   styleUrl: './retenciones-page.component.scss'
 })
@@ -55,6 +64,8 @@ export class RetencionesPageComponent implements OnInit {
   
   // Variables para retención individual
   retencionSeleccionada: Retencion | null = null;
+  totalRetencionSeleccionada: number = 0;
+
   comprobanteFile: File | null = null;
   isUploading = false;
   uploadProgress = 0;
@@ -128,6 +139,7 @@ export class RetencionesPageComponent implements OnInit {
     // Resetear selección en todas las retenciones
     this.retenciones.forEach(r => r.selected = false);
   }
+  
   
     // Obtener retenciones pendientes
     fetchRetenciones() {
@@ -228,6 +240,15 @@ export class RetencionesPageComponent implements OnInit {
     this.uploadError = null;
   }
 
+  // Función para listar todas las facturas en el textarea
+getFacturasSeleccionadasTexto(): string {
+  if (this.retencionesSeleccionadas.length === 0) return 'Ninguna factura seleccionada';
+  
+  return this.retencionesSeleccionadas
+    .map(r => r.numero)
+    .join(', ');
+}
+
   cancelarRetencion() {
     this.retencionSeleccionada = null;
     this.comprobanteFile = null;
@@ -242,7 +263,7 @@ export class RetencionesPageComponent implements OnInit {
           return;
       }
 
-      if (!this.fechaComprobante || this.fechaComprobante.trim() === '') {
+      if (!this.fechaComprobante) {
           this.comprobanteError = 'La fecha de comprobante es obligatorio';
           return;
       }
@@ -258,7 +279,7 @@ export class RetencionesPageComponent implements OnInit {
           this.uploadError = 'Debe seleccionar una retención y un comprobante PDF';
           return;
       }
-      
+      const fechaFormateada = new Date(this.fechaComprobante).toISOString().split('T')[0];
       this.isUploading = true;
       this.uploadProgress = 0;
       this.uploadError = null;
@@ -276,7 +297,7 @@ export class RetencionesPageComponent implements OnInit {
       formData.append('numero', this.retencionSeleccionada.numero);
       formData.append('monto', this.retencionSeleccionada.rt);
       formData.append('nrocomp', this.numeroComprobante.trim());
-      formData.append('fechacomp', this.fechaComprobante.trim());
+      formData.append('fechacomp', fechaFormateada);
 
       // Agregar archivo PDF
       formData.append('comprobante', this.comprobanteFile, this.comprobanteFile.name);
@@ -315,6 +336,76 @@ export class RetencionesPageComponent implements OnInit {
           }
       });
   }
+
+  cargarRetencionesMultiples() {
+  // 1. Validaciones básicas (reutilizamos las mismas del individual)
+  if (!this.numeroComprobante || this.numeroComprobante.trim() === '') {
+    this.comprobanteError = 'El número de comprobante es obligatorio';
+    return;
+  }
+  if (!this.fechaComprobante) {
+    this.comprobanteError = 'La fecha de comprobante es obligatoria';
+    return;
+  }
+  if (this.retencionesSeleccionadas.length === 0 || !this.comprobanteFile) {
+    this.uploadError = 'Debe seleccionar al menos una factura y un comprobante PDF';
+    return;
+  }
+  const fechaFormateada = new Date(this.fechaComprobante).toISOString().split('T')[0];
+
+  this.isUploading = true;
+  this.uploadProgress = 0;
+  this.uploadError = null;
+
+  const formData = new FormData();
+  const token = this.authService.getToken();
+  const codCli = this.authService.getCodCli();
+
+  // Datos comunes al comprobante
+  formData.append('cod_cli', codCli ?? '');
+  formData.append('nrocomp', this.numeroComprobante.trim());
+  formData.append('fechacomp', fechaFormateada);
+  formData.append('total_rt', this.totalSeleccionado.toString());
+
+  // Enviamos el array de facturas seleccionadas
+  this.retencionesSeleccionadas.forEach((ret, index) => {
+    formData.append(`facturas[${index}][transac]`, ret.transac);
+    formData.append(`facturas[${index}][numero]`, ret.numero);
+    formData.append(`facturas[${index}][monto]`, ret.rt);
+    formData.append(`facturas[${index}][tipo]`, ret.tipo);
+  });
+
+  // El archivo único para todas las facturas
+  formData.append('comprobante', this.comprobanteFile, this.comprobanteFile.name);
+
+  const headers = new HttpHeaders({ 'X-Auth-Token': `${token}` });
+  
+  // Usaremos un endpoint nuevo para procesar el array, o el mismo si lo adaptas
+  const apiUrl = `${API_URLINTER}portalcli/crear_retencion_multiple`;
+
+  this.http.post<any>(apiUrl, formData, {
+    headers: headers,
+    reportProgress: true,
+    observe: 'events'
+  }).subscribe({
+    next: (event: any) => {
+      if (event.type === 1 && event.total) {
+        this.uploadProgress = Math.round((100 * event.loaded) / event.total);
+      } else if (event.type === 4) {
+        if (event.body.status) {
+          this.handleSuccessResponse(event.body);
+          this.deseleccionarTodo(); // Limpiamos después de éxito
+        } else {
+          this.handleErrorResponse(event.body);
+        }
+      }
+    },
+    error: (error) => {
+      this.isUploading = false;
+      this.uploadError = 'Error de conexión. Intente nuevamente.';
+    }
+  });
+}
 
   onComprobanteInput() {
     this.comprobanteError = null;
@@ -450,29 +541,34 @@ export class RetencionesPageComponent implements OnInit {
 
   // Filtros
   get retencionesFiltradas(): Retencion[] {
-    let filtradas = this.retenciones;
+      let filtradas = this.retenciones;
 
-    // Filtro por búsqueda
-    if (this.searchTerm) {
-      const term = this.searchTerm.toLowerCase();
-      filtradas = filtradas.filter(r =>
-        r.nombre.toLowerCase().includes(term) ||
-        r.numero.includes(term) ||
-        r.tipo.toLowerCase().includes(term)
-      );
-    }
+      // Filtro por búsqueda
+      if (this.searchTerm) {
+        const term = this.searchTerm.toLowerCase();
+        filtradas = filtradas.filter(r =>
+          r.nombre.toLowerCase().includes(term) ||
+          r.numero.includes(term) ||
+          r.tipo.toLowerCase().includes(term)
+        );
+      }
 
-    // Filtro por fecha
-    if (this.filtroFechaDesde) {
-      filtradas = filtradas.filter(r => r.fecha >= this.filtroFechaDesde);
-    }
+      // Filtro por fecha DESDE
+      if (this.filtroFechaDesde) {
+        // Convertimos el objeto Date a string YYYY-MM-DD para comparar con la API
+        const desdeStr = new Date(this.filtroFechaDesde).toISOString().split('T')[0];
+        filtradas = filtradas.filter(r => r.fecha >= desdeStr);
+      }
 
-    if (this.filtroFechaHasta) {
-      filtradas = filtradas.filter(r => r.fecha <= this.filtroFechaHasta);
-    }
+      // Filtro por fecha HASTA
+      if (this.filtroFechaHasta) {
+        // Convertimos el objeto Date a string YYYY-MM-DD
+        const hastaStr = new Date(this.filtroFechaHasta).toISOString().split('T')[0];
+        filtradas = filtradas.filter(r => r.fecha <= hastaStr);
+      }
 
-    // Ordenar
-    return this.sortRetenciones(filtradas);
+      // Ordenar
+      return this.sortRetenciones(filtradas);
   }
 
   // Paginación
@@ -616,4 +712,5 @@ export class RetencionesPageComponent implements OnInit {
     this.applyFilters();
   }
   
+
 }
