@@ -557,7 +557,19 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     formData.append('search', this.search ?? '');
     formData.append('sortColumn', this.sortColumn);
     formData.append('sortDirection', this.sortDirection);
-    formData.append('fechapago', this.fechaTransferencia);
+
+    if (this.fechaTransferencia) {
+      // Creamos una fecha local para evitar problemas de zona horaria
+      const d = new Date(this.fechaTransferencia);
+      const anio = d.getFullYear();
+      const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+      const dia = ('0' + d.getDate()).slice(-2);
+      
+      const fechaParaEnviar = `${anio}${mes}${dia}`; // Resultado: "20260317"
+      formData.append('fechapago', fechaParaEnviar);
+    }
+
+    //formData.append('fechapago', this.fechaTransferencia);
 
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
