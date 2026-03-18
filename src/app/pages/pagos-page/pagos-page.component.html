@@ -492,10 +492,10 @@
                           <thead>
                             <tr class="text-center">
                               <th scope="col" class="align-middle">
-                                <mat-checkbox 
+                                <!-- <mat-checkbox 
                                   (change)="selectAll($event)"
                                   [disabled]="!tieneFacturasSeleccionables()">
-                                </mat-checkbox>
+                                </mat-checkbox> -->
                               </th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'numero', direction: sortColumn === 'numero' && sortDirection === 'asc' ? 'desc' : 'asc' })">Documento</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión</th>
