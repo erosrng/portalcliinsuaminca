@@ -404,7 +404,6 @@ export class PagosPageComponent implements OnInit {
 
   //METODO DE PAGO
   seleccionarMetodoPago(metodo: string) {
-    this.selectedRowsMap = {};
     this.resetearCampos();
     this.metodoPagoSeleccionado = metodo;
     this.actualizarTiposPago();
@@ -674,16 +673,20 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     }
     const rowId = this.getRowId(row);
     console.log('desde el toggle '+this.saldoDisponible)
-    if(this.metodoPagoSeleccionado=='VES'){
-      if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
-        Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
-        return;
+
+    if(this.montoPagado>0){
+      if(this.metodoPagoSeleccionado=='VES'){
+        if (this.saldoDisponible <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+          Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+          return;
+        }
+      }else{
+        if (this.saldoDisponibled <= 0 && !this.selectedRowsMap[rowId]?.selected) {
+          Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
+          return;
+        }
       }
-    }else{
-      if (this.saldoDisponibled <= 0 && !this.selectedRowsMap[rowId]?.selected) {
-        Swal.fire('Atención', 'No hay saldo disponible para agregar más facturas', 'warning');
-        return;
-      }
+
     }
 
     if (!this.selectedRowsMap[rowId]) {
@@ -1016,7 +1019,7 @@ onFileSelected(event: Event): void {
   // Función para mostrar la confirmación del pago
   private async mostrarConfirmacionPago(facturasSeleccionadas: any[]): Promise<any> {
     const simboloMoneda = this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ';
-    const totalFormateado = simboloMoneda + this.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const totalFormateado = simboloMoneda + this.montoPagado.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     
     const detallesFacturas = facturasSeleccionadas.map(f => {
       const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1119,7 +1122,6 @@ onFileSelected(event: Event): void {
           icon: 'success'
         });
         this.pagedPagos=[];
-        this.resetearCampos();
         //this.fetchPagos();
         
         return { success: true, idPago: response.idPago };
@@ -1186,6 +1188,8 @@ private async enviarComprobante(idPago: string): Promise<void> {
     const response: any = await this.http.post(`${API_URLINTER}portalcli/guardar_comprobante`, formData, { headers }).toPromise();
     if (response?.success) {
       Swal.fire('Éxito', 'Comprobante subido correctamente', 'success');
+      //Al terminar de cargar el pago
+      this.resetearCampos();
     } else {
       Swal.fire('Advertencia', 'El pago se registró pero hubo un error al subir el comprobante', 'warning');
     }
@@ -1213,16 +1217,17 @@ private async enviarComprobante(idPago: string): Promise<void> {
   this.saldoDisponibled = this.montoPagadod;
 
   // Limpiar selecciones existentes
-  Object.keys(this.selectedRowsMap).forEach(key => {
+  /* Object.keys(this.selectedRowsMap).forEach(key => {
     this.selectedRowsMap[key].selected = false;
     this.selectedRowsMap[key].montoAPagar = 0;
   });
-  
+   */
   this.updatePagedPagos();
-  this.actualizarFacturasACancelar();
+  this.distribuirSaldoAFacturas();
+  //this.actualizarFacturasACancelar();
 } 
 
-/* distribuirSaldoAFacturas(): void {
+distribuirSaldoAFacturas(): void {
   this.saldoDisponible = this.montoOriginalPagado;
     this.saldoDisponibled = this.montoOriginalPagadod;
 
@@ -1258,7 +1263,7 @@ private async enviarComprobante(idPago: string): Promise<void> {
   });
   
   this.actualizarMonto();
-} */
+}
 
 
   //ACTUALIZA EL MONTO EN BASE A LAS FILAS SELECCIONADAS
@@ -1291,61 +1296,12 @@ private async enviarComprobante(idPago: string): Promise<void> {
     // Validación de consistencia
     /* if (totalMonto > this.montoOriginalPagado) {
       console.error('Error: El monto aplicado excede el saldo original');
-      this.recalcularMontos();
     }
 
     if (totalMontod > this.montoOriginalPagadod) {
       console.error('Error: El monto aplicado excede el saldo original');
-      this.recalcularMontos();
     } */
    console.log('actualizaMonto')
-   //this.recalcularMontos();
   }
 
-/* recalcularMontos(): void {
-  let saldoRestante = this.montoOriginalPagado;
-  let saldoRestanted = this.montoOriginalPagadod;
-
-  Object.keys(this.selectedRowsMap).forEach(key => {
-
-    if (this.selectedRowsMap[key].selected) {
-      if(this.metodoPagoSeleccionado=='VES'){
-        const factura = this.selectedRowsMap[key];
-        const montoMaximo = factura.data.saldo + factura.data.difc - factura.data.ppago;
-        const montoAPagar = Math.min(montoMaximo, saldoRestante);
-        
-        factura.montoAPagar = montoAPagar;
-        saldoRestante -= montoAPagar;
-        
-        // Si no queda saldo, deseleccionar las siguientes
-        if (saldoRestante <= 0) {
-          factura.selected = false;
-          factura.montoAPagar = 0;
-          saldoRestante = 0;
-        }
-      }else{
-        const factura = this.selectedRowsMap[key];
-        const montoMaximo = factura.data.saldo_dolar;
-        const montoAPagar = Math.min(montoMaximo, saldoRestanted);
-        
-        factura.montoAPagar = montoAPagar;
-        saldoRestanted -= montoAPagar;
-        
-        // Si no queda saldo, deseleccionar las siguientes
-        if (saldoRestanted <= 0) {
-          factura.selected = false;
-          factura.montoAPagar = 0;
-          saldoRestanted = 0;
-        }
-      }
-
-    }
-  });
-  
-  this.saldoDisponible = saldoRestante;
-  this.saldoDisponibled = saldoRestanted;
-  
-  this.updatePagedPagos();
-  this.actualizarMonto();
-} */
 }

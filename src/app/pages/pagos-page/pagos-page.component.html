@@ -194,7 +194,8 @@
                                 (change)="actualizarSaldoDisponible()"
                                 required> -->
 
-                                <div class="form-group amount-group" *ngIf="montoACancelar">
+                                <!-- <div class="form-group amount-group" *ngIf="montoACancelar"> -->
+                                <div class="form-group amount-group" *ngIf="montoSeleccionado">
                                   <label class="form-label">Total a pagar de facturas seleccionadas:</label>
                                   <div class="amount-display"  *ngIf="metodoPagoSeleccionado == 'VES'">
                                     {{formatearMonto(montoSeleccionado)}}
