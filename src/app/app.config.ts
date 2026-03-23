@@ -36,22 +36,22 @@ export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/prac
 
 
 //URL DE INSUAMINCA PARA TRABAJAR 
-/* export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
 
 export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
 export const URLSOLA = 'https://insuaminca.org/';
-export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/';  */
+export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/'; 
 
 //MI MAQUINA
-export const API_URL = 'http://localhost/insuaminca/api/';
+/* export const API_URL = 'http://localhost/insuaminca/api/';
 export const URLSOLA = 'http://localhost/';
 export const PROTEO_URL_ALONE = 'http://localhost/insuaminca/';
 
 export const API_URLINTER = 'http://localhost/insuaminca/api/';
 export const URLSOLAINTER = 'http://localhost/';
-export const PROTEO_URL_ALONEINTER = 'http://localhost/insuaminca/'; 
+export const PROTEO_URL_ALONEINTER = 'http://localhost/insuaminca/';  */
 
 
 //export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/practica/api/'; 
