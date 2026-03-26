@@ -965,7 +965,7 @@ onFileSelected(event: Event): void {
       return;
     }
 
-    if (this.saldoDisponible>0 && this.saldoDisponible<this.montoACancelar ) {
+    if (this.saldoDisponible>0 && this.saldoDisponible<this.montoPagado ) {
       Swal.fire('Error', 'Saldo debe aplicarse por completo.', 'error');
       this.isLoading = false;
       return;
