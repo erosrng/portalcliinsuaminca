@@ -120,10 +120,10 @@ export class PagosPageComponent implements OnInit {
   private clienteSubscription: Subscription = new Subscription();
     public clienteData: any = {};
   clienteControl = new FormControl(); 
-
+public deudaTotalAbsoluta: number = 0;
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+    public authService: AuthService,
     public portalcliLogicaService: PortalcliLogicaService
   ) { }
 
@@ -579,6 +579,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
       next: (response: any) => {
         this.allPagos = response.data;
         this.totalPages = Math.ceil(parseInt(response.recordsTotal) / this.itemsPerPage);
+        this.deudaTotalAbsoluta = response.deudaTotalReal || 0;
         this.updatePagedPagos();
         this.isLoading = false;
       },
