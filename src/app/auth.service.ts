@@ -153,6 +153,7 @@ export class AuthService {
   logout(): void {
     localStorage.clear();
     this.removeToken();
+    this._codCli = null;
     this.isHandlingSessionExpired = false;
     this.router.navigate(['/login']);
   }

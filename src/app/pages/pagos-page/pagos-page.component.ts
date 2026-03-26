@@ -1018,11 +1018,26 @@ onFileSelected(event: Event): void {
   
   // Función para mostrar la confirmación del pago
   private async mostrarConfirmacionPago(facturasSeleccionadas: any[]): Promise<any> {
+    // 1. Definimos el símbolo explícitamente según tu lógica
     const simboloMoneda = this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ';
-    const totalFormateado = simboloMoneda + this.montoPagado.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // 2. Usamos montoACancelar (que es el que usas en el resto del componente)
+    // Forzamos el formato 'es-VE' para asegurar que el separador de miles sea punto y decimal coma, 
+    // o 'en-US' si prefieres lo contrario, pero FIJO para todos los navegadores.
+    const totalFormateado = simboloMoneda + this.montoACancelar.toLocaleString('es-VE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
     
     const detallesFacturas = facturasSeleccionadas.map(f => {
-      const montoFormateado = simboloMoneda + f.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      // CORRECCIÓN ERROR UNDEFINED: Usamos montoAPagar que es el nombre 
+      // que asignaste en el método enviapago
+      const montoIndividual = f.montoAPagar || 0;
+      const montoFormateado = simboloMoneda + montoIndividual.toLocaleString('es-VE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
       return `
         <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
           <span>${f.tipo_doc}-${f.numero}</span>
@@ -1030,7 +1045,7 @@ onFileSelected(event: Event): void {
         </div>
       `;
     }).join('');
-  
+
     return await Swal.fire({
       title: '¿Desea enviar el pago?',
       html: `
@@ -1203,12 +1218,12 @@ private async enviarComprobante(idPago: string): Promise<void> {
 
 // Actualiza cuando cambia el monto pagado
  actualizarSaldoDisponible(): void {
-  if (this.montoPagado <= 0 ) {
+  /* if (this.montoPagado <= 0 ) {
     this.montoPagado = 0.01;
   }
   if (this.montoPagadod <= 0) {
     this.montoPagadod = 0.01;
-  }
+  } */
   // Resetear todo al cambiar el monto principal
   this.montoOriginalPagado = this.montoPagado;
   this.montoOriginalPagadod = this.montoPagadod;
