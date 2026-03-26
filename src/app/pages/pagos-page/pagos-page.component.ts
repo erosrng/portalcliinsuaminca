@@ -1047,21 +1047,24 @@ onFileSelected(event: Event): void {
     }).join('');
 
     return await Swal.fire({
-      title: '¿Desea enviar el pago?',
+      // Título más directo y profesional
+      title: 'Confirmación de Pago',
       html: `
         <div class="text-left">
-          <p>Total a pagar: <strong>${totalFormateado}</strong></p>
-          <p>Facturas seleccionadas: ${facturasSeleccionadas.length}</p>
-          <div class="mt-2" style="max-height: 200px; overflow-y: auto;">
+          <p class="mb-2">Por favor, verifique que el monto coincida exactamente con su comprobante:</p>
+          <p style="font-size: 1.4rem;">Total a Reportar: <strong>${totalFormateado}</strong></p>
+          <hr>
+          <p><strong>Detalle de Facturas (${facturasSeleccionadas.length}):</strong></p>
+          <div class="mt-2" style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
             ${detallesFacturas}
           </div>
         </div>
       `,
-      icon: 'question',
+      icon: 'info', // 'info' suele verse más limpio para confirmaciones de datos
       showCancelButton: true,
-      confirmButtonText: 'Confirmar pago',
+      confirmButtonText: 'Sí, enviar pago',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#3085d6',
+      confirmButtonColor: '#1a237e', // Color azul institucional (similar al de BDV/Banesco)
       cancelButtonColor: '#d33'
     });
   }
