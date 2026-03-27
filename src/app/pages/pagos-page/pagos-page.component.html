@@ -377,13 +377,13 @@
                           <label class="form-label">Comprobante de pago</label>
                           <div class="file-upload">
                             <input type="file" id="comprobante" name="comprobante" 
-                                   (change)="handleFileUpload($event)" accept=".jpg,.jpeg,.png">
+                                   (change)="handleFileUpload($event)" accept=".jpg,.jpeg,.png,.pdf">
                             <label for="comprobante" class="upload-label">
                               <i class="fas fa-cloud-upload-alt"></i>
                               <span>{{ archivoComprobante ? archivoComprobante.name : 'Seleccionar archivo' }}</span>
                             </label>
                           </div>
-                          <small class="file-note">Formatos aceptados: JPG, PNG, (Máx. 5MB)</small>
+                          <small class="file-note">Formatos aceptados: JPG, PNG,PDF (Máx. 5MB)</small>
                         </div>
                 
                         <!-- Botón de Envío -->
@@ -437,33 +437,34 @@
                         </div>
                       </div>
                     </div>
-<div class="mb-3" *ngIf="fechaTransferencia"
-     [ngStyle]="{
-        'background-color': (deudaTotalAbsoluta > 0) ? '#fff5f5' : '#f0fff4',
-        'border-left': (deudaTotalAbsoluta > 0) ? '5px solid #e53e3e' : '5px solid #38a169'
-     }"
-     style="border-radius: 6px; padding: 12px 16px; transition: all 0.3s ease;">
-  
-  <div class="row align-items-center">
-    <div class="col">
-      <span class="text-uppercase fw-bold" 
-            [ngStyle]="{'color': (deudaTotalAbsoluta > 0) ? '#c53030' : '#2f855a'}"
-            style="font-size: 0.65rem; letter-spacing: 1.2px; display: block;">
-        {{ (deudaTotalAbsoluta > 0) ? 'Saldo Pendiente Total' : 'Sin Deuda Pendiente' }}
-      </span>
-      
-      <h4 class="mb-0 fw-bold" style="color: #2d3748; font-size: 1.6rem; line-height: 1.2;">
-        <span [ngStyle]="{'color': (deudaTotalAbsoluta > 0) ? '#e53e3e' : '#38a169'}" 
-              style="font-size: 1rem; margin-right: 2px;">$</span>{{ formatearMonto(deudaTotalAbsoluta / authService.getTasa()) }}
-      </h4>
-    </div>
-    
-    <div class="col-auto">
-      <i [class]="(deudaTotalAbsoluta > 0) ? 'fas fa-exclamation-circle text-danger' : 'fas fa-check-circle text-success'" 
-         style="font-size: 1.2rem; opacity: 0.6;"></i>
-    </div>
-  </div>
-</div>
+
+                    <div class="mb-3" *ngIf="fechaTransferencia"
+                        [ngStyle]="{
+                            'background-color': (deudaTotalAbsoluta > 0) ? '#fff5f5' : '#f0fff4',
+                            'border-left': (deudaTotalAbsoluta > 0) ? '5px solid #e53e3e' : '5px solid #38a169'
+                        }"
+                        style="border-radius: 6px; padding: 12px 16px; transition: all 0.3s ease;">
+                      
+                      <div class="row align-items-center">
+                        <div class="col">
+                          <span class="text-uppercase fw-bold" 
+                                [ngStyle]="{'color': (deudaTotalAbsoluta > 0) ? '#c53030' : '#2f855a'}"
+                                style="font-size: 0.65rem; letter-spacing: 1.2px; display: block;">
+                            {{ (deudaTotalAbsoluta > 0) ? 'Saldo Pendiente Total' : 'Sin Deuda Pendiente' }}
+                          </span>
+                          
+                          <h4 class="mb-0 fw-bold" style="color: #2d3748; font-size: 1.6rem; line-height: 1.2;">
+                            <span [ngStyle]="{'color': (deudaTotalAbsoluta > 0) ? '#e53e3e' : '#38a169'}" 
+                                  style="font-size: 1rem; margin-right: 2px;">$</span>{{ formatearMonto(deudaTotalAbsoluta / authService.getTasa()) }}
+                          </h4>
+                        </div>
+                        
+                        <div class="col-auto">
+                          <i [class]="(deudaTotalAbsoluta > 0) ? 'fas fa-exclamation-circle text-danger' : 'fas fa-check-circle text-success'" 
+                            style="font-size: 1.2rem; opacity: 0.6;"></i>
+                        </div>
+                      </div>
+                    </div>
 
 
                     <div class="container-fluid w-100 mt-4">

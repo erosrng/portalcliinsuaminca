@@ -1,0 +1,106 @@
+<app-nav-bar></app-nav-bar>
+
+<div style="display: flex; flex-direction: row;">
+  <app-side-bar></app-side-bar>
+  
+  <div class="container-fluid container-max">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h3 class="card-title text-primary">
+          <i class="fas fa-history icon"></i>
+          <span> Historial de Pagos Realizados</span>
+        </h3>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Buscar por referencia o descripción</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Ej. 329249...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Filtrar por Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="fechaFiltro" (dateChange)="fetchHistorial()">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <!-- <div class="col-md-2">
+        <button mat-flat-button color="primary" class="w-100 btn-clear" style="height: 56px;" (click)="fechaFiltro = null; fetchHistorial()">
+          Limpiar
+        </button>
+      </div> -->
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="mat-elevation-z8 overflow-auto">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <ng-container matColumnDef="idgecli">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Numero</th>
+            <td mat-cell *matCellDef="let element"> 
+                <span class="text-primary fw-bold">{{element.idgecli}}</span><br>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+            <td mat-cell *matCellDef="let element"> 
+                <b>{{element.fecha | date:'dd/MM/yyyy'}}</b><br>
+                <small class="text-muted">{{element.fecha | date:'hh:mm a'}}</small>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="referencia">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Referencia / Banco </th>
+            <td mat-cell *matCellDef="let element"> 
+                <span class="text-primary fw-bold">{{element.numero}}</span><br>
+                <small>{{element.bancocli}}</small>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef> Concepto </th>
+            <td mat-cell *matCellDef="let element" style="max-width: 300px;"> 
+                {{element.descrip}} 
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="monto">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-end"> Monto (Bs) </th>
+            <td mat-cell *matCellDef="let element" class="text-end fw-bold text-success"> 
+                {{formatearMonto(element.monto)}} 
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="text-center"> Estatus </th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <span [ngClass]="{
+                'badge bg-success': element.status === 'C',
+                'badge bg-warning text-dark': element.status === 'A',
+                'badge bg-danger': element.status === 'N'
+              }" style="padding: 8px; border-radius: 8px; font-size: 11px;">
+                {{ element.status === 'C' ? 'CONCILIADO' : (element.status === 'A' ? 'PENDIENTE' : 'ANULADO') }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center py-4" colspan="5">No se encontraron pagos reportados.</td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons aria-label="Seleccionar página"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

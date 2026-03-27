@@ -1176,9 +1176,9 @@ handleFileUpload(event: any) {
   }
 
   // Validar tipo de archivo
-  const validExtensions = ['image/jpeg', 'image/png'];
+  const validExtensions = ['image/jpeg', 'image/png', 'application/pdf'];
   if (!validExtensions.includes(file.type)) {
-    Swal.fire('Error', 'Formato de archivo no válido. Use JPG, PNG', 'error');
+    Swal.fire('Error', 'Formato de archivo no válido. Use JPG, PNG o PDF', 'error');
     event.target.value = ''; // Limpiar input
     this.archivoComprobante = null;
     return;
