@@ -29,18 +29,21 @@ export class AuthService {
   private isHandlingSessionExpired = false;
 
   constructor(private router: Router) {
-    this.validateAndLoadToken();
+    setTimeout(() => {
+        this.validateAndLoadToken();
+    }, 2100);
   }
 
   private validateAndLoadToken(): void {
     //console.log('AuthService: validateAndLoadToken() ejecutado.');
     const storedToken = localStorage.getItem('token');
+    const almacen = localStorage.getItem('almacen');
 
     // Obtener la URL actual para verificar si es la ruta de login
     const currentUrl = this.router.url;
     const isLoginPage = currentUrl === '/login';
 
-    if (!storedToken) {
+    if (!storedToken/*  || !almacen */) {
       //console.log('AuthService: No hay token en localStorage.');
       this.token = null;
       this.decodedToken = null;

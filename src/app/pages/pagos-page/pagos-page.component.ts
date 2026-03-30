@@ -965,8 +965,9 @@ onFileSelected(event: Event): void {
       this.isLoading = false;
       return;
     }
+const saldoReal = parseFloat(this.saldoDisponible.toFixed(2));
 
-    if (this.saldoDisponible>0 && this.saldoDisponible<this.montoPagado ) {
+    if (saldoReal > 0 && saldoReal<this.montoPagado ) {
       Swal.fire('Error', 'Saldo debe aplicarse por completo.', 'error');
       this.isLoading = false;
       return;

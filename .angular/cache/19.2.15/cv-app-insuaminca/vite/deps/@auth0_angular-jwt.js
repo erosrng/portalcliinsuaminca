@@ -18,10 +18,10 @@ import {
   ɵɵdefineNgModule,
   ɵɵinject
 } from "./chunk-RFZ2BTTM.js";
-import "./chunk-PEBH6BBU.js";
 import {
   defer
 } from "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import {
   map,
   mergeMap,
