@@ -16,6 +16,7 @@ export class ClicardComponent {
   tasa: number=0;
   @Input() minimal: boolean = false;
     saldocli: number=0;
+    public clienteData: any = {};
 
   constructor(
     public authService: AuthService, 
@@ -27,8 +28,13 @@ export class ClicardComponent {
 
 
   ngOnInit() {
-    this.traesaldo();
-    this.tasa = this.authService.getTasa(); 
+    this.portalcliLogicaService.clienteData$.subscribe((clienteData) => {
+      this.tasa = this.authService.getTasa();
+      clienteData = clienteData || {};
+      this.clienteData = clienteData;
+          this.traesaldo();
+
+    });
   }
 
 
@@ -57,7 +63,9 @@ export class ClicardComponent {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
           //console.log('entre')
-          this.saldocli = response.datcli;
+          this.saldocli = this.clienteData.limite - response.datcli;
+          console.log('Saldo del cliente:', this.saldocli);
+          console.log('limite de credito:', this.clienteData.limite);
         },
         error: (error) => {
           console.error('Error de la API:', error);

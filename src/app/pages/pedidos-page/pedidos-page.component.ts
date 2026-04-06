@@ -37,10 +37,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSort, Sort,MatSortModule } from '@angular/material/sort';
 import {Table, TableModule} from "primeng/table";
-import {InputText} from "primeng/inputtext";
-import {Button} from "primeng/button";
-import {IconField} from "primeng/iconfield";
-import {InputIcon} from "primeng/inputicon";
+
 import {Listbox} from "primeng/listbox"; // Importa Sort
 
 declare var bootstrap: any;
@@ -129,10 +126,6 @@ export interface ApiResponsePublicidad {
     MatCheckboxModule,
     MatSortModule,
     TableModule,
-    InputText,
-    Button,
-    IconField,
-    InputIcon,
     Listbox
   ],
   changeDetection: ChangeDetectionStrategy.OnPush, 
