@@ -28,8 +28,8 @@
     <div class="row text-white p-2 rounded saldo__content">
         <div class="col-md-12">
             <span class="fw-bold">SALDO DISPONIBLE:</span>
-            <span class="float-end">Bs. {{ formatCurrency((portalcliLogicaService.clienteData$ | async)?.saldo) }}
-                <br>US$ {{ formatCurrency((portalcliLogicaService.clienteData$ | async)?.saldo / tasa) }}</span>
+            <span class="float-end">Bs. {{ formatCurrency(saldocli) }}
+                <br>US$ {{ formatCurrency(saldocli / tasa) }}</span>
         </div>
     </div>
 </div>
@@ -54,9 +54,9 @@
                 </td>
 
                 <td class="text-start th-bottom-green p-2" >
-                    <span>Bs. {{ formatCurrency((portalcliLogicaService.clienteData$ | async)?.saldo) }}</span>
+                    <span>Bs. {{ formatCurrency(saldocli) }}</span>
                         <br>
-                    <span>US$ {{ formatCurrency((portalcliLogicaService.clienteData$ | async)?.saldo / tasa) }}</span>
+                    <span>US$ {{ formatCurrency(saldocli / tasa) }}</span>
                 </td>
             </tr>
         </tbody>

@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import {Component, Input} from '@angular/core';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { API_URLINTER } from '../../app.config';
 
 
 @Component({
@@ -13,10 +15,12 @@ import { AuthService } from './../../auth.service';
 export class ClicardComponent {
   tasa: number=0;
   @Input() minimal: boolean = false;
+    saldocli: number=0;
 
   constructor(
     public authService: AuthService, 
-    public portalcliLogicaService: PortalcliLogicaService
+    public portalcliLogicaService: PortalcliLogicaService,
+    private http: HttpClient
   ) { 
     this.tasa = this.authService.getTasa(); 
   }
@@ -37,4 +41,27 @@ export class ClicardComponent {
       maximumFractionDigits: 2,
     });
   }
+
+  traesaldo() {
+      const formData = new FormData();
+      const token = this.authService.getToken();
+  
+      const headers = new HttpHeaders({
+        'X-Auth-Token': `${token}`
+      });
+      const apiUrl = `${API_URLINTER}portalcli/traesaldo`;
+  
+      formData.append('codCli', this.authService.getCodCli() ?? '');
+  
+      this.http.post(apiUrl, formData, { headers: headers }).subscribe({
+        next: (response: any) => {
+          //console.log('entre')
+          this.saldocli = response.datcli.datcli.saldo;
+        },
+        error: (error) => {
+          console.error('Error de la API:', error);
+        },
+      });
+    }
+
 }
