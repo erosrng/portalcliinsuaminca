@@ -27,6 +27,7 @@ export class ClicardComponent {
 
 
   ngOnInit() {
+    this.traesaldo();
     this.tasa = this.authService.getTasa(); 
   }
 
