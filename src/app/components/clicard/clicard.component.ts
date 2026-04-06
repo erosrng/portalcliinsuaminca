@@ -57,7 +57,7 @@ export class ClicardComponent {
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
           //console.log('entre')
-          this.saldocli = response.datcli.datcli.saldo;
+          this.saldocli = response.datcli;
         },
         error: (error) => {
           console.error('Error de la API:', error);
