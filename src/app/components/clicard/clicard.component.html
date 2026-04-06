@@ -54,9 +54,9 @@
                 </td>
 
                 <td class="text-start th-bottom-green p-2" >
-                    <span>Bs. {{ formatCurrency(saldocli) }}</span>
+                    <span>Bs. {{ formatCurrency((portalcliLogicaService.clienteData$ | async)?.limite - saldocli) }}</span>
                         <br>
-                    <span>US$ {{ formatCurrency(saldocli / tasa) }}</span>
+                    <span>US$ {{ formatCurrency(((portalcliLogicaService.clienteData$ | async)?.limite / tasa)-(saldocli / tasa)) }}</span>
                 </td>
             </tr>
         </tbody>
