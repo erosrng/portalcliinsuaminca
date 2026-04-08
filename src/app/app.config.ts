@@ -6,6 +6,9 @@ import { routes } from './app.routes';
 import { AuthService } from './auth.service';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
+
 // *** Importación clave para las animaciones ***
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
@@ -66,6 +69,9 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
+    provideHttpClient(
+      withInterceptors([authInterceptor]) // Esto hará que TODAS las peticiones se vigilen
+    ),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     importProvidersFrom(HttpClientModule),
