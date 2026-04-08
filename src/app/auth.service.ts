@@ -43,7 +43,7 @@ export class AuthService {
     const currentUrl = this.router.url;
     const isLoginPage = currentUrl === '/login';
 
-    if (!storedToken/*  || !almacen */) {
+    if (!storedToken && !almacen ) {
       //console.log('AuthService: No hay token en localStorage.');
       this.token = null;
       this.decodedToken = null;
@@ -60,7 +60,7 @@ export class AuthService {
 
     try {
       //console.log('AuthService: Intentando decodificar token:', storedToken);
-      const decoded = this.jwtHelper.decodeToken(storedToken);
+      const decoded = this.jwtHelper.decodeToken(storedToken!);
       if (!decoded) {
         //console.error('AuthService: Decodificación de token fallida (malformado).');
         throw new Error('AuthService: Decodificación de token fallida (malformado)..');

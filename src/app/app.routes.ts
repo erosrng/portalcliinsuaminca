@@ -16,7 +16,8 @@ import {HistorialPagosComponent  } from './pages/historial-pagos/historial-pagos
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
-    { path: '', component: LoginPageComponent },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    
     { path: 'login', component: LoginPageComponent }, 
     { path: 'registrocli', component: RegistrocliPageComponent, canActivate: [authGuard] }, 
     { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
@@ -28,6 +29,8 @@ export const routes: Routes = [
     { path: 'historialpedidos', component: HistorialPedidosComponent, canActivate: [authGuard] },
     { path: 'historialpagos', component: HistorialPagosComponent, canActivate: [authGuard] },
     { path: 'reclamos', component: ReclamosPageComponent, canActivate: [authGuard] },
-    { path: 'retenciones', component: RetencionesPageComponent, canActivate: [authGuard] }
+    { path: 'retenciones', component: RetencionesPageComponent, canActivate: [authGuard] },
+
+    { path: '**', redirectTo: 'home' }
 
 ];
