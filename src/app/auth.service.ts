@@ -93,12 +93,23 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    if (this.token && this.decodedToken && !this.jwtHelper.isTokenExpired(this.token)) {
-      return this.token;
+    const storedToken = localStorage.getItem('token');
+    
+    // Si no hay nada en el storage, logout directo
+    if (!storedToken) {
+        this.logout(true);
+        return null;
     }
-    this.validateAndLoadToken();
+
+    // Si el token existe pero está expirado según el reloj del cliente
+    if (this.jwtHelper.isTokenExpired(storedToken)) {
+        this.logout(true);
+        return null;
+    }
+
+    this.token = storedToken;
     return this.token;
-  }
+}
 
   removeToken() {
     this.token = null;
@@ -149,13 +160,28 @@ export class AuthService {
     return this.decodedToken ? this.decodedToken.API_TIME : null;
   }
 
-  logout(): void {
-    localStorage.clear();
-    this.removeToken();
-    this._codCli = null;
-    this.isHandlingSessionExpired = false;
-    this.router.navigate(['/login']);
+  async logout(showMsg: boolean = false): Promise<void> {
+  if (showMsg) {
+    await Swal.fire({
+      icon: 'info',
+      title: 'Sesión Finalizada',
+      text: 'Tu sesión ha vencido o los datos de cliente no son válidos. Por seguridad, debes ingresar de nuevo.',
+      confirmButtonColor: '#1a237e', // Tu azul corporativo
+      timer: 4000,
+      timerProgressBar: true
+    });
   }
+
+  // Limpieza total
+  localStorage.clear();
+  this.token = null;
+  this.decodedToken = null;
+  this._codCli = null;
+  this.isHandlingSessionExpired = false;
+  
+  // Redirección
+  this.router.navigate(['/login']);
+}
 
   // Modificado para aceptar un token como argumento opcional
   async handleSessionExpired(invalidToken: string | null = null): Promise<void> {
