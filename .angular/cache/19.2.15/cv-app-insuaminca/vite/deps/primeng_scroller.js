@@ -3,8 +3,7 @@ import {
   ScrollerClasses,
   ScrollerModule,
   ScrollerStyle
-} from "./chunk-UKNCIUUE.js";
-import "./chunk-QMHDQB3I.js";
+} from "./chunk-MW6WO2KB.js";
 import "./chunk-7I7YQUIE.js";
 import "./chunk-K5LX574Q.js";
 import "./chunk-WQFSD3LU.js";
