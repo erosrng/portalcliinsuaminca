@@ -29,9 +29,7 @@ export class AuthService {
   private isHandlingSessionExpired = false;
 
   constructor(private router: Router) {
-    setTimeout(() => {
         this.validateAndLoadToken();
-    }, 2100);
   }
 
   private validateAndLoadToken(): void {
@@ -52,8 +50,6 @@ export class AuthService {
       if (!isLoginPage) {
         //console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(null);
-      } else {
-        //console.log('AuthService: No hay token, pero estamos en la página de login. No se muestra alerta ni se redirige.');
       }
       return;
     }
