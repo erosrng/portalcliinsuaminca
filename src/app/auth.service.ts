@@ -39,7 +39,11 @@ export class AuthService {
 
     // Obtener la URL actual para verificar si es la ruta de login
     const currentUrl = this.router.url;
-    const isLoginPage = currentUrl === '/login';
+    // Definimos las rutas que NO deben disparar el logout automático
+    const excludedRoutes = ['/login', '/registrocli', '/otra-pagina-excluida'];
+    
+    // Verificamos si la ruta actual está en nuestra lista de exclusión
+    const isExcludedPage = excludedRoutes.some(route => currentUrl.includes(route));
 
     if (!storedToken && !almacen ) {
       //console.log('AuthService: No hay token en localStorage.');
@@ -47,7 +51,7 @@ export class AuthService {
       this.decodedToken = null;
 
       // Solo llama a handleSessionExpired si NO estamos en la página de login
-      if (!isLoginPage) {
+      if (!isExcludedPage) {
         //console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(null);
       }
@@ -76,7 +80,7 @@ export class AuthService {
       this.decodedToken = null;
 
       // Solo llama a handleSessionExpired si NO estamos en la página de login
-      if (!isLoginPage) {
+      if (!isExcludedPage) {
         //console.log('AuthService: Token inválido/expirado y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
         this.handleSessionExpired(storedToken); // Pasa el token problemático
       } else {
