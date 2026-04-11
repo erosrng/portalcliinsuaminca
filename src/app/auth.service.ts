@@ -130,8 +130,8 @@ export class AuthService {
   }
 
   getUsuario(): string | null {
-    this.getToken();
-    return this.decodedToken ? this.decodedToken.usuario : null;
+      if (!this.isLoggedIn()) return null;
+      return this.decodedToken ? this.decodedToken.usuario : null;
   }
 
   getNombre(): string | null {
@@ -140,7 +140,15 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken() && !!this.decodedToken && this.decodedToken.logged_in;
+      const token = localStorage.getItem('token');
+      if (!token || this.jwtHelper.isTokenExpired(token)) {
+          return false;
+      }
+      // Si llegamos aquí, el token existe y es válido
+      if (!this.decodedToken) {
+          this.decodedToken = this.jwtHelper.decodeToken(token);
+      }
+      return !!this.decodedToken && this.decodedToken.logged_in;
   }
 
   getTipoU(): string | null {
