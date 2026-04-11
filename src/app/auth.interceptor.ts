@@ -6,6 +6,10 @@ import { tap } from 'rxjs/operators';
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
 
+  if (req.url.includes('/login') || req.url.includes('/registrocli')) {
+    return next(req);    
+  }
+
   return next(req).pipe(
     tap({
       next: (event: any) => {
