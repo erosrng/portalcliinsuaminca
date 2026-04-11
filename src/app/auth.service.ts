@@ -97,23 +97,31 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    const storedToken = localStorage.getItem('token');
-    
-    // Si no hay nada en el storage, logout directo
-    if (!storedToken) {
-        this.logout(true);
-        return null;
-    }
+      const storedToken = localStorage.getItem('token');
+      
+      // Nueva lógica de exclusión dentro de getToken
+      const currentUrl = this.router.url;
+      const excludedRoutes = ['/login', '/registrocli'];
+      const isExcludedPage = excludedRoutes.some(route => currentUrl.includes(route));
 
-    // Si el token existe pero está expirado según el reloj del cliente
-    if (this.jwtHelper.isTokenExpired(storedToken)) {
-        this.logout(true);
-        return null;
-    }
+      if (!storedToken) {
+          // Solo hacemos logout si NO es una página pública
+          if (!isExcludedPage) {
+              this.logout(true);
+          }
+          return null;
+      }
 
-    this.token = storedToken;
-    return this.token;
-}
+      if (this.jwtHelper.isTokenExpired(storedToken)) {
+          if (!isExcludedPage) {
+              this.logout(true);
+          }
+          return null;
+      }
+
+      this.token = storedToken;
+      return this.token;
+  }
 
   removeToken() {
     this.token = null;
