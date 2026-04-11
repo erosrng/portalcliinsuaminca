@@ -130,8 +130,8 @@ export class AuthService {
   }
 
   getUsuario(): string | null {
-      if (!this.isLoggedIn()) return null;
-      return this.decodedToken ? this.decodedToken.usuario : null;
+    this.getToken();
+    return this.decodedToken ? this.decodedToken.usuario : null;
   }
 
   getNombre(): string | null {

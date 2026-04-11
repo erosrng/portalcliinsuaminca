@@ -19,7 +19,7 @@ export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     
     { path: 'login', component: LoginPageComponent }, 
-    { path: 'registrocli', component: RegistrocliPageComponent, canActivate: [authGuard] }, 
+    { path: 'registrocli', component: RegistrocliPageComponent },
     { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
     { path: 'carrito', component: CarritoPageComponent, canActivate: [authGuard] },
     { path: 'miperfil', component: MiperfilPageComponent, canActivate: [authGuard] },
