@@ -535,7 +535,51 @@
   align-items: center;
   padding: 5px 8px;
 }
+/*titulo del estado de la retencion*/
+.badge-container {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
 
+/* Oculto por defecto */
+.custom-tooltip {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%; /* Aparece arriba del badge */
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.1s; /* Transición ultra rápida */
+    font-size: 12px;
+    line-height: 1.4;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Flechita del tooltip */
+.custom-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* Mostrar inmediatamente al pasar el mouse */
+.badge-container:hover .custom-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
 .fas {
   font-size: 1.3rem;
 }

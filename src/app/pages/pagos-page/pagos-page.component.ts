@@ -284,6 +284,27 @@ public deudaTotalAbsoluta: number = 0;
     }
   }
 
+  getBadgeTitle(row: any): string {
+    if (!row.estado_retencion || row.estado_retencion === 'N/A') {
+        return 'Esta operación no posee o no requiere retención de IVA.';
+    }
+
+    const estado = row.estado_retencion.toLowerCase();
+
+    switch(estado) {
+        case 'en proceso':
+            return 'Retención está a la espera de ser confirmada.';
+        case 'aprobada':
+            return 'Retención confirmada y aplicada correctamente.';
+        case 'procesada (web)':
+            return 'La retención fue gestionada a través del portal web.';
+        case 'pendiente':
+            return 'Aún no se registra el comprobante de retención.';
+        default:
+            return 'Estado de retención no identificado.';
+    }
+}
+
   // Muestra alerta cuando intenta seleccionar factura sin retención
   mostrarAlertaSinRetencion(row: any): void {
     if (this.clienteData?.tiva!='E') {

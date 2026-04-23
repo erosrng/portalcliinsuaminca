@@ -576,11 +576,16 @@
                               </td>
                               
                               <td class="align-middle">
-                                  {{ row.tipo_doc }}-{{ row.numero }}
+                                  {{ row.tipo_doc }}-{{ row.tipo_doc === 'ND' ? row.num_ref : row.numero }}
                                   
                                   <!-- Badge para mostrar estado de retención - SOLO si NO es exento -->
-                                  <span *ngIf="clienteData?.tiva == 'E'" class="badge ms-2" [ngClass]="getBadgeClaseRetencion(row)">
-                                      {{ getBadgeRetencion(row) }}
+                                  <span *ngIf="clienteData?.tiva == 'E'" class="badge-container ms-2">
+                                      <span class="badge" [ngClass]="getBadgeClaseRetencion(row)">
+                                          {{ getBadgeRetencion(row) }}
+                                      </span>
+                                      <div class="custom-tooltip">
+                                          {{ getBadgeTitle(row) }}
+                                      </div>
                                   </span>
 
                               </td>
