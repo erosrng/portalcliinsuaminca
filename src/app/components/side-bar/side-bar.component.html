@@ -29,7 +29,7 @@
                 </div>
             </li>
 
-            <!-- <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#pagosDropdown" aria-expanded="false">
                     <i class="fas fa-credit-card"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Pagos</span> 
                     <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
@@ -43,19 +43,46 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
-                                <i class="fas fa-file-invoice-dollar"></i>
+                                <i class="fas fa-money-check-alt"></i>
                                 <span *ngIf="portalcliLogicaService.isMenuOpen"> Reportar Pagos</span>
+                                <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                                *ngIf="portalcliLogicaService.isMenuOpen">
+                                    NUEVO!
+                                </span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/retenciones')">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 <span *ngIf="portalcliLogicaService.isMenuOpen"> Retenciones</span>
+                                <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                                *ngIf="portalcliLogicaService.isMenuOpen">
+                                    NUEVO!
+                                </span>
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajaedocuenta()">
+                                <i class="fas fa-file-invoice-dollar"></i><span *ngIf="portalcliLogicaService.isMenuOpen">Descargar Edo.Cuenta</span>
+                                <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                                *ngIf="portalcliLogicaService.isMenuOpen">
+                                    NUEVO!
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/historialpagos')">
+                                <i class="fas fa-file-alt"></i><span *ngIf="portalcliLogicaService.isMenuOpen">Historial de pagos</span>
+                                <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
+                                *ngIf="portalcliLogicaService.isMenuOpen">
+                                    NUEVO!
+                                </span>
+                            </a>
+
                         </li>
                     </ul>
                 </div>
-            </li> -->
+            </li>
 
             <!-- <li class="nav-item">
                 <a class="nav-link menu__link" href="javascript:void(0)" (click)="navigateTo('/pagos')">
@@ -87,32 +114,6 @@
 
                 </a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link menu__link" href="javascript:void(0)" (click)="bajaedocuenta()">
-                    <i class="fas fa-file-invoice-dollar"></i><span *ngIf="portalcliLogicaService.isMenuOpen">Edo.Cuenta</span>
-                    <span class="translate-middle badge rounded-pill bg-danger nuevo-badge"
-                    *ngIf="portalcliLogicaService.isMenuOpen">
-                        NUEVO!
-                    </span>
-                </a>
-
-            </li>
-
-            <!-- <li class="nav-item">
-                <a class="nav-link menu__link" href="#" data-bs-toggle="collapse" data-bs-target="#reportesDropdown" aria-expanded="false">
-                    <i class="fas fa-chart-line"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Reportes</span> <i class="fas fa-solid fa-angle-down menu__dropdown-icon"></i>
-                </a>
-                <div class="collapse menu__dropdown-content" id="reportesDropdown">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link menu__dropdown-link" href="javascript:void(0)" (click)="navigateTo('/tomaexcel')">
-                                <i class="fas fa-file-invoice-dollar"></i><span *ngIf="portalcliLogicaService.isMenuOpen"> Exportar estado de cuenta</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li> -->
 
             <li class="nav-item">
                 <a class="nav-link menu__link" href="javascript:void(0)" (click)="logout()">
