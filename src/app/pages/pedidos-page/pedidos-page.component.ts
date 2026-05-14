@@ -351,7 +351,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
               case 'HB': // Home Big - Ignorar (son para home)
               case 'HS1': // Home Small 1 - Ignorar
               case 'HS2': // Home Small 2 - Ignorar
-                console.log(`Imagen ${item.plantilla} ignorada para pedidos:`, item.titulo);
                 break;
             }
           }

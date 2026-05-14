@@ -296,32 +296,39 @@
           <!-- Saldo total -->
           <div class="saldo-info">
             <span class="text-muted small">Saldo total:</span>
-            <span class="fw-bold">{{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].data.ppago) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
+            <span class="fw-bold">
+              {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }} 
+              {{ (selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].data.ppago) | number:'1.2-2' }}
+            </span>
           </div>
           
           <!-- Monto aplicado -->
           <div class="aplicado-info">
             <span class="text-muted small">Aplicado:</span>
-            <span class="fw-bold text-success">{{ selectedRowsMap[key].montoAPagar | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}</span>
-          </div>
-          
-          <!-- Saldo pendiente (solo muestra si hay) -->
-          <div *ngIf="!isFacturaPagadaCompleta(key)" class="pendiente-info">
-            <span class="text-muted small">Pendiente:</span>
-            <span class="fw-bold text-danger">
-              {{ ((selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].data.ppago) - selectedRowsMap[key].montoAPagar) | currency:(metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ ') }}
+            <span class="fw-bold text-success">
+              {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }} 
+              {{ selectedRowsMap[key].montoAPagar | number:'1.2-2' }}
             </span>
           </div>
           
-          <!-- Barra de progreso pequeña -->
+          <!-- Saldo pendiente -->
+          <div *ngIf="!isFacturaPagadaCompleta(key)" class="pendiente-info">
+            <span class="text-muted small">Pendiente:</span>
+            <span class="fw-bold text-danger">
+              {{ metodoPagoSeleccionado === 'VES' ? 'Bs' : '$' }} 
+              {{ ((selectedRowsMap[key].data.saldo + selectedRowsMap[key].data.difc - selectedRowsMap[key].data.ppago) - selectedRowsMap[key].montoAPagar) | number:'1.2-2' }}
+            </span>
+          </div>
+          
+          <!-- Barra de progreso -->
           <div class="w-100 mt-1">
             <div class="progress" style="height: 6px;">
               <div class="progress-bar" 
-                   [ngClass]="{
-                     'bg-success': isFacturaPagadaCompleta(key),
-                     'bg-warning': !isFacturaPagadaCompleta(key)
-                   }"
-                   [style.width]="getPorcentajePagado(key) + '%'">
+                  [ngClass]="{
+                    'bg-success': isFacturaPagadaCompleta(key),
+                    'bg-warning': !isFacturaPagadaCompleta(key)
+                  }"
+                  [style.width]="getPorcentajePagado(key) + '%'">
               </div>
             </div>
             <small class="text-muted">{{ getPorcentajePagado(key) }}% pagado</small>

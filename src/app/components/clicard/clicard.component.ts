@@ -64,8 +64,6 @@ export class ClicardComponent {
         next: (response: any) => {
           //console.log('entre')
           this.saldocli = this.clienteData.limite - response.datcli;
-          console.log('Saldo del cliente:', this.saldocli);
-          console.log('limite de credito:', this.clienteData.limite);
         },
         error: (error) => {
           console.error('Error de la API:', error);

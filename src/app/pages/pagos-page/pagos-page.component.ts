@@ -25,6 +25,8 @@ import { ClicardComponent } from "../../components/clicard/clicard.component";
 import { Subscription } from 'rxjs';
 import { FormsModule, ReactiveFormsModule, FormControl,Validators } from '@angular/forms'; 
 
+
+
 interface FacturaSeleccionada {
   selected: boolean;
   data: {
@@ -694,7 +696,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
       return;
     }
     const rowId = this.getRowId(row);
-    console.log('desde el toggle '+this.saldoDisponible)
+    //console.log('desde el toggle '+this.saldoDisponible)
 
     if(this.montoPagado>0){
       if(this.metodoPagoSeleccionado=='VES'){
@@ -990,8 +992,8 @@ onFileSelected(event: Event): void {
     const saldoReal = parseFloat(this.saldoDisponible.toFixed(6));
 
     if (saldoReal > 0 && saldoReal<this.montoPagado ) {
-      console.log('Saldo real: '+saldoReal);
-      console.log('Monto pagado: '+this.montoPagado);
+      //console.log('Saldo real: '+saldoReal);
+      //console.log('Monto pagado: '+this.montoPagado);
       Swal.fire('Error', 'Saldo debe aplicarse por completo.', 'error');
       this.isLoading = false;
       return;
@@ -1345,7 +1347,7 @@ distribuirSaldoAFacturas(): void {
     if (totalMontod > this.montoOriginalPagadod) {
       console.error('Error: El monto aplicado excede el saldo original');
     } */
-   console.log('actualizaMonto')
+   //console.log('actualizaMonto')
   }
 
 }

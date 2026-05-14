@@ -35,10 +35,18 @@ export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/practica/
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/practica/';  */
  
+//URL FTP INTERNA
+/* export const API_URL = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+export const URLSOLA = 'https://d2wnvkodoh477y.cloudfront.net/';
+export const PROTEO_URL_ALONE = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/';
 
+ export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
+export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
+export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/';  */
 
-
+//***************************************************************************************************************************************** */
 //URL DE INSUAMINCA PARA TRABAJAR 
+//////////////////////////////////
 export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/';
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
