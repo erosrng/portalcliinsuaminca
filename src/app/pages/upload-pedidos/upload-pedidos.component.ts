@@ -419,7 +419,7 @@ export class UploadPedidosComponent implements OnInit {
             pedidosRealizados.forEach((item, index) => {
                 dataRows.forEach((row) => {
                     // //console.log(row[11])
-                    if (Number(row[11]) > 0) {
+                    if (Number(row[12]) > 0) {
                         // //console.log(row[11])
                         item.pedido.push({
                             Codigo: row[0],
@@ -428,8 +428,8 @@ export class UploadPedidosComponent implements OnInit {
                             Precio: row[12],
                             Oferta1: row[4],
                             Oferta2: row[6],
-                            Descuento: row[13],
-                            Unidades: row[11]
+                            Descuento: row[14],
+                            Unidades: row[12]
                         });
                     }
                 })
