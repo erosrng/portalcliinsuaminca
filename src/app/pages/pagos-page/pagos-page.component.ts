@@ -1098,7 +1098,7 @@ onFileSelected(event: Event): void {
   }
   
   // Función para registrar el pago (sin el archivo)
-  private async registrarPago(facturasSeleccionadas: any[], codCli: string | null): Promise<any> {
+  /*private async registrarPago(facturasSeleccionadas: any[], codCli: string | null): Promise<any> {
     const formData = new FormData();
     const token = this.authService.getToken();
   
@@ -1180,7 +1180,114 @@ onFileSelected(event: Event): void {
       Swal.fire('Error', 'Ocurrió un error al enviar el pago', 'error');
       return { success: false };
     }
+  }*/
+
+    private async registrarPago(facturasSeleccionadas: any[], codCli: string | null): Promise<any> {
+  const formData = new FormData();
+  const token = this.authService.getToken();
+
+  // Datos generales del pago
+  formData.append('codCli', codCli ?? '');
+  formData.append('descripcion', this.facturasACancelar);
+  formData.append('referencia', this.numeroReferencia);
+  formData.append('monto', this.montoACancelar.toString());
+  formData.append('montod', this.montoACancelard.toString());
+
+  // Datos del banco si existe cuenta seleccionada
+  if (this.cuentaSeleccionada) {
+    formData.append('codigo_banco', this.cuentaSeleccionada.codbanc);
+    formData.append('banco', this.cuentaSeleccionada.banco);
+    formData.append('cuenta', this.cuentaSeleccionada.numcuent);
   }
+
+  // Tipo de pago y moneda
+  if (this.fechaTransferencia) {
+    const d = new Date(this.fechaTransferencia);
+    const anio = d.getFullYear();
+    const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+    const dia = ('0' + d.getDate()).slice(-2);
+    
+    const fechaParaEnviar = `${anio}${mes}${dia}`; 
+    formData.append('fbanco', fechaParaEnviar);
+  }
+  
+  formData.append('tipo_pago', this.tipoPagoSeleccionado);
+  formData.append('moneda', this.metodoPagoSeleccionado);
+  
+  // Agregar el detalle de cada factura
+  facturasSeleccionadas.forEach((factura, index) => {
+    formData.append(`facturas[${index}][tipo_doc]`, factura.tipo_doc);
+    formData.append(`facturas[${index}][numero]`, factura.numero);
+    formData.append(`facturas[${index}][monto]`, factura.monto.toString());
+    formData.append(`facturas[${index}][abono]`, (factura.saldo + factura.difc));
+    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
+    formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
+    formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
+    formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString() || '0');
+  });
+
+  const headers = new HttpHeaders({
+    'X-Auth-Token': `${token}`
+  });
+  
+  try {
+    // ==========================================
+    // NUEVA VALIDACIÓN: Revisar gestión interna
+    // ==========================================
+    Swal.showLoading(); // Mostramos loading desde ya para que la experiencia sea fluida
+    
+    // Cambia 'portalcli/revisagestion' por la ruta real que le des en tus rutas de CodeIgniter
+    const checkGestion: any = await this.http.post(`${API_URLINTER}portalcli/revisagestion`, formData, { headers }).toPromise();
+
+    if (!checkGestion || checkGestion.status === false) {
+      let detalleFacturas = '';
+      // Validamos con .data que es donde viaja la lista de facturas retenidas
+      if (checkGestion.data && checkGestion.data.length > 0) {
+        detalleFacturas = '<br><small class="text-danger">Facturas afectadas: ' + 
+          checkGestion.data.map((f: any) => `${f.tipo_doc}-${f.numero}`).join(', ') + 
+          '</small>';
+      }
+
+      Swal.fire({
+        title: 'Acción Bloqueada',
+        html: `Una o más de las facturas seleccionadas presentan una <strong>gestión interna en la droguería</strong> y no pueden ser pagadas en este momento. ${detalleFacturas}`,
+        icon: 'warning'
+      });
+      return { success: false };
+    }
+    // ==========================================
+
+    // Si pasa la validación, procedemos a registrar el pago normalmente
+    // Nota: El loading se mantiene abierto o se refresca implícitamente aquí
+    const response: any = await this.http.post(`${API_URLINTER}portalcli/enviapago`, formData, { headers }).toPromise();
+    
+    if (response?.status) {
+      const resumenPago = `
+        <p>${response.mensaje}</p>
+        <div class="mt-3 text-left">
+          <p><strong>Referencia:</strong> ${this.numeroReferencia}</p>
+          <p><strong>Total pagado:</strong> ${this.metodoPagoSeleccionado === 'VES' ? 'Bs ' : '$ '}${this.montoAPagar.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</p>
+        </div>
+      `;
+      
+      Swal.fire({
+        title: 'Pago registrado',
+        html: resumenPago,
+        icon: 'success'
+      });
+      this.pagedPagos = [];
+      
+      return { success: true, idPago: response.idPago };
+    } else {
+      Swal.fire('Error', response?.mensaje || 'Ocurrió un error al procesar el pago', 'error');
+      return { success: false };
+    }
+  } catch (error) {
+    console.error('Error de la API:', error);
+    Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
+    return { success: false };
+  }
+}
 
   
 archivoComprobante: File | null = null;
