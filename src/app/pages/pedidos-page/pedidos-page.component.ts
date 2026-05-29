@@ -1023,10 +1023,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       });
     }
 
-    formatOfertasTooltip(ofertas: any[]): string {
-      return ofertas.map(oferta => `${oferta.lista} (Descuento: ${oferta.descuento}%)`).join('\n');
-    }
-
     enviaped(){
       this.isLoading = true; 
       const codCli = this.authService.getCodCli();

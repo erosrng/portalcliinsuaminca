@@ -347,16 +347,17 @@
                                   <td>
                                       {{product.descrip}}
                                       <br>
-                                      <div *ngIf="product.oferta && product.oferta.length > 0"
-                                           class="escala-proveedor-inline"
-                                           [matTooltip]="formatOfertasTooltip(product.oferta)"
-                                           matTooltipPosition="above" [matTooltipShowDelay]="200" [matTooltipHideDelay]="100" [matTooltipClass]="'custom-tooltip'">D ESCALA
+                                      <div *ngIf="product.oferta && product.oferta.length > 0" class="badge-container">
+                                        <div class="escala-proveedor-inline">D ESCALA</div>
+                                        <div class="offer-tooltip">
+                                          <div *ngFor="let oferta of product.oferta" class="offer-row">{{ oferta.lista }} — {{ oferta.descuento }}% OFF</div>
+                                        </div>
                                       </div>
-                                      <div *ngIf="product.oferta2 && product.oferta2.length > 0 && product.lineal"
-                                            class="oferta-proveedor-inline"
-                                            [matTooltip]="formatOfertasTooltip(product.oferta2)"
-                                            matTooltipPosition="above">
-                                        D.LINEAL {{ product.lineal }}%
+                                      <div *ngIf="product.oferta2 && product.oferta2.length > 0 && product.lineal" class="badge-container">
+                                        <div class="oferta-proveedor-inline">D.LINEAL {{ product.lineal }}%</div>
+                                        <div class="offer-tooltip">
+                                          <div *ngFor="let oferta of product.oferta2" class="offer-row">{{ oferta.lista }} — {{ oferta.descuento }}% OFF</div>
+                                        </div>
                                       </div>
                                       
                                       <div *ngIf="product.ficha > 0"
