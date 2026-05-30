@@ -1,3 +1,8 @@
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router
+} from "./chunk-4H52S6FA.js";
 import "./chunk-UPC7RBIL.js";
 import {
   animate,
@@ -6,11 +11,6 @@ import {
   transition,
   trigger
 } from "./chunk-X2NH565A.js";
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router
-} from "./chunk-4H52S6FA.js";
 import "./chunk-BXOPRP5O.js";
 import "./chunk-UVUWUGGQ.js";
 import "./chunk-WXJEMTTQ.js";
@@ -86,11 +86,11 @@ import {
   ɵɵsanitizeUrl,
   ɵɵtemplate
 } from "./chunk-RFZ2BTTM.js";
-import "./chunk-PEBH6BBU.js";
 import {
   fromEvent,
   merge
 } from "./chunk-WPM5VTLQ.js";
+import "./chunk-PEBH6BBU.js";
 import {
   Subject,
   delay,

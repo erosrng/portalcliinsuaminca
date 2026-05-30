@@ -350,7 +350,7 @@
                                       <div *ngIf="product.oferta && product.oferta.length > 0" class="badge-container">
                                         <div class="escala-proveedor-inline">D ESCALA</div>
                                         <div class="offer-tooltip">
-                                          <div *ngFor="let oferta of product.oferta" class="offer-row">{{ oferta.lista }} — {{ oferta.descuento }}% OFF</div>
+                                          <div *ngFor="let oferta of product.oferta" class="offer-row">{{ oferta.lista }} — {{ oferta.descuento }}% {{oferta.monto || 0}}$ </div>
                                         </div>
                                       </div>
                                       <div *ngIf="product.oferta2 && product.oferta2.length > 0 && product.lineal" class="badge-container">

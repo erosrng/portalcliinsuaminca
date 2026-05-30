@@ -337,7 +337,7 @@ h4 {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    bottom: calc(100% - 6px);
+    top: calc(100% + 8px);
     left: 150%;
     transform: translateX(-50%);
     background: vars.$principal-color;
@@ -352,15 +352,24 @@ h4 {
     pointer-events: none;
 }
 
+.offer-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -13px;
+    left: 0;
+    width: 100%;
+    height: 13px;
+}
+
 .offer-tooltip::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    top: -5px;
     left: 150%;
     transform: translateX(-50%) rotate(45deg);
     width: 8px;
     height: 8px;
-    background: vars.$principal-color-hover;
+    background: vars.$principal-color;
     border-radius: 1px;
 }
 

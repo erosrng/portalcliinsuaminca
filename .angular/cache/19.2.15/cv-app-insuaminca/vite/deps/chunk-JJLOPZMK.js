@@ -1,6 +1,6 @@
 import {
   normalizePassiveListenerOptions
-} from "./chunk-4NSBKKON.js";
+} from "./chunk-Y2OCE2Z5.js";
 import {
   _getEventTarget,
   isFakeMousedownFromScreenReader,
@@ -12,7 +12,7 @@ import {
 import {
   Platform,
   coerceElement
-} from "./chunk-R3SUJZLI.js";
+} from "./chunk-BQCFFLJQ.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionStrategy,
@@ -618,4 +618,4 @@ export {
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatRipple
 };
-//# sourceMappingURL=chunk-RHUAJ2VU.js.map
+//# sourceMappingURL=chunk-JJLOPZMK.js.map

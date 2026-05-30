@@ -6,7 +6,7 @@ import {
 } from "./chunk-WXJEMTTQ.js";
 import {
   MatCommonModule
-} from "./chunk-4NSBKKON.js";
+} from "./chunk-Y2OCE2Z5.js";
 import {
   DOCUMENT
 } from "./chunk-B5QHEHR4.js";
@@ -973,4 +973,4 @@ export {
   MatIcon,
   MatIconModule
 };
-//# sourceMappingURL=chunk-WFPRIUOK.js.map
+//# sourceMappingURL=chunk-H2MQKS7R.js.map
