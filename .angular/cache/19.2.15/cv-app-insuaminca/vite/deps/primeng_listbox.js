@@ -40,14 +40,13 @@ import {
   ScrollDispatcher,
   ViewportRuler
 } from "./chunk-NKGMQEZ5.js";
+import "./chunk-H7PL4DUT.js";
 import {
   FormsModule,
   NG_VALUE_ACCESSOR,
   NgControlStatus,
   NgModel
 } from "./chunk-SAJDAZDE.js";
-import "./chunk-H7PL4DUT.js";
-import "./chunk-2O4WY5GE.js";
 import {
   _IdGenerator,
   _getEventTarget,
@@ -56,6 +55,7 @@ import {
   isFakeMousedownFromScreenReader,
   isFakeTouchstartFromScreenReader
 } from "./chunk-4BVUKKW7.js";
+import "./chunk-2O4WY5GE.js";
 import {
   Directionality
 } from "./chunk-ZQJO536L.js";

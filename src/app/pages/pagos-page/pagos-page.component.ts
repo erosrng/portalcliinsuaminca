@@ -123,6 +123,11 @@ export class PagosPageComponent implements OnInit {
     public clienteData: any = {};
   clienteControl = new FormControl(); 
 public deudaTotalAbsoluta: number = 0;
+
+  get ndpendiActivo(): boolean {
+    return this.clienteData?.ndpendi === 'S';
+  }
+
   constructor(
     private http: HttpClient,
     public authService: AuthService,
@@ -714,7 +719,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     }
 
     if (!this.selectedRowsMap[rowId]) {
-      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$' && !this.ndpendiActivo;
       const saldo = Number(row.saldo) || 0;
       const ppago = Number(row.ppago) || 0;
       const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
@@ -756,7 +761,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     const factura = this.selectedRowsMap[rowId];
     
     if (!factura.selected) {
-      const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+      const aplicarDifc = this.metodoPagoSeleccionado !== '$' && !this.ndpendiActivo;
       const saldo = Number(factura.data.saldo) || 0;
       const saldod = Number(factura.data.saldo_dolar) || 0;
       const ppago = Number(factura.data.ppago) || 0;
@@ -791,7 +796,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   // Verifica si la factura está pagada completamente
   isFacturaPagadaCompleta(key: string): boolean {
-    const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+    const aplicarDifc = this.metodoPagoSeleccionado !== '$' && !this.ndpendiActivo;
 
     const factura = this.selectedRowsMap[key];
     const saldo = Number(factura.data.saldo) || 0;
@@ -805,7 +810,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   // Calcula el porcentaje pagado de la factura
   getPorcentajePagado(key: string): number {
-    const aplicarDifc = this.metodoPagoSeleccionado !== '$';
+    const aplicarDifc = this.metodoPagoSeleccionado !== '$' && !this.ndpendiActivo;
     const factura = this.selectedRowsMap[key];
     const saldo = Number(factura.data.saldo) || 0;
     const difc = aplicarDifc ? (Number(factura.data.difc) || 0) : 0;
@@ -939,6 +944,31 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
+  }
+
+  soloNumeros(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
+  soloNumerosMonto(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode;
+    const key = event.key;
+    if (
+      (charCode < 48 || charCode > 57) &&
+      key !== '.' &&
+      key !== 'Backspace' &&
+      key !== 'Tab' &&
+      key !== 'Delete' &&
+      key !== 'ArrowLeft' &&
+      key !== 'ArrowRight' &&
+      key !== 'Home' &&
+      key !== 'End'
+    ) {
+      event.preventDefault();
+    }
   }
 
 comprobanteFile: File | null = null;
@@ -1138,9 +1168,9 @@ onFileSelected(event: Event): void {
       formData.append(`facturas[${index}][numero]`, factura.numero);
       formData.append(`facturas[${index}][monto]`, factura.monto.toString());
       //formData.append(`facturas[${index}][abono]`, factura.montoAPagar.toString());
-      formData.append(`facturas[${index}][abono]`, (factura.saldo + factura.difc));
-      formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
-      formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
+      formData.append(`facturas[${index}][abono]`, (factura.saldo + (this.ndpendiActivo ? 0 : (factura.difc || 0))));
+    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
+    formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
       formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
       formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString() || '0');
     });
@@ -1396,7 +1426,8 @@ distribuirSaldoAFacturas(): void {
     if(this.metodoPagoSeleccionado=='VES'){
       if (this.selectedRowsMap[key].selected && this.saldoDisponible > 0) {
         const factura = this.selectedRowsMap[key].data;
-        const montoMaximo = factura.saldo + factura.difc - factura.ppago;
+        const difc = this.ndpendiActivo ? 0 : (Number(factura.difc) || 0);
+        const montoMaximo = factura.saldo + difc - factura.ppago;
         const montoAPagar = Math.min(montoMaximo, this.saldoDisponible);
         
         this.selectedRowsMap[key].montoAPagar = montoAPagar;
@@ -1418,6 +1449,14 @@ distribuirSaldoAFacturas(): void {
   this.actualizarMonto();
 }
 
+  getMontoTotalFactura(key: string): number {
+    const factura = this.selectedRowsMap[key];
+    if (!factura) return 0;
+    const saldo = Number(factura.data.saldo) || 0;
+    const difc = this.ndpendiActivo ? 0 : (Number(factura.data.difc) || 0);
+    const ppago = Number(factura.data.ppago) || 0;
+    return saldo + difc - ppago;
+  }
 
   //ACTUALIZA EL MONTO EN BASE A LAS FILAS SELECCIONADAS
   actualizarMonto(): void {

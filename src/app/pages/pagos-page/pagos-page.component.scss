@@ -338,6 +338,16 @@
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
+/* Ocultar spinner del input number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 /* Subida de archivos */
 .file-upload {
   position: relative;
@@ -716,6 +726,47 @@
   mat-checkbox {
     z-index: 2;
     position: relative;
+  }
+}
+
+/* Card de Indexación Pendiente */
+.indexacion-card {
+  border: 2px solid vars.$principal-color !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #f0f7ff, #e8f4fd) !important;
+  box-shadow: 0 4px 16px rgba(vars.$principal-color, 0.15);
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, vars.$principal-color, vars.$menu-color-seconday);
+  }
+
+  .card-body {
+    padding: 20px 22px !important;
+  }
+
+  .card-title {
+    font-size: 1.60rem;
+    font-weight: 700;
+    color: vars.$menu-color !important;
+    border: none;
+    padding: 0;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 1.50rem;
+    font-weight: 500;
+    color: vars.$principal-color;
+    margin: 0;
+    opacity: .85;
   }
 }
 
