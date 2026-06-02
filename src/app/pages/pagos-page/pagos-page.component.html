@@ -146,13 +146,14 @@
                         <div class="form-group amount-group">
                           <h3 class="ofertas-title pagos__title">Coloque monto pagado</h3>
                            <input type="number" class="form-control" 
-                                 [(ngModel)]="montoPagado" 
-                                 name="monto_pagado" 
-                                 (keypress)="soloNumeros($event)"
-                                 (change)="actualizarSaldoDisponible()"
-                                 [min]="0.01"
-                                 [step]="0.01"
-                                 required> 
+                                  [(ngModel)]="montoPagado" 
+                                  name="monto_pagado" 
+                                  (keypress)="soloNumeros($event)"
+                                  (change)="actualizarSaldoDisponible()"
+                                  (wheel)="onWheel($event)"
+                                  [min]="0.01"
+                                  [step]="0.01"
+                                  required> 
 
                                 <!-- <div class="form-group amount-group" *ngIf="montoACancelar"> -->
                                 <div class="form-group amount-group" *ngIf="montoSeleccionado">

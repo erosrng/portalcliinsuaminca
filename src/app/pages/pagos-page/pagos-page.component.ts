@@ -948,9 +948,24 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   soloNumeros(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
-    if (charCode < 48 || charCode > 57) {
+    const key = event.key;
+    if (
+      (charCode < 48 || charCode > 57) &&
+      key !== '.' &&
+      key !== 'Backspace' &&
+      key !== 'Tab' &&
+      key !== 'Delete' &&
+      key !== 'ArrowLeft' &&
+      key !== 'ArrowRight' &&
+      key !== 'Home' &&
+      key !== 'End'
+    ) {
       event.preventDefault();
     }
+  }
+
+  onWheel(event: WheelEvent): void {
+    event.preventDefault();
   }
 
   soloNumerosMonto(event: KeyboardEvent): void {
