@@ -1265,10 +1265,10 @@ onFileSelected(event: Event): void {
     formData.append(`facturas[${index}][numero]`, factura.numero);
     formData.append(`facturas[${index}][monto]`, factura.monto.toString());
     formData.append(`facturas[${index}][abono]`, (factura.saldo + factura.difc));
-    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString() || '0');
-    formData.append(`facturas[${index}][difc]`, factura.difc?.toString() || '0');
+    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString());
+    formData.append(`facturas[${index}][difc]`, factura.difc?.toString());
     formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
-    formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString() || '0');
+    formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString());
   });
 
   const headers = new HttpHeaders({
