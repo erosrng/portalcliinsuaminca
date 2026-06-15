@@ -218,9 +218,9 @@ export class HomePageComponent implements OnInit {
     this.fetchProducts();
     this.fetchPublicidad();
 
-    setTimeout(() => {
+    /* setTimeout(() => {
       this.showImageModal();
-    }, 600);    // this.loadCarouselProviders();
+    }, 600);  */   // this.loadCarouselProviders();
   }
 
     
