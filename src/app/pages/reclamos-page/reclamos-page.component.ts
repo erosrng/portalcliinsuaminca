@@ -34,6 +34,7 @@ interface Reclamo {
   cod_cli: string;
   nombre_cliente: string;
   almacen: string;
+  aprobado: string;
   total_reclamado: number;
   observaciones: string;
   estado: string;
@@ -220,7 +221,8 @@ export class ReclamosPageComponent implements OnInit {
             almacen: item.almacen || '',
             total_reclamado: this.parseNumber(item.total_reclamado) || 0,
             observaciones: item.observaciones || '',
-            estado: item.estado || 'Pendiente'
+            estado: item.estado || 'Pendiente',
+            aprobado: item.aprobado || 'N'
           }));
         } else {
           // Si no hay reclamos, mostrar array vacío

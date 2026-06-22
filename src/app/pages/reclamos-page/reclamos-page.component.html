@@ -162,12 +162,12 @@
                       <thead class="table-light">
                         <tr>
                           <th width="15%">N° Reclamo</th>
-                          <th width="15%">Factura</th>
-                          <th width="15%">Fecha</th>
-                          <!-- <th width="15%">Almacén</th> -->
-                          <th width="15%" class="text-end">Total</th>
+                          <th width="13%">Factura</th>
+                          <th width="13%">Fecha</th>
+                          <th width="12%" class="text-end">Total</th>
                           <th width="10%">Estado</th>
-                          <th width="15%" class="text-center">Descargar</th>
+                          <th width="12%" class="text-center">Aprobado</th>
+                          <th width="10%" class="text-center">Descargar</th>
                           <th width="15%" class="text-center">Acciones</th>
                         </tr>
                       </thead>
@@ -188,12 +188,21 @@
                                 reclamo.estado}}
                             </span>
                           </td>
-                          <td class="text-center"  style="text-align: center; cursor: pointer;">
-                              <i class="fa-solid fa-file-pdf"
-                                 title="Ver en Excel"
-                                 (click)="descargarPDFReclamo(reclamo.id)"
-                                 style="color: #217346; font-size: 1.2em;">
-                              </i>
+                          <td class="text-center">
+                            <mat-icon *ngIf="reclamo.aprobado === 'S'"
+                                      class="text-success" matTooltip="Aprobado">check_circle</mat-icon>
+                            <mat-icon *ngIf="reclamo.aprobado === 'N'"
+                                      class="text-danger" matTooltip="No aprobado">cancel</mat-icon>
+                          </td>
+                          <td class="text-center" style="text-align: center;">
+                            <i *ngIf="reclamo.aprobado === 'S'"
+                               class="fa-solid fa-file-pdf"
+                               title="Descargar PDF"
+                               (click)="descargarPDFReclamo(reclamo.id)"
+                               style="color: #217346; font-size: 1.2em; cursor: pointer;">
+                            </i>
+                            <mat-icon *ngIf="reclamo.aprobado === 'N'"
+                                      class="text-muted" matTooltip="Debe estar aprobado para descargar">lock</mat-icon>
                           </td>
                           <td class="text-center">
                             <button mat-button color="primary" 
