@@ -158,7 +158,7 @@ export class HomePageComponent implements OnInit {
   productosEnCarritoCodigos: string[] = [];
 
   // Variables para el modal de imagen
-  showFloatingModal = false;
+  showFloatingModal = true;
 
   customOptions: OwlOptions = {
     loop: true,
