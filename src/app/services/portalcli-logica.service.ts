@@ -8,6 +8,7 @@ import { API_URLINTER } from '../app.config';
 import Swal from 'sweetalert2';
 import { Observable, of } from 'rxjs';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
@@ -257,5 +258,50 @@ navigateTo(route: string, queryParams?: any) {
         },
       });
     }
+
+  obtenerItemCarrito(codigo: string, codCli: string): Observable<any> {
+    const token = this.authService.getToken();
+    const formData = new FormData();
+    const headers = new HttpHeaders({
+      'X-Auth-Token': `${token}`
+    });
+    formData.append('codCli', codCli ?? '');
+
+    const apiUrl = `${API_URL}portalcli/opencardb`;
+
+    return this.http.post(apiUrl, formData, { headers }).pipe(
+      map((response: any) => {
+        const items = Array.isArray(response) ? response : [];
+        return items.find((item: any) => item.codigoa === codigo) || null;
+      })
+    );
+  }
+
+  actualizarCantidad(id: string, codigo: string, cantidad: number): Observable<any> {
+    const token = this.authService.getToken();
+    const formData = new FormData();
+    const headers = new HttpHeaders({
+      'X-Auth-Token': `${token}`
+    });
+    formData.append('id', id);
+    formData.append('codigo', codigo);
+    formData.append('cantidad', cantidad.toString());
+
+    const apiUrl = `${API_URL}portalcli/totalizacampo`;
+    return this.http.post(apiUrl, formData, { headers });
+  }
+
+  eliminarItemCarrito(id: string, codigo: string): Observable<any> {
+    const token = this.authService.getToken();
+    const formData = new FormData();
+    const headers = new HttpHeaders({
+      'X-Auth-Token': `${token}`
+    });
+    formData.append('id', id);
+    formData.append('codigo', codigo);
+
+    const apiUrl = `${API_URL}portalcli/eliminareg`;
+    return this.http.post(apiUrl, formData, { headers });
+  }
 
 } 
