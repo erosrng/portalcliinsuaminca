@@ -141,10 +141,11 @@ public deudaTotalAbsoluta: number = 0;
     this.clienteSubscription = this.portalcliLogicaService.clienteData$.subscribe(
       (cliente) => {
         this.clienteData = cliente;
+        this.allPagos = [];
+        this.pagedPagos = [];
         this.resetearCampos();
-        // Si necesitas hacer algo cuando cambia el cliente
         if (Object.keys(this.clienteData).length > 0 && this.fechaTransferencia) {
-          this.fetchPagos(); // O cualquier otra acción
+          this.fetchPagos();
         }
       }
     );
