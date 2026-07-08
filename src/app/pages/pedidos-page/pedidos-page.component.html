@@ -439,9 +439,13 @@
                                     </div>
                                     -->
                                     <div class="inventory-item">
-                                        <span [class]="(product.existenmat + product.existengua + product.existenbq) > 0 ? 'stock-available' : 'stock-unavailable'">
-                                            {{ product.existenmat + product.existengua + product.existenbq }}
-                                        </span>
+                                        <ng-container *ngIf="(portalcliLogicaService.clienteData$ | async)?.ubica as ubica">
+                                            <span [class]="
+                                                (ubica === '0001' ? product.existenmat : (ubica === '0002' ? product.existengua : product.existenbq)) > 0
+                                                ? 'stock-available' : 'stock-unavailable'">
+                                                {{ ubica === '0001' ? product.existenmat : (ubica === '0002' ? product.existengua : product.existenbq) }}
+                                            </span>
+                                        </ng-container>
                                     </div>
                                 </td>
                                   <td>
