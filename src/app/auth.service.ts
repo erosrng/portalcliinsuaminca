@@ -12,6 +12,7 @@ interface DecodedToken {
   almacen: string;
   tasa: string;
   cmatriz: string;
+  segme: string;
   lgrup: { grupo: string; nom_grup: string;}[];
   clientes: { cliente: string; nombre: string; rifci: string }[];
   API_TIME: number;
@@ -175,6 +176,11 @@ export class AuthService {
     return this.decodedToken ? this.decodedToken.cmatriz : null;
   }
 
+  getSegme(): string | null {
+    this.getToken();
+    return this.decodedToken ? this.decodedToken.segme : null;
+  }
+
   getApiTime(): number | null {
     this.getToken();
     return this.decodedToken ? this.decodedToken.API_TIME : null;
@@ -267,5 +273,21 @@ export class AuthService {
 
     getNombreFarmaciaActiva() {
         return localStorage.getItem('nameFarmaActiva')
+    }
+
+    getSegmeCli(): string | null {
+        return localStorage.getItem('segme');
+    }
+
+    getUbicaCli(): string | null {
+        return localStorage.getItem('ubica');
+    }
+
+    setSegmeCli(segme: string): void {
+        localStorage.setItem('segme', segme);
+    }
+
+    setUbicaCli(ubica: string): void {
+        localStorage.setItem('ubica', ubica);
     }
 }

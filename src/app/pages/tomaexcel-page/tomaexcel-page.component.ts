@@ -11,7 +11,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { AuthService } from './../../auth.service';
-import { API_URL } from './../../app.config';
+import { API_URL, PROTEO_URL_ALONEINTER } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
 import { URLSOLAINTER } from './../../app.config';
 import { URLSOLA } from './../../app.config';
@@ -352,28 +352,9 @@ export class TomaexcelPageComponent implements OnInit, OnDestroy {
 
 
     bajaexcel() {
-    Swal.showLoading();    
-    const formData = new FormData();
-    const token = this.authService.getToken();
-    const codCli = this.authService.getCodCli();
-
-    formData.append('codCli', codCli ?? '');
-    
-    const headers = new HttpHeaders({
-      'X-Auth-Token': `${token}`
-    });
-    const apiUrl = `${API_URLINTER}portalcli/traesegme`;
-  
-    this.http.post(apiUrl, formData, { headers: headers }).subscribe({
-      next: (response: any) => {
-        Swal.close();
-        window.location.href = `${URLSOLAINTER}generador/${response.archivo}`;
-      },
-      error: (error) => {
-        console.error('Error de la API:', error);
-        Swal.fire('Error', 'No se pudo descargar el listado. Intente de nuevo.', 'error');
-      },
-    });
+    const cond = this.authService.getSegmeCli() || 'N';
+    const alm  = this.authService.getUbicaCli() || '';
+    window.open(`${PROTEO_URL_ALONEINTER}ventas/generador/getfile/N/${cond}/${alm}`, '_blank');
   }
 
   bajaexcelgrupo() {

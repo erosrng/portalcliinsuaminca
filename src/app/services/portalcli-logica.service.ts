@@ -250,8 +250,12 @@ navigateTo(route: string, queryParams?: any) {
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
-          //console.log('entre')
-          this.clienteDataSource.next(response.datcli.datcli);
+          const data = response.datcli.datcli;
+          this.clienteDataSource.next(data);
+          if (data) {
+            localStorage.setItem('segme', data.segme || '');
+            localStorage.setItem('ubica', data.ubica || '');
+          }
         },
         error: (error) => {
           console.error('Error de la API:', error);
