@@ -434,7 +434,7 @@
                           
                           <h4 class="mb-0 fw-bold" style="color: #2d3748; font-size: 1.6rem; line-height: 1.2;">
                             <span [ngStyle]="{'color': (deudaTotalAbsoluta > 0) ? '#e53e3e' : '#38a169'}" 
-                                  style="font-size: 1rem; margin-right: 2px;">$</span>{{ formatearMonto(deudaTotalAbsoluta / authService.getTasa()) }}
+                                  style="font-size: 1rem; margin-right: 2px;">$</span>{{ formatearMonto(deudaTotalAbsoluta) }}
                           </h4>
                         </div>
                         
