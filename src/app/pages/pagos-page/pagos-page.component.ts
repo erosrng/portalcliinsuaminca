@@ -792,7 +792,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     
     this.updatePagedPagos();
     //this.actualizarFacturasACancelar();
-    //this.actualizarMonto();
+    this.actualizarMonto();
   }
 
   // Verifica si la factura está pagada completamente
