@@ -528,21 +528,21 @@
                                 </mat-checkbox> -->
                               </th>
                               <th scope="col" class="align-middle">Sucursal</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'numero', direction: sortColumn === 'numero' && sortDirection === 'asc' ? 'desc' : 'asc' })">Documento</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'entregado', direction: sortColumn === 'entregado' && sortDirection === 'asc' ? 'desc' : 'asc' })">Entregado</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'vence', direction: sortColumn === 'vence' && sortDirection === 'asc' ? 'desc' : 'asc' })">Vence</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'dias', direction: sortColumn === 'dias' && sortDirection === 'asc' ? 'desc' : 'asc' })">Dias vencida</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'monto', direction: sortColumn === 'monto' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'impuesto', direction: sortColumn === 'impuesto' && sortDirection === 'asc' ? 'desc' : 'asc' })">I.V.A.</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'reteiva', direction: sortColumn === 'reteiva' && sortDirection === 'asc' ? 'desc' : 'asc' })">Ret/IVA</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'saldo', direction: sortColumn === 'saldo' && sortDirection === 'asc' ? 'desc' : 'asc' })">Saldo</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'ppago', direction: sortColumn === 'ppago' && sortDirection === 'asc' ? 'desc' : 'asc' })">P.Pago</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'difc', direction: sortColumn === 'difc' && sortDirection === 'asc' ? 'desc' : 'asc' })">D/Cambio</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'emidolar', direction: sortColumn === 'emidolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Cambio</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'monto_dolar', direction: sortColumn === 'monto_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto $</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'saldo_dolar', direction: sortColumn === 'saldo_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Saldo $</th>
-                              <th scope="col" class="align-middle" (click)="sortData({ active: 'preabono', direction: sortColumn === 'mfactura' && sortDirection === 'asc' ? 'desc' : 'asc' })">M.fact</th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'numero', direction: sortColumn === 'numero' && sortDirection === 'asc' ? 'desc' : 'asc' })">Documento <i [class]="getSortIcon('numero')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión <i [class]="getSortIcon('emision')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'entregado', direction: sortColumn === 'entregado' && sortDirection === 'asc' ? 'desc' : 'asc' })">Entregado <i [class]="getSortIcon('entregado')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'vence', direction: sortColumn === 'vence' && sortDirection === 'asc' ? 'desc' : 'asc' })">Vence <i [class]="getSortIcon('vence')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'dias', direction: sortColumn === 'dias' && sortDirection === 'asc' ? 'desc' : 'asc' })">Dias vencida <i [class]="getSortIcon('dias')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'monto', direction: sortColumn === 'monto' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto <i [class]="getSortIcon('monto')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'impuesto', direction: sortColumn === 'impuesto' && sortDirection === 'asc' ? 'desc' : 'asc' })">I.V.A. <i [class]="getSortIcon('impuesto')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'reteiva', direction: sortColumn === 'reteiva' && sortDirection === 'asc' ? 'desc' : 'asc' })">Ret/IVA <i [class]="getSortIcon('reteiva')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'saldo', direction: sortColumn === 'saldo' && sortDirection === 'asc' ? 'desc' : 'asc' })">Saldo <i [class]="getSortIcon('saldo')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'ppago', direction: sortColumn === 'ppago' && sortDirection === 'asc' ? 'desc' : 'asc' })">P.Pago <i [class]="getSortIcon('ppago')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'difc', direction: sortColumn === 'difc' && sortDirection === 'asc' ? 'desc' : 'asc' })">D/Cambio <i [class]="getSortIcon('difc')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'emidolar', direction: sortColumn === 'emidolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Cambio <i [class]="getSortIcon('emidolar')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'monto_dolar', direction: sortColumn === 'monto_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Monto $ <i [class]="getSortIcon('monto_dolar')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'saldo_dolar', direction: sortColumn === 'saldo_dolar' && sortDirection === 'asc' ? 'desc' : 'asc' })">Saldo $ <i [class]="getSortIcon('saldo_dolar')"></i></th>
+                              <th scope="col" class="align-middle" (click)="sortData({ active: 'preabono', direction: sortColumn === 'mfactura' && sortDirection === 'asc' ? 'desc' : 'asc' })">M.fact <i [class]="getSortIcon('mfactura')"></i></th>
                             </tr>
                             
                           </thead>
@@ -558,7 +558,7 @@
                                 </td>
                               </tr>
                               <tr *ngFor="let row of pagedPagos; let i = index" 
-                                [ngClass]="{'table-primary': row.selected, 'fila-sin-retencion': noTieneRetencion(row)}" 
+                                [ngClass]="{'table-primary': row.selected, 'fila-sin-retencion': noTieneRetencion(row), 'fila-vencida': row.dias > 0}" 
                                 class="pagos-row">
                               <td class="align-middle text-center">
                                 <mat-checkbox 

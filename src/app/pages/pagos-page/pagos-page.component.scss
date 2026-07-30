@@ -166,6 +166,14 @@
 .pagos-table th {
     background-color: vars.$text-color2;
     color: vars.$menu-color;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.pagos-table th i {
+  margin-left: 4px;
+  font-size: 0.7rem;
 }
 .pagos-table tbody tr {
   transition: background-color 0.3s ease;
@@ -667,6 +675,14 @@ input[type="number"] {
 .fila-exento {
   background-color: #f0f9ff !important; /* Azul muy claro */
   border-left: 4px solid #2196f3 !important;
+}
+
+.fila-vencida, .fila-vencida td {
+  background-color: #fecaca !important;
+}
+
+.fila-vencida:hover td {
+  background-color: #fca5a5 !important;
 }
 
 .fila-sin-retencion {

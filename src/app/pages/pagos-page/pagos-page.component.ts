@@ -183,6 +183,11 @@ public deudaTotalAbsoluta: number = 0;
   sucursalesDisponibles: string[] = ['Maturín', 'Guarenas', 'Barquisimeto'];
   sucursalFiltro: string = '';
 
+  getSortIcon(col: string): string {
+    if (this.sortColumn !== col) return 'fas fa-sort text-muted';
+    return this.sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+  }
+
   getBadgeClaseSucursal(sucursal: string): string {
     return ''; // deprecated, clases van por CSS vía sucursal_cod
   }
