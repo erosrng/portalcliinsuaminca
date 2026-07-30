@@ -32,6 +32,8 @@ interface FacturaSeleccionada {
   data: {
     tipo_doc: string;
     numero: string;
+    sucursal: string;
+    sucursal_cod: string;
     emision: string;
     entregado: string;
     vence: string;
@@ -177,6 +179,23 @@ public deudaTotalAbsoluta: number = 0;
   sortDirection: string = 'asc';
 
   showConRetencionOnly: boolean = false;
+
+  sucursalesDisponibles: string[] = ['Maturín', 'Guarenas', 'Barquisimeto'];
+  sucursalFiltro: string = '';
+
+  getBadgeClaseSucursal(sucursal: string): string {
+    return ''; // deprecated, clases van por CSS vía sucursal_cod
+  }
+
+  get sucursalesUnicas(): string[] {
+    return [...new Set(this.allPagos.map(r => r.sucursal).filter(Boolean))];
+  }
+
+  toggleFiltroSucursal(sucursal: string): void {
+    this.sucursalFiltro = this.sucursalFiltro === sucursal ? '' : sucursal;
+    this.currentPage = 1;
+    this.fetchPagos();
+  }
 
   // ============ NUEVOS MÉTODOS PARA CONTROL DE RETENCIONES ============
 
@@ -590,6 +609,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     formData.append('search', this.search ?? '');
     formData.append('sortColumn', this.sortColumn);
     formData.append('sortDirection', this.sortDirection);
+    formData.append('sucursal', this.sucursalFiltro);
 
     if (this.fechaTransferencia) {
       // Creamos una fecha local para evitar problemas de zona horaria
@@ -726,12 +746,14 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
       const difc = aplicarDifc ? (Number(row.difc) || 0) : 0;
       const montoMaximo = parseFloat((saldo + difc - ppago).toFixed(2));
       
-      this.selectedRowsMap[rowId] = {
-        selected: false,
-        data: {
-            tipo_doc: row.tipo_doc,
-            numero: row.numero,
-            emision: row.emision,
+        this.selectedRowsMap[rowId] = {
+          selected: false,
+          data: {
+              tipo_doc: row.tipo_doc,
+              numero: row.numero,
+              sucursal: row.sucursal || '',
+              sucursal_cod: row.sucursal_cod || '',
+              emision: row.emision,
             entregado: row.entregado,
             vence: row.vence,
             dias: row.dias,
@@ -854,33 +876,35 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   //CAMBIA DE PAGINA
   updatePagedPagos() {
-    this.pagedPagos = this.allPagos.map(row => {
+    let filtered = this.allPagos;
+    if (this.sucursalFiltro) {
+      filtered = filtered.filter(row => row.sucursal === this.sucursalFiltro);
+    }
+    this.pagedPagos = filtered.map(row => {
       const rowId = this.getRowId(row);
       return {
         ...row,
         selected: this.selectedRowsMap[rowId]?.selected || false
       };
     });
-    this.filterSelectedRows();
+    this.filterSelectedRows(false);
   }
 
-  //Muestra solo las facturas seleccionadas con el chulito
   toggleShowSelectedOnly(event: MatCheckboxChange) {
     this.isLoading = true;
     this.showSelectedOnly = event.checked;
     
     if (this.showSelectedOnly) {
-      this.currentPage = 1; // Resetear a la primera página
+      this.currentPage = 1;
     }
     
-    this.filterSelectedRows();
+    this.updatePagedPagos();
     this.isLoading = false;
   }
 
   //Filtra las filas seleccionadas
-  filterSelectedRows() {
+  filterSelectedRows(resetPaged = true) {
     if (this.showSelectedOnly) {
-      // Mostrar solo las filas seleccionadas con todos sus campos
       this.pagedPagos = Object.keys(this.selectedRowsMap)
         .filter(key => this.selectedRowsMap[key]?.selected)
         .map(key => {
@@ -890,8 +914,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
             selected: true
           };
         });
-    } else {
-      // Mostrar todas las filas con paginación normal
+    } else if (resetPaged) {
       this.pagedPagos = this.allPagos.map(row => {
         const rowId = this.getRowId(row);
         return {

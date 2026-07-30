@@ -250,7 +250,11 @@
                       }"></i>
                 </span>
                 
-                <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
+                <span class="sucursal-badge" [ngClass]="'sucursal--' + selectedRowsMap[key].data.sucursal_cod" [title]="'Factura de ' + selectedRowsMap[key].data.sucursal">
+                                    {{ selectedRowsMap[key].data.sucursal || '—' }}
+                                    <div class="custom-tooltip">Factura de {{ selectedRowsMap[key].data.sucursal }}</div>
+                                  </span>
+                                <strong>{{ selectedRowsMap[key].data.tipo_doc }}-{{ selectedRowsMap[key].data.numero }}</strong>
               </div>
               
               <div class="d-flex flex-wrap gap-3 mt-2">
@@ -464,7 +468,21 @@
                                 </mat-form-field>
 
                                 <mat-checkbox [(ngModel)]="showSelectedOnly" (change)="toggleShowSelectedOnly($event)">Mostrar Seleccionadas</mat-checkbox>      
-                              
+
+                                <div class="btn-group btn-group-sm flex-wrap sucursal-filtro" role="group">
+                                  <button *ngFor="let s of sucursalesDisponibles"
+                                    class="btn"
+                                    [ngClass]="{'active': sucursalFiltro === s}"
+                                    (click)="toggleFiltroSucursal(s)">
+                                    <span class="sucursal-badge filtro-badge" [ngClass]="'sucursal--' + (s === 'Maturín' ? '0001' : s === 'Guarenas' ? '0002' : '0010')" style="pointer-events: none;">
+                                      {{s}}
+                                    </span>
+                                  </button>
+                                  <button *ngIf="sucursalFiltro" class="btn btn-sm btn-limpiar ms-1" (click)="sucursalFiltro=''; updatePagedPagos()">
+                                    ✕
+                                  </button>
+                                </div>
+
                                 <div class="rowd-flex justify-content-between align-items-center mb-3">
                                   <div>
                                     <label for="sortField">Ordenar por:</label>
@@ -509,6 +527,7 @@
                                   [disabled]="!tieneFacturasSeleccionables()">
                                 </mat-checkbox> -->
                               </th>
+                              <th scope="col" class="align-middle">Sucursal</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'numero', direction: sortColumn === 'numero' && sortDirection === 'asc' ? 'desc' : 'asc' })">Documento</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'emision', direction: sortColumn === 'emision' && sortDirection === 'asc' ? 'desc' : 'asc' })">Emisión</th>
                               <th scope="col" class="align-middle" (click)="sortData({ active: 'entregado', direction: sortColumn === 'entregado' && sortDirection === 'asc' ? 'desc' : 'asc' })">Entregado</th>
@@ -530,7 +549,7 @@
                           <tbody>
                             <!-- <tr *ngFor="let row of pagedPagos; let i = index" [ngClass]="{'table-primary': row.selected}"> -->
                               <tr *ngIf="pagedPagos.length === 0">
-                                <td colspan="16" class="text-center py-4" style="background-color: #939394;">
+                                <td colspan="17" class="text-center py-4" style="background-color: #939394;">
                                   <div class="d-flex flex-column align-items-center">
                                     <span class="text-muted" style="font-weight: 500;">
                                       Debe seleccionar la fecha del pago para ver la información
@@ -554,9 +573,15 @@
                                   </div>
                               </td>
                               
+                              <td class="align-middle text-center">
+                                  <span class="sucursal-badge" [ngClass]="'sucursal--' + row.sucursal_cod" [title]="'Factura de ' + row.sucursal">
+                                    {{ row.sucursal || '—' }}
+                                    <div class="custom-tooltip">Factura de {{ row.sucursal }}</div>
+                                  </span>
+                              </td>
                               <td class="align-middle">
                                   {{ row.tipo_doc }}-{{ row.tipo_doc === 'ND' ? row.num_ref : row.numero }}
-                                  
+
                                   <!-- Badge para mostrar estado de retención - SOLO si NO es exento -->
                                   <span *ngIf="clienteData?.tiva == 'E'" class="badge-container ms-2">
                                       <span class="badge" [ngClass]="getBadgeClaseRetencion(row)">

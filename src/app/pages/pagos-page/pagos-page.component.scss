@@ -1,4 +1,21 @@
 @use '../../../styles/variables.scss' as vars;
+
+.sucursal-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  cursor: help;
+  position: relative;
+}
+
+.sucursal--0001 { background-color: vars.$menu-color; color: #fff; }
+.sucursal--0002 { background-color: vars.$text-color2; color: #fff; }
+.sucursal--0010 { background-color: vars.$principal-color; color: #fff; }
+.sucursal-- { background-color: vars.$text-claro; color: #fff; }
 .table-responsive {
     display: block;
     width: 100%;
@@ -12,6 +29,28 @@
   border-bottom: 1px solid vars.$lineas-separetor; 
   padding-bottom: 10px;
 }
+.sucursal-filtro .btn {
+  border: 1px solid vars.$bordes-claros;
+  color: vars.$text-color;
+  background: vars.$background-fondo;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.6rem;
+
+  &.active {
+    border-color: vars.$menu-color;
+    background: vars.$background-fondo;
+    font-weight: 600;
+  }
+}
+
+.btn-limpiar {
+  border: 1px solid vars.$bordes-claros;
+  color: vars.$text-claro;
+  background: vars.$background-fondo;
+  line-height: 1;
+  &:hover { border-color: #e53e3e; color: #e53e3e; }
+}
+
 /* Efecto difuminado del carrusel de publicidad principal*/
 .text-primary{
   color: vars.$menu-color !important;
