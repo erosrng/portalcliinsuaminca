@@ -534,6 +534,8 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     this.montoPagado=0;
     this.montoPagadod=0;
 
+    this.archivoComprobante = null;
+    this.comprobanteNombre = '';
   }
 
   copiarAlPortapapeles(texto: string) {
