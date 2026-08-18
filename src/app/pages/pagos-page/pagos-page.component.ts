@@ -1111,12 +1111,16 @@ onFileSelected(event: Event): void {
       return;
     }
   
-    // Registrar el pago (el comprobante viaja en la misma petición)
+    // Registrar el pago
     const resultadoPago = await this.registrarPago(facturasSeleccionadas, codCli);
     
     if (resultadoPago?.success) {
-      // El comprobante ya se guardó en la misma petición
-      this.resetearCampos();
+      // Subir el comprobante por separado (FormData nuevo, sin reutilizar el del pago)
+      if (this.archivoComprobante) {
+        await this.enviarComprobante(resultadoPago.idPago);
+      } else {
+        this.resetearCampos();
+      }
     }
 
     this.isLoading = false;
@@ -1288,11 +1292,6 @@ onFileSelected(event: Event): void {
     const fechaParaEnviar = `${anio}${mes}${dia}`; 
     formData.append('fbanco', fechaParaEnviar);
   }
-  
-  // Comprobante de pago (obligatorio, la API lo exige)
-  if (this.archivoComprobante) {
-    formData.append('comprobante', this.archivoComprobante);
-  }
 
   formData.append('tipo_pago', this.tipoPagoSeleccionado);
   formData.append('moneda', this.metodoPagoSeleccionado);
@@ -1416,6 +1415,35 @@ handleFileUpload(event: any) {
   // Si pasa las validaciones, almacenar el archivo
   this.archivoComprobante = file;
   Swal.fire('Éxito', 'Archivo cargado correctamente', 'success');
+}
+
+private async enviarComprobante(idPago: string): Promise<void> {
+  if (!this.archivoComprobante) return;
+
+  const formData = new FormData();
+  const token = this.authService.getToken();
+
+  formData.append('comprobante', this.archivoComprobante);
+  formData.append('idPago', idPago);
+    
+  const headers = new HttpHeaders({
+    'X-Auth-Token': `${token}`
+  });
+  
+  try {
+    const response: any = await this.http.post(`${API_URLINTER}portalcli/guardar_comprobante`, formData, { headers }).toPromise();
+    if (response?.success) {
+      Swal.fire('Éxito', 'Comprobante subido correctamente', 'success');
+      this.resetearCampos();
+    } else {
+      Swal.fire('Advertencia', 'El pago se registró pero hubo un error al subir el comprobante', 'warning');
+      this.resetearCampos();
+    }
+  } catch (error) {
+    console.error('Error al subir comprobante:', error);
+    Swal.fire('Advertencia', 'El pago se registró pero hubo un error al subir el comprobante', 'warning');
+    this.resetearCampos();
+  }
 }
 
 //LOGICA PARA DISTRIBUIR EL MONTO TRANSFERIDO POR EL CLIENTE
