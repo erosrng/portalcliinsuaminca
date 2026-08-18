@@ -86,6 +86,7 @@ export class PagosPageComponent implements OnInit {
   itemsPerPage = 10;
   totalPages = 1;
   isLoading = false;
+  codCliActivo: string | null = null;
   //selectedRowsMap: { [key: string]: boolean } = {};
   selectedRowsMap: { [key: string]: FacturaSeleccionada } = {};
   selectedCount = 0;
@@ -598,6 +599,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     const formData = new FormData();
     const token = this.authService.getToken();
     const codCli = this.authService.getCodCli();
+    this.codCliActivo = codCli;
 
     const apiUrl = `${API_URLINTER}portalcli/facturaspago`;
 
@@ -1051,10 +1053,10 @@ onFileSelected(event: Event): void {
   }
 }
 
-//ENVIA PAGO
+  //ENVIA PAGO
   async enviapago() {
     this.isLoading = true; 
-    const codCli = this.authService.getCodCli();
+    const codCli = this.codCliActivo || this.authService.getCodCli();
   
     // Validar datos obligatorios
     if (!this.numeroReferencia || !this.montoACancelar || !this.cuentaSeleccionada ) {
@@ -1074,8 +1076,8 @@ onFileSelected(event: Event): void {
     }
   
   
-    // Validar archivo si es requerido
-    if (this.cuentaSeleccionada && !this.archivoComprobante) {
+    // Validar archivo (obligatorio, la API también lo exige)
+    if (!this.archivoComprobante) {
       Swal.fire('Error', 'Debe adjuntar el comprobante de pago', 'error');
       this.isLoading = false;
       return;
@@ -1107,14 +1109,14 @@ onFileSelected(event: Event): void {
       return;
     }
   
-    // Registrar el pago primero
+    // Registrar el pago (el comprobante viaja en la misma petición)
     const resultadoPago = await this.registrarPago(facturasSeleccionadas, codCli);
     
-    if (resultadoPago?.success && this.archivoComprobante) {
-      // Si el pago se registró correctamente y hay archivo, enviarlo
-      await this.enviarComprobante(resultadoPago.idPago);
+    if (resultadoPago?.success) {
+      // El comprobante ya se guardó en la misma petición
+      this.resetearCampos();
     }
-  
+
     this.isLoading = false;
   }
   
@@ -1285,6 +1287,11 @@ onFileSelected(event: Event): void {
     formData.append('fbanco', fechaParaEnviar);
   }
   
+  // Comprobante de pago (obligatorio, la API lo exige)
+  if (this.archivoComprobante) {
+    formData.append('comprobante', this.archivoComprobante);
+  }
+
   formData.append('tipo_pago', this.tipoPagoSeleccionado);
   formData.append('moneda', this.metodoPagoSeleccionado);
   
@@ -1308,7 +1315,15 @@ onFileSelected(event: Event): void {
     // ==========================================
     // NUEVA VALIDACIÓN: Revisar gestión interna
     // ==========================================
-    Swal.showLoading(); // Mostramos loading desde ya para que la experiencia sea fluida
+    // Mostrar loader mientras se procesa el pago
+    Swal.fire({
+      title: 'Procesando pago...',
+      text: 'Por favor espere',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => Swal.showLoading()
+    });
     
     // Cambia 'portalcli/revisagestion' por la ruta real que le des en tus rutas de CodeIgniter
     const checkGestion: any = await this.http.post(`${API_URLINTER}portalcli/revisagestion`, formData, { headers }).toPromise();
@@ -1322,6 +1337,7 @@ onFileSelected(event: Event): void {
           '</small>';
       }
 
+      Swal.close();
       Swal.fire({
         title: 'Acción Bloqueada',
         html: `Una o más de las facturas seleccionadas presentan una <strong>gestión interna en la droguería</strong> y no pueden ser pagadas en este momento. ${detalleFacturas}`,
@@ -1336,6 +1352,7 @@ onFileSelected(event: Event): void {
     const response: any = await this.http.post(`${API_URLINTER}portalcli/enviapago`, formData, { headers }).toPromise();
     
     if (response?.status) {
+      Swal.close();
       const resumenPago = `
         <p>${response.mensaje}</p>
         <div class="mt-3 text-left">
@@ -1353,10 +1370,12 @@ onFileSelected(event: Event): void {
       
       return { success: true, idPago: response.idPago };
     } else {
+      Swal.close();
       Swal.fire('Error', response?.mensaje || 'Ocurrió un error al procesar el pago', 'error');
       return { success: false };
     }
   } catch (error) {
+    Swal.close();
     console.error('Error de la API:', error);
     Swal.fire('Error', 'Ocurrió un error al procesar la solicitud', 'error');
     return { success: false };
@@ -1395,35 +1414,6 @@ handleFileUpload(event: any) {
   // Si pasa las validaciones, almacenar el archivo
   this.archivoComprobante = file;
   Swal.fire('Éxito', 'Archivo cargado correctamente', 'success');
-}
-
-private async enviarComprobante(idPago: string): Promise<void> {
-  if (!this.archivoComprobante) return;
-
-  const formData = new FormData();
-  const token = this.authService.getToken();
-
-  formData.append('comprobante', this.archivoComprobante);
-  formData.append('idPago', idPago);
-    
-  const headers = new HttpHeaders({
-    'X-Auth-Token': `${token}`
-  });
-  
-  
-  try {
-    const response: any = await this.http.post(`${API_URLINTER}portalcli/guardar_comprobante`, formData, { headers }).toPromise();
-    if (response?.success) {
-      Swal.fire('Éxito', 'Comprobante subido correctamente', 'success');
-      //Al terminar de cargar el pago
-      this.resetearCampos();
-    } else {
-      Swal.fire('Advertencia', 'El pago se registró pero hubo un error al subir el comprobante', 'warning');
-    }
-  } catch (error) {
-    console.error('Error al subir comprobante:', error);
-    Swal.fire('Advertencia', 'El pago se registró pero hubo un error al subir el comprobante', 'warning');
-  }
 }
 
 //LOGICA PARA DISTRIBUIR EL MONTO TRANSFERIDO POR EL CLIENTE
