@@ -137,6 +137,19 @@ export class ReclamosPageComponent implements OnInit {
   facturaEncontrada: any = null;
   errorFactura = '';
   numeroFacturaActual = '';
+
+  // Devuelve el nombre del cliente activo (el seleccionado en el navbar, no el del login)
+  getNombreClienteActivo(): string {
+    const nombreFarmacia = this.authService.getNombreFarmaciaActiva();
+    if (nombreFarmacia) return nombreFarmacia;
+
+    const codCli = this.authService.getCodCli();
+    const clientes = this.authService.getClientes();
+    const clienteSeleccionado = clientes?.find(c => c.cliente === codCli);
+    if (clienteSeleccionado) return clienteSeleccionado.nombre;
+
+    return this.authService.getNombre() || '';
+  }
   isLoadingProductos = false; 
 
   reclamosAnteriores: Reclamo[] = [];
@@ -396,7 +409,7 @@ export class ReclamosPageComponent implements OnInit {
           this.facturaEncontrada = {
             numero: response.factura.numero || numeroFactura,
             fecha: response.factura.fecha ? new Date(response.factura.fecha) : new Date(),
-            cliente: this.authService.getNombre() || 'Cliente', // Obtener del AuthService si está disponible
+            cliente: this.getNombreClienteActivo() || 'Cliente',
             total: this.parseNumber(response.factura.totalgd) || 0,
             dolarcambio: this.parseNumber(response.factura.dolarcambio) || 0,
             almacen: response.factura.almacen,
@@ -1043,7 +1056,7 @@ export class ReclamosPageComponent implements OnInit {
     return new Promise((resolve) => {
       const token = this.authService.getToken();
       const codCli = this.authService.getCodCli();
-      const nombreCliente = this.authService.getNombre();
+      const nombreCliente = this.getNombreClienteActivo();
       
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
@@ -1180,7 +1193,7 @@ export class ReclamosPageComponent implements OnInit {
   enviarReclamoAPI(reclamoData: any): void {
     const token = this.authService.getToken();
     const codCli = this.authService.getCodCli();
-    const nombreCliente = this.authService.getNombre();
+    const nombreCliente = this.getNombreClienteActivo();
     
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
