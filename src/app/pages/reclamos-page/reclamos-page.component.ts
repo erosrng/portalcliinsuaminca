@@ -145,8 +145,10 @@ export class ReclamosPageComponent implements OnInit {
 
     const codCli = this.authService.getCodCli();
     const clientes = this.authService.getClientes();
-    const clienteSeleccionado = clientes?.find(c => c.cliente === codCli);
-    if (clienteSeleccionado) return clienteSeleccionado.nombre;
+    if (Array.isArray(clientes)) {
+      const clienteSeleccionado = clientes.find(c => c.cliente === codCli);
+      if (clienteSeleccionado) return clienteSeleccionado.nombre;
+    }
 
     return this.authService.getNombre() || '';
   }
