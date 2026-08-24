@@ -75,7 +75,7 @@
                           <!-- Número de factura -->
                           <td class="border-end pe-3" style="width: 15%;">
                             <div class="text-muted">NÚMERO</div>
-                            <div class="fw-bold">{{facturaEncontrada.numero}}</div>
+                            <div class="fw-bold">{{ facturaEncontrada.tipo === 'N' ? 'NE-' : 'FC-' }}{{facturaEncontrada.numero}}</div>
                           </td>
                           
                           <!-- Fecha -->
@@ -332,7 +332,7 @@
             <form [formGroup]="productosForm">
             <div class="row mb-4">
                 <div class="col-12">
-                <h3>Productos de la factura {{facturaEncontrada?.numero}}</h3>
+                <h3>Productos de {{ facturaEncontrada?.tipo === 'N' ? 'la Nota de Entrega' : 'la factura' }} {{facturaEncontrada?.numero}}</h3>
                 <p class="">
                     Seleccione los productos a reclamar y especifique la cantidad
                     <span *ngIf="isLoadingProductos" class="ms-2">

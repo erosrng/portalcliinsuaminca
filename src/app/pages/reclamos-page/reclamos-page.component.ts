@@ -398,11 +398,12 @@ export class ReclamosPageComponent implements OnInit {
         this.isLoadingFactura = false;
         
         if (response.status && response.hay && response.factura) {
-          // Factura encontrada y válida
+          // Factura/Nota encontrada y válida
+          const esNota = response.factura.tipo === 'N';
           Swal.fire({
             icon: 'success',
-            title: 'Factura encontrada',
-            text: response.message || `Factura ${numeroFactura} cargada correctamente`,
+            title: esNota ? 'Nota de Entrega encontrada' : 'Factura encontrada',
+            text: response.message || `Documento ${numeroFactura} cargado correctamente`,
             timer: 2000,
             showConfirmButton: false
           });
@@ -410,6 +411,7 @@ export class ReclamosPageComponent implements OnInit {
           // Transformar datos de la API al formato que espera tu componente
           this.facturaEncontrada = {
             numero: response.factura.numero || numeroFactura,
+            tipo: response.factura.tipo || 'F',
             fecha: response.factura.fecha ? new Date(response.factura.fecha) : new Date(),
             cliente: this.getNombreClienteActivo() || 'Cliente',
             total: this.parseNumber(response.factura.totalgd) || 0,
