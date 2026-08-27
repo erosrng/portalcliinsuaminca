@@ -441,7 +441,12 @@ public deudaTotalAbsoluta: number = 0;
     this.http.post(apiUrl, formData, { headers: headers }).subscribe({
       next: (response: any) => {
         if (response.status) {
-          this.cuentas = response.data;
+          this.cuentas = (response.data || []).filter((cuenta: any) => {
+            const banco = (cuenta.banco || '').toLowerCase();
+            const codbanc = (cuenta.codbanc || '').toLowerCase();
+            return !banco.includes('movil') && !banco.includes('móvil') &&
+                   !['mp', 'md', '95'].includes(codbanc);
+          });
         } else {
           console.error('Error al cargar cuentas:', response);
           this.cuentas = [];
@@ -621,13 +626,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     formData.append('sucursal', this.sucursalFiltro);
 
     if (this.fechaTransferencia) {
-      // Creamos una fecha local para evitar problemas de zona horaria
-      const d = new Date(this.fechaTransferencia);
-      const anio = d.getFullYear();
-      const mes = ('0' + (d.getMonth() + 1)).slice(-2);
-      const dia = ('0' + d.getDate()).slice(-2);
-      
-      const fechaParaEnviar = `${anio}${mes}${dia}`; // Resultado: "20260317"
+      const fechaParaEnviar = this.formatearFechaSinZona(this.fechaTransferencia); // Resultado: "20260317"
       formData.append('fechapago', fechaParaEnviar);
     }
 
@@ -979,6 +978,31 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     });
   }
 
+  // Convierte la fecha del datepicker a YYYYMMDD sin depender de la zona horaria del navegador
+  formatearFechaSinZona(fecha: any): string {
+    if (!fecha) return '';
+    
+    // Si es Date, extraer partes en UTC para evitar desfases de zona horaria
+    if (fecha instanceof Date) {
+      const anio = fecha.getUTCFullYear();
+      const mes = ('0' + (fecha.getUTCMonth() + 1)).slice(-2);
+      const dia = ('0' + fecha.getUTCDate()).slice(-2);
+      return `${anio}${mes}${dia}`;
+    }
+    
+    // Si es string tipo "2026-03-17" o "2026-03-17T00:00:00.000Z", tomar solo la parte de fecha
+    const str = String(fecha);
+    const match = str.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+    if (match) {
+      const anio = match[1];
+      const mes = ('0' + match[2]).slice(-2);
+      const dia = ('0' + match[3]).slice(-2);
+      return `${anio}${mes}${dia}`;
+    }
+    
+    return '';
+  }
+
   soloNumeros(event: KeyboardEvent): void {
     const charCode = event.which ? event.which : event.keyCode;
     const key = event.key;
@@ -1284,12 +1308,7 @@ onFileSelected(event: Event): void {
 
   // Tipo de pago y moneda
   if (this.fechaTransferencia) {
-    const d = new Date(this.fechaTransferencia);
-    const anio = d.getFullYear();
-    const mes = ('0' + (d.getMonth() + 1)).slice(-2);
-    const dia = ('0' + d.getDate()).slice(-2);
-    
-    const fechaParaEnviar = `${anio}${mes}${dia}`; 
+    const fechaParaEnviar = this.formatearFechaSinZona(this.fechaTransferencia); 
     formData.append('fbanco', fechaParaEnviar);
   }
 
