@@ -1135,16 +1135,12 @@ onFileSelected(event: Event): void {
       return;
     }
   
-    // Registrar el pago
+    // Registrar el pago (el comprobante viaja en la misma petición)
     const resultadoPago = await this.registrarPago(facturasSeleccionadas, codCli);
     
     if (resultadoPago?.success) {
-      // Subir el comprobante por separado (FormData nuevo, sin reutilizar el del pago)
-      if (this.archivoComprobante) {
-        await this.enviarComprobante(resultadoPago.idPago);
-      } else {
-        this.resetearCampos();
-      }
+      // El comprobante ya se envió junto con el pago
+      this.resetearCampos();
     }
 
     this.isLoading = false;
@@ -1366,6 +1362,12 @@ onFileSelected(event: Event): void {
       return { success: false };
     }
     // ==========================================
+
+    // Agregar el comprobante DESPUÉS de revisagestion para que viaje en la misma petición de enviapago
+    // (así no se reutiliza un FormData con archivo en dos peticiones y el archivo siempre llega)
+    if (this.archivoComprobante) {
+      formData.append('comprobante', this.archivoComprobante);
+    }
 
     // Si pasa la validación, procedemos a registrar el pago normalmente
     // Nota: El loading se mantiene abierto o se refresca implícitamente aquí
