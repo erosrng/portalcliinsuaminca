@@ -1389,6 +1389,11 @@ onFileSelected(event: Event): void {
         icon: 'success'
       });
       this.pagedPagos = [];
+
+      // Si el comprobante no se guardó en la misma petición, reintentarlo por la segunda vía
+      if (response.comprobante_guardado === false && this.archivoComprobante) {
+        await this.enviarComprobante(response.idPago);
+      }
       
       return { success: true, idPago: response.idPago };
     } else {
