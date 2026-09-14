@@ -5,6 +5,7 @@ import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
+import { AvisoHorarioComponent } from "../../components/aviso-horario/aviso-horario.component";
 import Swal from 'sweetalert2';
 import { AuthService } from '../../auth.service';
 import { PortalcliLogicaService } from '../../services/portalcli-logica.service';
@@ -111,6 +112,7 @@ export interface ApiResponsePublicidad {
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
+    AvisoHorarioComponent,
     CarouselModule,
     MatTooltipModule,
     MatProgressBarModule
@@ -632,6 +634,9 @@ export class HomePageComponent implements OnInit {
             toast: true,
             position: 'bottom-end',
           });
+          if (mensaje == 'Producto Agregado') {
+            this.portalcliLogicaService.notificarHorarioPedido();
+          }
           this.revisarCarrito();
         },
       });

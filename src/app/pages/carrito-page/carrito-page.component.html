@@ -56,7 +56,7 @@
     
       <section class="carrito__products">
         <h2 class="text-primary">Productos en el carrito de: ({{this.authService.getCodCli()}})-{{this.authService.getNombre()}}</h2>
-        <h3 style="color: rgb(219, 47, 47);">Los precios listados son referenciales</h3>
+        <app-aviso-horario></app-aviso-horario>
         <div class="d-flex align-items-center search-bar gap-4">
               <mat-form-field appearance="outline" style="flex-grow: 1;">
                 <mat-label>Búsqueda:</mat-label>
@@ -195,6 +195,8 @@
                     <p class="carrito__totals-info" id="total">Total Bs: <span>{{ portalcliLogicaService.formatCurrency(totalBs) }}</span></p>
                 </div>
             </div>
+
+            <app-aviso-horario [compacto]="true" [mostrarPrecios]="false"></app-aviso-horario>
 
             <footer class="carrito__footer">
                 <button class="carrito__checkout-button" (click)="enviaped();">Finalizar compra</button>

@@ -6,6 +6,7 @@ import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
+import { AvisoHorarioComponent } from "../../components/aviso-horario/aviso-horario.component";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -108,6 +109,7 @@ export interface ApiResponsePublicidad {
     FooterComponent,
     SideBarComponent,
     ClicardComponent,
+    AvisoHorarioComponent,
     FormsModule,
     ReactiveFormsModule,
     MatExpansionModule,
@@ -677,6 +679,9 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           toast: true,
           position: 'bottom-end',
         });
+        if (mensaje == 'Producto Agregado') {
+          this.portalcliLogicaService.notificarHorarioPedido();
+        }
         if(!masivo){
           this.revisarCarrito();
         }
@@ -1217,11 +1222,17 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       
         Swal.fire({
         title: '¿Desea enviar el pedido?',
-        text: "Esta acción no se puede deshacer.",
+        html: `
+          <p style="margin: 0;">Esta acción no se puede deshacer.</p>
+          ${this.portalcliLogicaService.estaFueraDeHorario() ? this.portalcliLogicaService.avisoHorarioSwal() : ''}
+        `,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Enviar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: 'swal-dialog-horario'
+        }
         }).then((result) => {
         if (result.isConfirmed) {
           Swal.showLoading();
@@ -1262,12 +1273,18 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
         Swal.fire({
           
         title: '¿Desea enviar los pedidos del grupo?',
-        text: "Esta acción no se puede deshacer.",
+        html: `
+          <p style="margin: 0;">Esta acción no se puede deshacer.</p>
+          ${this.portalcliLogicaService.estaFueraDeHorario() ? this.portalcliLogicaService.avisoHorarioSwal() : ''}
+        `,
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Enviar',
         cancelButtonText: 'Cancelar',
-          allowOutsideClick: () => !Swal.isLoading()
+          allowOutsideClick: () => !Swal.isLoading(),
+          customClass: {
+            popup: 'swal-dialog-horario'
+          }
       
         }).then((result) => {
         if (result.isConfirmed) {

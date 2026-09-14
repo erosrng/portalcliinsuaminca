@@ -1,0 +1,103 @@
+@use '../../../styles/variables.scss' as vars;
+
+.aviso-horario {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 1.2rem 1.6rem;
+  margin: 1rem 0;
+  background: vars.$background-fondo;
+  border: 1px solid vars.$bordes-claros;
+  border-left: 4px solid vars.$text-color2;
+  border-radius: 1rem;
+  color: vars.$menu-color;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  &__icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: vars.$text-color2;
+    color: vars.$background-fondo;
+    font-size: 1.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  &__contenido {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__mensaje {
+    margin: 0;
+    color: vars.$text-color;
+
+    strong {
+      color: vars.$menu-color;
+    }
+  }
+
+  &__estado {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.6rem 0 0;
+    color: vars.$principal-color;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  &__precios {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.6rem 0 0;
+    color: vars.$text-claro;
+    font-size: 1.15rem;
+
+    i {
+      color: vars.$text-color2;
+    }
+  }
+
+  &--activo {
+    background: rgba(vars.$resaltador, 0.1);
+    border-color: rgba(vars.$resaltador, 0.45);
+    border-left-color: vars.$resaltador;
+
+    .aviso-horario__icono {
+      background: vars.$resaltador;
+      color: vars.$menu-color;
+    }
+
+    .aviso-horario__mensaje strong {
+      color: vars.$principal-color;
+    }
+  }
+
+  &--compacto {
+    align-items: center;
+    padding: 0.9rem 1.2rem;
+    font-size: 1.15rem;
+
+    .aviso-horario__icono {
+      width: 2.6rem;
+      height: 2.6rem;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .aviso-horario {
+    font-size: 1.15rem;
+    padding: 1rem 1.2rem;
+  }
+}

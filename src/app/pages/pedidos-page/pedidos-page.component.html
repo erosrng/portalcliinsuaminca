@@ -124,6 +124,7 @@
                                           <span>Bs. {{ portalcliLogicaService.formatCurrency(totalBs) }}</span>
                                           <span>US$ {{ portalcliLogicaService.formatCurrency(totalUsd) }}</span>
                                       </div>
+                                      <app-aviso-horario [compacto]="true"></app-aviso-horario>
                                       <div>
                                           <button *ngIf="tipoCargaControl.value != 'casa_matriz'" class="btn-end" (click)="navigateTo('/carrito')">Procesar pedido</button>
                                           <button *ngIf="tipoCargaControl.value == 'casa_matriz'" class="btn-end" matStepperNext (click)="Procesarpedido()">Procesar pedido</button>
@@ -576,6 +577,8 @@
             </div>
           </div>
         </div>
+
+        <app-aviso-horario [compacto]="true" [mostrarPrecios]="false"></app-aviso-horario>
 
         <div class="stepper-navigation mt-3">
           <button mat-button matStepperPrevious>Atrás</button>

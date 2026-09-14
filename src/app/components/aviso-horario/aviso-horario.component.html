@@ -1,0 +1,31 @@
+<div
+  class="aviso-horario"
+  [ngClass]="{ 'aviso-horario--activo': fueraDeHorario, 'aviso-horario--compacto': compacto }"
+>
+  <span class="aviso-horario__icono">
+    <i class="fa-solid" [ngClass]="fueraDeHorario ? 'fa-clock-rotate-left' : 'fa-clock'"></i>
+  </span>
+
+  <div class="aviso-horario__contenido">
+    <p class="aviso-horario__mensaje" *ngIf="!compacto">
+      El horario de autorización de pedidos es de <strong>8:00 a.m. a 5:00 p.m.</strong>
+      Los pedidos enviados <strong>después de las 5:00 p.m.</strong> serán autorizados y procesados
+      a partir de las <strong>8:00 a.m. del día siguiente</strong>.
+    </p>
+
+    <p class="aviso-horario__mensaje" *ngIf="compacto">
+      Pedidos enviados <strong>después de las 5:00 p.m.</strong> se autorizan a partir de las
+      <strong>8:00 a.m. del día siguiente</strong>.
+    </p>
+
+    <p class="aviso-horario__estado" *ngIf="fueraDeHorario">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      Ahora mismo estás fuera del horario de autorización: este pedido quedará para el día siguiente.
+    </p>
+
+    <p class="aviso-horario__precios" *ngIf="mostrarPrecios">
+      <i class="fa-solid fa-circle-info"></i>
+      Los precios listados son referenciales.
+    </p>
+  </div>
+</div>

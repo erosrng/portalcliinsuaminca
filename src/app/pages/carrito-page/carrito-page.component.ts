@@ -2,6 +2,7 @@ import { CommonModule, Location  } from '@angular/common';
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
+import { AvisoHorarioComponent } from "../../components/aviso-horario/aviso-horario.component";
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -43,6 +44,7 @@ export interface Product {
     CommonModule,
     NavBarComponent,
     SideBarComponent,
+    AvisoHorarioComponent,
     MatTableModule,
     MatFormFieldModule, 
     MatInputModule,
@@ -264,12 +266,18 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     //const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
     Swal.fire({
       title: '¿Desea enviar el pedido?',
-      text: "Esta acción no se puede deshacer.",
+      html: `
+        <p style="margin: 0;">Esta acción no se puede deshacer.</p>
+        ${this.portalcliLogicaService.estaFueraDeHorario() ? this.portalcliLogicaService.avisoHorarioSwal() : ''}
+      `,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar',
-      allowOutsideClick: () => !Swal.isLoading()
+      allowOutsideClick: () => !Swal.isLoading(),
+      customClass: {
+        popup: 'swal-dialog-horario'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({

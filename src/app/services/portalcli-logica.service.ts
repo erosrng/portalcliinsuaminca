@@ -230,6 +230,46 @@ navigateTo(route: string, queryParams?: any) {
       return formattedValue.replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     }
 
+    //Horario de autorizacion de pedidos: 8:00 a.m. a 5:00 p.m.
+    estaFueraDeHorario(): boolean {
+      const hora = new Date().getHours();
+      return hora >= 17 || hora < 8;
+    }
+
+    private avisoHorarioMostrado = false;
+
+    notificarHorarioPedido(): void {
+      if (!this.estaFueraDeHorario()) return;
+      if (this.avisoHorarioMostrado) return;
+      this.avisoHorarioMostrado = true;
+
+      Swal.fire({
+        icon: 'info',
+        title: 'Pedido fuera del horario de autorización',
+        text: 'Los pedidos enviados después de las 5:00 p.m. serán procesados a partir de las 8:00 a.m. del día siguiente.',
+        toast: true,
+        position: 'bottom-end',
+        showConfirmButton: false,
+        timer: 7000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'swal-toast-horario'
+        }
+      });
+    }
+
+    avisoHorarioSwal(): string {
+      return `
+        <div class="aviso-horario-swal">
+          <i class="fa-solid fa-clock"></i>
+          <span>
+            <strong>Fuera del horario de autorización (8:00 a.m. a 5:00 p.m.).</strong><br>
+            Tu pedido será autorizado y procesado a partir de las <strong>8:00 a.m. del día siguiente</strong>.
+          </span>
+        </div>
+      `;
+    }
+
     private clienteCambiado = new Subject<string>();
     clienteCambiado$ = this.clienteCambiado.asObservable();
   

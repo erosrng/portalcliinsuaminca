@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@use './styles/variables.scss' as vars;
+
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 .mat-mdc-select-value,
 .mat-mdc-paginator-container,
@@ -32,6 +34,54 @@ body { margin: 0;}
 
 .swal2-container .swal2-html-container {
   font-size: 1.5em !important; /* Ajusta el tamaño de la fuente según tus preferencias */
+}
+
+/* Aviso de horario dentro de los dialogos de SweetAlert2 */
+.aviso-horario-swal {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  background: rgba(vars.$resaltador, 0.1);
+  border: 1px solid rgba(vars.$resaltador, 0.45);
+  border-left: 4px solid vars.$resaltador;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 14px;
+
+  > i {
+    color: vars.$principal-color;
+    font-size: 1.3em;
+    margin-top: 2px;
+  }
+
+  > span {
+    font-size: 0.95em;
+    color: vars.$menu-color;
+    line-height: 1.45;
+
+    strong {
+      color: vars.$principal-color;
+    }
+  }
+}
+
+.swal2-toast.swal-toast-horario {
+  border-left: 4px solid vars.$resaltador;
+
+  .swal2-title {
+    color: vars.$menu-color;
+  }
+
+  .swal2-icon.swal2-info {
+    border-color: vars.$resaltador;
+    color: vars.$resaltador;
+  }
+}
+
+.swal2-popup.swal-dialog-horario .swal2-icon.swal2-question {
+  border-color: vars.$menu-color;
+  color: vars.$menu-color;
 }
 
 .loader-overlay {
