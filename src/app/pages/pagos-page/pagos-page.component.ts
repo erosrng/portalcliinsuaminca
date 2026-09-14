@@ -490,6 +490,9 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
   seleccionarFecha(fechaSeleccionada: string) {
       if (!fechaSeleccionada) return; 
 
+      // Validar que el cliente no tenga ya un pago reportado en esa fecha
+      this.validarFechaPago(fechaSeleccionada);
+
       // Solo reseteamos si ya había una fecha guardada y es diferente a la nueva
     if (this.fechaAnterior && this.fechaAnterior !== fechaSeleccionada) {
         this.selectedRowsMap = {};
@@ -510,6 +513,60 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     this.fechaAnterior = fechaSeleccionada;
 
       this.fetchPagos();
+  }
+
+  // Valida que el cliente no tenga un pago ya reportado en la fecha seleccionada
+  private validarFechaPago(fechaSeleccionada: any): void {
+    const codCli = this.authService.getCodCli();
+    if (!codCli) return;
+
+    const fechaFormateada = this.formatearFechaSinZona(fechaSeleccionada);
+    if (!fechaFormateada) return;
+
+    const formData = new FormData();
+    const token = this.authService.getToken();
+
+    formData.append('codCli', codCli);
+    formData.append('fbanco', fechaFormateada);
+
+    const headers = new HttpHeaders({
+      'X-Auth-Token': `${token}`
+    });
+
+    this.http.post(`${API_URLINTER}portalcli/revisafecha`, formData, { headers }).subscribe({
+      next: (response: any) => {
+        if (response?.bloqueado) {
+          const pago = response.pago;
+          const montoStr = pago?.monto ? parseFloat(pago.monto).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00';
+          const fechaPago = pago?.fbanco ? new Date(pago.fbanco).toLocaleDateString('es-VE') : '';
+
+          Swal.fire({
+            title: 'Pago ya reportado',
+            html: `<div style="text-align:left;">
+                    <p>Este cliente <strong>ya tiene un pago reportado en una fecha posterior</strong> a la seleccionada:</p>
+                    <div class="mt-3 p-3" style="background:#f8f9fa; border-radius:8px; border:1px solid #dee2e6;">
+                      <p class="mb-1"><strong>Fecha del pago:</strong> ${fechaPago}</p>
+                      <p class="mb-1"><strong>Estado:</strong> ${pago?.nombre_status || pago?.status || ''}</p>
+                      <p class="mb-1"><strong>Monto:</strong> Bs ${montoStr}</p>
+                      <p class="mb-1"><strong>Referencia:</strong> ${pago?.numero || 'N/A'}</p>
+                      <p class="mb-0"><strong>Detalle:</strong> ${pago?.descrip || 'N/A'}</p>
+                    </div>
+                    <p class="mt-3 text-danger"><strong>No puede reportar un pago con fecha anterior a la de un pago ya reportado.</strong></p>
+                  </div>`,
+            icon: 'warning',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#1a237e'
+          });
+          this.fechaTransferencia = '';
+          this.fechaAnterior = null;
+          this.allPagos = [];
+          this.pagedPagos = [];
+        }
+      },
+      error: (error) => {
+        console.error('Error al validar fecha:', error);
+      }
+    });
   }
 
     seleccionarCuenta(event: any) {
