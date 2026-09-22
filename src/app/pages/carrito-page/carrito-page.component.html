@@ -3,44 +3,12 @@
 <div style="display: flex; flex-direction: row;">
   <app-side-bar></app-side-bar>
 
-  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="fichaproduct__container">
-                    <div class="product-content">
-                        <div class="product-image">
-                            <img [src]="imageficha" alt="{{ selectedProduct?.descrip }}">
-                        </div>
-                        <div class="product-details">
-                            <div class="product-header">
-                                <h1>{{ selectedProduct?.descrip }}</h1>
-                            </div>
-                            <div class="price">
-                              <p class="usd">US$ {{ portalcliLogicaService.formatCurrency(selectedProduct?.opreciod) }} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.preciod1)}}</span></p>
-                              <p class="bs">Bs. {{ portalcliLogicaService.formatCurrency(selectedProduct?.oprecio)}} <span *ngIf="selectedProduct?.segmento > 0" class="preca__antes">{{ portalcliLogicaService.formatCurrency(selectedProduct?.precio1)}}</span></p>
-                                <ul class="product-data">
-                                    <li>Modelo: {{ selectedProduct?.modelo ?? ''}}</li>
-                                    <li>Origen: {{ selectedProduct?.origen ?? ''}}</li>
-                                    <li>Marca: {{ selectedProduct?.marca ?? ''}}</li>
-                                    <li>Principio Activo:{{ selectedProduct?.pactivo ?? ''}}</li>
-                                    <li>Cod. Barra: {{ selectedProduct?.barras }}</li>
-                                </ul>
-                            </div>
-                            <div class="quantity">
-                                <input type="number" min="0" id="cana2_{{selectedProduct?.codigo}}" value="{{ selectedProduct?.encar }}" placeholder="Cant..." class="quantity-input">
-                                <p class="stock"><br>Existencia: {{ selectedProduct?.existen | number: '0.0-0' }}</p>
-                            </div>    
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
+  <app-product-modal
+    [selectedProduct]="selectedProduct"
+    [imageficha]="imageficha"
+    [productosEnCarritoCodigos]="productosEnCarritoCodigos"
+    [showAgregar]="false"
+  ></app-product-modal>
 
   <div class="carrito">
     <h1 class="ofertas-title carrito__title">Carrito de compra por cliente</h1>

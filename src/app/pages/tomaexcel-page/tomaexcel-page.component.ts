@@ -4,6 +4,7 @@ import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
+import { ProductModalComponent } from "../../components/product-modal/product-modal.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // --- ¡Nuevas importaciones de Angular Material! ---
@@ -70,6 +71,7 @@ interface ProductData {
         FooterComponent,
         SideBarComponent,
         ClicardComponent,
+        ProductModalComponent,
         FormsModule,
         ReactiveFormsModule,
         MatButtonToggleModule,

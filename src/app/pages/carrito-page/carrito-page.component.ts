@@ -3,6 +3,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angul
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { NavBarComponent } from "../../components/nav-bar/nav-bar.component";
 import { AvisoHorarioComponent } from "../../components/aviso-horario/aviso-horario.component";
+import { ProductModalComponent } from "../../components/product-modal/product-modal.component";
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -45,6 +46,7 @@ export interface Product {
     NavBarComponent,
     SideBarComponent,
     AvisoHorarioComponent,
+    ProductModalComponent,
     MatTableModule,
     MatFormFieldModule, 
     MatInputModule,

@@ -7,6 +7,7 @@ import { FooterComponent } from "../../components/footer/footer.component";
 import { SideBarComponent } from "../../components/side-bar/side-bar.component";
 import { ClicardComponent } from "../../components/clicard/clicard.component";
 import { AvisoHorarioComponent } from "../../components/aviso-horario/aviso-horario.component";
+import { ProductModalComponent } from "../../components/product-modal/product-modal.component";
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -110,6 +111,7 @@ export interface ApiResponsePublicidad {
     SideBarComponent,
     ClicardComponent,
     AvisoHorarioComponent,
+    ProductModalComponent,
     FormsModule,
     ReactiveFormsModule,
     MatExpansionModule,
