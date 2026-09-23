@@ -1039,11 +1039,13 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
   formatearFechaSinZona(fecha: any): string {
     if (!fecha) return '';
     
-    // Si es Date, extraer partes en UTC para evitar desfases de zona horaria
+    // El datepicker de Material devuelve un Date a medianoche LOCAL.
+    // Se usan los getters locales para que coincida con el día que el usuario vio en pantalla
+    // (getUTCDate() devolvería el día anterior en zonas con offset positivo, ej. Europa).
     if (fecha instanceof Date) {
-      const anio = fecha.getUTCFullYear();
-      const mes = ('0' + (fecha.getUTCMonth() + 1)).slice(-2);
-      const dia = ('0' + fecha.getUTCDate()).slice(-2);
+      const anio = fecha.getFullYear();
+      const mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
+      const dia = ('0' + fecha.getDate()).slice(-2);
       return `${anio}${mes}${dia}`;
     }
     
