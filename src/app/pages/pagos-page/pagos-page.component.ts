@@ -1038,19 +1038,42 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
   // Convierte la fecha del datepicker a YYYYMMDD sin depender de la zona horaria del navegador
   formatearFechaSinZona(fecha: any): string {
     if (!fecha) return '';
-    
+
     // El datepicker de Material devuelve un Date a medianoche LOCAL.
-    // Se usan los getters locales para que coincida con el día que el usuario vio en pantalla
-    // (getUTCDate() devolvería el día anterior en zonas con offset positivo, ej. Europa).
-    if (fecha instanceof Date) {
+    // Se usan los getters locales para que coincida con el día que el usuario vio en pantalla.
+    /* if (fecha instanceof Date) {
       const anio = fecha.getFullYear();
       const mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
       const dia = ('0' + fecha.getDate()).slice(-2);
       return `${anio}${mes}${dia}`;
+    } */
+   
+    if (fecha instanceof Date) {
+
+      let anio  = fecha.getUTCFullYear();
+      let mes = String(fecha.getUTCMonth() + 1).padStart(2, '0');
+      let dia   = String(fecha.getUTCDate()).padStart(2, '0');
+
+      //console.log(${anio}-${mes}-${dia}); // 2026-09-23
+      return `${anio}${mes}${dia}`;
     }
-    
-    // Si es string tipo "2026-03-17" o "2026-03-17T00:00:00.000Z", tomar solo la parte de fecha
+
     const str = String(fecha);
+
+    // Si el string trae hora (ISO con T o con offset), representa un instante:
+    // convertirlo a Date (UTC) y extraer el día con getters LOCALES,
+    // así en zonas positivas (Europa) no se recorta el día UTC anterior.
+    if (/T|Z|\+|-/.test(str) && /\d/.test(str)) {
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const anio = d.getFullYear();
+        const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+        const dia = ('0' + d.getDate()).slice(-2);
+        return `${anio}${mes}${dia}`;
+      }
+    }
+
+    // Si es string de fecha pura tipo "2026-03-17", tomar solo la parte de fecha
     const match = str.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
     if (match) {
       const anio = match[1];
@@ -1058,7 +1081,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
       const dia = ('0' + match[3]).slice(-2);
       return `${anio}${mes}${dia}`;
     }
-    
+
     return '';
   }
 
