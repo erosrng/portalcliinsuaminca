@@ -1395,14 +1395,20 @@ onFileSelected(event: Event): void {
   
   // Agregar el detalle de cada factura
   facturasSeleccionadas.forEach((factura, index) => {
+    const saldoF = Number(factura.saldo) || 0;
+    const difcF = Number(factura.difc) || 0;
+    const ppagoF = Number(factura.ppago) || 0;
+    const cdolarF = Number(factura.cdolar) || 0;
+    const preabonoF = Number(factura.preabono) || 0;
+
     formData.append(`facturas[${index}][tipo_doc]`, factura.tipo_doc);
     formData.append(`facturas[${index}][numero]`, factura.numero);
-    formData.append(`facturas[${index}][monto]`, factura.monto.toString());
-    formData.append(`facturas[${index}][abono]`, (factura.saldo + factura.difc));
-    formData.append(`facturas[${index}][ppago]`, factura.ppago?.toString());
-    formData.append(`facturas[${index}][difc]`, factura.difc?.toString());
-    formData.append(`facturas[${index}][cdolar]`, factura.cdolar?.toString() || '1');
-    formData.append(`facturas[${index}][preabono]`, factura.preabono?.toString());
+    formData.append(`facturas[${index}][monto]`, (Number(factura.monto) || 0).toString());
+    formData.append(`facturas[${index}][abono]`, (saldoF + difcF).toFixed(2));
+    formData.append(`facturas[${index}][ppago]`, ppagoF.toFixed(2));
+    formData.append(`facturas[${index}][difc]`, difcF.toFixed(2));
+    formData.append(`facturas[${index}][cdolar]`, cdolarF.toString());
+    formData.append(`facturas[${index}][preabono]`, preabonoF.toString());
   });
 
   const headers = new HttpHeaders({
