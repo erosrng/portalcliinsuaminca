@@ -173,6 +173,7 @@ public deudaTotalAbsoluta: number = 0;
   tipoPagoSeleccionado: string = '';
   identificacion: string = '';
   fechaTransferencia: string = '';
+  fechaTransferenciaTexto: string = ''; // Fecha capturada del datepicker como YYYYMMDD (día visible)
   monto: number = 0;
   numeroReferencia: string = '';
   comprobante: any = null;
@@ -487,8 +488,12 @@ public deudaTotalAbsoluta: number = 0;
     }
   }
 fechaAnterior: any = null; // Guardará la fecha antes del cambio
-  seleccionarFecha(fechaSeleccionada: string) {
-      if (!fechaSeleccionada) return; 
+  seleccionarFecha(fechaSeleccionada: any) {
+      if (!fechaSeleccionada) return;
+
+      // Capturar la fecha como YYYYMMDD UNA sola vez, con el día que el usuario ve en pantalla.
+      // Este string se usa en todos los envíos; no depende de la zona horaria del equipo.
+      this.fechaTransferenciaTexto = this.formatearFechaSinZona(fechaSeleccionada);
 
       // Validar que el cliente no tenga ya un pago reportado en esa fecha
       this.validarFechaPago(fechaSeleccionada);
@@ -520,7 +525,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     const codCli = this.authService.getCodCli();
     if (!codCli) return;
 
-    const fechaFormateada = this.formatearFechaSinZona(fechaSeleccionada);
+    const fechaFormateada = this.fechaTransferenciaTexto || this.formatearFechaSinZona(fechaSeleccionada);
     if (!fechaFormateada) return;
 
     const formData = new FormData();
@@ -558,6 +563,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
             confirmButtonColor: '#1a237e'
           });
           this.fechaTransferencia = '';
+          this.fechaTransferenciaTexto = '';
           this.fechaAnterior = null;
           this.allPagos = [];
           this.pagedPagos = [];
@@ -584,6 +590,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     this.cuentaSeleccionada = null;
     this.identificacion = '';
     this.fechaTransferencia = '';
+    this.fechaTransferenciaTexto = '';
     this.numeroReferencia = '';
     this.comprobante = null;
     this.monto = 0;
@@ -691,8 +698,8 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     formData.append('sucursal', this.sucursalFiltro);
 
     if (this.fechaTransferencia) {
-      const fechaParaEnviar = this.formatearFechaSinZona(this.fechaTransferencia); // Resultado: "20260317"
-      formData.append('fechapago', fechaParaEnviar);
+      // Usar la fecha capturada del datepicker (día visible), sin reprocesar zonas horarias
+      formData.append('fechapago', this.fechaTransferenciaTexto);
     }
 
     //formData.append('fechapago', this.fechaTransferencia);
@@ -1046,18 +1053,9 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     });
   }
 
-  // Convierte la fecha del datepicker a YYYYMMDD sin depender de la zona horaria del navegador
-  formatearFechaSinZona(fecha: any): string {
+  //FUNCION CON RICARDO
+  /* formatearFechaSinZona(fecha: any): string {
     if (!fecha) return '';
-
-    // El datepicker de Material devuelve un Date a medianoche LOCAL.
-    // Se usan los getters locales para que coincida con el día que el usuario vio en pantalla.
-    /* if (fecha instanceof Date) {
-      const anio = fecha.getFullYear();
-      const mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
-      const dia = ('0' + fecha.getDate()).slice(-2);
-      return `${anio}${mes}${dia}`;
-    } */
    
     if (fecha instanceof Date) {
 
@@ -1085,6 +1083,63 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
     }
 
     // Si es string de fecha pura tipo "2026-03-17", tomar solo la parte de fecha
+    const match = str.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+    if (match) {
+      const anio = match[1];
+      const mes = ('0' + match[2]).slice(-2);
+      const dia = ('0' + match[3]).slice(-2);
+      return `${anio}${mes}${dia}`;
+    }
+
+    return '';
+  } */
+
+  // Convierte la fecha del datepicker a YYYYMMDD sin depender de la zona horaria del navegador
+  formatearFechaSinZona(fecha: any): string {
+    if (!fecha) return '';
+
+    // Caso 1: Date del datepicker de Material -> medianoche LOCAL del navegador.
+    // Se usan getters locales para devolver el mismo día que el usuario vio en pantalla.
+    // (getUTCDate() daría el día anterior en zonas con offset positivo, ej. Europa)
+    if (fecha instanceof Date) {
+      const anio = fecha.getFullYear();
+      const mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
+      const dia = ('0' + fecha.getDate()).slice(-2);
+      return `${anio}${mes}${dia}`;
+    }
+
+    const str = String(fecha).trim();
+
+    // Caso 2: string de fecha pura "2026-10-05" o "2026/10/05" -> se toma la fecha literal.
+    // (No debe pasar por new Date() porque JS lo interpreta como UTC medianoche,
+    // y en zonas negativas como Venezuela devolvería el día anterior)
+    const matchPuro = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+    if (matchPuro) {
+      return `${matchPuro[1]}${('0' + matchPuro[2]).slice(-2)}${('0' + matchPuro[3]).slice(-2)}`;
+    }
+
+    // Caso 3: string ISO de MEDIANOCHE UTC EXACTA (ej. "2026-10-05T00:00:00.000Z").
+    // Es una fecha calendario serializada, NO un instante: se toma el día literal
+    // para que "05" no se convierta en "04" al pasarlo a zona Venezuela (UTC-4).
+    const matchUTC = str.match(/^(\d{4})-(\d{2})-(\d{2})T00:00:00(\.\d+)?Z$/);
+    if (matchUTC) {
+      return `${matchUTC[1]}${matchUTC[2]}${matchUTC[3]}`;
+    }
+
+    // Caso 4: string ISO con hora u offset (instante real, ej. "2026-09-21T22:00:00.000Z").
+    // Se convierte a Date y se extrae el día con getters LOCALES del navegador
+    // (así en zonas positivas como Europa no se recorta el día).
+    if (/T\d|\dZ|[+-]\d{2}:?\d{2}$/.test(str)) {
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const anio = d.getFullYear();
+        const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+        const dia = ('0' + d.getDate()).slice(-2);
+        return `${anio}${mes}${dia}`;
+      }
+    }
+
+    // Caso 5: fallback, extraer primera fecha encontrada en el texto
     const match = str.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
     if (match) {
       const anio = match[1];
@@ -1397,8 +1452,8 @@ onFileSelected(event: Event): void {
 
   // Tipo de pago y moneda
   if (this.fechaTransferencia) {
-    const fechaParaEnviar = this.formatearFechaSinZona(this.fechaTransferencia); 
-    formData.append('fbanco', fechaParaEnviar);
+    // Usar la fecha capturada del datepicker (día visible), sin reprocesar zonas horarias
+    formData.append('fbanco', this.fechaTransferenciaTexto);
   }
 
   formData.append('tipo_pago', this.tipoPagoSeleccionado);
