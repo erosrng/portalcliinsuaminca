@@ -571,7 +571,7 @@
                                   </span>
                               </td>
                               <td class="align-middle">
-                                  {{ row.tipo_doc }}-{{ row.tipo_doc === 'ND' ? row.num_ref : row.numero }}
+                                  {{ row.tipo_doc }}-{{ row.tipo_doc === 'ND' && row.num_ref ? row.num_ref : row.numero }}
 
                                   <!-- Badge para mostrar estado de retención - SOLO si NO es exento -->
                                   <span *ngIf="clienteData?.tiva == 'E'" class="badge-container ms-2">
@@ -595,15 +595,15 @@
                               <td class="align-middle">{{ row.ppago ? row.ppago : 0 }}</td>
                               <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.difc )) }}</td>
                               <td class="align-middle text-center">{{ portalcliLogicaService.formatCurrency(row.cdolar) }}</td>
-                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency((row.monto / row.cdolar)) }}</td>
-                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency(((row.saldo) / row.cdolar)) }}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency(((row.codigo === 'DFCAC' || !(row.cdolar > 0)) ? (row.montod || 0) : (row.monto / row.cdolar))) }}</td>
+                              <td class="align-middle">{{ portalcliLogicaService.formatCurrency(((row.codigo === 'DFCAC' || !(row.cdolar > 0)) ? (row.saldod || 0) : ((row.saldo) / row.cdolar))) }}</td>
                               <td class="align-middle">{{ row.mfactura }}</td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                   
-                      <mat-paginator [length]="totalPages * itemsPerPage" [pageSize]="itemsPerPage" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
+                      <mat-paginator [length]="totalPages * itemsPerPage" [pageSize]="itemsPerPage" [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons (page)="pageChanged($event)"></mat-paginator>
                       <p>Total de filas seleccionadas: {{ selectedCount }}</p>
                     </div>
                 </div>

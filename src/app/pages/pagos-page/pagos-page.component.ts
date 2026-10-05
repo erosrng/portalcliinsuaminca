@@ -638,12 +638,20 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
   }
 
   toggleSortDirection() {
+    // No permitir ordenar si no se ha seleccionado método de pago y fecha
+    if (!this.metodoPagoSeleccionado || !this.fechaTransferencia) {
+      return;
+    }
     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     this.fetchPagos();
   }
 
   //Ordenamiendo de columnas
   sortData(sort: Sort) {
+    // No permitir ordenar si no se ha seleccionado método de pago y fecha
+    if (!this.metodoPagoSeleccionado || !this.fechaTransferencia) {
+      return;
+    }
     this.sortColumn = sort.active;
     this.sortDirection = sort.direction;
     if (!sort.active || sort.direction === '') {
@@ -818,6 +826,7 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
               numero: row.numero,
               sucursal: row.sucursal || '',
               sucursal_cod: row.sucursal_cod || '',
+              codigo: row.codigo || '',
               emision: row.emision,
             entregado: row.entregado,
             vence: row.vence,
@@ -829,8 +838,10 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
             ppago: row.ppago || 0,
             difc: row.difc || 0,
             cdolar: row.cdolar,
-            monto_dolar: row.monto / row.cdolar,
-            saldo_dolar: (row.saldo - (row.preabono || 0)) / row.cdolar,
+            montod: row.montod || 0,
+            saldod: row.saldod || 0,
+            monto_dolar: (row.codigo === 'DFCAC' || !(row.cdolar > 0)) ? (Number(row.montod) || 0) : (row.monto / row.cdolar),
+            saldo_dolar: (row.codigo === 'DFCAC' || !(row.cdolar > 0)) ? (Number(row.saldod) || 0) : ((row.saldo - (row.preabono || 0)) / row.cdolar),
             preabono: row.preabono || 0,
             mfactura: row.mfactura,
             estado_retencion: row.estado_retencion,
