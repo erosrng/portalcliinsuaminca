@@ -1233,7 +1233,7 @@ onFileSelected(event: Event): void {
     const codCli = this.codCliActivo || this.authService.getCodCli();
   
     // Validar datos obligatorios
-    if (!this.numeroReferencia || !this.montoACancelar || !this.cuentaSeleccionada ) {
+    if (!this.numeroReferencia || !this.montoACancelar || !this.cuentaSeleccionada || !this.fechaTransferencia || !this.metodoPagoSeleccionado) {
       Swal.fire('Error', 'Por favor complete todos los campos obligatorios', 'error');
       this.isLoading = false;
       return;
