@@ -794,6 +794,14 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   //CUANDO SELECCIONAMOS UNA FILA
   toggleRowSelection(row: any): void {
+    // Validar que se haya seleccionado la fecha de pago primero
+    if (!this.fechaTransferencia || !this.fechaTransferenciaTexto) {
+      // Revertir el cambio del checkbox
+      row.selected = !row.selected;
+      Swal.fire('Atención', 'Debe seleccionar la fecha del pago antes de seleccionar facturas', 'warning');
+      return;
+    }
+
     // Validar si tiene retención cargada
     if (this.noTieneRetencion(row)) {
       this.mostrarAlertaSinRetencion(row);
