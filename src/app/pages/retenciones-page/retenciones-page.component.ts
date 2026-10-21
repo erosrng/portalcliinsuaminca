@@ -279,7 +279,7 @@ getFacturasSeleccionadasTexto(): string {
           this.uploadError = 'Debe seleccionar una retención y un comprobante PDF';
           return;
       }
-      const fechaFormateada = new Date(this.fechaComprobante).toISOString().split('T')[0];
+      const fechaFormateada = this.formatearFechaSinZona(this.fechaComprobante);
       this.isUploading = true;
       this.uploadProgress = 0;
       this.uploadError = null;
@@ -351,7 +351,7 @@ getFacturasSeleccionadasTexto(): string {
     this.uploadError = 'Debe seleccionar al menos una factura y un comprobante PDF';
     return;
   }
-  const fechaFormateada = new Date(this.fechaComprobante).toISOString().split('T')[0];
+  const fechaFormateada = this.formatearFechaSinZona(this.fechaComprobante);
 
   this.isUploading = true;
   this.uploadProgress = 0;
@@ -487,10 +487,55 @@ getFacturasSeleccionadasTexto(): string {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  // Formatear fechas
+  // Convierte una fecha del datepicker a YYYY-MM-DD usando los componentes locales.
+  // Evita que toISOString() reste un día en zonas horarias positivas (ej. Europa).
+  formatearFechaSinZona(fecha: any): string {
+    if (!fecha) return '';
+
+    // Date del datepicker (medianoche local): leer componentes locales
+    if (fecha instanceof Date) {
+      const anio = fecha.getFullYear();
+      const mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
+      const dia = ('0' + fecha.getDate()).slice(-2);
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    const str = String(fecha).trim();
+
+    // Fecha pura YYYY-MM-DD o YYYY/MM/DD: tomar literal
+    const match = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+    if (match) {
+      return `${match[1]}-${('0' + match[2]).slice(-2)}-${('0' + match[3]).slice(-2)}`;
+    }
+
+    // Fallback
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) {
+      const anio = d.getFullYear();
+      const mes = ('0' + (d.getMonth() + 1)).slice(-2);
+      const dia = ('0' + d.getDate()).slice(-2);
+      return `${anio}-${mes}-${dia}`;
+    }
+
+    return '';
+  }
+
+  // Formatear fechas SIN desfase de zona horaria.
+  // "2026-09-25" (fecha pura) -> "25/09/2026". No se usa new Date() con el string
+  // porque JS lo interpreta como UTC medianoche y en Venezuela se vería el día anterior.
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES');
+    if (!dateString) return '';
+    const str = String(dateString).trim();
+
+    // Fecha pura YYYY-MM-DD (con o sin hora después): tomar los componentes literales
+    const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      return `${match[3]}/${match[2]}/${match[1]}`;
+    }
+
+    // Otros formatos: fallback
+    const date = new Date(str);
+    return isNaN(date.getTime()) ? str : date.toLocaleDateString('es-ES');
   }
 
   // Formatear montos
@@ -555,15 +600,15 @@ getFacturasSeleccionadasTexto(): string {
 
       // Filtro por fecha DESDE
       if (this.filtroFechaDesde) {
-        // Convertimos el objeto Date a string YYYY-MM-DD para comparar con la API
-        const desdeStr = new Date(this.filtroFechaDesde).toISOString().split('T')[0];
+        // Convertimos el objeto Date a string YYYY-MM-DD (componentes locales, sin desfase)
+        const desdeStr = this.formatearFechaSinZona(this.filtroFechaDesde);
         filtradas = filtradas.filter(r => r.fecha >= desdeStr);
       }
 
       // Filtro por fecha HASTA
       if (this.filtroFechaHasta) {
-        // Convertimos el objeto Date a string YYYY-MM-DD
-        const hastaStr = new Date(this.filtroFechaHasta).toISOString().split('T')[0];
+        // Convertimos el objeto Date a string YYYY-MM-DD (componentes locales, sin desfase)
+        const hastaStr = this.formatearFechaSinZona(this.filtroFechaHasta);
         filtradas = filtradas.filter(r => r.fecha <= hastaStr);
       }
 
