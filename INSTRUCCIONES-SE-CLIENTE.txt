@@ -719,6 +719,8 @@ Pruebas realizadas:
     - Descarga individual de documentos probada.
     - Aprobación probada: crea el cliente en scli, guarda el código en
       la solicitud y no duplica al volver a aprobar.
+    - Botón "Aprobar y crear" probado desde el controlador: aprueba,
+      crea el cliente, cambia el estado y no duplica al repetirlo.
     - Sin desbordamiento horizontal en móvil.
     - Login sin scroll en 1024x600, 1280x720 y 1366x768.
 
@@ -755,6 +757,8 @@ El módulo permite:
     - Abrir el detalle de cada solicitud con el botón "Ver solicitud".
     - Consultar todos los datos del formulario.
     - Aprobar la solicitud y crear automáticamente el cliente en scli.
+    - Botón "Aprobar y crear" en el detalle y en el grid, que aprueba
+      y crea el cliente en un solo paso.
     - Descargar cada documento adjunto.
     - Descargar todos los documentos en un ZIP, junto con solicitud.json
       y resumen.txt.
@@ -773,6 +777,9 @@ Contenido del ZIP:
 Aprobación y creación del cliente en scli:
     - Al guardar el estado A (Aprobada), el módulo crea el cliente en
       scli usando los datos enviados por el cliente.
+    - El botón "Aprobar y crear" (detalle y grid) hace lo mismo en un
+      solo paso mediante ventas/solifichacli/aprobar_crear (POST) y
+      guarda la fecha y hora de la aprobación.
     - El código se toma del consecutivo oficial de clientes de Datasis
       (ncodcli a través de proxcli(), equivalente al secuencial
       scliprox), el mismo que usan los módulos de ventas.
