@@ -759,6 +759,9 @@ El módulo permite:
     - Aprobar la solicitud y crear automáticamente el cliente en scli.
     - Botón "Aprobar y crear" en el detalle y en el grid, que aprueba
       y crea el cliente en un solo paso.
+    - Incluir, modificar y borrar solicitudes con el formulario
+      estándar (dataedit) y el grid (setdata), igual que otros módulos
+      como encom o pfac.
     - Descargar cada documento adjunto.
     - Descargar todos los documentos en un ZIP, junto con solicitud.json
       y resumen.txt.
@@ -804,6 +807,9 @@ Permisos:
     - El menú se registra en intramenu únicamente con creaintramenu()
       desde index(). No se hacen inserts manuales en modulos,
       intramenu ni intrasida.
+    - El acceso y las opciones Incluir/Modificar/Borrar/Buscar se
+      controlan con sidapuede() según los permisos del usuario en sida
+      (INCLUIR%, MODIFICA%, BORR_REG%, BUSQUEDA%), igual que encom.
     - Los permisos por usuario se asignan desde el módulo de accesos
       (sida -> intrasida), igual que cualquier otro módulo.
     - Los supervisores ven el módulo sin restricciones.
