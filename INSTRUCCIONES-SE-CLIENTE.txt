@@ -728,14 +728,14 @@ Pruebas realizadas:
 11. MÓDULO DE SOLICITUDES DE APERTURA CÓDIGO DE CLIENTE
 ----------------------------------------------------------------------
 Ubicación:
-    system/application/controllers/ventas/solifichacli.php
-    system/application/views/view_solifichacli.php
+    system/application/controllers/ventas/solfichacli.php
+    system/application/views/view_solfichacli.php
 
 Menú:
     Código: 174
     Título: Sol. Apertura Código Cliente
     Panel: REGISTROS
-    Ejecutar: ventas/solifichacli
+    Ejecutar: ventas/solfichacli
     Target: popu
     Tamaño: 1100 x 650
 
@@ -746,6 +746,11 @@ Menú:
 Tabla:
     solifichacli
     (abreviatura de Solicitud Ficha Cliente)
+
+    El controlador y la vista se llaman solfichacli (igual que el
+    código del módulo SOLFICHACLI en tmenus/sida, de 11 caracteres
+    porque tmenus.modulo es varchar(11)). La tabla conserva el nombre
+    solifichacli.
 
 Grid:
     Consulta directamente la tabla solifichacli. No se usa vista SQL.
@@ -781,7 +786,7 @@ Aprobación y creación del cliente en scli:
     - Al guardar el estado A (Aprobada), el módulo crea el cliente en
       scli usando los datos enviados por el cliente.
     - El botón "Aprobar y crear" (detalle y grid) hace lo mismo en un
-      solo paso mediante ventas/solifichacli/aprobar_crear (POST) y
+      solo paso mediante ventas/solfichacli/aprobar_crear (POST) y
       guarda la fecha y hora de la aprobación.
     - El código se toma del consecutivo oficial de clientes de Datasis
       (ncodcli a través de proxcli(), equivalente al secuencial
@@ -809,8 +814,9 @@ Permisos:
       primera vez, las 9 entradas de tmenus (Incluye, Modifica, Prox,
       Ante, Elimina, Busca, Tabla, Lista, Otros) y las filas de sida
       con acceso N, igual que hace con rivcweb.
-    - El código del módulo en tmenus/sida es SOLFICHACLI (11 caracteres,
-      porque tmenus.modulo es varchar(11); SOLIFICHACLI se truncaría).
+    - El código del módulo (y el nombre del controlador/view) es
+      SOLFICHACLI (11 caracteres, porque tmenus.modulo es varchar(11)).
+      La tabla se sigue llamando solifichacli y no se renombra.
     - El menú se registra en intramenu únicamente con creaintramenu()
       desde index().
     - El acceso y las opciones Incluir/Modificar/Borrar/Buscar se
@@ -828,7 +834,7 @@ Instalación:
     módulo de accesos.
 
     Ejecutar:
-        php index.php ventas/solifichacli/instalar
+        php index.php ventas/solfichacli/instalar
 
 Prueba:
     Abrir el módulo desde el menú Ventas > Registros >
