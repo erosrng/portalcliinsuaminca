@@ -799,15 +799,20 @@ Aprobación y creación del cliente en scli:
       quedan en 0 y se ajustan luego en scli.
 
 Permisos:
-    - El módulo se registra en intramenu con el código 174.
-    - Los usuarios con acceso S al módulo 174 en sida se copian a
-      intrasida.
-    - También se asegura el acceso al grupo padre 1.
+    - El nombre del módulo se registra en modulos con modulo_nombre()
+      desde el constructor del controlador.
+    - El menú se registra en intramenu únicamente con creaintramenu()
+      desde index(). No se hacen inserts manuales en modulos,
+      intramenu ni intrasida.
+    - Los permisos por usuario se asignan desde el módulo de accesos
+      (sida -> intrasida), igual que cualquier otro módulo.
     - Los supervisores ven el módulo sin restricciones.
 
 Instalación:
-    El método instalar() del controlador crea la tabla, el menú
-    y los permisos de forma idempotente.
+    instalar() crea o actualiza la tabla solifichacli de forma
+    idempotente. El menú lo crea index() con creaintramenu() y el
+    nombre del módulo lo registra modulo_nombre() desde el
+    constructor. Los permisos se asignan desde el módulo de accesos.
 
     Ejecutar:
         php index.php ventas/solifichacli/instalar
