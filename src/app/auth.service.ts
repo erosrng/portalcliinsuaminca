@@ -41,7 +41,7 @@ export class AuthService {
     // Obtener la URL actual para verificar si es la ruta de login
     const currentUrl = this.router.url;
     // Definimos las rutas que NO deben disparar el logout automático
-    const excludedRoutes = ['/login', '/registrocli', '/otra-pagina-excluida'];
+    const excludedRoutes = ['/login', '/registrocli', '/se-cliente', '/otra-pagina-excluida'];
     
     // Verificamos si la ruta actual está en nuestra lista de exclusión
     const isExcludedPage = excludedRoutes.some(route => currentUrl.includes(route));
@@ -102,7 +102,7 @@ export class AuthService {
       
       // Nueva lógica de exclusión dentro de getToken
       const currentUrl = this.router.url;
-      const excludedRoutes = ['/login', '/registrocli'];
+      const excludedRoutes = ['/login', '/registrocli', '/se-cliente'];
       const isExcludedPage = excludedRoutes.some(route => currentUrl.includes(route));
 
       if (!storedToken) {

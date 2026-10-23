@@ -94,6 +94,10 @@ export class RegistrocliPageComponent implements OnInit {
     }
   }
 
+  irASeCliente(): void {
+    this.router.navigate(['/se-cliente']);
+  }
+
   // Nuevo método para deshabilitar los campos del formulario (excepto Tipo y RIF)
   private disableFormFields(): void {
     Object.keys(this.registerForm.controls).forEach(key => {

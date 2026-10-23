@@ -1,0 +1,1166 @@
+<div class="se-cliente">
+  <header class="topbar">
+    <a routerLink="/login" class="topbar__brand" aria-label="Volver a Insuanet">
+      <img src="assets/images/IMAGOTIPO-BLANCO.png" alt="Insuaminca" class="topbar__logo" />
+    </a>
+    <div class="topbar__progress" [class.topbar__progress--complete]="progresoGeneral >= 100">
+      <div class="topbar__progress-track">
+        <span [style.width.%]="progresoGeneral"></span>
+      </div>
+      <span class="topbar__progress-value">{{ progresoGeneral }}%</span>
+    </div>
+    <a routerLink="/login" class="topbar__back">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Volver al inicio de sesión</span>
+    </a>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="hero__text">
+        <span class="hero__eyebrow">Solicitud en línea</span>
+        <h1>Sé cliente Insuaminca</h1>
+        <p class="hero__description">
+          Completa la solicitud directamente en la web, adjunta los documentos de tu empresa
+          y envíala a nuestro equipo. No necesitas descargar ni imprimir ninguna planilla.
+        </p>
+        <ul class="hero__badges">
+          <li><mat-icon>edit_document</mat-icon> 100% en línea</li>
+          <li><mat-icon>attach_file</mat-icon> Carga de documentos</li>
+          <li><mat-icon>bolt</mat-icon> Envío inmediato</li>
+        </ul>
+      </div>
+      <div class="hero__icon" aria-hidden="true">
+        <mat-icon>storefront</mat-icon>
+      </div>
+    </section>
+
+    <section class="progress-panel" [class.progress-panel--complete]="progresoGeneral >= 100">
+      <div class="progress-panel__head">
+        <div>
+          <span class="progress-panel__kicker">Tu progreso</span>
+          <h2>{{ mensajeProgreso }}</h2>
+        </div>
+        <div class="progress-panel__value">
+          <span>{{ progresoGeneral }}%</span>
+          <small>completado</small>
+        </div>
+      </div>
+
+      <div class="progress-panel__track">
+        <span [style.width.%]="progresoGeneral"></span>
+      </div>
+
+      <div class="progress-panel__meta">
+        <span>
+          <mat-icon>check_circle</mat-icon>
+          {{ seccionesCompletas }} de {{ secciones.length }} secciones listas
+        </span>
+        <span>
+          <mat-icon>description</mat-icon>
+          {{ documentosCargados }} de {{ documentosRequeridos }} documentos obligatorios
+        </span>
+        <span *ngIf="progresoGeneral < 100">
+          <mat-icon>info</mat-icon>
+          Completa lo que falta para enviar
+        </span>
+        <span class="progress-panel__ready" *ngIf="progresoGeneral >= 100">
+          <mat-icon>verified</mat-icon>
+          Todo listo para enviar
+        </span>
+        <span class="progress-panel__draft">
+          <mat-icon>save</mat-icon>
+          Guardado automático
+        </span>
+        <button type="button" class="progress-panel__clear" (click)="limpiarBorrador()">
+          <mat-icon>delete_outline</mat-icon>
+          Limpiar borrador
+        </button>
+      </div>
+
+      <nav class="stepper" aria-label="Pasos de la solicitud">
+        <button
+          type="button"
+          class="stepper__step"
+          *ngFor="let seccion of secciones; let i = index"
+          [class.is-active]="pasoActual === i"
+          [class.is-complete]="progresoDe(seccion.id).completado"
+          [class.is-invalid]="progresoDe(seccion.id).invalidos > 0"
+          [attr.title]="textoFaltantes(seccion.id)"
+          (click)="irAPaso(i)"
+        >
+          <span class="stepper__number">
+            <mat-icon *ngIf="progresoDe(seccion.id).completado">check</mat-icon>
+            <mat-icon *ngIf="!progresoDe(seccion.id).completado && progresoDe(seccion.id).invalidos > 0">error_outline</mat-icon>
+            <ng-container *ngIf="!progresoDe(seccion.id).completado && progresoDe(seccion.id).invalidos === 0">{{ seccion.numero }}</ng-container>
+          </span>
+          <span class="stepper__label">{{ seccion.titulo }}</span>
+          <span class="stepper__percent">{{ progresoDe(seccion.id).porcentaje }}%</span>
+        </button>
+      </nav>
+
+      <div
+        class="stepper-guide"
+        aria-live="polite"
+        [class.is-complete]="progresoDe(secciones[pasoActual].id).completado"
+        [class.is-invalid]="progresoDe(secciones[pasoActual].id).invalidos > 0"
+      >
+        <mat-icon>{{ iconoEstado(secciones[pasoActual].id) }}</mat-icon>
+        <div>
+          <strong *ngIf="progresoDe(secciones[pasoActual].id).completado">Paso completo</strong>
+          <strong *ngIf="!progresoDe(secciones[pasoActual].id).completado && progresoDe(secciones[pasoActual].id).invalidos > 0">
+            Hay campos con error en este paso
+          </strong>
+          <strong *ngIf="!progresoDe(secciones[pasoActual].id).completado && progresoDe(secciones[pasoActual].id).invalidos === 0">
+            Faltan datos por completar
+          </strong>
+          <span *ngIf="progresoDe(secciones[pasoActual].id).completado">
+            Puedes continuar al siguiente paso.
+          </span>
+          <span *ngIf="!progresoDe(secciones[pasoActual].id).completado">
+            {{ textoFaltantes(secciones[pasoActual].id) }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <form id="formulario" [formGroup]="solicitudForm" (ngSubmit)="enviarSolicitud()" (keydown.enter)="onEnter($event)" novalidate>
+      <div class="form-layout">
+        <div class="form-main">
+          <section class="form-card" id="datos-fiscales" [hidden]="pasoActual !== 0" [class.form-card--complete]="progresoDe('datos-fiscales').completado" [class.form-card--invalid]="progresoDe('datos-fiscales').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">01</span>
+              <div>
+                <h2>Datos fiscales y registro mercantil</h2>
+                <p>Información legal y fiscal de tu empresa.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('datos-fiscales').completado" [class.has-errors]="progresoDe('datos-fiscales').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('datos-fiscales') }}</mat-icon>
+                  {{ textoFaltantes('datos-fiscales') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('datos-fiscales').porcentaje"></app-progress-ring>
+            </header>
+
+            <div class="form-grid" formGroupName="empresa">
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Nombre de la empresa / razón social</mat-label>
+                <input matInput formControlName="razonSocial" maxlength="150" />
+                <mat-error *ngIf="tieneError('empresa.razonSocial', 'required')">
+                  La razón social es requerida.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo de RIF</mat-label>
+                <mat-select formControlName="rifTipo">
+                  <mat-option *ngFor="let tipo of tiposRif" [value]="tipo">{{ tipo }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="tieneError('empresa.rifTipo', 'required')">
+                  Selecciona el tipo de RIF.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Número de RIF</mat-label>
+                <input matInput formControlName="rifNumero" maxlength="10" inputmode="numeric" />
+                <mat-hint>Solo números, de 7 a 10 dígitos.</mat-hint>
+                <mat-error *ngIf="tieneError('empresa.rifNumero', 'required')">
+                  El RIF es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('empresa.rifNumero', 'pattern')">
+                  El RIF debe contener entre 7 y 10 dígitos.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Dirección fiscal y punto de referencia</mat-label>
+                <textarea matInput formControlName="direccionFiscal" rows="2"></textarea>
+                <mat-error *ngIf="tieneError('empresa.direccionFiscal', 'required')">
+                  La dirección fiscal es requerida.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo de contribuyente</mat-label>
+                <mat-select formControlName="tipoContribuyente">
+                  <mat-option *ngFor="let tipo of tiposContribuyente" [value]="tipo">
+                    {{ tipo }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="tieneError('empresa.tipoContribuyente', 'required')">
+                  Selecciona el tipo de contribuyente.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Teléfono</mat-label>
+                <input matInput formControlName="telefono" inputmode="tel" />
+                <mat-error *ngIf="tieneError('empresa.telefono', 'required')">
+                  El teléfono es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('empresa.telefono', 'pattern')">
+                  Introduce un teléfono válido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Celular</mat-label>
+                <input matInput formControlName="celular" inputmode="tel" />
+                <mat-error *ngIf="tieneError('empresa.celular', 'required')">
+                  El celular es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('empresa.celular', 'pattern')">
+                  Introduce un celular válido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fax (opcional)</mat-label>
+                <input matInput formControlName="fax" inputmode="tel" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Correo electrónico de la empresa</mat-label>
+                <input matInput formControlName="email" type="email" />
+                <mat-error *ngIf="tieneError('empresa.email', 'required')">
+                  El correo es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('empresa.email', 'email')">
+                  Introduce un correo válido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <h3 class="form-subtitle">Registro mercantil</h3>
+            <div class="form-grid" formGroupName="empresa">
+              <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <input matInput formControlName="estado" />
+                <mat-error *ngIf="tieneError('empresa.estado', 'required')">
+                  El estado es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Expediente</mat-label>
+                <input matInput formControlName="expediente" />
+                <mat-error *ngIf="tieneError('empresa.expediente', 'required')">
+                  El expediente es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tomo</mat-label>
+                <input matInput formControlName="tomo" />
+                <mat-error *ngIf="tieneError('empresa.tomo', 'required')">
+                  El tomo es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Fecha de registro</mat-label>
+                <input matInput type="date" formControlName="fechaRegistro" />
+                <mat-error *ngIf="tieneError('empresa.fechaRegistro', 'required')">
+                  La fecha de registro es requerida.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <h3 class="form-subtitle">Permisos</h3>
+            <div class="form-grid" formGroupName="empresa">
+              <mat-form-field appearance="outline">
+                <mat-label>Número o referencia del permiso de instalación</mat-label>
+                <input matInput formControlName="permisoInstalacion" />
+                <mat-error *ngIf="tieneError('empresa.permisoInstalacion', 'required')">
+                  El permiso de instalación es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Número o referencia del permiso de funcionamiento</mat-label>
+                <input matInput formControlName="permisoFuncionamiento" />
+                <mat-error *ngIf="tieneError('empresa.permisoFuncionamiento', 'required')">
+                  El permiso de funcionamiento es requerido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </section>
+
+          <section class="form-card" id="accionistas" [hidden]="pasoActual !== 1" [class.form-card--complete]="progresoDe('accionistas').completado" [class.form-card--invalid]="progresoDe('accionistas').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">02</span>
+              <div>
+                <h2>Accionistas y regentes</h2>
+                <p>Datos de los socios y del farmacéutico responsable.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('accionistas').completado" [class.has-errors]="progresoDe('accionistas').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('accionistas') }}</mat-icon>
+                  {{ textoFaltantes('accionistas') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('accionistas').porcentaje"></app-progress-ring>
+            </header>
+
+            <p class="form-note">
+              Puedes agregar varios accionistas y regentes. Si una misma persona ocupa varios cargos,
+              puedes repetir sus datos.
+            </p>
+
+            <div class="array-list" formArrayName="accionistas">
+              <div
+                class="array-item"
+                *ngFor="let accionista of accionistas.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Accionista {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="accionistas.length > 1"
+                    (click)="eliminarAccionista(i)"
+                    aria-label="Eliminar accionista"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombres y apellidos</mat-label>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="tieneError('accionistas.' + i + '.nombre', 'required')">
+                      El nombre es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cédula de identidad</mat-label>
+                    <input matInput formControlName="cedula" />
+                    <mat-error *ngIf="tieneError('accionistas.' + i + '.cedula', 'required')">
+                      La cédula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cargo</mat-label>
+                    <input matInput formControlName="cargo" />
+                    <mat-error *ngIf="tieneError('accionistas.' + i + '.cargo', 'required')">
+                      El cargo es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="telefono" inputmode="tel" />
+                    <mat-error *ngIf="tieneError('accionistas.' + i + '.telefono', 'required')">
+                      El teléfono es requerido.
+                    </mat-error>
+                    <mat-error *ngIf="tieneError('accionistas.' + i + '.telefono', 'pattern')">
+                      Introduce un teléfono válido.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              class="btn-ghost"
+              (click)="agregarAccionista()"
+              [disabled]="accionistas.length >= maxAccionistas"
+            >
+              <mat-icon>{{ accionistas.length >= maxAccionistas ? 'lock' : 'add' }}</mat-icon>
+              {{
+                accionistas.length >= maxAccionistas
+                  ? 'Máximo ' + maxAccionistas + ' accionistas'
+                  : 'Agregar accionista'
+              }}
+            </button>
+
+            <h3 class="form-subtitle">Regentes</h3>
+            <div class="array-list" formArrayName="regentes">
+              <div
+                class="array-item"
+                *ngFor="let regente of regentes.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Regente {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="regentes.length > 1"
+                    (click)="eliminarRegente(i)"
+                    aria-label="Eliminar regente"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombres y apellidos</mat-label>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="tieneError('regentes.' + i + '.nombre', 'required')">
+                      El nombre del regente es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cédula de identidad</mat-label>
+                    <input matInput formControlName="cedula" />
+                    <mat-error *ngIf="tieneError('regentes.' + i + '.cedula', 'required')">
+                      La cédula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>RIF personal</mat-label>
+                    <input matInput formControlName="rif" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Matrícula del ministerio</mat-label>
+                    <input matInput formControlName="matricula" />
+                    <mat-error *ngIf="tieneError('regentes.' + i + '.matricula', 'required')">
+                      La matrícula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>N° de inscripción COLFAR</mat-label>
+                    <input matInput formControlName="colfar" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>N° de inscripción INPREFAR</mat-label>
+                    <input matInput formControlName="inprefar" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-ghost" (click)="agregarRegente()">
+              <mat-icon>add</mat-icon>
+              Agregar regente
+            </button>
+          </section>
+
+          <section class="form-card" id="datos-comerciales" [hidden]="pasoActual !== 2" [class.form-card--complete]="progresoDe('datos-comerciales').completado" [class.form-card--invalid]="progresoDe('datos-comerciales').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">03</span>
+              <div>
+                <h2>Bancos y datos comerciales</h2>
+                <p>Cuentas bancarias, nombre comercial y ubicación del establecimiento.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('datos-comerciales').completado" [class.has-errors]="progresoDe('datos-comerciales').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('datos-comerciales') }}</mat-icon>
+                  {{ textoFaltantes('datos-comerciales') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('datos-comerciales').porcentaje"></app-progress-ring>
+            </header>
+
+            <h3 class="form-subtitle form-subtitle--first">Datos bancarios</h3>
+            <div class="form-grid" formGroupName="bancos">
+              <mat-form-field appearance="outline">
+                <mat-label>Banco 1</mat-label>
+                <input matInput formControlName="banco1Nombre" />
+                <mat-error *ngIf="tieneError('bancos.banco1Nombre', 'required')">
+                  El nombre del banco es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>N° de cuenta 1</mat-label>
+                <input matInput formControlName="banco1Cuenta" inputmode="numeric" />
+                <mat-error *ngIf="tieneError('bancos.banco1Cuenta', 'required')">
+                  El número de cuenta es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Banco 2 (opcional)</mat-label>
+                <input matInput formControlName="banco2Nombre" />
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>N° de cuenta 2 (opcional)</mat-label>
+                <input matInput formControlName="banco2Cuenta" inputmode="numeric" />
+              </mat-form-field>
+            </div>
+
+            <h3 class="form-subtitle">Establecimiento</h3>
+            <div class="form-grid" formGroupName="comercial">
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre comercial o fondo de comercio</mat-label>
+                <input matInput formControlName="nombreComercial" />
+                <mat-error *ngIf="tieneError('comercial.nombreComercial', 'required')">
+                  El nombre comercial es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Teléfono</mat-label>
+                <input matInput formControlName="telefono" inputmode="tel" />
+                <mat-error *ngIf="tieneError('comercial.telefono', 'required')">
+                  El teléfono es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('comercial.telefono', 'pattern')">
+                  Introduce un teléfono válido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Dirección comercial</mat-label>
+                <textarea matInput formControlName="direccion" rows="2"></textarea>
+                <mat-error *ngIf="tieneError('comercial.direccion', 'required')">
+                  La dirección comercial es requerida.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <input matInput formControlName="estado" />
+                <mat-error *ngIf="tieneError('comercial.estado', 'required')">
+                  El estado es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Municipio</mat-label>
+                <input matInput formControlName="municipio" />
+                <mat-error *ngIf="tieneError('comercial.municipio', 'required')">
+                  El municipio es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Correo electrónico comercial</mat-label>
+                <input matInput formControlName="email" type="email" />
+                <mat-error *ngIf="tieneError('comercial.email', 'required')">
+                  El correo es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('comercial.email', 'email')">
+                  Introduce un correo válido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Local</mat-label>
+                <mat-select formControlName="local" (selectionChange)="onLocalChange($event.value)">
+                  <mat-option *ngFor="let tipo of tiposLocal" [value]="tipo">{{ tipo }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="tieneError('comercial.local', 'required')">
+                  Selecciona el tipo de local.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" *ngIf="solicitudForm.get('comercial.local')?.value === 'Alquilado'">
+                <mat-label>Duración del contrato</mat-label>
+                <input matInput formControlName="duracionContrato" />
+                <mat-error *ngIf="tieneError('comercial.duracionContrato', 'required')">
+                  La duración del contrato es requerida.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <ng-container *ngIf="solicitudForm.get('comercial.local')?.value === 'Alquilado'">
+              <h3 class="form-subtitle">Arrendatarios</h3>
+              <div class="array-list" formArrayName="arrendatarios">
+                <div
+                  class="array-item"
+                  *ngFor="let arrendatario of arrendatarios.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <div class="array-item__head">
+                    <h3>Arrendatario {{ i + 1 }}</h3>
+                    <button
+                      type="button"
+                      class="icon-button"
+                      *ngIf="arrendatarios.length > 1"
+                      (click)="eliminarArrendatario(i)"
+                      aria-label="Eliminar arrendatario"
+                    >
+                      <mat-icon>delete_outline</mat-icon>
+                    </button>
+                  </div>
+
+                  <div class="form-grid">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Nombre del arrendador</mat-label>
+                      <input matInput formControlName="arrendador" />
+                      <mat-error *ngIf="tieneError('arrendatarios.' + i + '.arrendador', 'required')">
+                        El arrendador es requerido.
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Cédula de identidad</mat-label>
+                      <input matInput formControlName="cedula" />
+                      <mat-error *ngIf="tieneError('arrendatarios.' + i + '.cedula', 'required')">
+                        La cédula es requerida.
+                      </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Cargo</mat-label>
+                      <input matInput formControlName="cargo" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                      <mat-label>Teléfono</mat-label>
+                      <input matInput formControlName="telefono" inputmode="tel" />
+                      <mat-error *ngIf="tieneError('arrendatarios.' + i + '.telefono', 'required')">
+                        El teléfono es requerido.
+                      </mat-error>
+                      <mat-error *ngIf="tieneError('arrendatarios.' + i + '.telefono', 'pattern')">
+                        Introduce un teléfono válido.
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn-ghost" (click)="agregarArrendatario()">
+                <mat-icon>add</mat-icon>
+                Agregar arrendatario
+              </button>
+            </ng-container>
+          </section>
+
+          <section class="form-card" id="representantes" [hidden]="pasoActual !== 3" [class.form-card--complete]="progresoDe('representantes').completado" [class.form-card--invalid]="progresoDe('representantes').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">04</span>
+              <div>
+                <h2>Representantes y pagos</h2>
+                <p>Personas autorizadas para representar y pagar a nombre de la empresa.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('representantes').completado" [class.has-errors]="progresoDe('representantes').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('representantes') }}</mat-icon>
+                  {{ textoFaltantes('representantes') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('representantes').porcentaje"></app-progress-ring>
+            </header>
+
+            <p class="form-note">
+              Puedes registrar varias personas en cada rol. Si una misma persona ocupa varios cargos,
+              puedes repetir sus datos.
+            </p>
+
+            <h3 class="form-subtitle form-subtitle--first">Representantes legales</h3>
+            <div class="array-list" formArrayName="representantes">
+              <div
+                class="array-item"
+                *ngFor="let representante of representantes.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Representante legal {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="representantes.length > 1"
+                    (click)="eliminarRepresentante(i)"
+                    aria-label="Eliminar representante legal"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombres y apellidos</mat-label>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="tieneError('representantes.' + i + '.nombre', 'required')">
+                      El nombre es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cédula de identidad</mat-label>
+                    <input matInput formControlName="cedula" />
+                    <mat-error *ngIf="tieneError('representantes.' + i + '.cedula', 'required')">
+                      La cédula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>RIF personal</mat-label>
+                    <input matInput formControlName="rif" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cargo</mat-label>
+                    <input matInput formControlName="cargo" />
+                    <mat-error *ngIf="tieneError('representantes.' + i + '.cargo', 'required')">
+                      El cargo es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="span-2">
+                    <mat-label>Teléfono celular</mat-label>
+                    <input matInput formControlName="telefono" inputmode="tel" />
+                    <mat-error *ngIf="tieneError('representantes.' + i + '.telefono', 'required')">
+                      El teléfono es requerido.
+                    </mat-error>
+                    <mat-error *ngIf="tieneError('representantes.' + i + '.telefono', 'pattern')">
+                      Introduce un teléfono válido.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-ghost" (click)="agregarRepresentante()">
+              <mat-icon>add</mat-icon>
+              Agregar representante legal
+            </button>
+
+            <h3 class="form-subtitle">Responsables de pago</h3>
+            <div class="array-list" formArrayName="responsablesPago">
+              <div
+                class="array-item"
+                *ngFor="let responsable of responsablesPago.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Responsable de pago {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="responsablesPago.length > 1"
+                    (click)="eliminarResponsablePago(i)"
+                    aria-label="Eliminar responsable de pago"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombres y apellidos</mat-label>
+                    <input matInput formControlName="nombre" />
+                    <mat-error *ngIf="tieneError('responsablesPago.' + i + '.nombre', 'required')">
+                      El nombre es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cédula de identidad</mat-label>
+                    <input matInput formControlName="cedula" />
+                    <mat-error *ngIf="tieneError('responsablesPago.' + i + '.cedula', 'required')">
+                      La cédula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cargo</mat-label>
+                    <input matInput formControlName="cargo" />
+                    <mat-error *ngIf="tieneError('responsablesPago.' + i + '.cargo', 'required')">
+                      El cargo es requerido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Teléfono celular</mat-label>
+                    <input matInput formControlName="telefono" inputmode="tel" />
+                    <mat-error *ngIf="tieneError('responsablesPago.' + i + '.telefono', 'required')">
+                      El teléfono es requerido.
+                    </mat-error>
+                    <mat-error *ngIf="tieneError('responsablesPago.' + i + '.telefono', 'pattern')">
+                      Introduce un teléfono válido.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-ghost" (click)="agregarResponsablePago()">
+              <mat-icon>add</mat-icon>
+              Agregar responsable de pago
+            </button>
+
+            <h3 class="form-subtitle">Fiadores solidarios (opcional)</h3>
+            <div class="array-list" formArrayName="fiadores">
+              <div
+                class="array-item"
+                *ngFor="let fiador of fiadores.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Fiador {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="fiadores.length > 1"
+                    (click)="eliminarFiador(i)"
+                    aria-label="Eliminar fiador"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Nombres y apellidos</mat-label>
+                    <input matInput formControlName="nombre" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Cédula de identidad</mat-label>
+                    <input matInput formControlName="cedula" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="telefono" inputmode="tel" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-ghost" (click)="agregarFiador()">
+              <mat-icon>add</mat-icon>
+              Agregar fiador
+            </button>
+
+            <mat-form-field appearance="outline" class="w-100 mt-2">
+              <mat-label>Ejecutivo de venta que te atendió (opcional)</mat-label>
+              <input matInput formControlName="ejecutivoVenta" />
+            </mat-form-field>
+          </section>
+
+          <section class="form-card" id="referencias" [hidden]="pasoActual !== 4" [class.form-card--complete]="progresoDe('referencias').completado" [class.form-card--invalid]="progresoDe('referencias').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">05</span>
+              <div>
+                <h2>Referencias</h2>
+                <p>Referencias comerciales y bancarias de la empresa.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('referencias').completado" [class.has-errors]="progresoDe('referencias').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('referencias') }}</mat-icon>
+                  {{ textoFaltantes('referencias') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('referencias').porcentaje"></app-progress-ring>
+            </header>
+
+            <h3 class="form-subtitle form-subtitle--first">Referencias comerciales</h3>
+            <div class="array-list" formArrayName="referenciasComerciales">
+              <div
+                class="array-item"
+                *ngFor="let referencia of referenciasComerciales.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <div class="array-item__head">
+                  <h3>Referencia comercial {{ i + 1 }}</h3>
+                  <button
+                    type="button"
+                    class="icon-button"
+                    *ngIf="referenciasComerciales.length > 1"
+                    (click)="eliminarReferenciaComercial(i)"
+                    aria-label="Eliminar referencia comercial"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+
+                <div class="form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Entidad comercial</mat-label>
+                    <input matInput formControlName="entidad" />
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.entidad', 'required')">
+                      La entidad es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="telefono" inputmode="tel" />
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.telefono', 'required')">
+                      El teléfono es requerido.
+                    </mat-error>
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.telefono', 'pattern')">
+                      Introduce un teléfono válido.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="span-2">
+                    <mat-label>Dirección</mat-label>
+                    <input matInput formControlName="direccion" />
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.direccion', 'required')">
+                      La dirección es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="span-2">
+                    <mat-label>Correo electrónico</mat-label>
+                    <input matInput formControlName="email" type="email" />
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.email', 'required')">
+                      El correo es requerido.
+                    </mat-error>
+                    <mat-error *ngIf="tieneError('referenciasComerciales.' + i + '.email', 'email')">
+                      Introduce un correo válido.
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-ghost" (click)="agregarReferenciaComercial()">
+              <mat-icon>add</mat-icon>
+              Agregar referencia comercial
+            </button>
+
+            <h3 class="form-subtitle">Referencia bancaria</h3>
+            <div class="form-grid" formGroupName="referenciaBancaria">
+              <mat-form-field appearance="outline">
+                <mat-label>Entidad bancaria</mat-label>
+                <input matInput formControlName="entidad" />
+                <mat-error *ngIf="tieneError('referenciaBancaria.entidad', 'required')">
+                  La entidad bancaria es requerida.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Tipo de cuenta</mat-label>
+                <mat-select formControlName="tipoCuenta">
+                  <mat-option *ngFor="let tipo of tiposCuenta" [value]="tipo">{{ tipo }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="tieneError('referenciaBancaria.tipoCuenta', 'required')">
+                  Selecciona el tipo de cuenta.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>N° de cuenta</mat-label>
+                <input matInput formControlName="numeroCuenta" inputmode="numeric" />
+                <mat-error *ngIf="tieneError('referenciaBancaria.numeroCuenta', 'required')">
+                  El número de cuenta es requerido.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Dirección</mat-label>
+                <input matInput formControlName="direccion" />
+                <mat-error *ngIf="tieneError('referenciaBancaria.direccion', 'required')">
+                  La dirección es requerida.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </section>
+
+          <section class="form-card" id="documentos" [hidden]="pasoActual !== 5" [class.form-card--complete]="progresoDe('documentos').completado" [class.form-card--invalid]="progresoDe('documentos').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">06</span>
+              <div>
+                <h2>Documentos de la empresa</h2>
+                <p>Adjunta los documentos en PDF o imagen. Máximo 5 MB por archivo.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('documentos').completado" [class.has-errors]="progresoDe('documentos').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('documentos') }}</mat-icon>
+                  {{ textoFaltantes('documentos') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('documentos').porcentaje"></app-progress-ring>
+            </header>
+
+            <div class="doc-grid">
+              <article
+                class="doc-card"
+                *ngFor="let documento of documentosConfig"
+                [class.doc-card--complete]="tieneArchivos(documento.key)"
+              >
+                <div class="doc-card__top">
+                  <span class="doc-card__icon">
+                    <mat-icon>{{ documento.icono }}</mat-icon>
+                  </span>
+                  <div class="doc-card__title">
+                    <h3>
+                      {{ documento.nombre }}
+                      <span class="required-mark" *ngIf="documento.requerido">*</span>
+                    </h3>
+                    <p>{{ documento.descripcion }}</p>
+                  </div>
+                  <mat-icon class="doc-card__status" *ngIf="tieneArchivos(documento.key)">
+                    check_circle
+                  </mat-icon>
+                </div>
+
+                <div class="doc-card__actions">
+                  <input
+                    #fileInput
+                    type="file"
+                    hidden
+                    [multiple]="documento.multiple"
+                    [accept]="aceptaArchivos"
+                    (change)="onFileSelected($event, documento, fileInput)"
+                  />
+                  <button type="button" class="btn-ghost btn-ghost--small" (click)="fileInput.click()">
+                    <mat-icon>attach_file</mat-icon>
+                    {{
+                      tieneArchivos(documento.key)
+                        ? (documento.multiple ? 'Agregar otro' : 'Reemplazar')
+                        : 'Adjuntar archivo'
+                    }}
+                  </button>
+                  <span class="doc-card__hint" *ngIf="documento.requerido">Requerido</span>
+                  <span class="doc-card__hint doc-card__hint--optional" *ngIf="!documento.requerido">
+                    Opcional
+                  </span>
+                </div>
+
+                <ul class="file-list" *ngIf="tieneArchivos(documento.key)">
+                  <li *ngFor="let archivo of documentos[documento.key]; let i = index">
+                    <mat-icon>description</mat-icon>
+                    <span class="file-list__name">{{ archivo.name }}</span>
+                    <small>{{ formatFileSize(archivo.size) }}</small>
+                    <button
+                      type="button"
+                      class="file-remove"
+                      (click)="quitarArchivo(documento.key, i)"
+                      aria-label="Quitar archivo"
+                    >
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section class="form-card" id="confirmacion" [hidden]="pasoActual !== 6" [class.form-card--complete]="progresoDe('confirmacion').completado" [class.form-card--invalid]="progresoDe('confirmacion').invalidos > 0">
+            <header class="form-card__head">
+              <span class="form-card__number">07</span>
+              <div>
+                <h2>Confirmación</h2>
+                <p>Revisa la información y autoriza la verificación de tus datos.</p>
+                <span class="form-card__status" [class.is-complete]="progresoDe('confirmacion').completado" [class.has-errors]="progresoDe('confirmacion').invalidos > 0">
+                  <mat-icon>{{ iconoEstado('confirmacion') }}</mat-icon>
+                  {{ textoFaltantes('confirmacion') }}
+                </span>
+              </div>
+              <app-progress-ring [porcentaje]="progresoDe('confirmacion').porcentaje"></app-progress-ring>
+            </header>
+
+            <details class="terms">
+              <summary>Leer términos y autorización</summary>
+              <div class="terms__content">
+                <p>
+                  En razón de la relación comercial entre las partes y por la presente solicitud,
+                  en nombre de mi representada, autorizo expresamente a la Sociedad Mercantil
+                  INSUAMINCA, C.A., a verificar la información y documentación suministrada en esta
+                  solicitud.
+                </p>
+                <p>
+                  Asimismo, autorizo expresamente a que todos los empleados del establecimiento
+                  objeto de esta solicitud, en nombre de mi representada, reciban y/o acepten con
+                  su firma toda la mercancía que fuere despachada por el empleado encargado del
+                  despacho de INSUAMINCA, C.A.
+                </p>
+                <p>
+                  Acepto las condiciones de INSUAMINCA, C.A., las cuales pueden ser modificadas sin
+                  previo aviso. La formalización de esta solicitud no genera ningún compromiso por
+                  parte de INSUAMINCA, C.A. En caso de ser aprobada, me comprometo a informar por
+                  escrito cualquier modificación en el acta constitutiva, administración o dirección
+                  de mi representada.
+                </p>
+              </div>
+            </details>
+
+            <mat-checkbox formControlName="aceptaTerminos">
+              Declaro que la información suministrada es veraz y acepto las condiciones de
+              INSUAMINCA, C.A.
+            </mat-checkbox>
+            <small class="field-error" *ngIf="tieneError('aceptaTerminos', 'required')">
+              Debes aceptar los términos para continuar.
+            </small>
+
+            <mat-checkbox formControlName="autorizaVerificacion">
+              Autorizo la verificación de la información y los documentos suministrados.
+            </mat-checkbox>
+            <small class="field-error" *ngIf="tieneError('autorizaVerificacion', 'required')">
+              Debes autorizar la verificación para continuar.
+            </small>
+          </section>
+        </div>
+
+        <aside class="form-aside">
+          <div class="side-card">
+            <h2>Documentos requeridos</h2>
+            <p class="side-card__intro">
+              Adjunta cada documento en la sección 06. Los marcados con * son obligatorios.
+            </p>
+            <ul class="doc-checklist">
+              <li
+                *ngFor="let documento of documentosConfig"
+                [class.is-complete]="tieneArchivos(documento.key)"
+              >
+                <mat-icon>
+                  {{
+                    tieneArchivos(documento.key)
+                      ? 'check_circle'
+                      : 'radio_button_unchecked'
+                  }}
+                </mat-icon>
+                <span>
+                  {{ documento.nombre }}
+                  <span class="required-mark" *ngIf="documento.requerido">*</span>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="side-card side-card--help">
+            <h2>¿Necesitas ayuda?</h2>
+            <p>Escríbenos y con gusto te acompañamos con tu solicitud.</p>
+            <a [href]="'mailto:' + correo">
+              <mat-icon>mail</mat-icon>
+              {{ correo }}
+            </a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="step-actions" *ngIf="pasoActual < secciones.length - 1">
+        <button type="button" class="btn-ghost" [disabled]="pasoActual === 0" (click)="pasoAnterior()">
+          <mat-icon>arrow_back</mat-icon>
+          Anterior
+        </button>
+        <span class="step-actions__counter">Paso {{ pasoActual + 1 }} de {{ secciones.length }}</span>
+        <button type="button" class="btn-step-next" (click)="pasoSiguiente()">
+          Siguiente
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+
+      <section class="submit-bar" *ngIf="pasoActual === secciones.length - 1">
+        <div>
+          <h2>Revisa y envía tu solicitud</h2>
+          <p>
+            Al enviar, tu solicitud será revisada por nuestro equipo. Te contactaremos si
+            necesitamos información adicional. Si tienes dudas, escríbenos a
+            <a [href]="'mailto:' + correo">{{ correo }}</a>.
+          </p>
+        </div>
+        <div class="submit-bar__actions">
+          <button type="button" class="btn-ghost btn-ghost--light" (click)="pasoAnterior()">
+            <mat-icon>arrow_back</mat-icon>
+            Anterior
+          </button>
+          <button type="submit" class="btn-submit" [disabled]="enviando">
+            <mat-icon *ngIf="!enviando">send</mat-icon>
+            <span>{{ enviando ? 'Enviando solicitud...' : 'Enviar solicitud' }}</span>
+          </button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <a routerLink="/login" class="footer__brand">
+      <img src="assets/images/insuaminca-isotipo.png" alt="" />
+      <span>INSUAMINCA</span>
+    </a>
+    <p>¿Ya tienes usuario? <a routerLink="/login">Inicia sesión</a></p>
+    <p class="footer__copy">© {{ anio }} Insuaminca, C.A. Todos los derechos reservados.</p>
+  </footer>
+</div>

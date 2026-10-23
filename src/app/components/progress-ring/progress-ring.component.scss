@@ -1,0 +1,81 @@
+@use '../../../styles/variables.scss' as vars;
+
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.progress-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(vars.$text-color2, 0.04);
+  transition: background-color 0.3s ease;
+}
+
+.progress-ring svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+  transition: opacity 0.25s ease;
+}
+
+.progress-ring__track {
+  stroke: rgba(vars.$menu-color, 0.12);
+}
+
+.progress-ring__value {
+  stroke: vars.$text-color2;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.75s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
+}
+
+.progress-ring__label {
+  position: relative;
+  z-index: 1;
+  color: vars.$menu-color;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.progress-ring__check {
+  position: relative;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  color: vars.$background-fondo;
+}
+
+.progress-ring--complete {
+  background: vars.$text-color2;
+  animation: ring-pop 0.4s ease;
+}
+
+.progress-ring--complete svg {
+  opacity: 0;
+}
+
+@keyframes ring-pop {
+  0% {
+    transform: scale(0.88);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-ring__value {
+    transition: none;
+  }
+
+  .progress-ring--complete {
+    animation: none;
+  }
+}

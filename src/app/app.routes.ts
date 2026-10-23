@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { RegistrocliPageComponent } from './pages/registrocli-page/registrocli-page.component';
+import { SeClientePageComponent } from './pages/se-cliente-page/se-cliente-page.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { CarritoPageComponent } from './pages/carrito-page/carrito-page.component';
 import { MiperfilPageComponent } from './pages/miperfil-page/miperfil-page.component';
@@ -20,6 +21,7 @@ export const routes: Routes = [
     
     { path: 'login', component: LoginPageComponent }, 
     { path: 'registrocli', component: RegistrocliPageComponent },
+    { path: 'se-cliente', component: SeClientePageComponent },
     { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
     { path: 'carrito', component: CarritoPageComponent, canActivate: [authGuard] },
     { path: 'miperfil', component: MiperfilPageComponent, canActivate: [authGuard] },

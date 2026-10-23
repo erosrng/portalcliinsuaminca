@@ -1,0 +1,837 @@
+======================================================================
+INSUANET - SOLICITUD "SÉ CLIENTE INSUAMINCA"
+INSTRUCCIONES DE USUARIO Y TÉCNICAS
+Proyecto: portalcliinsuaminca
+Última actualización: 21/10/2026
+======================================================================
+
+
+======================================================================
+PARTE 1. INSTRUCCIONES PARA EL USUARIO
+======================================================================
+
+1. CÓMO LLEGAR AL FORMULARIO
+----------------------------------------------------------------------
+- Ingresa a Insuanet por la pantalla de inicio de sesión.
+- Debajo del formulario de acceso verás el botón "Sé cliente Insuaminca".
+- También puedes entrar desde la pantalla de registro, con el enlace
+  "¿Aún no eres cliente? Sé cliente Insuaminca".
+- La página es pública: no necesitas usuario ni contraseña para llenarla.
+
+Ruta de la página:
+    /se-cliente
+
+
+2. QUÉ ENCONTRARÁS EN LA PÁGINA
+----------------------------------------------------------------------
+La solicitud está organizada en 7 secciones:
+
+    01. Datos fiscales y registro mercantil
+    02. Accionistas y regente
+    03. Bancos y datos comerciales
+    04. Representantes y pagos
+    05. Referencias
+    06. Documentos
+    07. Confirmación
+
+En computadora verás un menú lateral con las secciones y su porcentaje
+de avance. En celular el menú lateral se oculta para facilitar el llenado,
+pero el panel de progreso sigue visible.
+
+
+3. CÓMO FUNCIONAN LOS INDICADORES DE PROGRESO
+----------------------------------------------------------------------
+La página te va diciendo qué está listo y qué falta:
+
+A) Barra superior
+   - Siempre visible mientras bajas por el formulario.
+   - Muestra el porcentaje general completado.
+
+B) Panel "Tu progreso"
+   - Aparece debajo del encabezado verde.
+   - Queda fijo debajo del encabezado mientras bajas por el formulario.
+   - Muestra:
+       * Porcentaje general.
+       * Cuántas secciones están listas.
+       * Cuántos documentos obligatorios llevas cargados.
+       * Un mensaje según tu avance.
+   - Cuando llega al 100% cambia a:
+       "¡Todo listo! Ya puedes enviar tu solicitud".
+
+C) Círculos de progreso en cada sección
+   - Cada tarjeta del formulario tiene un círculo con su porcentaje.
+   - El círculo se va llenando de verde a medida que completas los
+     campos obligatorios y válidos.
+   - Al llegar al 100% se convierte en un check verde.
+   - Debajo del título de cada sección verás un texto que indica
+     "X campos pendientes", "X documentos pendientes" o
+     "Sección completa", según corresponda.
+
+D) Stepper de pasos
+   - El formulario está dividido en 7 pasos.
+   - Cada paso muestra su número, título, porcentaje y check al completarse.
+   - Los pasos con campos vacíos muestran su porcentaje pendiente.
+   - Los pasos con campos mal llenados muestran un icono de alerta y se
+     marcan en color principal.
+   - Debajo del stepper aparece una guía dinámica que indica si faltan datos,
+     si hay campos con error o si el paso ya está completo.
+   - Puedes hacer clic en cualquier paso para ir directamente a esa sección.
+   - Puedes avanzar aunque falten datos; el progreso y los avisos te indican
+     qué falta en cada paso.
+   - Al final, el sistema valida todo antes de enviar la solicitud.
+   - El encabezado del stepper queda fijo junto al panel de progreso y está
+     remarcado en verde.
+   - En cada paso tienes los botones "Anterior" y "Siguiente".
+   - El botón "Enviar solicitud" aparece al final, en el paso 7.
+
+E) Guardado automático
+   - Los datos que escribes se guardan automáticamente en el navegador.
+   - También se guardan los archivos adjuntos.
+   - Si recargas la página o sales y vuelves, recuperas los datos y el paso
+     donde estabas.
+   - Puedes borrar todo el borrador con el botón "Limpiar borrador".
+   - El borrador se elimina cuando la solicitud se envía correctamente.
+
+Importante:
+   - El progreso inicia en 0%. Los campos que ya vienen seleccionados por
+     defecto (tipo de RIF, tipo de contribuyente y tipo de local) se
+     empiezan a contar cuando el formulario tiene algún cambio o archivo.
+   - Un campo llenado con un dato inválido no cuenta como completado.
+   - Los documentos opcionales no afectan el 100% general.
+
+
+4. CÓMO LLENAR CADA SECCIÓN
+----------------------------------------------------------------------
+SECCIÓN 01. DATOS FISCALES Y REGISTRO MERCANTIL
+   - Nombre o razón social.
+   - Tipo de RIF y número de RIF (entre 7 y 10 dígitos).
+   - Dirección fiscal y punto de referencia.
+   - Tipo de contribuyente.
+   - Teléfono, celular, fax (opcional) y correo.
+   - Estado, expediente, tomo y fecha de registro mercantil.
+   - Número o referencia del permiso de instalación.
+   - Número o referencia del permiso de funcionamiento.
+
+SECCIÓN 02. ACCIONISTAS Y REGENTES
+   - Datos de cada accionista: nombre, cédula, cargo y teléfono.
+   - Puedes agregar hasta 2 accionistas con el botón "Agregar accionista".
+   - Puedes eliminar un accionista mientras quede al menos uno.
+   - Puedes agregar varios regentes con el botón "Agregar regente".
+   - Datos del regente: nombre, cédula, RIF, matrícula, COLFAR e INPREFAR.
+   - Si una misma persona ocupa varios cargos, puedes repetir sus datos.
+
+SECCIÓN 03. BANCOS Y DATOS COMERCIALES
+   - Banco 1 y número de cuenta.
+   - Banco 2 y número de cuenta (opcional).
+   - Nombre comercial, teléfono, dirección, estado y municipio.
+   - Correo electrónico comercial.
+   - Tipo de local: Propio o Alquilado.
+   - Si el local es Alquilado aparecen:
+       * Duración del contrato.
+       * Datos de uno o varios arrendatarios.
+   - Puedes agregar varios arrendatarios con el botón correspondiente.
+   - Si el local es Propio, esos campos se ocultan y no son obligatorios.
+
+SECCIÓN 04. REPRESENTANTES Y PAGOS
+   - Puedes registrar varios representantes legales.
+   - Puedes registrar varios responsables de pago.
+   - Puedes registrar varios fiadores solidarios (opcional).
+   - Los mismos datos pueden repetirse en distintos cargos cuando una sola
+     persona cumple varios roles en una farmacia pequeña.
+   - Ejecutivo de venta que te atendió: opcional.
+
+SECCIÓN 05. REFERENCIAS
+   - Referencias comerciales: entidad, dirección, teléfono y correo.
+   - Puedes agregar más referencias comerciales.
+   - Referencia bancaria: entidad, tipo de cuenta, número de cuenta
+     y dirección.
+
+SECCIÓN 06. DOCUMENTOS
+   - Adjunta los documentos en PDF, JPG, JPEG o PNG.
+   - Tamaño máximo: 5 MB por archivo.
+   - Algunos documentos permiten varios archivos.
+   - Puedes reemplazar o eliminar un archivo antes de enviar.
+   - Los documentos obligatorios están marcados con un asterisco (*).
+
+Documentos obligatorios:
+   1. Permiso de Instalación.
+   2. Permiso de Funcionamiento.
+   3. Código SICM.
+   4. Registro Mercantil y actas de asamblea.
+   5. RIF de la empresa.
+   6. Cédula del representante legal.
+   7. Cédula de los accionistas.
+   8. RIF del representante legal.
+   9. Título universitario y cédula del farmacéutico.
+   10. Referencia bancaria de la empresa.
+
+Documentos opcionales:
+   - Código SICA.
+   - Permiso Sanitario (según aplique).
+
+SECCIÓN 07. CONFIRMACIÓN
+   - Puedes leer los términos y la autorización.
+   - Debes marcar:
+       * Declaro que la información es veraz y acepto las condiciones.
+       * Autorizo la verificación de la información y los documentos.
+   - Sin estas dos marcas no se puede enviar la solicitud.
+
+
+5. NAVEGACIÓN CON ENTER
+----------------------------------------------------------------------
+- Presiona Enter en un campo de texto para pasar al siguiente campo.
+- En los campos de dirección (textarea), Enter pasa al siguiente campo.
+- Usa Shift+Enter si necesitas un salto de línea dentro de una dirección.
+- En los selects, Enter abre la lista de opciones.
+- En los botones, Enter ejecuta la acción del botón.
+- El formulario no se envía accidentalmente al presionar Enter en un campo.
+
+6. VALIDACIONES ANTES DE ENVIAR
+----------------------------------------------------------------------
+El formulario revisa automáticamente:
+   - Campos obligatorios.
+   - RIF de 7 a 10 dígitos.
+   - Correos electrónicos válidos.
+   - Teléfonos con formato permitido.
+   - Fechas requeridas.
+   - Documentos obligatorios cargados.
+   - Términos y autorización aceptados.
+
+Si falta algo:
+   - Aparece una alerta indicando el problema.
+   - La página baja hasta el primer campo con error o hasta la sección
+     de documentos.
+   - Los campos con error se marcan con su mensaje correspondiente.
+
+
+7. ENVÍO DE LA SOLICITUD
+----------------------------------------------------------------------
+- Revisa el panel de progreso: debe estar en 100%.
+- Pulsa "Enviar solicitud".
+- El botón cambia a "Enviando solicitud...".
+- Si todo sale bien, verás el mensaje "¡Solicitud enviada!" y luego
+  volverás al inicio de sesión.
+- Si ocurre un error, verás un mensaje con la información disponible.
+- La solicitud se envía por Internet al módulo de Proteo; no se descarga
+  ninguna plantilla ni se imprime nada.
+
+
+8. RECOMENDACIONES
+----------------------------------------------------------------------
+- Ten a mano los documentos en PDF antes de comenzar.
+- Usa el mismo correo de la empresa en los campos solicitados.
+- Verifica el RIF y los números de cuenta antes de enviar.
+- Si el local es alquilado, ten los datos del contrato y del arrendador.
+- Si necesitas ayuda, escribe a Clientesinsuaminca@gmail.com.
+
+
+======================================================================
+PARTE 2. INSTRUCCIONES TÉCNICAS
+======================================================================
+
+1. ARQUITECTURA GENERAL
+----------------------------------------------------------------------
+Aplicación: Angular 19 standalone.
+Módulo: portal de clientes Insuaminca.
+Ruta pública: /se-cliente.
+
+Archivos principales:
+    src/app/pages/se-cliente-page/se-cliente-page.component.ts
+    src/app/pages/se-cliente-page/se-cliente-page.component.html
+    src/app/pages/se-cliente-page/se-cliente-page.component.scss
+
+    src/app/components/progress-ring/progress-ring.component.ts
+    src/app/components/progress-ring/progress-ring.component.html
+    src/app/components/progress-ring/progress-ring.component.scss
+
+    src/app/app.routes.ts
+    src/app/auth.service.ts
+    src/app/pages/login-page/
+    src/app/pages/registrocli-page/
+
+La ruta se registró así:
+    { path: 'se-cliente', component: SeClientePageComponent }
+
+La ruta /se-cliente se agregó a las rutas excluidas de AuthService para
+evitar redirecciones al login por falta de token.
+
+
+2. FORMULARIO REACTIVO
+----------------------------------------------------------------------
+El componente usa ReactiveFormsModule con:
+
+    FormGroup principal: solicitudForm
+    FormArray: accionistas
+    FormArray: regentes
+    FormArray: representantes
+    FormArray: responsablesPago
+    FormArray: fiadores
+    FormArray: arrendatarios
+    FormArray: referenciasComerciales
+    FormGroups anidados:
+        empresa
+        bancos
+        comercial
+        referenciaBancaria
+
+Validadores usados:
+    Validators.required
+    Validators.requiredTrue
+    Validators.email
+    Validators.pattern
+    Validadores condicionales para arrendatario y duración del contrato.
+
+Comportamientos dinámicos:
+    - agregarAccionista()  (máximo 2 accionistas)
+    - eliminarAccionista(i)
+    - agregarRegente() / eliminarRegente(i)
+    - agregarRepresentante() / eliminarRepresentante(i)
+    - agregarResponsablePago() / eliminarResponsablePago(i)
+    - agregarFiador() / eliminarFiador(i)
+    - agregarArrendatario() / eliminarArrendatario(i)
+    - agregarReferenciaComercial() / eliminarReferenciaComercial(i)
+    - onLocalChange(valor)
+    - aplicarValidadoresArrendatarios(esAlquilado)
+    - onEnter(event)
+
+Navegación con Enter:
+    El formulario escucha (keydown.enter)="onEnter($event)".
+    onEnter busca el siguiente elemento enfocable dentro del formulario y
+    lo enfoca. No intercepta botones, enlaces ni selects. En textarea,
+    Shift+Enter permite insertar un salto de línea.
+
+Stepper y borrador:
+    pasoActual controla el paso visible.
+    Los pasos se ocultan con [hidden] para no destruir los controles del
+    formulario.
+    El borrador del formulario se guarda en localStorage con la clave
+    insuanet_solicitud_borrador_v1.
+    Los archivos se guardan en IndexedDB, base insuanet_solicitud,
+    almacén borrador, clave archivos.
+    restaurarBorrador() recupera datos, paso y archivos.
+    guardarBorradorFormulario() y guardarArchivosBorrador() guardan los
+    cambios.
+    limpiarBorrador() y eliminarBorrador() borran el borrador local.
+    El borrador se elimina al completar el envío con éxito.
+    Al restaurar un borrador se recupera el mismo paso en el que estabas.
+
+
+3. SISTEMA DE PROGRESO
+----------------------------------------------------------------------
+Se agregó la interfaz:
+
+    interface ProgresoSeccion {
+      porcentaje: number;
+      completado: boolean;
+      iniciado: boolean;
+      faltantes: number;
+      total: number;
+      completos: number;
+      vacios: number;
+      invalidos: number;
+    }
+
+Propiedades del componente:
+    progresoGeneral
+    formIniciado
+    seccionesCompletas
+    documentosCargados
+    documentosRequeridos
+    mensajeProgreso
+    progresoSecciones
+    progresoSub
+
+Cálculo:
+    - Solo se toman en cuenta controles habilitados.
+    - Un control cuenta como completado si es válido y tiene valor.
+    - Los controles con valor pero inválidos se cuentan como "invalidos".
+    - Los controles sin valor o aún sin completar se cuentan como "vacios".
+    - Porcentaje de sección = completos / total * 100.
+    - El porcentaje general se calcula sumando todos los controles
+      requeridos de todas las secciones, no promediando porcentajes.
+    - Los documentos se calculan aparte, contando solo los obligatorios.
+    - Las dos casillas de confirmación cuentan como dos elementos.
+    - Los roles con FormArray (regentes, representantes, responsables de
+      pago y arrendatarios) suman los campos requeridos de todas sus filas.
+    - Los fiadores son opcionales y no afectan el porcentaje.
+    - No se valida que las cédulas sean distintas: la misma persona puede
+      repetirse en varios roles.
+
+Actualización:
+    - Se escucha solicitudForm.valueChanges con startWith(null) y
+      debounceTime(80).
+    - Al agregar o quitar archivos se llama manualmente a
+      actualizarProgreso(), porque los archivos no forman parte del
+      FormGroup.
+    - La suscripción se cancela en ngOnDestroy().
+
+Métodos principales:
+    actualizarProgreso()
+    calcularProgreso(controles)
+    calcularProgresoDocumentos()
+    controlesEmpresa()
+    controlesAccionistas()
+    controlesComerciales()
+    controlesRepresentantes()
+    controlesReferencias()
+    tieneValor(control)
+    obtenerMensajeProgreso(porcentaje)
+    progresoDe(id)
+    textoFaltantes(id)
+    iconoEstado(id)
+    controlCompletado(control)
+    controlIniciado(control)
+    onEnter(event)
+    descargar_todo(id)
+    irAPaso(index)
+    pasoAnterior()
+    pasoSiguiente()
+    limpiarBorrador()
+
+El progreso inicia en 0%. Los valores por defecto (rifTipo,
+tipoContribuyente y local) se excluyen mientras formIniciado sea falso;
+cuando el formulario tiene algún cambio o archivo, formIniciado pasa a
+true y esos valores cuentan como completados.
+
+
+4. COMPONENTE DE CÍRCULO DE PROGRESO
+----------------------------------------------------------------------
+Selector:
+    <app-progress-ring [porcentaje]="..."></app-progress-ring>
+
+Entradas:
+    porcentaje: número de 0 a 100.
+    tamano: tamaño en píxeles (por defecto 44).
+    grosor: grosor del trazo (por defecto 4).
+
+Funcionamiento:
+    - Dibuja un círculo SVG de fondo y otro de progreso.
+    - Usa stroke-dasharray y stroke-dashoffset para el avance.
+    - Anima el trazo con transición CSS.
+    - Al llegar a 100 muestra un check y cambia a fondo verde.
+    - Incluye animación ring-pop y respeta prefers-reduced-motion.
+
+
+5. INDICADORES VISUALES
+----------------------------------------------------------------------
+- Barra de progreso en el encabezado superior (sticky).
+- Panel "Tu progreso" fijo debajo del encabezado, con porcentaje, barra
+  animada, secciones listas, documentos cargados y mensaje de estado.
+- Círculo de progreso en cada una de las 7 tarjetas.
+- Texto de estado en cada tarjeta: "X campos pendientes",
+  "X documentos pendientes" o "Sección completa".
+- Menú lateral con porcentaje por sección y check al completar.
+- Tarjetas con borde y sombra verde cuando la sección está completa.
+- Animaciones:
+    * Entrada del panel de progreso.
+    * Brillo sobre la barra de progreso.
+    * Pulso al llegar al 100%.
+    * Crecimiento del check de sección.
+- Todas las animaciones se desactivan con prefers-reduced-motion.
+
+Colores:
+    - Encabezado: $text-color2 (verde).
+    - Acentos del hero: $menu-color (azul).
+    - Barras de progreso: $menu-color (azul).
+    - No se usan colores literales en el SCSS nuevo; todo sale de
+      src/styles/variables.scss.
+
+El contenedor lateral "Secciones" + "Documentos requeridos" tiene scroll
+propio en escritorio (sticky, max-height y overflow-y). En móvil se oculta
+y el panel de progreso queda visible arriba del formulario.
+
+
+6. MANEJO DE ARCHIVOS
+----------------------------------------------------------------------
+Tipo permitido:
+    .pdf, .jpg, .jpeg, .png
+
+Tamaño máximo:
+    5 MB por archivo.
+
+Máximo por documento:
+    5 archivos, solo en documentos que permiten múltiples.
+
+Propiedad:
+    documentos: { [key: string]: File[] }
+
+Configuración:
+    documentosConfig: arreglo con key, nombre, descripción, ícono,
+    requerido y multiple.
+    maxAccionistas: límite actual de accionistas (2).
+
+Métodos:
+    onFileSelected(event, documento, input)
+    archivoValido(file)
+    quitarArchivo(key, index)
+    tieneArchivos(key)
+    documentosFaltantes()
+    formatFileSize(bytes)
+
+Los archivos permanecen en memoria hasta que se envía el formulario.
+No se suben por separado ni se guardan en el navegador.
+
+Al recibir la solicitud, el API crea automáticamente:
+
+    uploads_solicitudes/
+    uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/
+    uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id_solicitud}/
+
+El nombre de la carpeta del cliente se arma con la razón social y el RIF,
+sin acentos ni caracteres especiales. Ejemplo:
+
+    FARMACIA_NANDU_C_A_J_123123123/7/
+
+El API crea la carpeta base, la carpeta del cliente y la subcarpeta de la
+solicitud si no existen. La carpeta base incluye un .htaccess con
+Require all denied.
+
+
+7. CONTRATO DEL API
+----------------------------------------------------------------------
+Endpoint actual:
+
+    ${API_URL}portalcli/solicitud_cliente
+
+Producción actual:
+
+    https://insuaminca.org/insuaminca/api/portalcli/solicitud_cliente
+
+Método:
+    POST
+
+Content-Type:
+    multipart/form-data
+
+Campos enviados:
+    datos:
+        JSON con toda la solicitud.
+
+    rif:
+        RIF completo, por ejemplo J-123456789.
+
+    razon_social:
+        Nombre de la empresa.
+
+    email:
+        Correo de la empresa.
+
+    telefono:
+        Teléfono de la empresa.
+
+    origen:
+        portal-web.
+
+    documentos[CLAVE][]:
+        Archivos. Ejemplos:
+            documentos[permisoInstalacion][]
+            documentos[rifEmpresa][]
+            documentos[cedulaRepresentante][]
+
+Ejemplo de estructura de "datos":
+{
+  "empresa": {
+    "razonSocial": "Farmacia Ejemplo",
+    "rifTipo": "J",
+    "rifNumero": "123456789",
+    "rif": "J-123456789",
+    "direccionFiscal": "...",
+    "tipoContribuyente": "Ordinario",
+    "telefono": "04141234567",
+    "celular": "04141234567",
+    "fax": "",
+    "email": "correo@empresa.com",
+    "estado": "Monagas",
+    "expediente": "123",
+    "tomo": "1",
+    "fechaRegistro": "2026-01-15",
+    "permisoInstalacion": "P-123",
+    "permisoFuncionamiento": "F-456"
+  },
+  "accionistas": [],
+  "regente": {},
+  "bancos": {},
+  "comercial": {},
+  "arrendatario": {},
+  "representante": {},
+  "pagos": {},
+  "fiador": {},
+  "ejecutivoVenta": "",
+  "referenciasComerciales": [],
+  "referenciaBancaria": {},
+  "aceptaTerminos": true,
+  "autorizaVerificacion": true,
+  "fechaSolicitud": "2026-10-21T00:00:00.000Z",
+  "origen": "portal-web",
+  "documentos": [
+    {
+      "tipo": "permisoInstalacion",
+      "nombre": "Permiso de Instalación",
+      "archivos": [
+        {
+          "nombre": "permiso.pdf",
+          "tamano": 123456,
+          "tipo": "application/pdf"
+        }
+      ]
+    }
+  ]
+}
+
+Respuesta esperada:
+    {
+      "success": true,
+      "message": "Solicitud recibida"
+    }
+
+También se acepta:
+    {
+      "status": true,
+      "mensaje": "Solicitud recibida"
+    }
+
+El frontend considera error si:
+    response.success === false
+    response.status === false
+    response.error tiene valor
+
+Si el API devuelve error HTTP, se muestra el mensaje de error disponible
+y se registra el detalle en la consola del navegador.
+
+
+8. INTEGRACIÓN CON EL API
+----------------------------------------------------------------------
+El endpoint ya está implementado en:
+
+    /srv/www/htdocs/insuaminca/system/application/controllers/api.php
+
+Método del controlador:
+
+    api_solicitud_cliente()
+
+Ruta pública:
+
+    api/portalcli/solicitud_cliente
+
+El método fue agregado a la lista de rutas públicas del _remap:
+    'solicitud_cliente'
+
+Funcionamiento del endpoint:
+    - Recibe multipart/form-data.
+    - Decodifica el JSON del campo "datos".
+    - Valida empresa, correo, términos y autorización.
+    - Valida que estén los 10 documentos obligatorios.
+    - Valida PDF/JPG/JPEG/PNG y máximo 5 MB por archivo.
+    - Crea la tabla solifichacli si no existe.
+    - Guarda la solicitud en la tabla solifichacli.
+    - Guarda los archivos en uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/.
+    - Devuelve success:true y el id de la solicitud.
+
+Tabla creada:
+    solifichacli
+        id
+        fecha
+        rif
+        razon_social
+        email
+        telefono
+        tipo_contribuyente
+        estado (P=Pendiente, A=Aprobada, R=Rechazada)
+        cliente (código creado en scli al aprobar)
+        observa (observación interna)
+        datos (JSON completo)
+        archivos (JSON con metadatos de archivos)
+        ip
+        usuario
+        estampa
+        hora
+        creado_en
+
+Carpeta de archivos:
+    /srv/www/htdocs/insuaminca/uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
+
+Protección:
+    uploads_solicitudes/.htaccess contiene Require all denied.
+    No se debe exponer públicamente esa carpeta.
+
+Ejemplo de lectura en PHP:
+    $datos = json_decode($_POST['datos'], true);
+    $archivos = $_FILES['documentos'] ?? [];
+
+Para cambiar la ruta del API, editar en
+se-cliente-page.component.ts:
+
+    readonly apiSolicitudCliente =
+      `${API_URL}portalcli/solicitud_cliente`;
+
+Para enviar la solicitud a otro módulo de Proteo, el endpoint puede:
+    - Leer la tabla solifichacli.
+    - Reenviar el JSON y los archivos a la URL del módulo destino.
+    - O insertar directamente en el módulo que corresponda.
+
+Si el módulo usa otros nombres de campos, ajustar:
+    - construirPayload()
+    - enviarSolicitud()
+    - los nombres de documentosConfig
+    - api_solicitud_cliente()
+
+
+9. DISEÑO Y RESPONSIVE
+----------------------------------------------------------------------
+- Login con min-height: 100dvh, contenido centrado y sin scroll en
+  escritorio.
+- En móvil, el login ocupa todo el alto disponible.
+- Página de solicitud responsive:
+    * 7 tarjetas en una columna.
+    * Progreso visible en la parte superior.
+    * Menú lateral oculto en móvil.
+    * Círculos de progreso reducidos en pantallas pequeñas.
+- Todos los colores nuevos salen de src/styles/variables.scss.
+- El encabezado superior es verde ($text-color2).
+- Los acentos del hero son azules ($menu-color).
+
+
+10. COMPILACIÓN Y VERIFICACIÓN
+----------------------------------------------------------------------
+Compilar:
+    npm run build
+
+Servir en desarrollo:
+    npm run start
+
+Pruebas realizadas:
+    - Compilación de producción correcta.
+    - Formulario válido al completar todos los campos.
+    - 10 documentos obligatorios detectados correctamente.
+    - Endpoint api_solicitud_cliente probado con multipart real:
+      guardó la solicitud en solifichacli y los 10 documentos.
+    - Módulo de ventas Solicitudes de Apertura Código de Cliente (174) instalado.
+    - Envío multipart verificado con respuesta simulada del API.
+    - Progreso actualizado con eventos reales de escritura.
+    - Progreso general de 0% a 100%.
+    - 7 secciones marcadas como completas.
+    - Barra superior y panel de progreso actualizados.
+    - Scroll propio del lateral de secciones y documentos.
+    - Stepper de 7 pasos probado: navegación, siguiente, anterior y pasos ocultos.
+    - Borrador probado: datos, paso y archivos se recuperan al recargar.
+    - Limpiar borrador probado: formulario, archivos, paso y localStorage.
+    - ZIP de solicitud probado: documentos + solicitud.json + resumen.txt.
+    - Descarga individual de documentos probada.
+    - Aprobación probada: crea el cliente en scli, guarda el código en
+      la solicitud y no duplica al volver a aprobar.
+    - Sin desbordamiento horizontal en móvil.
+    - Login sin scroll en 1024x600, 1280x720 y 1366x768.
+
+
+11. MÓDULO DE SOLICITUDES DE APERTURA CÓDIGO DE CLIENTE
+----------------------------------------------------------------------
+Ubicación:
+    system/application/controllers/ventas/solifichacli.php
+    system/application/views/view_solifichacli.php
+
+Menú:
+    Código: 174
+    Título: Sol. Apertura Código Cliente
+    Panel: REGISTROS
+    Ejecutar: ventas/solifichacli
+    Target: popu
+    Tamaño: 1100 x 650
+
+    El menú usa "Sol. Apertura Código Cliente" porque
+    intramenu.titulo admite 30 caracteres. El nombre completo se usa
+    en la página del módulo y en modulos.nombre.
+
+Tabla:
+    solifichacli
+    (abreviatura de Solicitud Ficha Cliente)
+
+Grid:
+    Consulta directamente la tabla solifichacli. No se usa vista SQL.
+
+El módulo permite:
+    - Ver todas las solicitudes recibidas.
+    - Filtrar por RIF, razón social, correo, teléfono, contribuyente,
+      estado y código de cliente.
+    - Abrir el detalle de cada solicitud con el botón "Ver solicitud".
+    - Consultar todos los datos del formulario.
+    - Aprobar la solicitud y crear automáticamente el cliente en scli.
+    - Descargar cada documento adjunto.
+    - Descargar todos los documentos en un ZIP, junto con solicitud.json
+      y resumen.txt.
+    - Cambiar el estado entre Pendiente (P), Aprobada (A) y
+      Rechazada (R).
+    - Guardar una observación interna.
+    - Registrar la auditoría con logusu.
+    - Descargar todos los documentos en un ZIP desde el detalle o desde
+      el botón "Descargar ZIP" del grid.
+
+Contenido del ZIP:
+    - Los documentos adjuntos, numerados y con su tipo.
+    - solicitud.json con todos los datos del formulario.
+    - resumen.txt con RIF, razón social, fecha, estado y lista de archivos.
+
+Aprobación y creación del cliente en scli:
+    - Al guardar el estado A (Aprobada), el módulo crea el cliente en
+      scli usando los datos enviados por el cliente.
+    - El código se toma del consecutivo oficial de clientes de Datasis
+      (ncodcli a través de proxcli(), equivalente al secuencial
+      scliprox), el mismo que usan los módulos de ventas.
+    - El código queda guardado en solifichacli.cliente y se muestra en
+      el detalle y en el grid.
+    - Si la solicitud ya tiene un cliente asociado, no se duplica al
+      volver a aprobar.
+    - Se crea sin ruta (no se inserta en sclitrut), sin crédito
+      (credito=N, limite=0) y sin días de crédito (dialimi=0).
+    - También se dejan vacíos zona, vendedor y cobrador para ajustarlos
+      luego desde scli.
+    - Se copian nombre, RIF, dirección, teléfono, correo, representante
+      legal y las cuentas contables del grupo.
+    - El grupo por defecto es 001 (FARMACIAS) si no está configurado
+      SCLIGRUP.
+    - El estado y municipio se buscan por nombre; si no hay coincidencia
+      quedan en 0 y se ajustan luego en scli.
+
+Permisos:
+    - El módulo se registra en intramenu con el código 174.
+    - Los usuarios con acceso S al módulo 174 en sida se copian a
+      intrasida.
+    - También se asegura el acceso al grupo padre 1.
+    - Los supervisores ven el módulo sin restricciones.
+
+Instalación:
+    El método instalar() del controlador crea la tabla, el menú
+    y los permisos de forma idempotente.
+
+    Ejecutar:
+        php index.php ventas/solifichacli/instalar
+
+Prueba:
+    Abrir el módulo desde el menú Ventas > Registros >
+    Sol. Apertura Código Cliente.
+
+
+12. MANTENIMIENTO RÁPIDO
+----------------------------------------------------------------------
+- Para agregar un documento: editar documentosConfig y, si aplica,
+  agregar su clave al backend.
+- Para cambiar el peso máximo: editar maxFileSize.
+- Para cambiar el máximo de archivos: editar maxArchivosPorDocumento.
+- Para cambiar los textos de progreso: editar obtenerMensajeProgreso().
+- Para cambiar la ruta del API: editar apiSolicitudCliente.
+- Para cambiar los colores: editar src/styles/variables.scss o las
+  referencias a variables en los SCSS.
+- Para agregar una sección nueva: agregar el id en secciones, crear su
+  tarjeta en el HTML y sumar sus controles en actualizarProgreso().
+- Para revisar solicitudes recibidas:
+      SELECT * FROM solifichacli ORDER BY id DESC;
+- Para revisar archivos:
+      ls -la /srv/www/htdocs/insuaminca/uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
+- Para aprobar una solicitud y crear el cliente, usar el formulario
+  del módulo. Si se cambia el estado por SQL, no se crea el cliente.
+      UPDATE solifichacli SET estado='A' WHERE id=...;
+- Para borrar una solicitud y sus archivos, hacerlo con cuidado desde
+  el servidor y con permisos del usuario wwwrun o root.
+
+======================================================================
+FIN DEL DOCUMENTO
+======================================================================

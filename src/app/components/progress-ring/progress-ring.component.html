@@ -1,0 +1,35 @@
+<div
+  class="progress-ring"
+  [class.progress-ring--complete]="porcentaje >= 100"
+  [style.width.px]="tamano"
+  [style.height.px]="tamano"
+  role="img"
+  [attr.aria-label]="porcentaje + '% completado'"
+>
+  <svg [attr.viewBox]="'0 0 ' + tamano + ' ' + tamano" aria-hidden="true">
+    <circle
+      class="progress-ring__track"
+      [attr.cx]="tamano / 2"
+      [attr.cy]="tamano / 2"
+      [attr.r]="radio"
+      [attr.stroke-width]="grosor"
+      fill="none"
+    />
+    <circle
+      class="progress-ring__value"
+      [attr.cx]="tamano / 2"
+      [attr.cy]="tamano / 2"
+      [attr.r]="radio"
+      [attr.stroke-width]="grosor"
+      fill="none"
+      [attr.stroke-dasharray]="circunferencia"
+      [style.stroke-dashoffset]="desplazamiento"
+    />
+  </svg>
+
+  @if (porcentaje < 100) {
+    <span class="progress-ring__label">{{ porcentaje }}%</span>
+  } @else {
+    <mat-icon class="progress-ring__check">check</mat-icon>
+  }
+</div>
