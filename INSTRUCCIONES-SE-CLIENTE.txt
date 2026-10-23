@@ -802,28 +802,30 @@ Aprobación y creación del cliente en scli:
       quedan en 0 y se ajustan luego en scli.
 
 Permisos:
+    - Se sigue el patrón de rivcweb/encom. No se modifica la librería
+      Datasis ni se hacen inserts manuales de accesos o menú.
     - El nombre del módulo se registra en modulos con modulo_nombre()
-      desde el constructor del controlador.
-    - El menú se registra en intramenu únicamente con creaintramenu()
-      desde index(). No se hacen inserts manuales en modulos,
-      intramenu ni intrasida.
-    - modulo_nombre() crea automáticamente las entradas de tmenus y
-      sida (Incluye, Modifica, Prox, Ante, Elimina, Busca, Tabla,
-      Lista, Otros) con acceso N, igual que hace encom.
+      desde el constructor del controlador. La librería crea, la
+      primera vez, las 9 entradas de tmenus (Incluye, Modifica, Prox,
+      Ante, Elimina, Busca, Tabla, Lista, Otros) y las filas de sida
+      con acceso N, igual que hace con rivcweb.
     - El código del módulo en tmenus/sida es SOLFICHACLI (11 caracteres,
-      porque tmenus.modulo es varchar(11)).
+      porque tmenus.modulo es varchar(11); SOLIFICHACLI se truncaría).
+    - El menú se registra en intramenu únicamente con creaintramenu()
+      desde index().
     - El acceso y las opciones Incluir/Modificar/Borrar/Buscar se
       controlan con sidapuede() según los permisos del usuario en sida
-      (INCLUIR%, MODIFICA%, BORR_REG%, BUSQUEDA%), igual que encom.
-    - Los permisos por usuario se asignan desde el módulo de accesos
-      (sida -> intrasida), igual que cualquier otro módulo.
+      (INCLUIR%, MODIFICA%, BORR_REG%, BUSQUEDA%).
+    - Los permisos por usuario (menú en intrasida y funciones en sida)
+      se conceden solo desde Usuarios/Accesos, igual que rivcweb.
     - Los supervisores ven el módulo sin restricciones.
 
 Instalación:
     instalar() crea o actualiza la tabla solifichacli de forma
     idempotente. El menú lo crea index() con creaintramenu() y el
     nombre del módulo lo registra modulo_nombre() desde el
-    constructor. Los permisos se asignan desde el módulo de accesos.
+    constructor, igual que rivcweb. Los permisos se asignan desde el
+    módulo de accesos.
 
     Ejecutar:
         php index.php ventas/solifichacli/instalar
