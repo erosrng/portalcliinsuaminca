@@ -111,13 +111,16 @@ SECCIÓN 01. DATOS FISCALES Y REGISTRO MERCANTIL
    - Estado, expediente, tomo y fecha de registro mercantil.
    - Número o referencia del permiso de instalación.
    - Número o referencia del permiso de funcionamiento.
+   - Código SICM (requerido, entre 3 y 20 caracteres).
+   - Código SICA / Sunagro (opcional).
 
 SECCIÓN 02. ACCIONISTAS Y REGENTES
    - Datos de cada accionista: nombre, cédula, cargo y teléfono.
    - Puedes agregar hasta 2 accionistas con el botón "Agregar accionista".
    - Puedes eliminar un accionista mientras quede al menos uno.
    - Puedes agregar varios regentes con el botón "Agregar regente".
-   - Datos del regente: nombre, cédula, RIF, matrícula, COLFAR e INPREFAR.
+   - Datos del regente: nombre, cédula, título universitario, RIF,
+     matrícula, COLFAR e INPREFAR.
    - Si una misma persona ocupa varios cargos, puedes repetir sus datos.
 
 SECCIÓN 03. BANCOS Y DATOS COMERCIALES
@@ -162,15 +165,18 @@ Documentos obligatorios:
    6. Cédula del representante legal.
    7. Cédula de los accionistas.
    8. RIF del representante legal.
-   9. Título universitario y cédula del farmacéutico.
+   9. Título universitario y cédula del regente (farmacéutico).
    10. Referencia bancaria de la empresa.
 
 Documentos opcionales:
-   - Código SICA.
+   - Código SICA / Sunagro.
    - Permiso Sanitario (según aplique).
 
 SECCIÓN 07. CONFIRMACIÓN
    - Puedes leer los términos y la autorización.
+   - Se indica que el código de cliente lo asigna INSUAMINCA al aprobar
+     la solicitud (formato de 5 caracteres alfanuméricos, ej. 0000F);
+     no se escribe en el formulario.
    - Debes marcar:
        * Declaro que la información es veraz y acepto las condiciones.
        * Autorizo la verificación de la información y los documentos.
@@ -546,7 +552,9 @@ Ejemplo de estructura de "datos":
     "tomo": "1",
     "fechaRegistro": "2026-01-15",
     "permisoInstalacion": "P-123",
-    "permisoFuncionamiento": "F-456"
+    "permisoFuncionamiento": "F-456",
+    "codigoSicm": "SICM-789",
+    "codigoSica": ""
   },
   "accionistas": [],
   "regente": {},
@@ -800,7 +808,8 @@ Aprobación y creación del cliente en scli:
     - También se dejan vacíos zona, vendedor y cobrador para ajustarlos
       luego desde scli.
     - Se copian nombre, RIF, dirección, teléfono, correo, representante
-      legal y las cuentas contables del grupo.
+      legal, el código SICM (a scli.sicm) y las cuentas contables del
+      grupo.
     - El grupo por defecto es 001 (FARMACIAS) si no está configurado
       SCLIGRUP.
     - El estado y municipio se buscan por nombre; si no hay coincidencia

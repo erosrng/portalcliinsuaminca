@@ -283,6 +283,24 @@
                   El permiso de funcionamiento es requerido.
                 </mat-error>
               </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Código SICM</mat-label>
+                <input matInput formControlName="codigoSicm" maxlength="20" />
+                <mat-hint>Sistema Integral de Control de Medicamentos.</mat-hint>
+                <mat-error *ngIf="tieneError('empresa.codigoSicm', 'required')">
+                  El código SICM es requerido.
+                </mat-error>
+                <mat-error *ngIf="tieneError('empresa.codigoSicm', 'pattern')">
+                  Solo letras, números y guiones (3 a 20 caracteres).
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Código SICA / Sunagro (opcional)</mat-label>
+                <input matInput formControlName="codigoSica" maxlength="20" />
+                <mat-hint>Sistema Integral de Control Agroalimentario.</mat-hint>
+              </mat-form-field>
             </div>
           </section>
 
@@ -411,6 +429,14 @@
                     <input matInput formControlName="cedula" />
                     <mat-error *ngIf="tieneError('regentes.' + i + '.cedula', 'required')">
                       La cédula es requerida.
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Título universitario</mat-label>
+                    <input matInput formControlName="titulo" />
+                    <mat-error *ngIf="tieneError('regentes.' + i + '.titulo', 'required')">
+                      El título universitario es requerido.
                     </mat-error>
                   </mat-form-field>
 
@@ -1065,6 +1091,15 @@
                 </p>
               </div>
             </details>
+
+            <div class="aviso-codigo">
+              <mat-icon>qr_code_2</mat-icon>
+              <p>
+                El código de cliente lo asigna <strong>INSUAMINCA</strong> al aprobar tu
+                solicitud. Formato: 5 caracteres alfanuméricos (ej. <strong>0000F</strong>).
+                No debes escribirlo en este formulario.
+              </p>
+            </div>
 
             <mat-checkbox formControlName="aceptaTerminos">
               Declaro que la información suministrada es veraz y acepto las condiciones de

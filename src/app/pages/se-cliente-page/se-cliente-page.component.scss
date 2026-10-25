@@ -1303,6 +1303,33 @@ mat-checkbox {
   font-size: 1.05rem;
 }
 
+.aviso-codigo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  margin: 1.2rem 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(vars.$text-color2, 0.3);
+  border-radius: 1rem;
+  background: rgba(vars.$text-color2, 0.08);
+  color: vars.$text-claro;
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
+.aviso-codigo mat-icon {
+  flex-shrink: 0;
+  color: vars.$text-color2;
+}
+
+.aviso-codigo p {
+  margin: 0;
+}
+
+.aviso-codigo strong {
+  color: vars.$menu-color;
+}
+
 .step-actions {
   display: flex;
   align-items: center;

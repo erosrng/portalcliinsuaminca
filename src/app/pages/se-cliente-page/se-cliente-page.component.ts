@@ -134,8 +134,8 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     },
     {
       key: 'codigoSica',
-      nombre: 'Código SICA',
-      descripcion: 'Sistema Integral de Control Agroalimentario.',
+      nombre: 'Código SICA / Sunagro',
+      descripcion: 'Sistema Integral de Control Agroalimentario (opcional).',
       icono: 'qr_code_scanner',
       requerido: false,
       multiple: false
@@ -182,8 +182,8 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     },
     {
       key: 'tituloFarmaceutico',
-      nombre: 'Título universitario y cédula del farmacéutico',
-      descripcion: 'Del farmacéutico responsable.',
+      nombre: 'Título universitario y cédula del regente (farmacéutico)',
+      descripcion: 'Del regente o farmacéutico responsable.',
       icono: 'school',
       requerido: true,
       multiple: true
@@ -229,7 +229,9 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
         tomo: ['', Validators.required],
         fechaRegistro: ['', Validators.required],
         permisoInstalacion: ['', Validators.required],
-        permisoFuncionamiento: ['', Validators.required]
+        permisoFuncionamiento: ['', Validators.required],
+        codigoSicm: ['', [Validators.required, Validators.pattern('^[A-Za-z0-9-]{3,20}$')]],
+        codigoSica: ['']
       }),
       accionistas: this.fb.array([this.crearAccionista()]),
       regentes: this.fb.array([this.crearRegente()]),
@@ -632,6 +634,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     return this.fb.group({
       nombre: ['', Validators.required],
       cedula: ['', Validators.required],
+      titulo: ['', Validators.required],
       rif: [''],
       matricula: ['', Validators.required],
       colfar: [''],
@@ -1084,7 +1087,8 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
       'tomo',
       'fechaRegistro',
       'permisoInstalacion',
-      'permisoFuncionamiento'
+      'permisoFuncionamiento',
+      'codigoSicm'
     ];
 
     return claves.map(clave => this.solicitudForm.get(`empresa.${clave}`));
@@ -1100,7 +1104,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     });
 
     (this.regentes.controls as FormGroup[]).forEach(regente => {
-      ['nombre', 'cedula', 'matricula'].forEach(clave => {
+      ['nombre', 'cedula', 'titulo', 'matricula'].forEach(clave => {
         controles.push(regente.get(clave));
       });
     });
