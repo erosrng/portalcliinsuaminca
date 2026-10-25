@@ -273,6 +273,11 @@ getFacturasSeleccionadasTexto(): string {
           this.comprobanteError = 'Solo se permiten letras, números y guiones';
           return;
       }
+
+      if (this.numeroComprobante.trim().length > 14) {
+          this.comprobanteError = 'El número de comprobante no puede superar 14 caracteres';
+          return;
+      }
       
       // Validar retención y PDF
       if (!this.retencionSeleccionada || !this.comprobanteFile) {
@@ -345,6 +350,14 @@ getFacturasSeleccionadasTexto(): string {
   }
   if (!this.fechaComprobante) {
     this.comprobanteError = 'La fecha de comprobante es obligatoria';
+    return;
+  }
+  if (!/^[A-Z0-9-\/]+$/.test(this.numeroComprobante)) {
+    this.comprobanteError = 'Solo se permiten letras, números y guiones';
+    return;
+  }
+  if (this.numeroComprobante.trim().length > 14) {
+    this.comprobanteError = 'El número de comprobante no puede superar 14 caracteres';
     return;
   }
   if (this.retencionesSeleccionadas.length === 0 || !this.comprobanteFile) {
