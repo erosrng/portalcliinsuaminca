@@ -13,7 +13,6 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { API_URL } from "../../app.config";
-import { API_URL_NUBE } from "../../app.config";
 import { Observable, throwError } from 'rxjs'; // Asegúrate de importar Observable y throwError
 import { catchError, map, finalize } from 'rxjs/operators'; // Importa map y finalize
 import { Subscription, takeUntil, Subject } from 'rxjs';
@@ -502,7 +501,7 @@ export class HomePageComponent implements OnInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL_NUBE}portalcli/inventariocli`; // NUBE: carga pesada de inventario
+    const apiUrl = `${API_URL}portalcli/inventariocli`;
 
     this.http.post<ApiResponse>(apiUrl, formData, { headers: headers })
         .pipe(
@@ -557,15 +556,6 @@ export class HomePageComponent implements OnInit {
             // Asigna los siguientes 10 productos a 'products_2'
             // Esto toma desde el índice 10 (el undécimo elemento) hasta el final (índice 19, si hay 20 en total)
             this.products_2 = allMappedProducts.slice(10, 20);
-
-            // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
-            this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
-              next: (cantidades) => {
-                [...this.products, ...this.products_2].forEach((p: any) => {
-                  if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
-                });
-              },
-            });
 
             this.isLoading = false;
           },

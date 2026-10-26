@@ -928,8 +928,7 @@ showError() {
                       const headers = new HttpHeaders({
                         'X-Auth-Token': `${token}`
                       });
-                      const apiUrl = `${API_URLINTER}portalcli/enviacm`; // PROVISIONAL: usar API_URLINTER (d2wnv) - revertir luego
-                      //const apiUrl = `${API_URL}portalcli/enviacm`;
+                      const apiUrl = `${API_URL}portalcli/enviacm`;
                     
                       Swal.fire({
                         

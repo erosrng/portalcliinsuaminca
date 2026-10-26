@@ -264,10 +264,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/enviarpedidodirecto`; // PROVISIONAL: envio directo en la nube (lee tem_carrito de la nube, insert impedido + login)
-    //const apiUrl = `${API_URLINTER}portalcli/enviarpedidodirecto`; // alternativa via proxy d2wnv -> servidor ERP
-    //const apiUrl = `${API_URLINTER}portalcli/enviapedweb`; // PROVISIONAL: usar API_URLINTER (d2wnv) - revertir luego
-    //const apiUrl = `${API_URL}portalcli/enviapedweb`;
+    const apiUrl = `${API_URL}portalcli/enviapedweb`;
     Swal.fire({
       title: '¿Desea enviar el pedido?',
       html: `
@@ -303,20 +300,12 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
               this.dataSource.data = this.productscar;
               //this.enviaServer();
             } else {
-              // PROVISIONAL: mostrar traza debug_leeimpedido que devuelve la API
-              let detalle = '';
-              try {
-                const debug = response?.detalle?.debug_leeimpedido;
-                detalle = debug
-                  ? '<pre style="text-align:left;font-size:0.8em;max-height:320px;overflow:auto;">' + JSON.stringify(debug, null, 2) + '</pre>'
-                  : '';
-              } catch (e) { detalle = ''; }
-              Swal.fire({ title: response.mensaje, html: detalle || undefined, icon: 'error' });
+              Swal.fire(response.mensaje, '', 'error');
             }
           },
           error: (error) => {
             Swal.close(); // Close the loader on error
-            Swal.fire('Error al enviar el pedido', 'El servidor no respondió a tiempo. Su pedido pudo haberse registrado: revise el carrito antes de reintentar.', 'error');
+            Swal.fire('Error al enviar el pedido', 'Por favor, intente de nuevo. Detalles: ' + error.message, 'error');
             console.error('Error de la API:', error);
           },
         });

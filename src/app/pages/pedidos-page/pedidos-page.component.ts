@@ -16,7 +16,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { API_URL } from './../../app.config';
-import { API_URL_NUBE } from './../../app.config';
 import { API_URLINTER } from './../../app.config';
 import Swal from 'sweetalert2';
 import { Observable, Subscription, takeUntil, Subject } from 'rxjs';
@@ -573,7 +572,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URL_NUBE}portalcli/inventariocli`; // NUBE: carga pesada de inventario
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
   
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
@@ -594,16 +593,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             Swal.close();
 
-          // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
-          this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
-            next: (cantidades) => {
-              this.products.forEach((p: any) => {
-                if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
-              });
-              this.cdr.detectChanges();
-            },
-          });
-  
         },
         error: (error) => {
           console.error('Error de la API:', error);
@@ -1752,7 +1741,7 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
       const headers = new HttpHeaders({
         'X-Auth-Token': `${token}`
       });
-      const apiUrl = `${API_URL_NUBE}portalcli/inventariocli`; // NUBE: carga pesada de inventario
+      const apiUrl = `${API_URL}portalcli/inventariocli`;
 
       this.http.post(apiUrl, formData, { headers: headers }).subscribe({
         next: (response: any) => {
@@ -1762,16 +1751,6 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.filteredProductsComplete = [...response.data];
           this.cdr.detectChanges();
           Swal.close();
-
-          // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
-          this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
-            next: (cantidades) => {
-              this.filteredProductsComplete.forEach((p: any) => {
-                if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
-              });
-              this.cdr.detectChanges();
-            },
-          });
 
         },
         error: (error) => {
