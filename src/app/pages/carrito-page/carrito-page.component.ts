@@ -316,7 +316,7 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
           },
           error: (error) => {
             Swal.close(); // Close the loader on error
-            Swal.fire('Error al enviar el pedido', 'Por favor, intente de nuevo. Detalles: ' + error.message, 'error');
+            Swal.fire('Error al enviar el pedido', 'El servidor no respondió a tiempo. Su pedido pudo haberse registrado: revise el carrito antes de reintentar.', 'error');
             console.error('Error de la API:', error);
           },
         });
