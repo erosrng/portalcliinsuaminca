@@ -54,6 +54,9 @@ export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/prot
 // PROVISIONAL: TODO EL PORTAL APUNTA AL SERVIDOR LOCAL (via proxy d2wnv -> proteoerp)
 export const API_URL = API_URLINTER;
 
+// NUBE - solo para la carga pesada de inventario (inventariocli)
+export const API_URL_NUBE = 'https://insuaminca.org/insuaminca/api/';
+
 // URL ORIGINAL NUBE (revertir cuando se indique)
 // export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
 export const URLSOLA = 'https://insuaminca.org/';

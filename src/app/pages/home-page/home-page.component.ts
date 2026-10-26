@@ -13,6 +13,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { OwlOptions, CarouselModule } from 'ngx-owl-carousel-o';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { API_URL } from "../../app.config";
+import { API_URL_NUBE } from "../../app.config";
 import { Observable, throwError } from 'rxjs'; // Asegúrate de importar Observable y throwError
 import { catchError, map, finalize } from 'rxjs/operators'; // Importa map y finalize
 import { Subscription, takeUntil, Subject } from 'rxjs';
@@ -501,7 +502,7 @@ export class HomePageComponent implements OnInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/inventariocli`;
+    const apiUrl = `${API_URL_NUBE}portalcli/inventariocli`; // NUBE: carga pesada de inventario
 
     this.http.post<ApiResponse>(apiUrl, formData, { headers: headers })
         .pipe(
