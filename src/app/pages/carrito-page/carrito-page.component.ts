@@ -264,7 +264,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/enviarpedidodirecto`; // PROVISIONAL: envio directo (insert impedido + login) en el api.php de insuaminca
+    const apiUrl = `${API_URLINTER}portalcli/enviarpedidodirecto`; // PROVISIONAL: envio directo (insert impedido + login) via proxy d2wnv -> proteoerp
+    //const apiUrl = `${API_URL}portalcli/enviarpedidodirecto`; // PROVISIONAL: envio directo en el api.php de insuaminca
     //const apiUrl = `${API_URLINTER}portalcli/enviapedweb`; // PROVISIONAL: usar API_URLINTER (d2wnv) - revertir luego
     //const apiUrl = `${API_URL}portalcli/enviapedweb`;
     Swal.fire({
