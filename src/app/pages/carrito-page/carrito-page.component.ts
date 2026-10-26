@@ -264,8 +264,8 @@ export class CarritoPageComponent implements OnInit, AfterViewInit {
     const headers = new HttpHeaders({
       'X-Auth-Token': `${token}`
     });
-    const apiUrl = `${API_URL}portalcli/enviapedweb`;
-    //const apiUrl = `${API_URLINTER}portalcli/enviaped/0`;
+    const apiUrl = `${API_URLINTER}portalcli/enviapedweb`; // PROVISIONAL: usar API_URLINTER (d2wnv) - revertir luego
+    //const apiUrl = `${API_URL}portalcli/enviapedweb`;
     Swal.fire({
       title: '¿Desea enviar el pedido?',
       html: `
