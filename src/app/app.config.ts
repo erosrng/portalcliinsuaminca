@@ -51,7 +51,11 @@ export const API_URLINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/api
 export const URLSOLAINTER = 'https://d2wnvkodoh477y.cloudfront.net/';
 export const PROTEO_URL_ALONEINTER = 'https://d2wnvkodoh477y.cloudfront.net/proteoerp/'; 
 
-export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
+// PROVISIONAL: TODO EL PORTAL APUNTA AL SERVIDOR LOCAL (via proxy d2wnv -> proteoerp)
+export const API_URL = API_URLINTER;
+
+// URL ORIGINAL NUBE (revertir cuando se indique)
+// export const API_URL = 'https://insuaminca.org/insuaminca/api/'; 
 export const URLSOLA = 'https://insuaminca.org/';
 export const PROTEO_URL_ALONE = 'https://insuaminca.org/insuaminca/';
 
