@@ -593,6 +593,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
             this.dataSource.paginator = this.paginator;
             this.cdr.detectChanges();
             Swal.close();
+
+          // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
+          this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
+            next: (cantidades) => {
+              this.products.forEach((p: any) => {
+                if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
+              });
+              this.cdr.detectChanges();
+            },
+          });
   
         },
         error: (error) => {
@@ -1752,6 +1762,16 @@ export class PedidosPageComponent implements OnInit, OnDestroy {
           this.filteredProductsComplete = [...response.data];
           this.cdr.detectChanges();
           Swal.close();
+
+          // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
+          this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
+            next: (cantidades) => {
+              this.filteredProductsComplete.forEach((p: any) => {
+                if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
+              });
+              this.cdr.detectChanges();
+            },
+          });
 
         },
         error: (error) => {

@@ -558,6 +558,15 @@ export class HomePageComponent implements OnInit {
             // Esto toma desde el índice 10 (el undécimo elemento) hasta el final (índice 19, si hay 20 en total)
             this.products_2 = allMappedProducts.slice(10, 20);
 
+            // PROVISIONAL: llenar encar desde el carrito LOCAL (la lista viene de la nube)
+            this.portalcliLogicaService.obtenerCantidadesCarrito().subscribe({
+              next: (cantidades) => {
+                [...this.products, ...this.products_2].forEach((p: any) => {
+                  if (cantidades[p.codigo] > 0) p.encar = cantidades[p.codigo];
+                });
+              },
+            });
+
             this.isLoading = false;
           },
           error: (err) => {
