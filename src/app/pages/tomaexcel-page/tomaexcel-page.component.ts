@@ -961,7 +961,15 @@ showError() {
                                 Swal.fire(response.mensaje, '', 'success');
                                 this.productosEnCarrito = [];
                               } else {
-                                Swal.fire(response.mensaje, '', 'error');
+                                // PROVISIONAL: mostrar traza debug_leeimpedido que devuelve la API
+                                let detalle = '';
+                                try {
+                                  const debug = response?.detalle?.debug_leeimpedido;
+                                  detalle = debug
+                                    ? '<pre style="text-align:left;font-size:0.8em;max-height:320px;overflow:auto;">' + JSON.stringify(debug, null, 2) + '</pre>'
+                                    : '';
+                                } catch (e) { detalle = ''; }
+                                Swal.fire({ title: response.mensaje, html: detalle || undefined, icon: 'error' });
                                 Swal.close();
                               }
                             },
