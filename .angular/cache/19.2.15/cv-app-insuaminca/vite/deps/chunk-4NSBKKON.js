@@ -7,17 +7,17 @@ import {
   isFakeTouchstartFromScreenReader
 } from "./chunk-4BVUKKW7.js";
 import {
-  BidiModule
-} from "./chunk-ZQJO536L.js";
-import {
   _CdkPrivateStyleLoader,
   _bindEventWithOptions
 } from "./chunk-WCU3UK5P.js";
 import {
+  BidiModule
+} from "./chunk-ZQJO536L.js";
+import {
   Platform,
   coerceElement,
   coerceNumberProperty
-} from "./chunk-BQCFFLJQ.js";
+} from "./chunk-R3SUJZLI.js";
 import {
   DOCUMENT
 } from "./chunk-B5QHEHR4.js";
@@ -3095,4 +3095,4 @@ export {
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-Y2OCE2Z5.js.map
+//# sourceMappingURL=chunk-4NSBKKON.js.map
