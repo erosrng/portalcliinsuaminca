@@ -14,7 +14,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.8); 
+    background-color: rgba(vars.$background-fondo, 0.8); 
     z-index: 5; 
 }
 
@@ -37,7 +37,7 @@
 /* Estilo del texto del loader */
 .loader-text {
     font-size: 1.2em;
-    color: #333;
+    color: vars.$menu-color;
     text-align: center;
 }
 /*FIN DEL LOADER*/
@@ -45,30 +45,43 @@
 .portal {
     display: flex;
     width: 100%;
-    height: 100%;
+    min-height: 100dvh;
     background-color: vars.$background-fondo;
 }
 
 .portal__login,
 .portal__registro {
     flex: 1;
-    padding: 8rem 0 0 0;
+    min-height: 100dvh;
+    padding: clamp(2rem, 4vh, 4.8rem) 2.4rem 2rem;
     display: flex;
     flex-direction: column;
-    /*justify-content: space-between;  Distribuye los elementos en tres secciones */
+    justify-content: center;
     align-items: center;
     background-color: vars.$background-fondo;
+
+    --mdc-outlined-text-field-label-text-color: #{vars.$text-claro};
+    --mdc-outlined-text-field-input-text-color: #{vars.$menu-color};
+    --mdc-outlined-text-field-outline-color: #{rgba(vars.$menu-color, 0.35)};
+    --mdc-outlined-text-field-hover-outline-color: #{vars.$text-color2};
+    --mdc-outlined-text-field-focus-outline-color: #{vars.$text-color2};
+    --mdc-outlined-text-field-focus-label-text-color: #{vars.$text-color2};
+    --mdc-outlined-text-field-error-outline-color: #{vars.$principal-color};
+    --mdc-outlined-text-field-error-label-text-color: #{vars.$principal-color};
+    --mdc-outlined-text-field-error-supporting-text-color: #{vars.$principal-color};
+    --mat-select-focused-arrow-color: #{vars.$text-color2};
+    --mat-select-enabled-trigger-text-color: #{vars.$menu-color};
 }
 
 .portal__logo {
-    width: 30%;
+    width: min(22%, 11rem);
     margin-bottom: 1rem;
 }
 
 .portal__title {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 2vw, 1.8rem);
     color: vars.$menu-color;
-    margin-bottom: 2rem;
+    margin-bottom: clamp(1rem, 2.5vh, 2rem);
     text-align: center;
 }
 
@@ -83,7 +96,7 @@
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid vars.$bordes-claros;
     border-radius: 5px;
     font-size: 1rem;
     display: flex;
@@ -98,12 +111,13 @@
     margin-top: 1rem;
     text-align: center;
     color: vars.$menu-color;
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 2.2vw, 2.4rem);
     font-weight: 1;
 }
 
 .portal__image {
     flex: 2;
+    min-height: 100dvh;
     position: relative;
     display: flex;
     justify-content: center; 
@@ -115,6 +129,7 @@
     height: 100%;
     width: 100%;
     position: absolute;
+    object-fit: cover;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -141,7 +156,7 @@
     gap: 20px;
 }
 .login__container{
-    width: 50%;
+    width: min(80%, 36rem);
 }
 /* Estilo para el grupo de inputs */
 .input_group {
@@ -167,7 +182,7 @@
     padding-left: 10px;
     padding-top: 12px;
     padding-bottom: 12px;
-    border: 1px solid #ccc;
+    border: 1px solid vars.$bordes-claros;
     border-radius: 5px;
     font-size: 14px;
     box-sizing: border-box;
@@ -194,7 +209,7 @@
     justify-items: center;
     align-items: center;
     width: 100%;
-    margin-bottom: 2.5rem;
+    margin-bottom: clamp(1rem, 2vh, 2rem);
 }
 
 .input_button button {
@@ -221,49 +236,102 @@
 }
 
 .register_link_item {
-    margin: 1.3rem 0;
+    margin: 0.9rem 0;
     text-decoration: none;
     color: vars.$menu-color;
-    font-size: 1.5rem;
+    font-size: 1.35rem;
 }
     /*ESTILOS REGISTRO DE CLIENTES*/
     .registrate__boton_custom {
-        color: vars.$resaltador; /* Color estético para resaltar */
+        color: vars.$principal-color; /* Color estético para resaltar */
         font-weight: bold; /* Texto en negrita */
     }
 
     .registrate__boton {
-        color: vars.$resaltador; 
+        color: vars.$principal-color; 
         font-weight: bold; 
         cursor: pointer; 
         transition: transform 0.3s ease-in-out;
     }
 
+    .se-cliente-cta {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        width: min(80%, 36rem);
+        margin-top: 0.8rem;
+        padding: 1.1rem 1.4rem;
+        border: 1px solid rgba(vars.$text-color2, 0.28);
+        border-radius: 1.4rem;
+        background: rgba(vars.$text-color2, 0.08);
+        text-decoration: none;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .se-cliente-cta:hover {
+        transform: translateY(-2px);
+        border-color: vars.$text-color2;
+        box-shadow: 0 8px 20px rgba(vars.$text-color2, 0.12);
+    }
+
+    .se-cliente-cta__icon {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        width: 4.2rem;
+        height: 4.2rem;
+        border-radius: 1.2rem;
+        background: vars.$text-color2;
+        color: vars.$background-fondo;
+        font-size: 1.8rem;
+    }
+
+    .se-cliente-cta__text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        line-height: 1.3;
+    }
+
+    .se-cliente-cta__text strong {
+        color: vars.$menu-color;
+        font-size: 1.45rem;
+    }
+
+    .se-cliente-cta__text small {
+        margin-top: 0.2rem;
+        color: vars.$text-claro;
+        font-size: 1.1rem;
+    }
+
+    .se-cliente-cta__arrow {
+        color: vars.$text-color2;
+        font-size: 1.4rem;
+    }
+
     @media (max-width: 600px) {
-        /* .portal{
-            flex-direction: column-reverse;
-        }
-        .portal__login{
-            height: 80%;
-            padding: 1rem;
-            margin: 0;
-        } */
         .portal {
             flex-direction: column-reverse;
+            min-height: 100dvh;
+        }
+        .portal__login {
+            min-height: 100dvh;
+            justify-content: flex-start;
+            padding: 2rem 1.6rem 1.2rem;
         }
         .portal__title{
-            margin-bottom: 0;
+            margin-bottom: 1rem;
         }
         .portal__registro {
             flex: unset;
-            height: 92%;
+            height: auto;
         }
         .portal__image {
             display: none;
         }
         .portal__logo {
-            width: 20%;
-            margin-top: 1rem;
+            width: min(20%, 8rem);
+            margin-top: 0.5rem;
         }
         .portal__form {
             margin-top: 1%;
@@ -272,13 +340,37 @@
             gap: 2rem;
         }
         .portal__footer {
-            margin-bottom: 10rem;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
         }
     }
 
 @media screen and (max-width: 768px) {
     .login__container {
-        width: 85%;
-        margin-top: 3rem;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .se-cliente-cta {
+        width: 100%;
+    }
+}
+
+@media screen and (max-height: 760px) and (min-width: 601px) {
+    .portal__login {
+        justify-content: flex-start;
+        padding-top: 2rem;
+    }
+
+    .portal__logo {
+        width: min(18%, 8rem);
+    }
+
+    .portal__title {
+        margin-bottom: 1rem;
+    }
+
+    .portal__footer {
+        font-size: 1.8rem;
     }
 }

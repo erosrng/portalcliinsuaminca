@@ -19,12 +19,12 @@
 
                 <mat-form-field style="width: 100%;" appearance="outline">
                     <mat-label>Usuario</mat-label>
-                    <input matInput #input  placeholder="Usuario"
+                    <input matInput #input
                            type="text"
                            id="user"
                            name="user"
-                           appearance="outline"
                            placeholder="Usuario"
+                           autocomplete="username"
                            required
                            [(ngModel)]="userData.user"
                            #userInput
@@ -38,10 +38,10 @@
                 <mat-form-field style="width: 100%;" appearance="outline">
                     <mat-label>Ingrese su contraseña</mat-label>
                     <input matInput [type]="hide() ? 'password' : 'text'"
-                           type="password"
                            id="pws"
                            name="pws"
                            placeholder="Contraseña"
+                           autocomplete="current-password"
                            required
                            [(ngModel)]="userData.password"
                     />
@@ -63,7 +63,16 @@
           </div>
         </form>
       </section>
-  
+
+      <a href="javascript:void(0)" class="se-cliente-cta" (click)="navigateTo('/se-cliente')">
+        <span class="se-cliente-cta__icon"><i class="fa-solid fa-store"></i></span>
+        <span class="se-cliente-cta__text">
+          <strong>Sé cliente Insuaminca</strong>
+          <small>Solicita tu código de cliente</small>
+        </span>
+        <i class="fa-solid fa-arrow-right se-cliente-cta__arrow"></i>
+      </a>
+
       <a href="javascript:void(0)" class="register_link_item" (click)="navigateTo('/registrocli')"
         >¿No tienes usuario? <span id="registrate__button" class="registrate__boton">Registrar</span></a
       >
