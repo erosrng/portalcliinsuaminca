@@ -796,6 +796,8 @@ Aprobación y creación del cliente en scli:
     - El botón "Aprobar y crear" (detalle y grid) hace lo mismo en un
       solo paso mediante ventas/solfichacli/aprobar_crear (POST) y
       guarda la fecha y hora de la aprobación.
+    - Al aprobar o crear el cliente, el detalle muestra el mensaje
+      "Cliente {nombre} fue creado. Su código es: {código}" en verde.
     - El código se toma del consecutivo oficial de clientes de Datasis
       (ncodcli a través de proxcli(), equivalente al secuencial
       scliprox), el mismo que usan los módulos de ventas.
