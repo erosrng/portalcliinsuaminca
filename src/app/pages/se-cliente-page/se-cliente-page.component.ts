@@ -67,6 +67,9 @@ interface ProgresoSeccion {
 })
 export class SeClientePageComponent implements OnInit, OnDestroy {
   readonly apiSolicitudCliente = `${API_URL}portalcli/solicitud_cliente`;
+  // Modo prueba temporal: abrir /se-cliente?prueba=1 para saltar validaciones.
+  readonly modoPrueba = new URLSearchParams(window.location.search).get('prueba') === '1';
+  private readonly tokenModoPrueba = 'sol-2026-prueba-9f4c';
   // Endpoint del API de Insuaminca que recibe la solicitud. Ajustar aquí si cambia la ruta.
   readonly correo = 'Clientesinsuaminca@gmail.com';
   readonly anio = new Date().getFullYear();
@@ -1299,7 +1302,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
 
     this.solicitudForm.markAllAsTouched();
 
-    if (this.solicitudForm.invalid) {
+    if (!this.modoPrueba && this.solicitudForm.invalid) {
       Swal.fire({
         icon: 'warning',
         title: 'Formulario incompleto',
@@ -1311,7 +1314,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     }
 
     const faltantes = this.documentosFaltantes();
-    if (faltantes.length > 0) {
+    if (!this.modoPrueba && faltantes.length > 0) {
       Swal.fire({
         icon: 'warning',
         title: 'Faltan documentos',
@@ -1332,6 +1335,9 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     formData.append('email', datos.empresa.email);
     formData.append('telefono', datos.empresa.telefono);
     formData.append('origen', 'portal-web');
+    if (this.modoPrueba) {
+      formData.append('modo_prueba', this.tokenModoPrueba);
+    }
 
     this.documentosConfig.forEach(documento => {
       (this.documentos[documento.key] ?? []).forEach(archivo => {
