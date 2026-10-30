@@ -479,9 +479,9 @@ No se suben por separado ni se guardan en el navegador.
 
 Al recibir la solicitud, el API crea automáticamente:
 
-    uploads_solicitudes/
-    uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/
-    uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id_solicitud}/
+    uploads/solicitudes/
+    uploads/solicitudes/{NOMBRE_CLIENTE}_{RIF}/
+    uploads/solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id_solicitud}/
 
 El nombre de la carpeta del cliente se arma con la razón social y el RIF,
 sin acentos ni caracteres especiales. Ejemplo:
@@ -489,8 +489,9 @@ sin acentos ni caracteres especiales. Ejemplo:
     FARMACIA_NANDU_C_A_J_123123123/7/
 
 El API crea la carpeta base, la carpeta del cliente y la subcarpeta de la
-solicitud si no existen. La carpeta base incluye un .htaccess con
-Require all denied.
+solicitud si no existen, y les asigna permisos de escritura para PHP.
+No se crea ningún archivo .htaccess: la carpeta es de libre acceso para
+el proceso PHP (usuario wwwrun).
 
 
 7. CONTRATO DEL API
@@ -632,7 +633,7 @@ Funcionamiento del endpoint:
     - Valida PDF/JPG/JPEG/PNG y máximo 5 MB por archivo.
     - Crea la tabla solifichacli si no existe.
     - Guarda la solicitud en la tabla solifichacli.
-    - Guarda los archivos en uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/.
+    - Guarda los archivos en uploads/solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/.
     - Devuelve success:true y el id de la solicitud.
 
 Tabla creada:
@@ -656,11 +657,12 @@ Tabla creada:
         creado_en
 
 Carpeta de archivos:
-    /srv/www/htdocs/insuaminca/uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
+    /srv/www/htdocs/insuaminca/uploads/solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
 
-Protección:
-    uploads_solicitudes/.htaccess contiene Require all denied.
-    No se debe exponer públicamente esa carpeta.
+Acceso:
+    No se usa .htaccess. La carpeta debe existir y ser escribible por
+    el usuario de PHP (wwwrun). El API la crea con permisos 0777 si no
+    existe y el directorio uploads permite la creación.
 
 Ejemplo de lectura en PHP:
     $datos = json_decode($_POST['datos'], true);
@@ -867,7 +869,7 @@ Prueba:
 - Para revisar solicitudes recibidas:
       SELECT * FROM solifichacli ORDER BY id DESC;
 - Para revisar archivos:
-      ls -la /srv/www/htdocs/insuaminca/uploads_solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
+      ls -la /srv/www/htdocs/insuaminca/uploads/solicitudes/{NOMBRE_CLIENTE}_{RIF}/{id}/
 - Para aprobar una solicitud y crear el cliente, usar el formulario
   del módulo. Si se cambia el estado por SQL, no se crea el cliente.
       UPDATE solifichacli SET estado='A' WHERE id=...;
