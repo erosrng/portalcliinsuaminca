@@ -1386,6 +1386,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
           text:
             error?.error?.message ||
             error?.error?.mensaje ||
+            error?.error?.error ||
             'No pudimos conectar con el servicio. Intenta nuevamente en unos minutos.',
           confirmButtonText: 'Entendido'
         });
