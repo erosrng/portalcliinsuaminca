@@ -498,11 +498,14 @@ el proceso PHP (usuario wwwrun).
 ----------------------------------------------------------------------
 Endpoint actual:
 
-    ${API_URL}portalcli/solicitud_cliente
+    ${API_URLINTER}logincli/solicitud_cliente
 
 Producción actual:
 
-    https://insuaminca.org/insuaminca/api/portalcli/solicitud_cliente
+    https://d2wnvkodoh477y.cloudfront.net/proteoerp/api/logincli/solicitud_cliente
+
+Nota: usa el mismo API público que login y registrocli (API_URLINTER),
+por lo que no requiere API key.
 
 Método:
     POST
@@ -513,21 +516,6 @@ Content-Type:
 Campos enviados:
     datos:
         JSON con toda la solicitud.
-
-    rif:
-        RIF completo, por ejemplo J-123456789.
-
-    razon_social:
-        Nombre de la empresa.
-
-    email:
-        Correo de la empresa.
-
-    telefono:
-        Teléfono de la empresa.
-
-    origen:
-        portal-web.
 
     documentos[CLAVE][]:
         Archivos. Ejemplos:
@@ -669,10 +657,9 @@ Ejemplo de lectura en PHP:
     $archivos = $_FILES['documentos'] ?? [];
 
 Para cambiar la ruta del API, editar en
-se-cliente-page.component.ts:
+se-cliente-page.component.ts, dentro de enviarSolicitud():
 
-    readonly apiSolicitudCliente =
-      `${API_URL}portalcli/solicitud_cliente`;
+    const apiUrl = `${API_URLINTER}logincli/solicitud_cliente`;
 
 Para enviar la solicitud a otro módulo de Proteo, el endpoint puede:
     - Leer la tabla solifichacli.
@@ -861,7 +848,7 @@ Prueba:
 - Para cambiar el peso máximo: editar maxFileSize.
 - Para cambiar el máximo de archivos: editar maxArchivosPorDocumento.
 - Para cambiar los textos de progreso: editar obtenerMensajeProgreso().
-- Para cambiar la ruta del API: editar apiSolicitudCliente.
+- Para cambiar la ruta del API: editar la constante apiUrl dentro de enviarSolicitud().
 - Para cambiar los colores: editar src/styles/variables.scss o las
   referencias a variables en los SCSS.
 - Para agregar una sección nueva: agregar el id en secciones, crear su

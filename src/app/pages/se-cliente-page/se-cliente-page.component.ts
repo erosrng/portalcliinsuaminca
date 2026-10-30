@@ -18,7 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Subscription, debounceTime, startWith } from 'rxjs';
 import Swal from 'sweetalert2';
-import { API_URL } from '../../app.config';
+import { API_URLINTER } from '../../app.config';
 import { ProgressRingComponent } from '../../components/progress-ring/progress-ring.component';
 
 interface DocumentoConfig {
@@ -66,11 +66,6 @@ interface ProgresoSeccion {
   styleUrl: './se-cliente-page.component.scss'
 })
 export class SeClientePageComponent implements OnInit, OnDestroy {
-  readonly apiSolicitudCliente = `${API_URL}portalcli/solicitud_cliente`;
-  // Modo prueba temporal: abrir /se-cliente?prueba=1 para saltar validaciones.
-  readonly modoPrueba = new URLSearchParams(window.location.search).get('prueba') === '1';
-  private readonly tokenModoPrueba = 'sol-2026-prueba-9f4c';
-  // Endpoint del API de Insuaminca que recibe la solicitud. Ajustar aquí si cambia la ruta.
   readonly correo = 'Clientesinsuaminca@gmail.com';
   readonly anio = new Date().getFullYear();
   readonly tiposRif = ['J', 'V', 'E', 'P', 'G'];
@@ -1302,7 +1297,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
 
     this.solicitudForm.markAllAsTouched();
 
-    if (!this.modoPrueba && this.solicitudForm.invalid) {
+    if (this.solicitudForm.invalid) {
       Swal.fire({
         icon: 'warning',
         title: 'Formulario incompleto',
@@ -1314,7 +1309,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     }
 
     const faltantes = this.documentosFaltantes();
-    if (!this.modoPrueba && faltantes.length > 0) {
+    if (faltantes.length > 0) {
       Swal.fire({
         icon: 'warning',
         title: 'Faltan documentos',
@@ -1330,14 +1325,6 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     const datos = this.construirPayload();
     const formData = new FormData();
     formData.append('datos', JSON.stringify(datos));
-    formData.append('rif', datos.empresa.rif);
-    formData.append('razon_social', datos.empresa.razonSocial);
-    formData.append('email', datos.empresa.email);
-    formData.append('telefono', datos.empresa.telefono);
-    formData.append('origen', 'portal-web');
-    if (this.modoPrueba) {
-      formData.append('modo_prueba', this.tokenModoPrueba);
-    }
 
     this.documentosConfig.forEach(documento => {
       (this.documentos[documento.key] ?? []).forEach(archivo => {
@@ -1345,9 +1332,11 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
       });
     });
 
+    const apiUrl = `${API_URLINTER}logincli/solicitud_cliente`;
+
     this.enviando = true;
 
-    this.http.post(this.apiSolicitudCliente, formData).subscribe({
+    this.http.post(apiUrl, formData).subscribe({
       next: (response: any) => {
         this.enviando = false;
         const fallo =
