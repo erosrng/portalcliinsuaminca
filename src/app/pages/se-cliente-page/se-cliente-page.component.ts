@@ -66,6 +66,7 @@ interface ProgresoSeccion {
   styleUrl: './se-cliente-page.component.scss'
 })
 export class SeClientePageComponent implements OnInit, OnDestroy {
+  modoPrueba = new URLSearchParams(window.location.search).get('prueba') === '1';
   readonly correo = 'Clientesinsuaminca@gmail.com';
   readonly anio = new Date().getFullYear();
   readonly tiposRif = ['J', 'V', 'E', 'P', 'G'];
@@ -1290,8 +1291,90 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
     return (this.documentos[key]?.length ?? 0) > 0;
   }
 
+  private enviarPruebaRapida(): void {
+    const datos = {
+      ...this.construirPayload(),
+      empresa: {
+        rifTipo: 'J',
+        rifNumero: '00000001',
+        rif: 'J-00000001',
+        razonSocial: 'PRUEBA RAPIDA PORTAL',
+        email: 'prueba@insuaminca.org',
+        telefono: '04140000000',
+        tipoContribuyente: 'Ordinario',
+        codigoSicm: 'PRUEBA'
+      },
+      aceptaTerminos: true,
+      autorizaVerificacion: true,
+      pruebaRapida: true
+    };
+
+    const formData = new FormData();
+    formData.append('datos', JSON.stringify(datos));
+    formData.append('modo_prueba', 'sol-2026-prueba-9f4c');
+
+    this.documentosConfig
+      .filter(documento => documento.requerido)
+      .forEach(documento => {
+        formData.append(
+          `documentos[${documento.key}][]`,
+          this.archivoPrueba(documento.key),
+          `${documento.key}.png`
+        );
+      });
+
+    this.enviando = true;
+    this.http.post(`${API_URLINTER}logincli/solicitud_cliente`, formData).subscribe({
+      next: (response: any) => {
+        this.enviando = false;
+        if (response?.success === false || response?.error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Prueba fallida',
+            text: response?.error || response?.message || 'No se pudo enviar la prueba.',
+            confirmButtonText: 'Entendido'
+          });
+          return;
+        }
+        Swal.fire({
+          icon: 'success',
+          title: 'Prueba enviada',
+          text: `Solicitud de prueba creada con ID ${response?.id ?? ''}.`,
+          confirmButtonText: 'Aceptar'
+        });
+      },
+      error: (error) => {
+        this.enviando = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Prueba fallida',
+          text:
+            error?.error?.error ||
+            error?.error?.message ||
+            'No se pudo conectar con el servicio.',
+          confirmButtonText: 'Entendido'
+        });
+      }
+    });
+  }
+
+  private archivoPrueba(nombre: string): File {
+    const base64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2nWQAAAAASUVORK5CYII=';
+    const binario = atob(base64);
+    const bytes = new Uint8Array(binario.length);
+    for (let i = 0; i < binario.length; i++) {
+      bytes[i] = binario.charCodeAt(i);
+    }
+    return new File([bytes], `${nombre}.png`, { type: 'image/png' });
+  }
+
   enviarSolicitud(): void {
     if (this.enviando) {
+      return;
+    }
+
+    if (this.modoPrueba) {
+      this.enviarPruebaRapida();
       return;
     }
 

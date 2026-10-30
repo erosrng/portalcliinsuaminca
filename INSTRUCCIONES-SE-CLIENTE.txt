@@ -507,6 +507,12 @@ Producción actual:
 Nota: usa el mismo API público que login y registrocli (API_URLINTER),
 por lo que no requiere API key.
 
+Prueba rápida (temporal):
+    Abrir /se-cliente?prueba=1 y pulsar "Enviar solicitud".
+    No exige llenar el formulario ni adjuntar documentos: arma una
+    solicitud completa con datos y archivos de prueba, marcada como
+    "PRUEBA RAPIDA PORTAL". Eliminar esta modalidad después de validar.
+
 Método:
     POST
 
