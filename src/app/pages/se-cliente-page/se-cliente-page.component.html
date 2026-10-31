@@ -544,6 +544,12 @@
                 </mat-error>
               </mat-form-field>
 
+              <mat-form-field appearance="outline" class="span-2">
+                <mat-label>Dirección de entrega</mat-label>
+                <textarea matInput formControlName="direccionEntrega" rows="2"></textarea>
+                <mat-hint>Si la dejas vacía se usará la dirección comercial.</mat-hint>
+              </mat-form-field>
+
               <mat-form-field appearance="outline">
                 <mat-label>Estado</mat-label>
                 <input matInput formControlName="estado" />

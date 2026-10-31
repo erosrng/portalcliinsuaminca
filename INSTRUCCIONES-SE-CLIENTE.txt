@@ -127,6 +127,8 @@ SECCIÓN 03. BANCOS Y DATOS COMERCIALES
    - Banco 1 y número de cuenta.
    - Banco 2 y número de cuenta (opcional).
    - Nombre comercial, teléfono, dirección, estado y municipio.
+   - Dirección de entrega (opcional). Si se deja vacía se usa la
+     dirección comercial. Este dato se guarda en scli.dire21.
    - Correo electrónico comercial.
    - Tipo de local: Propio o Alquilado.
    - Si el local es Alquilado aparecen:
@@ -554,7 +556,16 @@ Ejemplo de estructura de "datos":
   "accionistas": [],
   "regente": {},
   "bancos": {},
-  "comercial": {},
+  "comercial": {
+    "nombreComercial": "Farmacia Ejemplo",
+    "direccion": "...",
+    "direccionEntrega": "...",
+    "estado": "Monagas",
+    "municipio": "Maturín",
+    "email": "correo@empresa.com",
+    "telefono": "04141234567",
+    "local": "Propio"
+  },
   "arrendatario": {},
   "representante": {},
   "pagos": {},
@@ -807,6 +818,21 @@ Aprobación y creación del cliente en scli:
     - Se copian nombre, RIF, dirección, teléfono, correo, representante
       legal, el código SICM (a scli.sicm) y las cuentas contables del
       grupo.
+    - La dirección de entrega enviada en comercial.direccionEntrega se
+      guarda en scli.dire21. Si viene vacía, se usa la dirección
+      comercial.
+    - El número de expediente se guarda en scli.registro.
+    - El estado del registro se guarda en scli.r_domicilio.
+    - La fecha de registro se guarda en scli.r_fecha con formato
+      dd/mm/aaaa.
+    - El tomo del expediente se guarda en scli.r_tomo.
+    - La observación de la solicitud se copia a scli.observa. Si está
+      vacía, se usa el texto:
+      "CREADO dd-mm-aaaa MEDIANTE EL PORTAL AUDITADO POR ANTHONY
+       MAKKOUKJI, SOLICITADO POR LEIDA SALAVERRIA, APROBADO POR ARTURO
+       SALAS//".
+      El botón "Aprobar y crear cliente" del detalle también guarda la
+      observación escrita en el formulario antes de aprobar.
     - El grupo por defecto es 001 (FARMACIAS) si no está configurado
       SCLIGRUP.
     - El estado y municipio se buscan por nombre; si no hay coincidencia

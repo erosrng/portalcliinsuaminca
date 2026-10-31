@@ -243,6 +243,7 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
       comercial: this.fb.group({
         nombreComercial: ['', Validators.required],
         direccion: ['', Validators.required],
+        direccionEntrega: [''],
         estado: ['', Validators.required],
         municipio: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
@@ -1292,9 +1293,11 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
   }
 
   private enviarPruebaRapida(): void {
+    const base = this.construirPayload();
     const datos = {
-      ...this.construirPayload(),
+      ...base,
       empresa: {
+        ...base.empresa,
         rifTipo: 'J',
         rifNumero: '00000001',
         rif: 'J-00000001',
@@ -1302,7 +1305,19 @@ export class SeClientePageComponent implements OnInit, OnDestroy {
         email: 'prueba@insuaminca.org',
         telefono: '04140000000',
         tipoContribuyente: 'Ordinario',
-        codigoSicm: 'PRUEBA'
+        codigoSicm: 'PRUEBA',
+        direccionFiscal: 'AV. PRINCIPAL, LOCAL DE PRUEBA, MATURIN, MONAGAS',
+        estado: 'MONAGAS',
+        expediente: '444-12974',
+        tomo: '3-A',
+        fechaRegistro: '2021-04-16'
+      },
+      comercial: {
+        ...base.comercial,
+        direccion: 'AV. PRINCIPAL, LOCAL DE PRUEBA, MATURIN, MONAGAS',
+        direccionEntrega: 'CALLE DE ENTREGA, GALPON DE PRUEBA, MATURIN, MONAGAS',
+        estado: 'MONAGAS',
+        municipio: 'MATURIN'
       },
       aceptaTerminos: true,
       autorizaVerificacion: true,
