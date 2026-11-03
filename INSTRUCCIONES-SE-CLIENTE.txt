@@ -127,8 +127,10 @@ SECCIÓN 03. BANCOS Y DATOS COMERCIALES
    - Banco 1 y número de cuenta.
    - Banco 2 y número de cuenta (opcional).
    - Nombre comercial, teléfono, dirección, estado y municipio.
-   - Dirección de entrega (opcional). Si se deja vacía se usa la
-     dirección comercial. Este dato se guarda en scli.dire21.
+   - Dirección de entrega (opcional), con la aclaratoria "Plasmada en
+     el permiso de funcionamiento / instalación del establecimiento".
+     Si se deja vacía se usa la dirección comercial. Este dato se
+     guarda en scli.dire21.
    - Correo electrónico comercial.
    - Tipo de local: Propio o Alquilado.
    - Si el local es Alquilado aparecen:
@@ -807,6 +809,11 @@ Aprobación y creación del cliente en scli:
     - El código se toma del consecutivo oficial de clientes de Datasis
       (ncodcli a través de proxcli(), equivalente al secuencial
       scliprox), el mismo que usan los módulos de ventas.
+    - El botón "Aprobar y crear cliente" tiene un campo
+      "Código de cliente (opcional)": si se escribe un código, se usa
+      ese (mayúsculas, 5 caracteres); si ya existe en scli la
+      aprobación falla con un mensaje claro. Si se deja vacío, el
+      sistema genera el código automáticamente como siempre.
     - El código queda guardado en solifichacli.cliente y se muestra en
       el detalle y en el grid.
     - Si la solicitud ya tiene un cliente asociado, no se duplica al
@@ -826,6 +833,13 @@ Aprobación y creación del cliente en scli:
     - La fecha de registro se guarda en scli.r_fecha con formato
       dd/mm/aaaa.
     - El tomo del expediente se guarda en scli.r_tomo.
+    - scli.web queda en 'S' para marcar que el cliente vino de una
+      solicitud web. En la grilla de clientes (scli) esa celda WEB se
+      pinta de amarillo.
+    - Los dos encargados que llegan de la web (accionistas, regentes o
+      representantes, sin repetidos) se insertan en la tabla
+      sclicontacto (apartado de contacto de scli) con depto = 'T' y
+      el teléfono normalizado a 11 dígitos.
     - La observación de la solicitud se copia a scli.observa. Si está
       vacía, se usa el texto:
       "CREADO dd-mm-aaaa MEDIANTE EL PORTAL AUDITADO POR ANTHONY
