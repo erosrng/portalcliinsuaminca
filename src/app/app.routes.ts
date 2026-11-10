@@ -14,12 +14,12 @@ import {RetencionesPageComponent  } from './pages/retenciones-page/retenciones-p
 import {HistorialPagosComponent  } from './pages/historial-pagos/historial-pagos.component';
 
 
-import { authGuard } from './auth.guard';
+import { authGuard, guestGuard } from './auth.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     
-    { path: 'login', component: LoginPageComponent }, 
+    { path: 'login', component: LoginPageComponent, canActivate: [guestGuard] }, 
     { path: 'registrocli', component: RegistrocliPageComponent },
     { path: 'se-cliente', component: SeClientePageComponent },
     { path: 'home', component: HomePageComponent, canActivate: [authGuard] },

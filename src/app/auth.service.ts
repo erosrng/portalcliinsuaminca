@@ -34,67 +34,54 @@ export class AuthService {
   }
 
   private validateAndLoadToken(): void {
-    //console.log('AuthService: validateAndLoadToken() ejecutado.');
     const storedToken = localStorage.getItem('token');
     const almacen = localStorage.getItem('almacen');
 
-    // Obtener la URL actual para verificar si es la ruta de login
-    const currentUrl = this.router.url;
-    // Definimos las rutas que NO deben disparar el logout automático
-    const excludedRoutes = ['/login', '/registrocli', '/se-cliente', '/otra-pagina-excluida'];
-    
-    // Verificamos si la ruta actual está en nuestra lista de exclusión
-    const isExcludedPage = excludedRoutes.some(route => currentUrl.includes(route));
-
-    if (!storedToken && !almacen ) {
-      //console.log('AuthService: No hay token en localStorage.');
+    if (!storedToken && !almacen) {
       this.token = null;
       this.decodedToken = null;
-
-      // Solo llama a handleSessionExpired si NO estamos en la página de login
-      if (!isExcludedPage) {
-        //console.log('AuthService: No hay token y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
-        this.handleSessionExpired(null);
-      }
       return;
     }
 
     try {
-      //console.log('AuthService: Intentando decodificar token:', storedToken);
       const decoded = this.jwtHelper.decodeToken(storedToken!);
       if (!decoded) {
-        //console.error('AuthService: Decodificación de token fallida (malformado).');
-        throw new Error('AuthService: Decodificación de token fallida (malformado)..');
+        throw new Error('AuthService: Decodificación de token fallida (malformado).');
       }
 
       if (this.jwtHelper.isTokenExpired(storedToken)) {
-        //console.error('AuthService: Token expirado.');
         throw new Error('Token is expired.');
       }
 
       this.token = storedToken;
       this.decodedToken = decoded;
-      //console.log('AuthService: Token válido cargado y decodificado en memoria.');
     } catch (error) {
-      //console.error('AuthService: Error CRÍTICO durante la validación de token (decodificación o expiración):', error);
+      // No se muestran alertas ni se redirige desde aquí: el constructor del
+      // servicio no debe tener efectos secundarios. La navegación y el aviso
+      // de sesión vencida los manejan el authGuard y el interceptor.
       this.token = null;
       this.decodedToken = null;
-
-      // Solo llama a handleSessionExpired si NO estamos en la página de login
-      if (!isExcludedPage) {
-        //console.log('AuthService: Token inválido/expirado y NO estamos en la página de login. Iniciando proceso de expiración/logout.');
-        this.handleSessionExpired(storedToken); // Pasa el token problemático
-      } else {
-        //console.log('AuthService: Token inválido/expirado, pero estamos en la página de login. No se muestra alerta ni se redirige.');
-      }
     }
-    //console.log('AuthService: Fin de validateAndLoadToken().');
   }
 
 
   setToken(token: string) {
+    // Al iniciar una sesión nueva se eliminan los datos derivados de una
+    // sesión anterior (por ejemplo, si el token viejo expiró y el usuario
+    // llegó al login sin pasar por logout), para no mezclar clientes.
+    this.clearSessionData();
     localStorage.setItem('token', token);
     this.validateAndLoadToken();
+  }
+
+  private clearSessionData(): void {
+    localStorage.removeItem('codCli');
+    localStorage.removeItem('nameFarmaActiva');
+    localStorage.removeItem('segme');
+    localStorage.removeItem('ubica');
+    localStorage.removeItem('almacen');
+    this._codCli = null;
+    this.isHandlingSessionExpired = false;
   }
 
   getToken(): string | null {
