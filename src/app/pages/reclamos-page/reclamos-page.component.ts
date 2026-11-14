@@ -25,6 +25,7 @@ import { PROTEO_URL_ALONEINTER } from './../../app.config';
 
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NumeroFacturaVisualPipe, formatearNumeroFacturaVisual } from '../../pipes/numero-factura-visual.pipe';
 
 interface Reclamo {
   id: string;
@@ -104,7 +105,8 @@ interface ProductoFactura {
     MatRadioModule,
     NavBarComponent,
     SideBarComponent,
-    FooterComponent
+    FooterComponent,
+    NumeroFacturaVisualPipe
   ],
   templateUrl: './reclamos-page.component.html',
   styleUrl: './reclamos-page.component.scss'
@@ -932,7 +934,7 @@ export class ReclamosPageComponent implements OnInit {
         html: `
           <div style="text-align: left;">
             <p><strong>¿Está seguro de enviar este reclamo?</strong></p>
-            <p><strong>Factura:</strong> ${this.facturaEncontrada?.numero}</p>
+            <p><strong>Factura:</strong> ${formatearNumeroFacturaVisual(this.facturaEncontrada?.numero)}</p>
             <p><strong>Productos a reclamar:</strong> ${this.productosSeleccionados.length}</p>
             <p><strong>Total a reclamar:</strong> $${this.totalReclamado.toFixed(2)}</p>
             <p class="text-muted" style="font-size: 0.9em;">
@@ -1110,7 +1112,7 @@ export class ReclamosPageComponent implements OnInit {
               html: `
                 <div style="text-align: left;">
                   <p><strong>Número de Reclamo:</strong> ${response.numero_reclamo}</p>
-                  <p><strong>Factura:</strong> ${this.facturaEncontrada.numero}</p>
+                  <p><strong>Factura:</strong> ${formatearNumeroFacturaVisual(this.facturaEncontrada.numero)}</p>
                   <p><strong>Total Reclamado:</strong> $${this.totalReclamado.toFixed(2)}</p>
                   <p><strong>Productos:</strong> ${this.productosSeleccionados.length}</p>
                 </div>
@@ -1246,7 +1248,7 @@ export class ReclamosPageComponent implements OnInit {
             html: `
               <div style="text-align: left;">
                 <p><strong>Número de Reclamo:</strong> ${response.numero_reclamo}</p>
-                <p><strong>Factura:</strong> ${this.facturaEncontrada.numero}</p>
+                <p><strong>Factura:</strong> ${formatearNumeroFacturaVisual(this.facturaEncontrada.numero)}</p>
                 <p><strong>Total Reclamado:</strong> $${this.totalReclamadoD.toFixed(2)}</p>
                 <p><strong>Productos:</strong> ${this.productosSeleccionados.length}</p>
               </div>

@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { PortalcliLogicaService } from './../../services/portalcli-logica.service';
 import { Subscription } from 'rxjs';
+import { NumeroFacturaVisualPipe, formatearNumeroFacturaVisual } from '../../pipes/numero-factura-visual.pipe';
 
 interface Retencion {
   id: string;
@@ -50,7 +51,8 @@ interface Retencion {
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    NumeroFacturaVisualPipe
   ],
   templateUrl: './retenciones-page.component.html',
   styleUrl: './retenciones-page.component.scss'
@@ -245,7 +247,7 @@ getFacturasSeleccionadasTexto(): string {
   if (this.retencionesSeleccionadas.length === 0) return 'Ninguna factura seleccionada';
   
   return this.retencionesSeleccionadas
-    .map(r => r.numero)
+    .map(r => formatearNumeroFacturaVisual(r.numero))
     .join(', ');
 }
 

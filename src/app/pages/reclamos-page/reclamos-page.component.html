@@ -75,7 +75,7 @@
                           <!-- Número de factura -->
                           <td class="border-end pe-3" style="width: 15%;">
                             <div class="text-muted">NÚMERO</div>
-                            <div class="fw-bold">{{ facturaEncontrada.tipo === 'N' ? 'NE-' : 'FC-' }}{{facturaEncontrada.numero}}</div>
+                            <div class="fw-bold">{{ facturaEncontrada.tipo === 'N' ? 'NE-' : 'FC-' }}{{facturaEncontrada.numero | numeroFacturaVisual}}</div>
                           </td>
                           
                           <!-- Fecha -->
@@ -175,7 +175,7 @@
                         <tr *ngFor="let reclamo of reclamosAnteriores" 
                             [class.table-active]="mostrarDetalle && reclamoSeleccionado?.numero === reclamo.numero">
                           <td class="fw-bold">{{reclamo.numero}}</td>
-                          <td>{{reclamo.factura}}</td>
+                          <td>{{reclamo.factura | numeroFacturaVisual}}</td>
                           <td>{{reclamo.fecha | date:'dd/MM/yyyy'}}</td>
                           <!-- <td>{{reclamo.almacen}}</td> -->
                           <td class="text-end fw-bold">${{reclamo.total_reclamado | number:'1.2-2'}}</td>
@@ -234,7 +234,7 @@
                     Detalle del Reclamo {{reclamoSeleccionado.numero}}
                   </mat-card-title>
                   <mat-card-subtitle>
-                    Factura: {{reclamoSeleccionado.factura}} | 
+                    Factura: {{reclamoSeleccionado.factura | numeroFacturaVisual}} |
                     Fecha: {{reclamoSeleccionado.fecha | date:'dd/MM/yyyy'}} | 
                     Estado: {{reclamoSeleccionado.estado}}
                   </mat-card-subtitle>
@@ -332,7 +332,7 @@
             <form [formGroup]="productosForm">
             <div class="row mb-4">
                 <div class="col-12">
-                <h3>Productos de {{ facturaEncontrada?.tipo === 'N' ? 'la Nota de Entrega' : 'la factura' }} {{facturaEncontrada?.numero}}</h3>
+                <h3>Productos de {{ facturaEncontrada?.tipo === 'N' ? 'la Nota de Entrega' : 'la factura' }} {{facturaEncontrada?.numero | numeroFacturaVisual}}</h3>
                 <p class="">
                     Seleccione los productos a reclamar y especifique la cantidad
                     <span *ngIf="isLoadingProductos" class="ms-2">
@@ -607,7 +607,7 @@
                           <tbody>
                             <tr>
                               <td class="bg-light fw-bold" width="20%">Número de Factura</td>
-                              <td width="30%">{{facturaEncontrada?.numero || 'N/A'}}</td>
+                              <td width="30%">{{(facturaEncontrada?.numero | numeroFacturaVisual) || 'N/A'}}</td>
                               <td class="bg-light fw-bold" width="20%">Fecha</td>
                               <td width="30%">{{facturaEncontrada?.fecha | date:'dd/MM/yyyy'}}</td>
                             </tr>

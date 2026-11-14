@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import { ClicardComponent } from "../../components/clicard/clicard.component";
 import { Subscription } from 'rxjs';
 import { FormsModule, ReactiveFormsModule, FormControl,Validators } from '@angular/forms'; 
+import { NumeroFacturaVisualPipe, formatearNumeroFacturaVisual } from '../../pipes/numero-factura-visual.pipe';
 
 
 
@@ -73,7 +74,8 @@ interface FacturaSeleccionada {
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
-    ClicardComponent
+    ClicardComponent,
+    NumeroFacturaVisualPipe
 ],
   templateUrl: './pagos-page.component.html',
   styleUrl: './pagos-page.component.scss'
@@ -93,6 +95,7 @@ export class PagosPageComponent implements OnInit {
   allPagos: any[] = [];
   showSelectedOnly = false;
   facturasACancelar: string = '';
+  facturasACancelarVisual: string = '';
   montoACancelar: number = 0;
   montoACancelard: number = 0;
 
@@ -345,7 +348,8 @@ public deudaTotalAbsoluta: number = 0;
         return;
     }
 
-    const mensaje = `La factura ${row.tipo_doc}-${row.numero} no tiene retención cargada.\n\nDebe cargar la retención primero en la sección correspondiente antes de poder seleccionarla para pago.`;
+    const numeroVisual = formatearNumeroFacturaVisual(row.numero);
+    const mensaje = `La factura ${row.tipo_doc}-${numeroVisual} no tiene retención cargada.\n\nDebe cargar la retención primero en la sección correspondiente antes de poder seleccionarla para pago.`;
     
     row.selected = false; 
 
@@ -605,6 +609,8 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
     this.archivoComprobante = null;
     this.comprobanteNombre = '';
+    this.facturasACancelar = '';
+    this.facturasACancelarVisual = '';
   }
 
   copiarAlPortapapeles(texto: string) {
@@ -1028,10 +1034,19 @@ fechaAnterior: any = null; // Guardará la fecha antes del cambio
 
   // Actualizar el campo de texto aquí
   actualizarFacturasACancelar() {
-    const facturas = Object.keys(this.selectedRowsMap)
-      .filter(key => this.selectedRowsMap[key]?.selected)
-      .map(key => key.replace('-', ''));
+    const clavesSeleccionadas = Object.keys(this.selectedRowsMap)
+      .filter(key => this.selectedRowsMap[key]?.selected);
+
+    // Valor real: se conserva con 7/9 para la gestión interna y el envío al API.
+    const facturas = clavesSeleccionadas.map(key => key.replace('-', ''));
     this.facturasACancelar = 'PAGA: ' + facturas.join(', ');
+
+    // Valor visual: solo cambia la primera cifra (7 -> B, 9 -> C) en pantalla.
+    const facturasVisuales = clavesSeleccionadas.map(key => {
+      const factura = this.selectedRowsMap[key];
+      return `${factura.data.tipo_doc}${formatearNumeroFacturaVisual(factura.data.numero)}`;
+    });
+    this.facturasACancelarVisual = 'PAGA: ' + facturasVisuales.join(', ');
   }
   montoAPagar: number = 0;
 
@@ -1326,7 +1341,7 @@ onFileSelected(event: Event): void {
 
       return `
         <div class="d-flex justify-content-between border-bottom pb-1 mb-1">
-          <span>${f.tipo_doc}-${f.numero}</span>
+          <span>${f.tipo_doc}-${formatearNumeroFacturaVisual(f.numero)}</span>
           <span>${montoFormateado}</span>
         </div>
       `;
@@ -1511,7 +1526,7 @@ onFileSelected(event: Event): void {
       // Validamos con .data que es donde viaja la lista de facturas retenidas
       if (checkGestion.data && checkGestion.data.length > 0) {
         detalleFacturas = '<br><small class="text-danger">Facturas afectadas: ' + 
-          checkGestion.data.map((f: any) => `${f.tipo_doc}-${f.numero}`).join(', ') + 
+          checkGestion.data.map((f: any) => `${f.tipo_doc}-${formatearNumeroFacturaVisual(f.numero)}`).join(', ') +
           '</small>';
       }
 

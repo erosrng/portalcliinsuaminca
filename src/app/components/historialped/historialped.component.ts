@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './../../auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_URL } from './../../app.config';
+import { NumeroFacturaVisualPipe } from '../../pipes/numero-factura-visual.pipe';
 
 @Component({
   selector: 'app-historialped',
-  imports: [CommonModule],
+  imports: [CommonModule, NumeroFacturaVisualPipe],
   templateUrl: './historialped.component.html',
   styleUrl: './historialped.component.scss',
 })

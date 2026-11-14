@@ -119,7 +119,7 @@
                       </div>
                       <div class="retenciones__resumen-item">
                           <span class="retenciones__resumen-label">Factura</span>
-                          <span class="retenciones__resumen-value">{{retencionSeleccionada.numero}}</span>
+                          <span class="retenciones__resumen-value">{{retencionSeleccionada.numero | numeroFacturaVisual}}</span>
                       </div>
                       <div class="retenciones__resumen-item">
                           <span class="retenciones__resumen-label">Monto Retenido</span>
@@ -307,7 +307,7 @@
                                       [checked]="retencionSeleccionada?.id === retencion.id"
                                       (change)="seleccionarRetencionIndividual(retencion)">
                               </td>
-                              <td class="retenciones__table-cell">{{retencion.tipo}}-{{retencion.numero}}</td>
+                              <td class="retenciones__table-cell">{{retencion.tipo}}-{{retencion.numero | numeroFacturaVisual}}</td>
                               <td class="retenciones__table-cell">{{retencion.nombre}}</td>
                               <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
                               <td class="retenciones__table-cell">Bs.{{formatCurrency(retencion.rt)}}</td>
@@ -604,7 +604,7 @@
                           [checked]="retencion.selected"
                           (change)="toggleSeleccionMultiple(retencion)">
                       </td>
-                      <td class="retenciones__table-cell">{{retencion.numero}}</td>
+                      <td class="retenciones__table-cell">{{retencion.numero | numeroFacturaVisual}}</td>
                       <td class="retenciones__table-cell">{{retencion.nombre}}</td>
                       <td class="retenciones__table-cell">{{formatDate(retencion.fecha)}}</td>
                       <td class="retenciones__table-cell">Bs. {{formatCurrency(retencion.rt)}}</td>
